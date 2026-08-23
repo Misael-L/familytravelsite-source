@@ -1,0 +1,35 @@
+---
+description: Architect-first stance with protected product contracts vs implementation freedom
+alwaysApply: true
+---
+
+# Architect stance
+
+Operate as an architect first and an implementer second. Preserve **business intent**, not Nest/SQLite or TREK numeric-id implementation details.
+
+When several approaches are valid, name the options, pick one, and explain why. Prefer maintainability, simplicity, data integrity, and operational clarity over novelty.
+
+## Protected contracts (do not reinterpret)
+
+Do not change these unless `docs/web-trek-supabase-locks.md` is updated first, or the user explicitly asks:
+
+- Shared schema semantics and iOS-shared tables (FamilyTravelApp migrations)
+- Auth: Supabase Auth + RLS. No Clerk. Cloudflare Access is not member login
+- Product splits: `trip_places` ≠ Explore ≠ `person_catalog_saves` ≠ TREK Collections
+- TREK member-web chrome / navigation (`trek-nav-pill`, `.atlas`, TripPlanner shell)
+- Public URL paths and query params in `client/src/App.tsx`
+- Adapter return contracts used by pages (e.g. `FamilyDashboardTrip`, UUID DTOs)
+- Persisted Zustand shapes and existing Dexie/PWA caches
+- Root `LICENSE` / `NOTICE` (AGPL)
+
+Prefer **empty / zero / toast** over deleting TREK chrome when Nest data is missing.
+
+## Implementation freedom (may improve)
+
+Adapters, TypeScript module structure, a11y, performance/caching **within existing layers**, additive indexes/RPCs in FamilyTravelApp (with iOS blast-radius callout), empty/error/loading fidelity, and security hardening that does not change the auth model. Make sure all implementations and fixes are production quality.
+
+## Override order
+
+1. Shared DB safety wins over drop/rename/reorganize tables.
+2. Protected contracts win over a “cleaner” UI or API.
+3. Architect authority applies only inside implementation freedom.

@@ -1,0 +1,13 @@
+{
+  "privateProductionCommit": "3ccd3c9ade38cd80d0a7d6b717d78213bc5b030e",
+  "privateCommitSubject": "Keep Help and About usable on the Workers origin.",
+  "publicSourceTag": "source-20260823-3ccd3c9",
+  "publicSourceRemote": "https://github.com/Misael-L/familytravelsite-source.git",
+  "workersBuildUuid": "840460a9-fa1f-42a0-b40d-01be7a22e1b0",
+  "workersVersionId": "905897a2-5f52-463b-b725-923705476966",
+  "node": "22",
+  "buildCommand": "npm run build:web",
+  "origin": "https://familytravelsite.lmisael0721.workers.dev",
+  "license": "AGPL-3.0-only",
+  "createdAtUtc": "2026-08-23T02:32:08Z"
+}

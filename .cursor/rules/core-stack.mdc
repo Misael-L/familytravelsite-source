@@ -1,0 +1,27 @@
+---
+description: FamilyTravelSite stack facts — Vite/React SPA, npm, Tailwind tokens, React Router v6, env
+alwaysApply: true
+---
+
+# Core stack (ground truth, not suggestions)
+
+- **Framework:** Vite + React 19 SPA. Not Next.js. No App Router, Server Actions, `loading.tsx`, `@supabase/ssr`, or RSC.
+- **Routing:** React Router v6. Routes are registered only in `client/src/App.tsx` (`BrowserRouter` + `<Routes>` / `<Route>`). Do not add file-based routing, TanStack Router, Next.js loaders/actions, or a second router.
+- **Language:** TypeScript. `client/tsconfig.json` `strict: false` is authoritative this pass — do not flip `strict: true` globally. No new `.js`/`.jsx` files. Avoid `any` in new code; prefer existing shared types, `unknown`, generics, and type guards.
+- **Styling:** Tailwind 3 + TREK design tokens (`client/src/theme/README.md`). Not shadcn/ui, Radix, or DaisyUI.
+- **Package manager:** npm workspaces only. Never generate `pnpm-lock.yaml` or `yarn.lock`. Never suggest switching package managers.
+- **Backend for family data:** Supabase Postgres via `@supabase/supabase-js` in `client/src/data/supabase/*`. Nest + SQLite in `server/` is legacy / non-SoR. Do not add an ORM or second query layer without asking.
+- **Happy path:** `npm run dev` (alias `dev:web`). Unset `VITE_DATA_PLANE` defaults to `supabase`. Nest: `npm run dev:nest`.
+
+## Env
+
+`VITE_*` is always client-exposed. Allowed client vars are those in `client/.env.example`:
+
+- `VITE_DATA_PLANE` (`nest` | `supabase`)
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_ANON_KEY`
+- `VITE_MAPBOX_ACCESS_TOKEN`
+
+Never put the service-role key, DB URLs, or other secrets in `client/`. Do not add an env var without checking `.env.example`, Vite config, and deploy config. Do not duplicate the same value as env + TypeScript constant + hardcoded fallback.
+
+Before writing new code, match an existing pattern rather than inventing a convention.

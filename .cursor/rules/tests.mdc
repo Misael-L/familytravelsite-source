@@ -1,0 +1,25 @@
+---
+description: Vitest and Playwright conventions for FamilyTravelSite
+globs: "**/*.{test,spec}.{ts,tsx}", client/e2e/**
+alwaysApply: false
+---
+
+# Tests
+
+Match existing Vitest / Playwright layout. When user-visible behavior changes, add or update a test — do not stop at “looks good.”
+
+## Vitest
+
+- Mock dependencies with `vi.mock` before exercising the unit.
+- Group with `describe`; name tests by expected behavior.
+- Cover success, empty, and error paths for adapters (`error` set vs empty `data`).
+- `beforeEach` → `vi.clearAllMocks()`. Prefer `unknown` + narrowing over `any` in new tests.
+
+## Playwright (`client/e2e`)
+
+- Critical user flows only. Prefer role, label, or existing test ids over brittle CSS/XPath.
+- Use auto-waiting; no `page.waitForTimeout` / arbitrary sleeps.
+- Mock with `page.route` when the test must be deterministic.
+- Do not assert visual styles unless that is the ticket.
+
+Do not require Playwright for a non-UI change (adapter-only, CSS token, docs). Do not require a full monorepo test run for a tightly scoped fix — run the relevant package’s tests.

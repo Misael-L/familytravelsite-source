@@ -1,0 +1,15 @@
+import type { TranslationStrings } from '../types';
+
+// English fallback until 'id' is translated.
+const help: TranslationStrings = {
+  'help.title': 'Help & Docs',
+  'help.search': 'Search docs…',
+  'help.contents': 'Contents',
+  'help.noResults': 'No matching pages.',
+  'help.errorTitle': "Couldn't load this page",
+  'help.errorBody': 'The help content is fetched from the TREK wiki. Check your connection and try again.',
+  'help.sourceCode': 'Source code (AGPL-3.0)',
+  'help.sourceCodeHint': 'Corresponding source for this modified TREK derivative',
+};
+
+export default help;

@@ -1,0 +1,28 @@
+---
+description: Supabase browser adapters — UUID-first, RLS authz, error handling, no service role
+globs: client/src/data/supabase/**, client/src/repo/**
+alwaysApply: false
+---
+
+# Supabase web adapters
+
+Use the singleton `getSupabaseBrowserClient()` from `client/src/data/supabase/client.ts`. Do not create extra clients. Never ship the service-role key. Do not spray `supabase.from(...)` through page components — extend `data/supabase/*` (and `repo/*` when that seam exists).
+
+Authorization is **RLS**, not UI checks. `getSession()` is OK for chrome restore. Call `auth.getUser()` before sensitive writes when the JWT must be verified. Do not use deprecated `@supabase/auth-helpers-*`.
+
+## UUID-first
+
+Family/Supabase domain ids are UUIDs: `auth.uid()`, `people.id`, `trips.id`, `trip_places.id`, `schedule_items.id`, catalog entity ids, `person_catalog_saves`. On the supabase plane, `/trips/:id` is that trip UUID (keep the param name `:id`). New adapters must not invent numeric TREK user/trip ids, hash UUIDs into numbers, or coerce UUID trips into `@trek/shared` numeric `Trip` / `Place` as SoR. Nest-plane numeric ids stay on the Nest plane.
+
+```ts
+const { data, error } = await getSupabaseBrowserClient()
+  .from('trips')
+  .select(TRIP_SELECT)
+  .eq('id', tripId)
+  .maybeSingle()
+
+if (error) throw error
+// empty data + no error = not found / filtered; do not fabricate a row
+```
+
+Never treat `{ error }` as empty success. Do not silently swallow errors. Do not invent a distinct “RLS denied” screen unless the error payload actually distinguishes it from a missing row. Prefer existing DTO mappers (e.g. `familyTripRowToDashboardTrip`).

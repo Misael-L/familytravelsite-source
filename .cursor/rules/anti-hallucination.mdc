@@ -1,0 +1,33 @@
+---
+description: Forbidden stacks, invented APIs, and dependency-change discipline
+alwaysApply: true
+---
+
+# Anti-hallucination
+
+Verify third-party calls against this repo’s `package.json` and existing source. If you cannot verify, say so. Do not invent signatures.
+
+## Do not introduce
+
+- Next.js, App Router, Server Actions, `@supabase/ssr`, `@supabase/auth-helpers-*`
+- Clerk, shadcn/ui, Radix-as-design-system, TanStack Query, TanStack Router
+- Nest family-domain APIs as system of record; TypeORM; BullMQ
+- Cloudflare Workers / Hono / D1 as the app platform (Pages/Vercel static host is fine later)
+- A second map library beyond Mapbox (default), Leaflet, and MapLibre already in the client
+
+## Dependency discipline
+
+Do not install, remove, replace, or upgrade dependencies as part of an ordinary implementation task unless the task explicitly requires it. Prefer existing dependencies and platform capabilities. A new dependency must not duplicate something the project already provides (Zustand, Dexie/PWA, supabase-js, Vite PWA).
+
+## Change management
+
+Prefer additive changes to public contracts (routes, query params, persisted Zustand shapes, adapter return types, shared TypeScript types). Before deleting or replacing an abstraction, search for consumers (shared types, adapters, stores, routes, exported helpers, persisted shapes — not every local presentational tweak).
+
+```ts
+// ❌ BAD — new stack + unverified API
+import { useQuery } from '@tanstack/react-query'
+import { createServerClient } from '@supabase/ssr'
+
+// ✅ GOOD — existing client + adapter
+import { getSupabaseBrowserClient } from '../data/supabase/client'
+```

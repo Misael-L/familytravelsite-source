@@ -1,0 +1,20 @@
+---
+description: Shared Supabase/Postgres safety — this DB is also the iOS app; migrations live in FamilyTravelApp
+alwaysApply: true
+---
+
+# Shared Supabase safety
+
+This Supabase project is the production backend for a separate SwiftUI iOS app (~20 family members). Schema mistakes here can break iOS silently. **Migrations live in FamilyTravelApp `supabase/migrations/`, not this repo.**
+
+- Never DROP, RENAME, or change the type of an existing table or column without explicit, separate confirmation. Assume iOS depends on it until told otherwise.
+- Default to additive-only changes: new tables, nullable columns, indexes, views. Destructive or breaking changes need sign-off even if other instructions grant broad architectural authority — this rule overrides that for the database.
+- Before proposing a schema change, read FamilyTravelApp migrations / `docs/schema-design.md`. Do not invent columns from TREK SQLite or `@trek/shared` shapes.
+- **iOS-first geo:** consume FamilyTravelApp’s model (Country → Administrative Division → Place, including Crown Dependency and reform edge cases). Do not introduce a web-only competing geo representation, parallel tables, or a “cleaned up” geo schema.
+- RLS must stay enabled and correctly scoped on every table. This is private family data.
+- If a change must touch shared tables, say so and name the iOS blast radius before proceeding.
+
+```sql
+-- After CREATE TABLE, always:
+ALTER TABLE public.my_table ENABLE ROW LEVEL SECURITY;
+```

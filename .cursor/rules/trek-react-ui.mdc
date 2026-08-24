@@ -1,0 +1,34 @@
+---
+description: TREK React UI — page hooks, theme tokens, routing, loading/empty/error, Zustand
+globs: client/src/**/*.{ts,tsx,css}
+alwaysApply: false
+---
+
+# TREK React UI
+
+Pages under `client/src/pages` are wiring containers; state, effects, and handlers live in co-located `use<Page>()` hooks (`PATTERN.md`). `npm run lint:pages` enforces this.
+
+Routes live only in `client/src/App.tsx`. Do not add file-based routing or a second router.
+
+## Theme
+
+Use semantic tokens (`bg-surface*`, `text-content*`, `border-edge*`, `bg-accent`). Never raw `bg-slate-*` / `bg-white` for surfaces. Components read CSS tokens; only `applyAppearance()` writes appearance to the DOM. See `client/src/theme/README.md`.
+
+## UX contract
+
+Loading ≠ empty ≠ error ≠ unauthorized. Keep TREK chrome (`trek-nav-pill`, `.atlas`, TripPlanner shell) and show empty/zero/toast rather than deleting structure. Do not fabricate fallback domain data. Do not add fake delays to hide latency. Prefer existing toast helpers.
+
+Default map: Mapbox GL (`VITE_MAPBOX_ACCESS_TOKEN`). Keep Leaflet and MapLibre selectable.
+
+## Zustand
+
+Stores live in `client/src/store/`. Subscribe with selectors; use `useShallow` for object picks. Do not dump server/Supabase rows into Zustand unless an existing store already owns that session view. Do not change persisted store shapes without a consumer search. Do not add Redux.
+
+```tsx
+export default function DashboardPage() {
+  const { t } = useTranslation()
+  const { trips, isLoading, handleCreate } = useDashboard()
+  if (isLoading) return <Spinner />
+  return <Grid trips={trips} onCreate={handleCreate} />
+}
+```

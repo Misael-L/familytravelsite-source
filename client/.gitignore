@@ -1,0 +1,12 @@
+# Playwright E2E (FE7)
+e2e/.tmp/
+test-results/
+playwright-report/
+playwright/.cache/
+
+# Vite / Supabase local secrets (W0+)
+.env
+.env.local
+.env.*.local
+node_modules/
+dist/

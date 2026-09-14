@@ -1,0 +1,32 @@
+---
+description: Before/during/after file order, reconnaissance, and proportional Definition of Done for FamilyTravelSite
+alwaysApply: true
+---
+
+# Read order and Definition of Done
+
+## Before
+
+Read `docs/web-trek-supabase-locks.md`. If the task touches domain, schema, Explore, or shared tables, also read sibling FamilyTravelApp `docs/product-plan.md`, `docs/schema-design.md`, and `docs/workspace-explore-locks.md`.
+
+If these files exist, optionally read them for a fuller architect brief:
+
+- `/Users/Misael/Desktop/Cursor Instructions/Senior-Full-Stack-PGSQL-Architect.md`
+- `/Users/Misael/Desktop/Cursor Instructions/Aggressive-Caching-Full-Stack-PGSQL-Architect.md`
+
+Search for an existing adapter, hook, store, or component that already owns the responsibility. Reuse or extend it unless there is a documented reason not to.
+
+Before changing a **shared type, adapter, Zustand store, route, exported public helper, or persisted shape**, search the repo for consumers. Prefer additive changes.
+
+## During
+
+Follow sibling `.cursor/rules`. Match `client/src/data/supabase/*` and the page-hook pattern in `client/src/pages/PATTERN.md`. Do not reopen locks in code; update the locks file first.
+
+## After (proportional)
+
+- No forbidden imports or new/upgraded dependencies unless the task required them.
+- No schema-ownership violation (migrations belong in FamilyTravelApp).
+- Existing `App.tsx` routes and TREK chrome (`trek-nav-pill`, `.atlas`, TripPlanner shell) remain intact.
+- Trip Places ≠ Explore ≠ `person_catalog_saves` ≠ TREK Collections.
+- Run `tsc --noEmit` and targeted Vitest for packages you touched. Run Playwright only when user-visible behavior changed. A CSS-token fix does not need a full monorepo build or e2e.
+- Do not swallow adapter `{ error }` as empty success.

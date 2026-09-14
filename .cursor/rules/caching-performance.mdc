@@ -1,0 +1,20 @@
+---
+description: Vite SPA caching — hashed assets, no shared CDN for RLS data, no extra cache layers
+globs: client/**
+alwaysApply: false
+---
+
+# Caching and performance
+
+Performance is part of the architecture. Prefer caching what is **safe** to cache. Every cache needs an invalidation story. Do not add Redis, TanStack Query, a second service worker, or another IndexedDB layer unprompted — Dexie and Vite PWA already exist.
+
+## Layers
+
+- **Hashed static assets** (JS/CSS/fonts/fingerprinted images): long-lived `Cache-Control: public, max-age=31536000, immutable`.
+- **HTML / app shell entry:** revalidate (`max-age=0, must-revalidate` or `no-cache`). That file’s change is what busts hashed assets.
+- **Authenticated / RLS-personalized JSON:** `Cache-Control: private, no-store` (or equivalent). Never put family trip/member data on a **shared** CDN cache. A logged-in response served to another user is a critical bug.
+- **Public geo/map tiles / GeoJSON / catalog media:** reuse aggressively (browser, CDN, existing PWA). Stale-while-revalidate is appropriate when instant pan/zoom matters more than perfect freshness.
+
+Do not assume Supabase/PostgREST caches reads. If the UI feels slow, check query shape and indexes (FamilyTravelApp) before adding another client cache.
+
+Tune existing Dexie/PWA/map reuse rather than introducing a parallel strategy. Authenticated responses must never be shared-cached.

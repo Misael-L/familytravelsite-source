@@ -1,0 +1,26 @@
+---
+description: Nest/SQLite in server/ is legacy non-SoR — do not grow family domain here
+globs: server/**
+alwaysApply: false
+---
+
+# Nest is not the system of record
+
+`server/` is the legacy TREK Nest + SQLite stack. Family domain data lives in Supabase (same project as iOS). Do not add family-domain endpoints, dual-write to SQLite, or treat Nest as a long-term BFF.
+
+If you must touch Nest (bugfix, `VITE_DATA_PLANE=nest` compatibility):
+
+- Match existing modules. Do not invent packages or import paths (`@nestjs/core/decorators`, TypeORM, `@nestjs/bull`, BullMQ).
+- This server uses better-sqlite3, not TypeORM. Do not introduce TypeORM or `synchronize: true`.
+- Return values through Nest handlers; do not bypass interceptors with raw `res.json` unless streaming.
+- Server secrets stay in `server/.env*` — never `VITE_*`.
+
+```ts
+// ❌ BAD — new family SoR on Nest
+@Post('trips')
+createFamilyTrip(@Body() dto: CreateTripDto) { return this.sqlite.insert(dto) }
+
+// ✅ GOOD — leave domain writes to client Supabase adapters / RPCs
+```
+
+Do not rewrite Nest numeric TREK ids to UUID as a drive-by. UUID-first applies to supabase-plane adapters, not a Nest schema migration.

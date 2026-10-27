@@ -6,7 +6,7 @@ import { useEffect, useId, useMemo, useState, type ReactElement } from 'react'
 import {
   Bike, Bus, Car, CarTaxiFront, Pencil, Plane, Plus, Route, Sailboat, Ship, Train, Trash2, TramFront,
 } from 'lucide-react'
-import Modal from '../shared/Modal'
+import Modal, { type ModalFocusScope } from '../shared/Modal'
 import CustomSelect from '../shared/CustomSelect'
 import CustomTimePicker from '../shared/CustomTimePicker'
 import { useToast } from '../shared/Toast'
@@ -124,6 +124,8 @@ export type FamilyTransportEditorProps = {
   onSaved: () => Promise<void>
   onOpenCostsPrefill: (prefill: FamilyExpensePrefill) => void
   onExpenseUnlinked: () => Promise<void>
+  /** Set only when Edit was opened from transport details. */
+  focusScope?: ModalFocusScope
 }
 
 export default function FamilyTransportEditor({
@@ -145,6 +147,7 @@ export default function FamilyTransportEditor({
   onSaved,
   onOpenCostsPrefill,
   onExpenseUnlinked,
+  focusScope,
 }: FamilyTransportEditorProps): ReactElement | null {
   const { t } = useTranslation()
   const toast = useToast()
@@ -165,7 +168,6 @@ export default function FamilyTransportEditor({
   const [departureTime, setDepartureTime] = useState('')
   const [arrivalTime, setArrivalTime] = useState('')
   const [saving, setSaving] = useState(false)
-  const [expenseIntent, setExpenseIntent] = useState<'create' | 'edit' | null>(null)
 
   const tripHasDates = days.length > 0
   const isCreate = !reservation
@@ -223,7 +225,6 @@ export default function FamilyTransportEditor({
   useEffect(() => {
     if (!open) return
     const daySeed = seedDayId || days[0]?.id || ''
-    setExpenseIntent(null)
     if (reservation) {
       setAutomated(false)
       setStatus(reservation.status)
@@ -440,12 +441,13 @@ export default function FamilyTransportEditor({
     }
   }
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (intent: 'create' | 'edit' | null = null) => {
     if (automated) return
     const id = await save()
     if (!id) return
-    const intent = expenseIntent
-    setExpenseIntent(null)
+    if (intent === 'create' || (intent === 'edit' && linkedExpense)) {
+      if (focusScope) focusScope.suppressRestoreRef.current = true
+    }
     if (intent === 'create') {
       onClose()
       onOpenCostsPrefill({
@@ -486,6 +488,7 @@ export default function FamilyTransportEditor({
     <Modal
       isOpen={open}
       onClose={onClose}
+      focusScope={focusScope}
       title={automated ? t('transit.title') : reservation ? t('transport.modalTitle.edit') : t('transport.modalTitle.create')}
       size="2xl"
       footer={
@@ -496,7 +499,7 @@ export default function FamilyTransportEditor({
           {!automated && (
             <button
               type="button"
-              onClick={() => { void handleSubmit() }}
+              onClick={() => { void handleSubmit(null) }}
               disabled={saving || !title.trim() || endBeforeStart || !canMutate}
               className="bg-[var(--text-primary)] text-[var(--bg-primary)]"
               style={{
@@ -586,9 +589,9 @@ export default function FamilyTransportEditor({
           currencyCode={currencyCode}
           locale={locale}
           canMutate={canMutate}
-          onSubmit={() => { void handleSubmit() }}
-          onCreateExpense={() => { setExpenseIntent('create'); void handleSubmit() }}
-          onEditExpense={() => { setExpenseIntent('edit'); void handleSubmit() }}
+          onSubmit={() => { void handleSubmit(null) }}
+          onCreateExpense={() => { void handleSubmit('create') }}
+          onEditExpense={() => { void handleSubmit('edit') }}
           onUnlink={() => { void handleUnlink() }}
           filesSlot={reservation?.id ? (
             <FamilyFileAttach

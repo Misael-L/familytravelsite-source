@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event';
 import { act, fireEvent, render, screen } from '../../../tests/helpers/render';
 import { useSettingsStore } from '../../store/settingsStore';
 import { CustomDatePicker, CustomDateTimePicker } from './CustomDateTimePicker';
+import { OwnedPickerLayerRoot } from './ownedPickerLayer';
 
 // ─── CustomDatePicker ─────────────────────────────────────────────────────────
 
@@ -134,6 +135,52 @@ describe('CustomDatePicker', () => {
     fireEvent.keyDown(input, { key: 'Escape' });
     expect(screen.queryByPlaceholderText('DD.MM.YYYY')).toBeNull();
     expect(screen.getAllByRole('button').length).toBeGreaterThan(0);
+  });
+
+  it('still commits a valid manual date on blur when the picker is not owned', async () => {
+    const user = userEvent.setup();
+    render(<CustomDatePicker value="" onChange={onChange} />);
+    await user.click(screen.getByRole('button', { name: /enter date manually/i }));
+    const input = screen.getByPlaceholderText('DD.MM.YYYY');
+    await user.type(input, '17.07.2026');
+    fireEvent.blur(input);
+    expect(onChange).toHaveBeenCalledWith('2026-07-17');
+    expect(screen.queryByPlaceholderText('DD.MM.YYYY')).toBeNull();
+  });
+
+  it('cancels owned manual entry on Escape without committing partial or valid text', async () => {
+    const user = userEvent.setup();
+    const view = render(
+      <OwnedPickerLayerRoot>
+        <CustomDatePicker value="" onChange={onChange} />
+      </OwnedPickerLayerRoot>,
+    );
+    await user.click(screen.getByRole('button', { name: /enter date manually/i }));
+    const input = screen.getByRole('textbox', { name: 'Enter date manually' });
+    await user.type(input, '12.');
+    await user.keyboard('{Escape}');
+    expect(onChange).not.toHaveBeenCalled();
+    expect(screen.queryByRole('textbox', { name: 'Enter date manually' })).toBeNull();
+    expect(screen.getByRole('button', { name: /enter date manually/i })).toHaveFocus();
+
+    view.rerender(
+      <OwnedPickerLayerRoot>
+        <CustomDatePicker value="" onChange={onChange} />
+      </OwnedPickerLayerRoot>,
+    );
+    await user.click(screen.getByRole('button', { name: /enter date manually/i }));
+    await user.type(screen.getByRole('textbox', { name: 'Enter date manually' }), '12.12.2026');
+    await user.keyboard('{Escape}');
+    expect(onChange).not.toHaveBeenCalled();
+    expect(screen.queryByRole('textbox', { name: 'Enter date manually' })).toBeNull();
+    expect(screen.getByRole('button', { name: 'Date' })).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: /enter date manually/i }));
+    const again = screen.getByRole('textbox', { name: 'Enter date manually' });
+    await user.type(again, '2026-12-12');
+    fireEvent.blur(again);
+    expect(onChange).toHaveBeenCalledWith('2026-12-12');
+    expect(screen.queryByRole('textbox', { name: 'Enter date manually' })).toBeNull();
   });
 });
 
@@ -326,5 +373,31 @@ describe('CustomDateTimePicker', () => {
 
     const yr2026 = screen.getByRole('button', { name: '2026' });
     expect(yr2026.getAttribute('aria-pressed')).toBe('true');
+  });
+
+  it('leaves the calendar open on Escape when it is not owned', async () => {
+    const user = userEvent.setup();
+    render(<CustomDatePicker value="2026-03-15" onChange={onChange} />);
+    await user.click(screen.getByRole('button', { name: /mar|15|2026/i }));
+    expect(screen.getByRole('dialog', { name: 'Date picker' })).toBeTruthy();
+    await user.keyboard('{Escape}');
+    expect(screen.getByRole('dialog', { name: 'Date picker' })).toBeTruthy();
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it('closes the calendar on Escape and focuses its trigger when a booking layer owns it', async () => {
+    const user = userEvent.setup();
+    render(
+      <OwnedPickerLayerRoot>
+        <CustomDatePicker value="2026-03-15" onChange={onChange} />
+      </OwnedPickerLayerRoot>,
+    );
+    const trigger = screen.getByRole('button', { name: /mar|15|2026/i });
+    await user.click(trigger);
+    expect(screen.getByRole('dialog', { name: 'Date picker' })).toBeTruthy();
+    await user.keyboard('{Escape}');
+    expect(screen.queryByRole('dialog', { name: 'Date picker' })).toBeNull();
+    expect(trigger).toHaveFocus();
+    expect(onChange).not.toHaveBeenCalled();
   });
 });

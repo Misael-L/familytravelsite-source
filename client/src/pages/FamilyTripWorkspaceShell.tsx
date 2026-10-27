@@ -86,7 +86,9 @@ import BookingsPanelFamily from '../components/Planner/BookingsPanelFamily'
 import TransportsPanelFamily, { type TransportCreateRequest } from '../components/Planner/TransportsPanelFamily'
 import ListsPanelFamily from '../components/Todo/ListsPanelFamily'
 import FilesPanelFamily from '../components/Files/FilesPanelFamily'
-import type { FamilyExpensePrefill } from '../data/supabase/tripReservations'
+import { listTripBookings, listTripTransports, type FamilyTransportReservation, type FamilyTripReservation, type FamilyExpensePrefill } from '../data/supabase/tripReservations'
+import { projectFamilyDayTimeline, schedulePairMove } from '../components/Planner/family/familyDayTimeline'
+import { FamilyDayTimelineDetails, type FamilyDayTimelineDetailsHandle } from '../components/Planner/family/FamilyDayTimelineDetails'
 import { useFamilyItineraryRealtime } from '../hooks/useFamilyItineraryRealtime'
 import { useAuthStore } from '../store/authStore'
 import { useFamilyFeatureStore } from '../store/familyFeatureStore'
@@ -111,7 +113,7 @@ export default function FamilyTripWorkspaceShell(): React.ReactElement | null {
   const { id: tripId = '' } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const toast = useToast()
-  const { t } = useTranslation()
+  const { t, locale } = useTranslation()
   const mapTileUrl = useSettingsStore(s => s.settings.map_tile_url)
   const mapProvider = useSettingsStore(s => s.settings.map_provider)
   const mapboxToken = useSettingsStore(s => s.settings.mapbox_access_token)
@@ -143,6 +145,13 @@ export default function FamilyTripWorkspaceShell(): React.ReactElement | null {
   const [tracks, setTracks] = useState<FamilyTripTrack[]>([])
   const [days, setDays] = useState<FamilyTripDay[]>([])
   const [scheduleItems, setScheduleItems] = useState<FamilyScheduleItem[]>([])
+  const [bookings, setBookings] = useState<FamilyTripReservation[] | null>(null)
+  const [transports, setTransports] = useState<FamilyTransportReservation[] | null>(null)
+  const reservationGeneration = useRef(0)
+  const reservationsStale = useRef(false)
+  const reservationInFlight = useRef<Promise<boolean> | null>(null)
+  const timelineDetailsRef = useRef<FamilyDayTimelineDetailsHandle>(null)
+  const previousTab = useRef<WorkspaceTab>('plan')
   const [dayNotes, setDayNotes] = useState<FamilyDayNote[]>([])
   const [countryIds, setCountryIds] = useState<string[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -268,10 +277,40 @@ export default function FamilyTripWorkspaceShell(): React.ReactElement | null {
   }, [tripId])
 
   const [publishedSliceEpoch, setPublishedSliceEpoch] = useState(0)
+  const reloadReservations = useCallback((): Promise<boolean> => {
+    if (!tripId) return Promise.resolve(true)
+    if (reservationInFlight.current) return reservationInFlight.current
+    const generation = ++reservationGeneration.current
+    const requestedTrip = tripId
+    reservationsStale.current = false
+    let task!: Promise<boolean>
+    task = (async () => {
+      let ok = true
+      try {
+        const [tripBookings, tripTransports] = await Promise.all([
+          settled(listTripBookings(requestedTrip)),
+          settled(listTripTransports(requestedTrip)),
+        ])
+        if (generation !== reservationGeneration.current || requestedTrip !== tripId) return false
+        if (tripBookings.ok) setBookings(tripBookings.value)
+        else ok = false
+        if (tripTransports.ok) setTransports(tripTransports.value)
+        else ok = false
+        if (!ok) setPartialLoadError(true)
+        return ok
+      } finally {
+        if (reservationInFlight.current === task) reservationInFlight.current = null
+        if (reservationsStale.current && generation === reservationGeneration.current) void reloadReservations()
+      }
+    })()
+    reservationInFlight.current = task
+    return task
+  }, [tripId])
+
   const reloadItinerary = useCallback(async () => {
-    await Promise.all([reloadPlaces(), reloadSchedule(), reloadNotes()])
+    await Promise.all([reloadPlaces(), reloadSchedule(), reloadNotes(), reloadReservations()])
     setPublishedSliceEpoch(n => n + 1)
-  }, [reloadPlaces, reloadSchedule, reloadNotes])
+  }, [reloadPlaces, reloadSchedule, reloadNotes, reloadReservations])
 
   const reloadTripMeta = useCallback(async () => {
     if (!tripId) return
@@ -347,6 +386,11 @@ export default function FamilyTripWorkspaceShell(): React.ReactElement | null {
     let cancelled = false
     setIsLoading(true)
     setPartialLoadError(false)
+    setBookings(null)
+    setTransports(null)
+    reservationInFlight.current = null
+    reservationsStale.current = false
+    const reservationTask = reloadReservations()
 
     const daysP = syncTripDays(tripId)
       .catch(() => undefined)
@@ -360,15 +404,16 @@ export default function FamilyTripWorkspaceShell(): React.ReactElement | null {
       settled(listDayNotes(tripId)),
       settled(listTripCountryIds(tripId)),
       settled(listTripTracks(tripId)),
+      reservationTask,
     ])
-      .then(([found, tripPlaces, tripDays, schedule, notes, countries, tripTracks]) => {
+      .then(([found, tripPlaces, tripDays, schedule, notes, countries, tripTracks, reservationsOk]) => {
         if (cancelled) return
         if (!found) {
           toast.error(t('trip.toast.notFound'))
           navigate('/dashboard')
           return
         }
-        const partial = !tripPlaces.ok || !tripDays.ok || !schedule.ok || !notes.ok || !countries.ok || !tripTracks.ok
+        const partial = !tripPlaces.ok || !tripDays.ok || !schedule.ok || !notes.ok || !countries.ok || !tripTracks.ok || reservationsOk === false
         setTrip(found)
         setPlaces(tripPlaces.ok ? tripPlaces.value : [])
         setTracks(tripTracks.ok ? tripTracks.value : [])
@@ -435,6 +480,17 @@ export default function FamilyTripWorkspaceShell(): React.ReactElement | null {
   const itemsByDayId = useMemo(
     () => groupScheduleByCivilDay(scheduleItems, days),
     [scheduleItems, days],
+  )
+  const timeline = useMemo(
+    () => projectFamilyDayTimeline({
+      days,
+      scheduleItems,
+      notes: dayNotes,
+      bookings: bookings ?? [],
+      transports: transports ?? [],
+      placesById,
+    }),
+    [days, scheduleItems, dayNotes, bookings, transports, placesById],
   )
   const notesByDay = useMemo(
     () => groupNotesByCivilDay(dayNotes),
@@ -715,19 +771,18 @@ export default function FamilyTripWorkspaceShell(): React.ReactElement | null {
 
   const moveItem = async (dayId: string, itemId: string, direction: -1 | 1) => {
     if (!canUseSchedule) { toastDenied('draftable', scheduleMode); return }
-    const dayItems = [...(itemsByDayId.get(dayId) ?? [])]
-    const idx = dayItems.findIndex(i => i.id === itemId)
-    const target = idx + direction
-    if (idx < 0 || target < 0 || target >= dayItems.length) return
-    const previous = dayItems.map(i => ({ id: i.id, sortOrder: i.sortOrder }))
-    const ordered = dayItems.map(i => i.id)
-    ;[ordered[idx], ordered[target]] = [ordered[target], ordered[idx]]
-    const updates = ordered.map((id, sortOrder) => ({ id, sortOrder }))
+    const rows = timeline.find(day => day.dayId === dayId)?.rows ?? []
+    const updates = schedulePairMove(rows, itemId, direction)
+    if (!updates) return
+    const previous = updates.map(update => {
+      const current = scheduleItems.find(item => item.id === update.id)
+      return { id: update.id, sortOrder: current?.sortOrder ?? update.sortOrder }
+    })
     try {
       if (scheduleMode === 'draft') {
         let sort = gov.nextSortOrder
         for (const u of updates) {
-          const current = dayItems.find(i => i.id === u.id)
+          const current = scheduleItems.find(item => item.id === u.id)
           if (!current || current.sortOrder === u.sortOrder) continue
           const ok = await gov.addDraftOp({
             module: 'plan_item',
@@ -843,6 +898,13 @@ export default function FamilyTripWorkspaceShell(): React.ReactElement | null {
     }
   }
 
+  useEffect(() => {
+    const previous = previousTab.current
+    previousTab.current = activeTab
+    if (previous === 'buchungen' || previous === 'transports') reservationsStale.current = true
+    if (activeTab === 'plan' && reservationsStale.current) void reloadReservations()
+  }, [activeTab, reloadReservations])
+
   if (isLoading) {
     return <TripLoadingSplash title={trip?.title} />
   }
@@ -881,6 +943,8 @@ export default function FamilyTripWorkspaceShell(): React.ReactElement | null {
       canUndo={canUndo}
       onUndo={() => { void undo() }}
       lastActionLabel={lastActionLabel}
+      timeline={timeline}
+      onOpenTimeline={(kind, id, trigger) => timelineDetailsRef.current?.openTarget(kind, id, trigger)}
     />
   )
   const placesSidebar = (
@@ -1564,6 +1628,52 @@ export default function FamilyTripWorkspaceShell(): React.ReactElement | null {
         message={t('inspector.removeFromDay')}
         confirmLabel={t('common.delete')}
         danger
+      />
+
+      <FamilyDayTimelineDetails
+        ref={timelineDetailsRef}
+        tripId={tripId}
+        familyId={trip.family_id}
+        mePersonId={personId}
+        locale={locale}
+        currencyCode={trip.currency || 'EUR'}
+        days={days}
+        places={places}
+        scheduleItems={scheduleItems}
+        bookings={bookings ?? []}
+        transports={transports ?? []}
+        reservationsMode={reservationsMode}
+        canEditPublished={canEditPublished}
+        onStageBookingDraft={reservationsMode === 'draft' ? async (draft) => gov.addDraftOp({
+          module: 'reservation',
+          op: draft.id ? 'update' : 'add',
+          payload: payloadReservationUpsert(draft),
+          tripDayId: draft.startTripDayId ?? null,
+          targetTable: targetTableForModule('reservation'),
+          targetId: draft.id ?? null,
+          sortOrder: gov.nextSortOrder,
+        }) : undefined}
+        onStageBookingDelete={reservationsMode === 'draft' ? async (id) => gov.addDraftOp({
+          module: 'reservation',
+          op: 'remove',
+          payload: payloadRemoveMarker(),
+          targetTable: targetTableForModule('reservation'),
+          targetId: id,
+          sortOrder: gov.nextSortOrder,
+        }) : undefined}
+        onStageBookingStatus={reservationsMode === 'draft' ? async (id, status) => gov.addDraftOp({
+          module: 'reservation',
+          op: 'update',
+          payload: { schema_version: 1, status },
+          targetTable: targetTableForModule('reservation'),
+          targetId: id,
+          sortOrder: gov.nextSortOrder,
+        }) : undefined}
+        onReservationsChanged={() => reloadReservations().then(() => undefined)}
+        onOpenCostsPrefill={(prefill) => {
+          setExpensePrefill(prefill)
+          setActiveTab('finanzplan')
+        }}
       />
 
       <FamilyDayNoteSheet

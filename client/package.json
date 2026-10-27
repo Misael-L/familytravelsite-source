@@ -22,6 +22,7 @@
     "e2e": "playwright test",
     "e2e:family": "playwright test -c playwright.family.config.ts",
     "e2e:family:47r": "playwright test -c playwright.family.47r.config.ts",
+    "e2e:family:days": "playwright test -c playwright.family.days.config.ts",
     "dev:47r": "vite --mode 47r.e2e --port 5176 --strictPort --host 127.0.0.1",
     "shots": "playwright test --project=screenshots",
     "shots:promote": "node e2e/screenshots/promote.mjs",

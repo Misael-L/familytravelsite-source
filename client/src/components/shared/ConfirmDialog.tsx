@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react'
+import React, { useEffect, useCallback, useLayoutEffect, useRef } from 'react'
 import ReactDOM from 'react-dom'
 import { AlertTriangle } from 'lucide-react'
 import { useTranslation } from '../../i18n'
@@ -12,6 +12,9 @@ interface ConfirmDialogProps {
   confirmLabel?: string
   cancelLabel?: string
   danger?: boolean
+  /** Opt-in for the booking-details pilot. Other callers keep the previous focus behavior. */
+  initialFocus?: 'cancel'
+  restoreFocusTo?: HTMLElement | null
 }
 
 export default function ConfirmDialog({
@@ -23,8 +26,12 @@ export default function ConfirmDialog({
   confirmLabel,
   cancelLabel,
   danger = true,
+  initialFocus,
+  restoreFocusTo = null,
 }: ConfirmDialogProps) {
   const { t } = useTranslation()
+  const cancelRef = useRef<HTMLButtonElement>(null)
+  const focusGeneration = useRef(0)
 
   const handleEsc = useCallback((e: KeyboardEvent) => {
     if (e.key === 'Escape') onClose()
@@ -36,6 +43,20 @@ export default function ConfirmDialog({
     }
     return () => document.removeEventListener('keydown', handleEsc)
   }, [isOpen, handleEsc])
+
+  useLayoutEffect(() => {
+    if (!isOpen || (!initialFocus && !restoreFocusTo)) return
+    const generation = ++focusGeneration.current
+    if (initialFocus === 'cancel') cancelRef.current?.focus()
+    return () => {
+      const restore = restoreFocusTo
+      queueMicrotask(() => {
+        if (focusGeneration.current !== generation) return
+        if (!(restore instanceof HTMLElement) || !restore.isConnected) return
+        restore.focus()
+      })
+    }
+  }, [isOpen, initialFocus, restoreFocusTo])
 
   if (!isOpen) return null
 
@@ -67,6 +88,8 @@ export default function ConfirmDialog({
 
         <div className="flex justify-end gap-3 mt-6">
           <button
+            ref={cancelRef}
+            type="button"
             onClick={onClose}
             className="px-4 py-2 text-sm font-medium rounded-lg transition-colors text-content-secondary border border-edge-secondary"
           >

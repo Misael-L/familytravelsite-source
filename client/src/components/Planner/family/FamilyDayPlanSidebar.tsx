@@ -1,17 +1,20 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import {
-  ArrowDown, ArrowUp, ArrowUpDown, CalendarPlus, ChevronDown, ChevronRight, ChevronsDownUp, ChevronsUpDown,
-  FileDown, FileText, Pencil, Plus, Trash2, TramFront, Undo2,
+  ArrowUpDown, CalendarPlus, ChevronsDownUp, ChevronsUpDown, FileDown, Undo2,
 } from 'lucide-react'
 import { useTranslation } from '../../../i18n'
 import { formatDate } from '../../../utils/formatters'
 import Tooltip from '../../shared/Tooltip'
-import PlaceAvatar from '../../shared/PlaceAvatar'
 import { useToast } from '../../shared/Toast'
 import { useAuthStore } from '../../../store/authStore'
 import { downloadFamilyPlanIcs } from '../../../lib/plan/familyPlanIcs'
 import { openFamilyPlanPdfOverlay } from '../../../lib/plan/familyPlanPdf'
 import { FamilyCalendarSubscribeModal } from './FamilyCalendarSubscribeModal'
+import FamilyDayHead from './FamilyDayHead'
+import FamilyDayTimelineRow from './FamilyDayTimelineRow'
+import { FamilyDayTimelineEntry } from './FamilyDayTimelineEntry'
+import type { FamilyDayTimelineDay } from './familyDayTimeline'
+import { DAY_CARD } from './familyDayPlanSurfaces'
 import type { FamilyTripDay } from '../../../data/supabase/tripDays'
 import type { FamilyScheduleItem } from '../../../data/supabase/scheduleItems'
 import type { FamilyTripPlace } from '../../../data/supabase/tripPlaces'
@@ -37,6 +40,8 @@ type FamilyDayPlanSidebarProps = {
   canUndo?: boolean
   onUndo?: () => void
   lastActionLabel?: string | null
+  timeline?: FamilyDayTimelineDay[]
+  onOpenTimeline?: (kind: 'booking' | 'transport', id: string, trigger: HTMLElement) => void
 }
 
 const EXPAND_KEY = (tripId: string) => `family-day-expanded-${tripId}`
@@ -75,6 +80,8 @@ export default function FamilyDayPlanSidebar({
   canUndo = false,
   onUndo,
   lastActionLabel = null,
+  timeline,
+  onOpenTimeline,
 }: FamilyDayPlanSidebarProps): React.ReactElement {
   const { t, locale } = useTranslation()
   const toast = useToast()
@@ -96,6 +103,7 @@ export default function FamilyDayPlanSidebar({
   const [editingTitleDayId, setEditingTitleDayId] = useState<string | null>(null)
   const [titleDraft, setTitleDraft] = useState('')
   const titleInputRef = useRef<HTMLInputElement>(null)
+  const titleClosedRef = useRef(false)
 
   useEffect(() => {
     if (editingTitleDayId) titleInputRef.current?.focus()
@@ -370,7 +378,7 @@ export default function FamilyDayPlanSidebar({
         </div>
       </div>
 
-      <div className="scroll-container trek-stagger" style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
+      <div className="scroll-container trek-stagger flex flex-col gap-2 p-2" style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
         {sorted.length === 0 ? null : sorted.map((day, index) => {
           const isSelected = selectedDayId === day.id
           const isExpanded = expandedDays.has(day.id)
@@ -379,252 +387,110 @@ export default function FamilyDayPlanSidebar({
           const dayNote = notesByCivilDay.get(day.civilDay) ?? null
           const isEditingTitle = editingTitleDayId === day.id
           const dayItems = itemsByDayId.get(day.id) ?? []
-          const cell: React.CSSProperties = { padding: 7, cursor: 'pointer', display: 'grid', placeItems: 'center' }
-          const div = '1px solid var(--border-faint)'
+          const timelineDay = timeline?.find(entry => entry.dayId === day.id)
+          const displayIndex = index + 1
 
           const commitTitle = () => {
+            if (titleClosedRef.current) return
+            titleClosedRef.current = true
             setEditingTitleDayId(null)
             const next = titleDraft.trim() || null
             const prev = day.title?.trim() || null
             if (next === prev) return
             onSaveTitle(day.id, next)
           }
+          const cancelTitle = () => {
+            titleClosedRef.current = true
+            setEditingTitleDayId(null)
+          }
 
           return (
-            <div key={day.id} style={{ borderBottom: '1px solid var(--border-faint)' }}>
-              <div
-                className="dp-day-header"
-                data-selected={isSelected}
-                onClick={() => {
-                  if (isEditingTitle) return
-                  onSelectDay(isSelected ? null : day.id)
+            <div key={day.id} className={DAY_CARD}>
+              <FamilyDayHead
+                day={day}
+                displayIndex={displayIndex}
+                title={title}
+                formattedDate={formatted}
+                noteBody={dayNote?.body ?? null}
+                isSelected={isSelected}
+                isExpanded={isExpanded}
+                isEditingTitle={isEditingTitle}
+                titleDraft={titleDraft}
+                titleInputRef={titleInputRef}
+                canMutate={canMutate}
+                isMobile={isMobile}
+                onSelect={() => onSelectDay(isSelected ? null : day.id)}
+                onToggle={e => toggleDay(day.id, e)}
+                onStartEdit={() => {
+                  titleClosedRef.current = false
+                  setTitleDraft(day.title ?? '')
+                  setEditingTitleDayId(day.id)
                 }}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: 10,
-                  padding: '11px 14px 11px 16px',
-                  cursor: 'pointer',
-                  background: isSelected ? 'var(--bg-selected)' : 'transparent',
-                  transition: 'background 0.12s',
-                  userSelect: 'none',
-                  touchAction: 'manipulation',
+                onTitleDraft={setTitleDraft}
+                onCommitTitle={commitTitle}
+                onCancelTitle={cancelTitle}
+                onOpenNote={() => onOpenNote(day)}
+                onOpenTransport={onOpenTransport
+                  ? (automated) => onOpenTransport({ dayId: day.id, automated })
+                  : undefined}
+                onToastWrite={() => onToastWrite()}
+                pills={timelineDay?.pills.map(pill => ({ key: pill.key, title: pill.title }))}
+                onOpenPill={(key, trigger) => {
+                  const pill = timelineDay?.pills.find(entry => entry.key === key)
+                  if (!pill || !onOpenTimeline) return
+                  onOpenTimeline(pill.detailTransportId ? 'transport' : 'booking', pill.detailTransportId ?? pill.detailBookingId ?? pill.id, trigger)
                 }}
-                onMouseEnter={e => { if (!isSelected) e.currentTarget.style.background = 'var(--bg-tertiary)' }}
-                onMouseLeave={e => { if (!isSelected) e.currentTarget.style.background = 'transparent' }}
-              >
-                <div style={{
-                  flexShrink: 0, alignSelf: 'flex-start',
-                  width: 26, height: 26, borderRadius: '50%',
-                  background: isSelected ? 'var(--accent)' : 'var(--bg-hover)',
-                  color: isSelected ? 'var(--accent-text)' : 'var(--text-muted)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 'calc(11px * var(--fs-scale-caption, 1))', fontWeight: 700,
-                }}>
-                  {index + 1}
-                </div>
-
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 7, minWidth: 0 }}>
-                    {isEditingTitle ? (
-                      <input
-                        ref={titleInputRef}
-                        value={titleDraft}
-                        onChange={e => setTitleDraft(e.target.value)}
-                        onClick={e => e.stopPropagation()}
-                        onBlur={commitTitle}
-                        onKeyDown={e => {
-                          if (e.key === 'Enter') { e.preventDefault(); commitTitle() }
-                          if (e.key === 'Escape') { e.preventDefault(); setEditingTitleDayId(null) }
+              />
+              {isExpanded && (
+                <div className="border-t border-edge-faint">
+                  {timelineDay ? (
+                    timelineDay.rows.length === 0 && timelineDay.pills.length === 0 ? (
+                      <div className="px-4 py-4 text-center">
+                        <span className="text-caption text-content-faint">{t('dayplan.emptyDay')}</span>
+                      </div>
+                    ) : timelineDay.rows.map(row => row.source === 'schedule' ? (
+                      <FamilyDayTimelineRow
+                        key={row.key}
+                        dayId={day.id}
+                        item={dayItems.find(item => item.id === row.id) ?? {
+                          id: row.id, tripId, activity: row.title, placeId: row.placeId, startsAt: null, endsAt: null,
+                          address: null, timeZone: null, sortOrder: row.sortOrder, experienceId: null, foodId: null, linkUrl: null,
                         }}
-                        placeholder={t('dayplan.dayN', { n: index + 1 })}
-                        className="text-content"
-                        style={{
-                          flex: 1, minWidth: 0, border: 'none', outline: 'none', background: 'transparent',
-                          padding: 0, fontFamily: 'inherit',
-                          fontSize: 'calc(14px * var(--fs-scale-body, 1))', fontWeight: 600,
-                          borderBottom: '1.5px solid var(--text-primary)',
-                        }}
+                        place={row.placeId ? placesById.get(row.placeId) : undefined}
+                        isFirst={false}
+                        isLast={false}
+                        clockLabel={row.clockLabel}
+                        moveUpEnabled={row.moveUp}
+                        moveDownEnabled={row.moveDown}
+                        onActivate={row.detailBookingId && onOpenTimeline
+                          ? trigger => onOpenTimeline('booking', row.detailBookingId!, trigger)
+                          : undefined}
+                        onMoveItem={onMoveItem}
+                        onRemoveItem={onRemoveItem}
                       />
                     ) : (
-                      <>
-                        <span style={{
-                          fontSize: 'calc(14px * var(--fs-scale-body, 1))', fontWeight: 600,
-                          color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap', flexShrink: 1, minWidth: 0,
-                        }}>
-                          {title}
-                        </span>
-                        {canMutate && (
-                          <button
-                            type="button"
-                            onClick={e => {
-                              e.stopPropagation()
-                              setTitleDraft(day.title ?? '')
-                              setEditingTitleDayId(day.id)
-                            }}
-                            aria-label={t('common.edit')}
-                            title={t('common.edit')}
-                            className="text-content-faint"
-                            style={{ border: 'none', background: 'none', padding: 2, cursor: 'pointer', display: 'flex', flexShrink: 0 }}
-                          >
-                            <Pencil size={12} strokeWidth={1.8} />
-                          </button>
-                        )}
-                      </>
-                    )}
-                    {!isEditingTitle && formatted && (
-                      <>
-                        <span style={{ flexShrink: 0, width: 1, height: 11, background: 'var(--border-primary)' }} />
-                        <span style={{
-                          flexShrink: 0, fontSize: 'calc(11px * var(--fs-scale-caption, 1))',
-                          fontWeight: 400, color: 'var(--text-faint)', whiteSpace: 'nowrap',
-                        }}>
-                          {formatted}
-                        </span>
-                      </>
-                    )}
-                  </div>
-                  {dayNote?.body ? (
-                    <div
-                      className="text-content-faint"
-                      style={{
-                        marginTop: 3,
-                        fontSize: 'calc(11px * var(--fs-scale-caption, 1))',
-                        overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                      }}
-                    >
-                      {dayNote.body}
+                      <FamilyDayTimelineEntry
+                        key={row.key}
+                        row={row}
+                        onOpen={trigger => onOpenTimeline?.(row.detailTransportId ? 'transport' : 'booking', row.detailTransportId ?? row.detailBookingId ?? row.id, trigger)}
+                      />
+                    ))
+                  ) : dayItems.length === 0 ? (
+                    <div className="px-4 py-4 text-center">
+                      <span className="text-caption text-content-faint">{t('dayplan.emptyDay')}</span>
                     </div>
-                  ) : null}
-                </div>
-
-                {isMobile ? (
-                  <div style={{ alignSelf: 'flex-start', flexShrink: 0, display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <button
-                      type="button"
-                      onClick={e => { e.stopPropagation(); onOpenNote(day) }}
-                      aria-label={t('dayplan.addNote')}
-                      className="text-content-faint"
-                      style={{ background: 'none', border: 'none', padding: 6, cursor: 'pointer', display: 'flex' }}
-                    >
-                      <FileText size={16} strokeWidth={1.8} />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={e => toggleDay(day.id, e)}
-                      className="text-content-faint"
-                      style={{ background: 'none', border: 'none', padding: 6, cursor: 'pointer', display: 'flex' }}
-                    >
-                      {isExpanded ? <ChevronDown size={16} strokeWidth={1.8} /> : <ChevronRight size={16} strokeWidth={1.8} />}
-                    </button>
-                  </div>
-                ) : (
-                  <div className="dp-day-actions" style={{ alignSelf: 'flex-start', flexShrink: 0, display: 'grid', gridTemplateColumns: '1fr 1fr', border: div, borderRadius: 9, overflow: 'hidden' }}>
-                    <button type="button" onClick={e => { e.stopPropagation(); onOpenTransport ? onOpenTransport({ dayId: day.id, automated: true }) : onToastWrite() }} title={t('transit.title')} aria-label={t('transit.title')} style={{ ...cell, border: 'none', borderRight: div, borderBottom: div }}>
-                      <TramFront size={14} strokeWidth={1.8} />
-                    </button>
-                    <button type="button" onClick={e => { e.stopPropagation(); onOpenTransport ? onOpenTransport({ dayId: day.id, automated: false }) : onToastWrite() }} title={t('transport.addTransport')} style={{ ...cell, border: 'none', borderBottom: div }}>
-                      <Plus size={14} strokeWidth={1.8} />
-                    </button>
-                    <button type="button" onClick={e => { e.stopPropagation(); onOpenNote(day) }} aria-label={t('dayplan.addNote')} style={{ ...cell, border: 'none', borderRight: div }}>
-                      <FileText size={14} strokeWidth={1.8} />
-                    </button>
-                    <button type="button" onClick={e => toggleDay(day.id, e)} title={isExpanded ? t('common.collapse') : t('common.expand')} style={{ ...cell, border: 'none' }}>
-                      {isExpanded ? <ChevronDown size={15} strokeWidth={1.8} /> : <ChevronRight size={15} strokeWidth={1.8} />}
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              {isExpanded && (
-                <div style={{ background: 'var(--bg-hover)', paddingTop: 6, paddingBottom: 8 }}>
-                  {dayItems.length === 0 ? (
-                    <div style={{ padding: 16, textAlign: 'center', borderRadius: 8, border: '2px dashed transparent' }}>
-                      <span className="text-content-faint" style={{ fontSize: 'calc(12px * var(--fs-scale-body, 1))' }}>
-                        {t('dayplan.emptyDay')}
-                      </span>
-                    </div>
-                  ) : dayItems.map((item, itemIdx) => {
-                    const place = item.placeId ? placesById.get(item.placeId) : undefined
-                    const label = place?.name || item.activity
-                    return (
-                      <div
-                        key={item.id}
-                        style={{
-                          display: 'flex', alignItems: 'center', gap: 8,
-                          padding: '8px 12px 8px 16px',
-                          borderBottom: itemIdx < dayItems.length - 1 ? '1px solid var(--border-faint)' : 'none',
-                        }}
-                      >
-                        <PlaceAvatar
-                          place={{
-                            id: place?.id ?? item.id,
-                            name: label,
-                            lat: place?.lat ?? null,
-                            lng: place?.lng ?? null,
-                            image_url: place?.imageUrl ?? null,
-                            google_place_id: null,
-                            osm_id: null,
-                          }}
-                          size={28}
-                        />
-                        <span className="text-content" style={{
-                          flex: 1, minWidth: 0,
-                          fontSize: 'calc(13px * var(--fs-scale-body, 1))', fontWeight: 500,
-                          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                        }}>
-                          {label}
-                        </span>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 2, flexShrink: 0 }}>
-                          <button
-                            type="button"
-                            disabled={itemIdx === 0}
-                            onClick={() => onMoveItem(day.id, item.id, -1)}
-                            aria-label="Move up"
-                            title="Move up"
-                            style={{
-                              ...TOOLBAR_ICON_BTN,
-                              width: 24, height: 24,
-                              opacity: itemIdx === 0 ? 0.35 : 1,
-                              cursor: itemIdx === 0 ? 'default' : 'pointer',
-                              color: 'var(--text-muted)',
-                            }}
-                          >
-                            <ArrowUp size={12} strokeWidth={2} />
-                          </button>
-                          <button
-                            type="button"
-                            disabled={itemIdx === dayItems.length - 1}
-                            onClick={() => onMoveItem(day.id, item.id, 1)}
-                            aria-label="Move down"
-                            title="Move down"
-                            style={{
-                              ...TOOLBAR_ICON_BTN,
-                              width: 24, height: 24,
-                              opacity: itemIdx === dayItems.length - 1 ? 0.35 : 1,
-                              cursor: itemIdx === dayItems.length - 1 ? 'default' : 'pointer',
-                              color: 'var(--text-muted)',
-                            }}
-                          >
-                            <ArrowDown size={12} strokeWidth={2} />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => onRemoveItem(item.id)}
-                            aria-label={t('common.delete')}
-                            style={{
-                              ...TOOLBAR_ICON_BTN,
-                              width: 24, height: 24,
-                              color: 'var(--text-muted)',
-                            }}
-                            onMouseEnter={e => { e.currentTarget.style.color = '#ef4444' }}
-                            onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)' }}
-                          >
-                            <Trash2 size={12} strokeWidth={2} />
-                          </button>
-                        </div>
-                      </div>
-                    )
-                  })}
+                  ) : dayItems.map((item, itemIdx) => (
+                    <FamilyDayTimelineRow
+                      key={item.id}
+                      dayId={day.id}
+                      item={item}
+                      place={item.placeId ? placesById.get(item.placeId) : undefined}
+                      isFirst={itemIdx === 0}
+                      isLast={itemIdx === dayItems.length - 1}
+                      onMoveItem={onMoveItem}
+                      onRemoveItem={onRemoveItem}
+                    />
+                  ))}
                 </div>
               )}
             </div>

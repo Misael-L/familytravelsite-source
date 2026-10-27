@@ -12,8 +12,23 @@ function assert47rE2eResolvedUrl(mode, envDir) {
   }
 }
 
+function assertFamilyDaysE2eResolvedUrl(mode, envDir) {
+  if (mode !== 'family-days.e2e') return;
+  const loaded = loadEnv(mode, envDir, '');
+  const url = process.env.VITE_SUPABASE_URL || loaded.VITE_SUPABASE_URL || '';
+  const key = process.env.VITE_SUPABASE_ANON_KEY || loaded.VITE_SUPABASE_ANON_KEY || '';
+  const blob = `${url}\n${key}\n${process.env.SERVICE_ROLE_KEY || ''}\n${process.env.DB_URL || ''}\n${process.env.DATABASE_URL || ''}`;
+  if (url !== 'http://127.0.0.1:5199') {
+    throw new Error('family-days.e2e mode refused a VITE_SUPABASE_URL other than http://127.0.0.1:5199');
+  }
+  if (/supabase\.co/i.test(blob) || blob.includes('gdqywxjlkcrsuylqdhmc') || /service_role/i.test(blob)) {
+    throw new Error('family-days.e2e mode refused a production or service-role credential');
+  }
+}
+
 export default defineConfig(({ mode }) => {
   assert47rE2eResolvedUrl(mode, process.cwd());
+  assertFamilyDaysE2eResolvedUrl(mode, process.cwd());
   return {
   plugins: [
     react(),

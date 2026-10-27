@@ -1,0 +1,212 @@
+import { useEffect, useId, useLayoutEffect, useRef, type ReactElement, type RefObject } from 'react'
+import ReactDOM from 'react-dom'
+import { X } from 'lucide-react'
+import { containTab, focusDialog } from '../shared/dialogFocus'
+import { useToast } from '../shared/Toast'
+import { useTranslation } from '../../i18n'
+import { formatDate, formatMoney } from '../../utils/formatters'
+import type { FamilyBookingDetail, FamilyBookingDetailFile } from './familyBookingDetail'
+
+export type FamilyBookingDetailDialogProps = {
+  detail: FamilyBookingDetail
+  locale: string
+  canMutate: boolean
+  filesPhase: 'loading' | 'ready' | 'error'
+  trigger: HTMLElement | null
+  handoffRef: RefObject<boolean>
+  onClose: () => void
+  onRetryFiles: () => void
+  onOpenFile: (file: FamilyBookingDetailFile) => Promise<void>
+  onEdit?: () => void
+  onDelete?: () => void
+  expensesPhase?: 'loading' | 'ready' | 'error'
+  onRetryExpenses?: () => void
+}
+
+export default function FamilyBookingDetailDialog({
+  detail,
+  locale,
+  canMutate,
+  filesPhase,
+  trigger,
+  handoffRef,
+  onClose,
+  onRetryFiles,
+  onOpenFile,
+  onEdit,
+  onDelete,
+  expensesPhase = 'ready',
+  onRetryExpenses,
+}: FamilyBookingDetailDialogProps): ReactElement {
+  const { t } = useTranslation()
+  const toast = useToast()
+  const titleId = useId()
+  const panelRef = useRef<HTMLDivElement>(null)
+  const backdropRef = useRef<HTMLDivElement>(null)
+  const pressedOn = useRef<EventTarget | null>(null)
+  const triggerRef = useRef(trigger)
+  triggerRef.current = trigger
+  const onCloseRef = useRef(onClose)
+  onCloseRef.current = onClose
+
+  useLayoutEffect(() => {
+    const panel = panelRef.current
+    if (panel) focusDialog(panel)
+    return () => {
+      if (handoffRef.current) return
+      const opener = triggerRef.current
+      if (opener?.isConnected) opener.focus()
+    }
+  }, [handoffRef])
+
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Tab' && panelRef.current) {
+        containTab(event, panelRef.current)
+        return
+      }
+      if (event.key !== 'Escape') return
+      event.preventDefault()
+      event.stopPropagation()
+      onCloseRef.current()
+    }
+    document.addEventListener('keydown', onKey, true)
+    return () => document.removeEventListener('keydown', onKey, true)
+  }, [])
+
+  const copyCode = async () => {
+    if (!detail.confirmationCode) return
+    try {
+      await navigator.clipboard.writeText(detail.confirmationCode)
+      toast.success(t('common.copied'))
+    } catch {
+      toast.error(t('common.unknownError'))
+    }
+  }
+
+  const start = formatDate(detail.startCivil, locale)
+  const end = formatDate(detail.endCivil, locale)
+
+  return ReactDOM.createPortal(
+    <div
+      ref={backdropRef}
+      className="fixed inset-0 z-[10000] flex items-start sm:items-center justify-center px-4 trek-modal-backdrop trek-backdrop-enter"
+      style={{
+        paddingTop: 70,
+        paddingBottom: 'calc(20px + var(--bottom-nav-h))',
+        overflow: 'hidden',
+        background: 'color-mix(in srgb, var(--text-primary) 45%, transparent)',
+      }}
+      onMouseDown={event => { pressedOn.current = event.target }}
+      onClick={event => {
+        if (event.target === event.currentTarget && pressedOn.current === event.currentTarget) onClose()
+        pressedOn.current = null
+      }}
+    >
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-labelledby={titleId}
+        tabIndex={-1}
+        className="trek-modal-enter rounded-2xl overflow-hidden shadow-2xl w-full max-w-lg flex flex-col max-h-[calc(100dvh-var(--bottom-nav-h)-90px)] bg-surface-card outline-none"
+        onClick={event => event.stopPropagation()}
+      >
+        <div className="flex items-center justify-between p-6 flex-shrink-0 border-b border-edge-secondary">
+          <h2 id={titleId} className="text-lg font-semibold text-content">{detail.title}</h2>
+          <button type="button" onClick={onClose} aria-label={t('common.close')} className="p-2 rounded-lg text-content-muted">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+        <div className="flex-1 overflow-y-auto p-6 min-h-0 flex flex-col gap-4">
+          {(start || end) && (
+            <p className="text-content m-0">
+              {start}{end && end !== start ? ` – ${end}` : ''}
+            </p>
+          )}
+          {detail.confirmationCode && (
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <div className="text-[11px] font-semibold uppercase tracking-[0.03em] text-content-faint">{t('reservations.confirmationCode')}</div>
+                <div className="text-content">{detail.confirmationCode}</div>
+              </div>
+              <button type="button" onClick={() => { void copyCode() }} className="text-content border border-edge bg-surface-card rounded-[10px] px-3 py-2">
+                {t('common.copy')}
+              </button>
+            </div>
+          )}
+          <section>
+            <h3 className="text-sm font-semibold text-content m-0 mb-2">{t('reservations.costsLabel')}</h3>
+            {expensesPhase === 'loading' && <p className="text-content-muted m-0">{t('common.loading')}</p>}
+            {expensesPhase === 'error' && (
+              <div className="flex items-center gap-3">
+                <p className="text-content-muted m-0">{t('common.error')}</p>
+                {onRetryExpenses && (
+                  <button type="button" onClick={onRetryExpenses} className="text-content border border-edge bg-surface-card rounded-[10px] px-3 py-2">
+                    {t('trip.load.retry')}
+                  </button>
+                )}
+              </div>
+            )}
+            {expensesPhase === 'ready' && detail.expenses.length === 0 ? (
+              <p className="text-content-muted m-0">{t('common.none')}</p>
+            ) : expensesPhase === 'ready' ? (
+              <ul className="m-0 p-0 list-none flex flex-col gap-2">
+                {detail.expenses.map(expense => (
+                  <li key={expense.id} className="flex items-center justify-between gap-3 text-content">
+                    <span>{expense.name}</span>
+                    <span>{formatMoney(expense.amount, expense.currencyCode, locale)}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </section>
+          <section>
+            <h3 className="text-sm font-semibold text-content m-0 mb-2">{t('files.title')}</h3>
+            {filesPhase === 'loading' && <p className="text-content-muted m-0">{t('common.loading')}</p>}
+            {filesPhase === 'error' && (
+              <div className="flex items-center gap-3">
+                <p className="text-content-muted m-0">{t('common.error')}</p>
+                <button type="button" onClick={onRetryFiles} className="text-content border border-edge bg-surface-card rounded-[10px] px-3 py-2">
+                  {t('trip.load.retry')}
+                </button>
+              </div>
+            )}
+            {filesPhase === 'ready' && detail.files.length === 0 && (
+              <p className="text-content-muted m-0">{t('files.empty')}</p>
+            )}
+            {filesPhase === 'ready' && detail.files.length > 0 && (
+              <ul className="m-0 p-0 list-none flex flex-col gap-2">
+                {detail.files.map(file => (
+                  <li key={file.id}>
+                    <button
+                      type="button"
+                      onClick={() => { void onOpenFile(file) }}
+                      className="text-content border border-edge bg-surface-card rounded-[10px] px-3 py-2 w-full text-left"
+                    >
+                      {file.originalName}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        </div>
+        {canMutate && (onEdit || onDelete) && (
+          <div className="p-6 flex-shrink-0 border-t border-edge-secondary flex justify-end gap-2">
+            {onDelete && (
+              <button type="button" onClick={onDelete} className="text-content-muted border border-edge rounded-[10px] px-4 py-2">
+                {t('common.delete')}
+              </button>
+            )}
+            {onEdit && (
+              <button type="button" onClick={onEdit} className="bg-[var(--text-primary)] text-[var(--bg-primary)] rounded-[10px] px-4 py-2">
+                {t('common.edit')}
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+    </div>,
+    document.body,
+  )
+}

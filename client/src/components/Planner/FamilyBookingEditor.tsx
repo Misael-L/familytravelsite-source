@@ -2,9 +2,10 @@
  * W6.2 Family Bookings editor — TREK ReservationModal field language, UUID SoR.
  * Nest ReservationModal stays on the nest plane.
  */
-import { useEffect, useMemo, useState, type ReactElement } from 'react'
+import { useEffect, useId, useMemo, useRef, useState, type ReactElement } from 'react'
 import { Hotel, Utensils, Ticket, FileText, Users, Link2, Plus, Pencil, Trash2 } from 'lucide-react'
-import Modal from '../shared/Modal'
+import FamilyBookingDialogFrame from './FamilyBookingDialogFrame'
+import { useBookingRequestClose } from '../shared/bookingRequestClose'
 import CustomSelect from '../shared/CustomSelect'
 import { CustomDatePicker } from '../shared/CustomDateTimePicker'
 import CustomTimePicker from '../shared/CustomTimePicker'
@@ -41,6 +42,106 @@ const TYPE_OPTIONS: { value: BookingType; labelKey: string; Icon: typeof Hotel }
 
 const inputClass = 'w-full border border-edge rounded-[10px] px-[12px] py-[8px] text-[13px] font-[inherit] outline-none box-border text-content bg-surface-input'
 const labelClass = 'block text-[11px] font-semibold text-content-faint mb-[5px] uppercase tracking-[0.03em]'
+
+type BookingFormSnapshot = {
+  type: BookingType
+  status: ReservationStatus
+  title: string
+  confirmation: string
+  url: string
+  notes: string
+  placeId: string
+  scheduleItemId: string
+  hotelStartDay: string
+  hotelEndDay: string
+  checkInTime: string
+  checkOutTime: string
+  checkInUntil: string
+  startDate: string
+  startTime: string
+  endDate: string
+  endTime: string
+  location: string
+}
+
+type BookingSource = {
+  type: BookingType
+  status: ReservationStatus
+  title: string
+  confirmationCode?: string | null
+  url?: string | null
+  notes?: string | null
+  placeId?: string | null
+  scheduleItemId?: string | null
+  startsAt?: string | null
+  endsAt?: string | null
+  startTripDayId?: string | null
+  endTripDayId?: string | null
+  metadata?: Record<string, string> | null
+}
+
+function emptyBookingSnapshot(): BookingFormSnapshot {
+  return {
+    type: 'hotel',
+    status: 'pending',
+    title: '',
+    confirmation: '',
+    url: '',
+    notes: '',
+    placeId: '',
+    scheduleItemId: '',
+    hotelStartDay: '',
+    hotelEndDay: '',
+    checkInTime: '',
+    checkOutTime: '',
+    checkInUntil: '',
+    startDate: '',
+    startTime: '',
+    endDate: '',
+    endTime: '',
+    location: '',
+  }
+}
+
+function snapshotFromSource(src: BookingSource, days: FamilyTripDay[]): BookingFormSnapshot {
+  return {
+    type: src.type,
+    status: src.status,
+    title: src.title,
+    confirmation: src.confirmationCode ?? '',
+    url: src.url ?? '',
+    notes: src.notes ?? '',
+    placeId: src.placeId ?? '',
+    scheduleItemId: src.scheduleItemId ?? '',
+    hotelStartDay: src.startTripDayId || days.find(day => day.civilDay === civilFromIso(src.startsAt))?.id || '',
+    hotelEndDay: src.endTripDayId || days.find(day => day.civilDay === civilFromIso(src.endsAt))?.id || '',
+    checkInTime: timeFromIso(src.startsAt ?? null),
+    checkOutTime: timeFromIso(src.endsAt ?? null),
+    checkInUntil: src.metadata?.check_in_until ?? '',
+    startDate: civilFromIso(src.startsAt) || days.find(day => day.id === src.startTripDayId)?.civilDay || '',
+    startTime: timeFromIso(src.startsAt ?? null),
+    endDate: civilFromIso(src.endsAt) || '',
+    endTime: timeFromIso(src.endsAt ?? null),
+    location: src.metadata?.location ?? '',
+  }
+}
+
+function sameSnapshot(a: BookingFormSnapshot, b: BookingFormSnapshot): boolean {
+  return JSON.stringify(a) === JSON.stringify(b)
+}
+
+function openingKey(
+  open: boolean,
+  reservation: FamilyTripReservation | null,
+  prefill: FamilyBookingDraft | null,
+): string | null {
+  if (!open) return null
+  if (reservation) return `reservation:${reservation.id}`
+  if (prefill) {
+    return `prefill:${prefill.id ?? ''}|${prefill.type}|${prefill.title}|${prefill.startsAt ?? ''}|${prefill.endsAt ?? ''}`
+  }
+  return 'new'
+}
 
 function civilFromIso(iso: string | null | undefined): string {
   if (!iso) return ''
@@ -121,88 +222,89 @@ export default function FamilyBookingEditor({
   const [endTime, setEndTime] = useState('')
   const [location, setLocation] = useState('')
   const [saving, setSaving] = useState(false)
-  const [expenseIntent, setExpenseIntent] = useState<'create' | 'edit' | null>(null)
+  const [baseline, setBaseline] = useState<BookingFormSnapshot | null>(null)
+  const savingRef = useRef(false)
+  const handoffRef = useRef(false)
+  const appliedKey = useRef<string | null>(null)
+  const baselineHold = useRef<BookingFormSnapshot | null>(null)
+  const titleFieldId = useId()
+  const confirmationFieldId = useId()
+  const urlFieldId = useId()
+  const notesFieldId = useId()
+  const locationFieldId = useId()
+  const key = openingKey(open, reservation, prefill)
+  if (!open) appliedKey.current = null
+  else if (appliedKey.current !== key) handoffRef.current = false
+
+  const snapshot = useMemo<BookingFormSnapshot>(() => ({
+    type,
+    status,
+    title,
+    confirmation,
+    url,
+    notes,
+    placeId,
+    scheduleItemId,
+    hotelStartDay,
+    hotelEndDay,
+    checkInTime,
+    checkOutTime,
+    checkInUntil,
+    startDate,
+    startTime,
+    endDate,
+    endTime,
+    location,
+  }), [
+    type, status, title, confirmation, url, notes, placeId, scheduleItemId,
+    hotelStartDay, hotelEndDay, checkInTime, checkOutTime, checkInUntil,
+    startDate, startTime, endDate, endTime, location,
+  ])
+  const snapshotRef = useRef(snapshot)
+  snapshotRef.current = snapshot
+
+  const applySnapshot = (next: BookingFormSnapshot, nextHotelId: string | null) => {
+    setType(next.type)
+    setStatus(next.status)
+    setTitle(next.title)
+    setConfirmation(next.confirmation)
+    setUrl(next.url)
+    setNotes(next.notes)
+    setPlaceId(next.placeId)
+    setScheduleItemId(next.scheduleItemId)
+    setHotelStartDay(next.hotelStartDay)
+    setHotelEndDay(next.hotelEndDay)
+    setCheckInTime(next.checkInTime)
+    setCheckOutTime(next.checkOutTime)
+    setCheckInUntil(next.checkInUntil)
+    setStartDate(next.startDate)
+    setStartTime(next.startTime)
+    setEndDate(next.endDate)
+    setEndTime(next.endTime)
+    setLocation(next.location)
+    setHotelId(nextHotelId)
+  }
 
   useEffect(() => {
-    if (!open) return
-    const apply = (src: {
-      type: BookingType
-      status: ReservationStatus
-      title: string
-      confirmationCode?: string | null
-      url?: string | null
-      notes?: string | null
-      placeId?: string | null
-      hotelId?: string | null
-      scheduleItemId?: string | null
-      startsAt?: string | null
-      endsAt?: string | null
-      startTripDayId?: string | null
-      endTripDayId?: string | null
-      metadata?: Record<string, string>
-    }) => {
-      setType(src.type)
-      setStatus(src.status)
-      setTitle(src.title)
-      setConfirmation(src.confirmationCode ?? '')
-      setUrl(src.url ?? '')
-      setNotes(src.notes ?? '')
-      setPlaceId(src.placeId ?? '')
-      setHotelId(src.hotelId ?? null)
-      setScheduleItemId(src.scheduleItemId ?? '')
-      setHotelStartDay(src.startTripDayId || days.find(d => d.civilDay === civilFromIso(src.startsAt))?.id || '')
-      setHotelEndDay(src.endTripDayId || days.find(d => d.civilDay === civilFromIso(src.endsAt))?.id || '')
-      setCheckInTime(timeFromIso(src.startsAt ?? null))
-      setCheckOutTime(timeFromIso(src.endsAt ?? null))
-      setCheckInUntil(src.metadata?.check_in_until ?? '')
-      setStartDate(civilFromIso(src.startsAt) || days.find(d => d.id === src.startTripDayId)?.civilDay || '')
-      setStartTime(timeFromIso(src.startsAt ?? null))
-      setEndDate(civilFromIso(src.endsAt) || '')
-      setEndTime(timeFromIso(src.endsAt ?? null))
-      setLocation(src.metadata?.location ?? '')
+    if (!open || !key) return
+    const source = reservation ?? prefill
+    const hotel = source?.hotelId ?? null
+    const displayed = source ? snapshotFromSource(source, days) : emptyBookingSnapshot()
+    if (appliedKey.current !== key) {
+      applySnapshot(displayed, hotel)
+      baselineHold.current = displayed
+      setBaseline(displayed)
+      appliedKey.current = key
+      return
     }
-    if (reservation) {
-      apply(reservation)
-    } else if (prefill) {
-      apply({
-        type: prefill.type,
-        status: prefill.status,
-        title: prefill.title,
-        confirmationCode: prefill.confirmationCode,
-        url: prefill.url,
-        notes: prefill.notes,
-        placeId: prefill.placeId,
-        hotelId: prefill.hotelId,
-        scheduleItemId: prefill.scheduleItemId,
-        startsAt: prefill.startsAt,
-        endsAt: prefill.endsAt,
-        startTripDayId: prefill.startTripDayId,
-        endTripDayId: prefill.endTripDayId,
-        metadata: prefill.metadata,
-      })
-    } else {
-      setType('hotel')
-      setStatus('pending')
-      setTitle('')
-      setConfirmation('')
-      setUrl('')
-      setNotes('')
-      setPlaceId('')
-      setHotelId(null)
-      setScheduleItemId('')
-      setHotelStartDay('')
-      setHotelEndDay('')
-      setCheckInTime('')
-      setCheckOutTime('')
-      setCheckInUntil('')
-      setStartDate('')
-      setStartTime('')
-      setEndDate('')
-      setEndTime('')
-      setLocation('')
+    if (baselineHold.current && sameSnapshot(snapshotRef.current, baselineHold.current) && source) {
+      if (!sameSnapshot(displayed, baselineHold.current)) {
+        applySnapshot(displayed, hotel)
+        baselineHold.current = displayed
+        setBaseline(displayed)
+      }
     }
-    setExpenseIntent(null)
-  }, [open, reservation, prefill, days])
+  }, [open, key, reservation, prefill, days])
 
   const assignmentOptions = useMemo(() => {
     const opts: { value: string; label: string; isHeader?: boolean }[] = [
@@ -283,6 +385,7 @@ export default function FamilyBookingEditor({
   }
 
   const save = async (): Promise<string | null> => {
+    if (savingRef.current) return null
     if (!canMutate) {
       toast.error(t('trip.explore.add.hofOnly'))
       return null
@@ -292,6 +395,7 @@ export default function FamilyBookingEditor({
       toast.error(t('reservations.validation.endBeforeStart'))
       return null
     }
+    savingRef.current = true
     setSaving(true)
     try {
       const draft = buildDraft()
@@ -313,21 +417,22 @@ export default function FamilyBookingEditor({
       toast.error(t('reservations.toast.saveError'))
       return null
     } finally {
+      savingRef.current = false
       setSaving(false)
     }
   }
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (intent: 'create' | 'edit' | null = null) => {
+    if (savingRef.current) return
     const id = await save()
     if (!id) return
-    const intent = expenseIntent
-    setExpenseIntent(null)
     if (intent === 'create') {
       if (onStageDraft) {
         toast.info(t('trip.governance.expenseUnstaged'))
         onClose()
         return
       }
+      handoffRef.current = true
       onClose()
       onOpenCostsPrefill({
         name: title.trim(),
@@ -335,6 +440,7 @@ export default function FamilyBookingEditor({
         reservationId: id,
       })
     } else if (intent === 'edit' && linkedExpense) {
+      handoffRef.current = true
       onClose()
       onOpenCostsPrefill({
         name: linkedExpense.name,
@@ -364,36 +470,20 @@ export default function FamilyBookingEditor({
   if (!open) return null
 
   return (
-    <Modal
-      isOpen={open}
-      onClose={onClose}
+    <FamilyBookingDialogFrame
       title={reservation ? t('reservations.editTitle') : t('reservations.newTitle')}
-      size="2xl"
+      snapshot={snapshot}
+      baseline={baseline}
+      busy={saving}
+      handoffRef={handoffRef}
+      onClose={onClose}
       footer={
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
-          <button
-            type="button"
-            onClick={onClose}
-            className="text-content-muted"
-            style={{ padding: '8px 16px', borderRadius: 10, border: '1px solid var(--border-primary)', background: 'none', fontSize: 'calc(12px * var(--fs-scale-body, 1))', cursor: 'pointer', fontFamily: 'inherit' }}
-          >
-            {t('common.cancel')}
-          </button>
-          <button
-            type="button"
-            onClick={() => { void handleSubmit() }}
-            disabled={saving || !title.trim() || endBeforeStart || !canMutate}
-            className="bg-[var(--text-primary)] text-[var(--bg-primary)]"
-            style={{
-              padding: '8px 20px', borderRadius: 10, border: 'none',
-              fontSize: 'calc(12px * var(--fs-scale-body, 1))', fontWeight: 600,
-              cursor: 'pointer', fontFamily: 'inherit',
-              opacity: saving || !title.trim() || endBeforeStart || !canMutate ? 0.5 : 1,
-            }}
-          >
-            {saving ? t('common.saving') : reservation ? t('common.update') : t('common.add')}
-          </button>
-        </div>
+        <BookingEditorFooter
+          saving={saving}
+          disabled={saving || !title.trim() || endBeforeStart || !canMutate}
+          label={reservation ? t('common.update') : t('common.add')}
+          onSubmit={() => { void handleSubmit() }}
+        />
       }
     >
       <form
@@ -424,8 +514,9 @@ export default function FamilyBookingEditor({
         </div>
 
         <div>
-          <label className={labelClass}>{t('reservations.titleLabel')} *</label>
+          <label className={labelClass} htmlFor={titleFieldId}>{t('reservations.titleLabel')} *</label>
           <input
+            id={titleFieldId}
             type="text"
             value={title}
             onChange={e => setTitle(e.target.value)}
@@ -498,8 +589,9 @@ export default function FamilyBookingEditor({
               />
             </div>
             <div>
-              <label className={labelClass}>{t('reservations.locationAddress')}</label>
+              <label className={labelClass} htmlFor={locationFieldId}>{t('reservations.locationAddress')}</label>
               <input
+                id={locationFieldId}
                 type="text"
                 value={location}
                 onChange={e => setLocation(e.target.value)}
@@ -512,8 +604,9 @@ export default function FamilyBookingEditor({
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label className={labelClass}>{t('reservations.confirmationCode')}</label>
+            <label className={labelClass} htmlFor={confirmationFieldId}>{t('reservations.confirmationCode')}</label>
             <input
+              id={confirmationFieldId}
               type="text"
               value={confirmation}
               onChange={e => setConfirmation(e.target.value)}
@@ -595,8 +688,9 @@ export default function FamilyBookingEditor({
               </div>
             </div>
             <div>
-              <label className={labelClass}>{t('reservations.locationAddress')}</label>
+              <label className={labelClass} htmlFor={locationFieldId}>{t('reservations.locationAddress')}</label>
               <input
+                id={locationFieldId}
                 type="text"
                 value={location}
                 onChange={e => setLocation(e.target.value)}
@@ -622,10 +716,11 @@ export default function FamilyBookingEditor({
         )}
 
         <div>
-          <label className={labelClass}>{t('reservations.urlLabel')}</label>
+          <label className={labelClass} htmlFor={urlFieldId}>{t('reservations.urlLabel')}</label>
           <div className="relative">
             <Link2 size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-content-muted pointer-events-none" />
             <input
+              id={urlFieldId}
               type="url"
               value={url}
               onChange={e => setUrl(e.target.value)}
@@ -636,8 +731,9 @@ export default function FamilyBookingEditor({
           </div>
         </div>
         <div>
-          <label className={labelClass}>{t('reservations.notes')}</label>
+          <label className={labelClass} htmlFor={notesFieldId}>{t('reservations.notes')}</label>
           <textarea
+            id={notesFieldId}
             value={notes}
             onChange={e => setNotes(e.target.value)}
             placeholder={t('reservations.notesPlaceholder')}
@@ -667,12 +763,53 @@ export default function FamilyBookingEditor({
           currencyCode={currencyCode}
           locale={locale}
           canMutate={canMutate}
-          onCreate={() => { setExpenseIntent('create'); void handleSubmit() }}
-          onEdit={() => { setExpenseIntent('edit'); void handleSubmit() }}
+          onCreate={() => { void handleSubmit('create') }}
+          onEdit={() => { void handleSubmit('edit') }}
           onUnlink={() => { void handleUnlink() }}
         />
       </form>
-    </Modal>
+    </FamilyBookingDialogFrame>
+  )
+}
+
+function BookingEditorFooter({
+  saving,
+  disabled,
+  label,
+  onSubmit,
+}: {
+  saving: boolean
+  disabled: boolean
+  label: string
+  onSubmit: () => void
+}): ReactElement {
+  const { t } = useTranslation()
+  const requestClose = useBookingRequestClose()
+  return (
+    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+      <button
+        type="button"
+        onClick={requestClose}
+        className="text-content-muted"
+        style={{ padding: '8px 16px', borderRadius: 10, border: '1px solid var(--border-primary)', background: 'none', fontSize: 'calc(12px * var(--fs-scale-body, 1))', cursor: 'pointer', fontFamily: 'inherit' }}
+      >
+        {t('common.cancel')}
+      </button>
+      <button
+        type="button"
+        onClick={onSubmit}
+        disabled={disabled}
+        className="bg-[var(--text-primary)] text-[var(--bg-primary)]"
+        style={{
+          padding: '8px 20px', borderRadius: 10, border: 'none',
+          fontSize: 'calc(12px * var(--fs-scale-body, 1))', fontWeight: 600,
+          cursor: 'pointer', fontFamily: 'inherit',
+          opacity: disabled ? 0.5 : 1,
+        }}
+      >
+        {saving ? t('common.saving') : label}
+      </button>
+    </div>
   )
 }
 

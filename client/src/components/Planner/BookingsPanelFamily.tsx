@@ -23,6 +23,10 @@ import {
   type FamilyTripReservation,
 } from '../../data/supabase/tripReservations'
 import { listTripExpenses, type FamilyTripExpense } from '../../data/supabase/tripExpenses'
+import { listTripFiles, signedTripFileUrl, type FamilyTripFile } from '../../data/supabase/tripFiles'
+import { openFile } from '../../utils/fileDownload'
+import FamilyBookingDetailDialog from './FamilyBookingDetailDialog'
+import { projectFamilyBookingDetail, type FamilyBookingDetailFile } from './familyBookingDetail'
 import { mapImportItemsToReview, type FamilyImportItem, type FamilyImportReviewItem } from '../../data/bookingImport'
 import FamilyBookingEditor from './FamilyBookingEditor'
 import FamilyTransportEditor from './FamilyTransportEditor'
@@ -80,6 +84,14 @@ export default function BookingsPanelFamily({
   const [reviewIndex, setReviewIndex] = useState(0)
   const reviewSavedRef = useRef(0)
   const [pendingDelete, setPendingDelete] = useState<FamilyTripReservation | null>(null)
+  const [detailId, setDetailId] = useState<string | null>(null)
+  const [detailFiles, setDetailFiles] = useState<FamilyTripFile[]>([])
+  const [filePhase, setFilePhase] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle')
+  const [fileRetry, setFileRetry] = useState(0)
+  const detailTriggerRef = useRef<HTMLElement | null>(null)
+  const detailHandoffRef = useRef(false)
+  const deleteRestoreRef = useRef<HTMLElement | null>(null)
+  const fileRequestRef = useRef(0)
   const storageKey = `family-booking-filters-${tripId}`
   const [typeFilters, setTypeFilters] = useState<Set<string>>(() => {
     try {
@@ -105,6 +117,26 @@ export default function BookingsPanelFamily({
   }, [tripId])
 
   useEffect(() => { void load() }, [load])
+
+  useEffect(() => {
+    if (!detailId) {
+      fileRequestRef.current += 1
+      return
+    }
+    const token = ++fileRequestRef.current
+    setFilePhase('loading')
+    setDetailFiles([])
+    listTripFiles(tripId).then(files => {
+      if (fileRequestRef.current !== token) return
+      setDetailFiles(files)
+      setFilePhase('ready')
+    }).catch(() => {
+      if (fileRequestRef.current !== token) return
+      setFilePhase('error')
+      setDetailFiles([])
+    })
+    return () => { fileRequestRef.current += 1 }
+  }, [detailId, tripId, fileRetry])
 
   const toastHof = () => toast.error(t('trip.explore.add.hofOnly'))
 
@@ -178,6 +210,35 @@ export default function BookingsPanelFamily({
     setReviewIndex(0)
     setEditing(r)
     setEditorOpen(true)
+  }
+
+  const openDetails = (r: FamilyTripReservation, trigger: HTMLElement) => {
+    detailHandoffRef.current = false
+    detailTriggerRef.current = trigger
+    setDetailId(r.id)
+  }
+
+  const closeDetails = () => {
+    detailHandoffRef.current = false
+    setDetailId(null)
+  }
+
+  const editFromDetails = () => {
+    const reservation = rows.find(row => row.id === detailId)
+    const trigger = detailTriggerRef.current
+    detailHandoffRef.current = true
+    if (trigger?.isConnected) trigger.focus()
+    setDetailId(null)
+    if (reservation) openEdit(reservation)
+  }
+
+  const openDetailFile = async (file: FamilyBookingDetailFile) => {
+    try {
+      const url = await signedTripFileUrl(file.storagePath, 120)
+      await openFile(url, file.originalName)
+    } catch {
+      toast.error(t('files.openError'))
+    }
   }
 
   const confirmImportPreview = (items: FamilyImportItem[]) => {
@@ -258,6 +319,16 @@ export default function BookingsPanelFamily({
   }
 
   const linkedFor = (id: string) => expenses.find(e => e.reservationId === id) ?? null
+  const detailReservation = rows.find(row => row.id === detailId) ?? null
+  const detail = detailReservation
+    ? projectFamilyBookingDetail({
+      reservation: detailReservation,
+      days,
+      expenses,
+      currencyCode,
+      files: filePhase === 'ready' ? detailFiles : [],
+    })
+    : null
   const review = reviewQueue[reviewIndex]
   const showBookingEditor = editorOpen && (review ? review.kind === 'booking' : true)
   const showTransportEditor = editorOpen && review?.kind === 'transport'
@@ -395,8 +466,12 @@ export default function BookingsPanelFamily({
                     days={days}
                     locale={locale}
                     canMutate={canMutate}
+                    onOpenDetail={(trigger) => openDetails(r, trigger)}
                     onEdit={() => openEdit(r)}
-                    onDelete={() => setPendingDelete(r)}
+                    onDelete={() => {
+            deleteRestoreRef.current = null
+            setPendingDelete(r)
+          }}
                     onToggleStatus={() => { void handleToggleStatus(r) }}
                   />
                 ))}
@@ -411,8 +486,12 @@ export default function BookingsPanelFamily({
                     days={days}
                     locale={locale}
                     canMutate={canMutate}
+                    onOpenDetail={(trigger) => openDetails(r, trigger)}
                     onEdit={() => openEdit(r)}
-                    onDelete={() => setPendingDelete(r)}
+                    onDelete={() => {
+            deleteRestoreRef.current = null
+            setPendingDelete(r)
+          }}
                     onToggleStatus={() => { void handleToggleStatus(r) }}
                   />
                 ))}
@@ -429,6 +508,29 @@ export default function BookingsPanelFamily({
         onExtract={extractFamilyFiles}
         onConfirmPreview={confirmImportPreview}
       />
+
+      {detail && (
+        <FamilyBookingDetailDialog
+          detail={detail}
+          locale={locale}
+          canMutate={canMutate}
+          filesPhase={filePhase === 'error' ? 'error' : filePhase === 'ready' ? 'ready' : 'loading'}
+          trigger={detailTriggerRef.current}
+          handoffRef={detailHandoffRef}
+          onClose={closeDetails}
+          onRetryFiles={() => setFileRetry(n => n + 1)}
+          onOpenFile={openDetailFile}
+          onEdit={canMutate ? editFromDetails : undefined}
+          onDelete={canMutate ? () => {
+            if (!detailReservation) return
+            deleteRestoreRef.current = detailTriggerRef.current
+            detailHandoffRef.current = true
+            const reservation = detailReservation
+            setDetailId(null)
+            setPendingDelete(reservation)
+          } : undefined}
+        />
+      )}
 
       <FamilyBookingEditor
         open={showBookingEditor}
@@ -477,6 +579,8 @@ export default function BookingsPanelFamily({
         title={t('reservations.confirm.deleteTitle')}
         message={t('reservations.confirm.deleteBody', { name: pendingDelete?.title ?? '' })}
         danger
+        initialFocus={deleteRestoreRef.current ? 'cancel' : undefined}
+        restoreFocusTo={deleteRestoreRef.current}
       />
     </div>
   )
@@ -528,12 +632,13 @@ function BookingSection({
 }
 
 function BookingCard({
-  r, days, locale, canMutate, onEdit, onDelete, onToggleStatus,
+  r, days, locale, canMutate, onOpenDetail, onEdit, onDelete, onToggleStatus,
 }: {
   r: FamilyTripReservation
   days: FamilyTripDay[]
   locale: string
   canMutate: boolean
+  onOpenDetail: (trigger: HTMLElement) => void
   onEdit: () => void
   onDelete: () => void
   onToggleStatus: () => void
@@ -600,10 +705,15 @@ function BookingCard({
           </span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <span className="text-content" style={{
-            fontSize: 'calc(13px * var(--fs-scale-body, 1))', fontWeight: 600, marginRight: 6,
-            maxWidth: 160, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
-          }}>{r.title}</span>
+          <button
+            type="button"
+            onClick={event => onOpenDetail(event.currentTarget)}
+            className="text-content bg-transparent"
+            style={{
+              appearance: 'none', border: 'none', fontSize: 'calc(13px * var(--fs-scale-body, 1))', fontWeight: 600, marginRight: 6,
+              maxWidth: 160, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', cursor: 'pointer', fontFamily: 'inherit', padding: 0,
+            }}
+          >{r.title}</button>
           <button type="button" onClick={onEdit} title={t('common.edit')} className="bg-transparent text-content-faint" style={{
             appearance: 'none', border: 'none', width: 26, height: 26, borderRadius: 6, display: 'grid', placeItems: 'center', cursor: 'pointer',
           }}>

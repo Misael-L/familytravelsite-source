@@ -1,6 +1,7 @@
 import { render, screen, fireEvent } from '../../../tests/helpers/render';
 import userEvent from '@testing-library/user-event';
 import CustomSelect from './CustomSelect';
+import { OwnedPickerLayerRoot } from './ownedPickerLayer';
 
 const OPTIONS = [
   { value: 'apple', label: 'Apple' },
@@ -87,5 +88,33 @@ describe('CustomSelect', () => {
     await user.click(trigger);
     // Dropdown should not be in the DOM — options remain hidden
     expect(screen.queryByText('Apple')).toBeNull();
+  });
+
+  it('exposes aria-expanded and leaves Escape to the page when it is not owned', async () => {
+    const user = userEvent.setup();
+    render(<CustomSelect value="" onChange={onChange} options={OPTIONS} placeholder="Pick a fruit" />);
+    const trigger = screen.getByRole('button');
+    expect(trigger).toHaveAttribute('aria-expanded', 'false');
+    await user.click(trigger);
+    expect(trigger).toHaveAttribute('aria-expanded', 'true');
+    await user.keyboard('{Escape}');
+    expect(screen.getByText('Apple')).toBeTruthy();
+    expect(trigger).toHaveAttribute('aria-expanded', 'true');
+  });
+
+  it('closes on Escape and returns focus when a booking layer owns it', async () => {
+    const user = userEvent.setup();
+    render(
+      <OwnedPickerLayerRoot>
+        <CustomSelect value="" onChange={onChange} options={OPTIONS} placeholder="Pick a fruit" />
+      </OwnedPickerLayerRoot>,
+    );
+    const trigger = screen.getByRole('button');
+    await user.click(trigger);
+    expect(screen.getByText('Apple')).toBeTruthy();
+    await user.keyboard('{Escape}');
+    expect(screen.queryByText('Apple')).toBeNull();
+    expect(trigger).toHaveFocus();
+    expect(trigger).toHaveAttribute('aria-expanded', 'false');
   });
 });

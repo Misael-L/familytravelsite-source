@@ -24,9 +24,13 @@ import {
   type TransportType,
 } from '../../data/supabase/tripReservations'
 import { listTripExpenses, type FamilyTripExpense } from '../../data/supabase/tripExpenses'
+import { listTripFiles, signedTripFileUrl, type FamilyTripFile } from '../../data/supabase/tripFiles'
+import { openFile } from '../../utils/fileDownload'
 import { mapImportItemsToReview, type FamilyImportItem, type FamilyImportReviewItem } from '../../data/bookingImport'
 import FamilyBookingEditor from './FamilyBookingEditor'
 import FamilyTransportEditor from './FamilyTransportEditor'
+import FamilyTransportDetailDialog from './FamilyTransportDetailDialog'
+import { projectFamilyTransportDetail, type FamilyTransportDetailFile } from './familyTransportDetail'
 import BookingImportModal from './BookingImportModal'
 
 const TYPE_META: { value: TransportType; labelKey: string; Icon: typeof Plane; color: string }[] = [
@@ -91,6 +95,16 @@ export default function TransportsPanelFamily({
   const [reviewIndex, setReviewIndex] = useState(0)
   const reviewSavedRef = useRef(0)
   const [pendingDelete, setPendingDelete] = useState<FamilyTransportReservation | null>(null)
+  const [detailId, setDetailId] = useState<string | null>(null)
+  const [detailFiles, setDetailFiles] = useState<FamilyTripFile[]>([])
+  const [filePhase, setFilePhase] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle')
+  const [fileRetry, setFileRetry] = useState(0)
+  const [detailEditScope, setDetailEditScope] = useState(false)
+  const detailTriggerRef = useRef<HTMLElement | null>(null)
+  const detailHandoffRef = useRef(false)
+  const deleteRestoreRef = useRef<HTMLElement | null>(null)
+  const suppressRestoreRef = useRef(false)
+  const fileRequestRef = useRef(0)
   const storageKey = `family-transport-filters-${tripId}`
   const [typeFilters, setTypeFilters] = useState<Set<string>>(() => {
     try {
@@ -117,6 +131,26 @@ export default function TransportsPanelFamily({
 
   useEffect(() => { void load() }, [load])
 
+  useEffect(() => {
+    if (!detailId) {
+      fileRequestRef.current += 1
+      return
+    }
+    const token = ++fileRequestRef.current
+    setFilePhase('loading')
+    setDetailFiles([])
+    listTripFiles(tripId).then(files => {
+      if (fileRequestRef.current !== token) return
+      setDetailFiles(files)
+      setFilePhase('ready')
+    }).catch(() => {
+      if (fileRequestRef.current !== token) return
+      setFilePhase('error')
+      setDetailFiles([])
+    })
+    return () => { fileRequestRef.current += 1 }
+  }, [detailId, tripId, fileRetry])
+
   const toastHof = () => toast.error(t('trip.explore.add.hofOnly'))
 
   const extractFamilyFiles = useCallback(async (files: File[]) => {
@@ -131,6 +165,8 @@ export default function TransportsPanelFamily({
     setEditing(null)
     setSeedDayId(opts?.dayId ?? null)
     setInitialAutomated(opts?.automated === true)
+    setDetailEditScope(false)
+    suppressRestoreRef.current = false
     setEditorOpen(true)
   }
 
@@ -190,13 +226,45 @@ export default function TransportsPanelFamily({
     setImportOpen(true)
   }
 
-  const openEdit = (r: FamilyTransportReservation) => {
+  const openEdit = (r: FamilyTransportReservation, fromDetails = false) => {
     setReviewQueue([])
     setReviewIndex(0)
     setEditing(r)
     setSeedDayId(null)
     setInitialAutomated(false)
+    setDetailEditScope(fromDetails)
+    if (!fromDetails) suppressRestoreRef.current = false
     setEditorOpen(true)
+  }
+
+  const openDetails = (r: FamilyTransportReservation, trigger: HTMLElement) => {
+    detailHandoffRef.current = false
+    detailTriggerRef.current = trigger
+    setDetailId(r.id)
+  }
+
+  const closeDetails = () => {
+    detailHandoffRef.current = false
+    setDetailId(null)
+  }
+
+  const editFromDetails = () => {
+    const reservation = rows.find(row => row.id === detailId)
+    const trigger = detailTriggerRef.current
+    detailHandoffRef.current = true
+    if (trigger?.isConnected) trigger.focus()
+    suppressRestoreRef.current = false
+    setDetailId(null)
+    if (reservation) openEdit(reservation, true)
+  }
+
+  const openDetailFile = async (file: FamilyTransportDetailFile) => {
+    try {
+      const url = await signedTripFileUrl(file.storagePath, 120)
+      await openFile(url, file.originalName)
+    } catch {
+      toast.error(t('files.openError'))
+    }
   }
 
   const confirmImportPreview = (items: FamilyImportItem[]) => {
@@ -210,6 +278,8 @@ export default function TransportsPanelFamily({
     setEditing(null)
     setSeedDayId(null)
     setInitialAutomated(false)
+    setDetailEditScope(false)
+    suppressRestoreRef.current = false
     setReviewQueue(drafts)
     setReviewIndex(0)
     setEditorOpen(true)
@@ -224,6 +294,7 @@ export default function TransportsPanelFamily({
         setReviewIndex(0)
         setEditorOpen(false)
         setEditing(null)
+        setDetailEditScope(false)
         if (n > 0) toast.success(t('reservations.import.success', { count: n }))
       } else {
         setReviewIndex(next)
@@ -233,6 +304,7 @@ export default function TransportsPanelFamily({
     setEditorOpen(false)
     setEditing(null)
     setInitialAutomated(false)
+    setDetailEditScope(false)
   }
 
   const handleEditorSaved = async () => {
@@ -264,6 +336,16 @@ export default function TransportsPanelFamily({
   }
 
   const linkedFor = (id: string) => expenses.find(e => e.reservationId === id) ?? null
+  const detailReservation = rows.find(row => row.id === detailId) ?? null
+  const detail = detailReservation
+    ? projectFamilyTransportDetail({
+      reservation: detailReservation,
+      days,
+      expenses,
+      currencyCode,
+      files: detailFiles,
+    })
+    : null
   const review = reviewQueue[reviewIndex]
   const showTransportEditor = editorOpen && (review ? review.kind === 'transport' : true)
   const showBookingEditor = editorOpen && review?.kind === 'booking'
@@ -415,8 +497,12 @@ export default function TransportsPanelFamily({
                     days={days}
                     locale={locale}
                     canMutate={canMutate}
+                    onOpenDetail={trigger => openDetails(r, trigger)}
                     onEdit={() => openEdit(r)}
-                    onDelete={() => setPendingDelete(r)}
+                    onDelete={() => {
+                      deleteRestoreRef.current = null
+                      setPendingDelete(r)
+                    }}
                     onToggleStatus={() => { void handleToggleStatus(r) }}
                   />
                 ))}
@@ -431,8 +517,12 @@ export default function TransportsPanelFamily({
                     days={days}
                     locale={locale}
                     canMutate={canMutate}
+                    onOpenDetail={trigger => openDetails(r, trigger)}
                     onEdit={() => openEdit(r)}
-                    onDelete={() => setPendingDelete(r)}
+                    onDelete={() => {
+                      deleteRestoreRef.current = null
+                      setPendingDelete(r)
+                    }}
                     onToggleStatus={() => { void handleToggleStatus(r) }}
                   />
                 ))}
@@ -469,6 +559,10 @@ export default function TransportsPanelFamily({
         onSaved={handleEditorSaved}
         onOpenCostsPrefill={onOpenCostsPrefill}
         onExpenseUnlinked={load}
+        focusScope={detailEditScope ? {
+          restoreTo: detailTriggerRef.current,
+          suppressRestoreRef,
+        } : undefined}
       />
 
       <FamilyBookingEditor
@@ -491,6 +585,29 @@ export default function TransportsPanelFamily({
         onExpenseUnlinked={load}
       />
 
+      {detail && (
+        <FamilyTransportDetailDialog
+          detail={detail}
+          locale={locale}
+          canMutate={canMutate}
+          filesPhase={filePhase === 'error' ? 'error' : filePhase === 'ready' ? 'ready' : 'loading'}
+          trigger={detailTriggerRef.current}
+          handoffRef={detailHandoffRef}
+          onClose={closeDetails}
+          onRetryFiles={() => setFileRetry(n => n + 1)}
+          onOpenFile={openDetailFile}
+          onEdit={canMutate ? editFromDetails : undefined}
+          onDelete={canMutate ? () => {
+            if (!detailReservation) return
+            deleteRestoreRef.current = detailTriggerRef.current
+            detailHandoffRef.current = true
+            const reservation = detailReservation
+            setDetailId(null)
+            setPendingDelete(reservation)
+          } : undefined}
+        />
+      )}
+
       <ConfirmDialog
         isOpen={pendingDelete != null}
         onClose={() => setPendingDelete(null)}
@@ -498,6 +615,8 @@ export default function TransportsPanelFamily({
         title={t('reservations.confirm.deleteTitle')}
         message={t('reservations.confirm.deleteBody', { name: pendingDelete?.title ?? '' })}
         danger
+        initialFocus={deleteRestoreRef.current ? 'cancel' : undefined}
+        restoreFocusTo={deleteRestoreRef.current}
       />
     </div>
   )
@@ -549,12 +668,13 @@ function TransportSection({
 }
 
 function TransportCard({
-  r, days, locale, canMutate, onEdit, onDelete, onToggleStatus,
+  r, days, locale, canMutate, onOpenDetail, onEdit, onDelete, onToggleStatus,
 }: {
   r: FamilyTransportReservation
   days: FamilyTripDay[]
   locale: string
   canMutate: boolean
+  onOpenDetail: (trigger: HTMLElement) => void
   onEdit: () => void
   onDelete: () => void
   onToggleStatus: () => void
@@ -623,10 +743,15 @@ function TransportCard({
           </span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <span className="text-content" style={{
-            fontSize: 'calc(13px * var(--fs-scale-body, 1))', fontWeight: 600, marginRight: 6,
-            maxWidth: 160, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
-          }}>{r.title}</span>
+          <button
+            type="button"
+            onClick={event => onOpenDetail(event.currentTarget)}
+            className="text-content bg-transparent"
+            style={{
+              appearance: 'none', border: 'none', fontSize: 'calc(13px * var(--fs-scale-body, 1))', fontWeight: 600, marginRight: 6,
+              maxWidth: 160, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', cursor: 'pointer', fontFamily: 'inherit', padding: 0,
+            }}
+          >{r.title}</button>
           <button type="button" onClick={onEdit} title={t('common.edit')} className="bg-transparent text-content-faint" style={{
             appearance: 'none', border: 'none', width: 26, height: 26, borderRadius: 6, display: 'grid', placeItems: 'center', cursor: 'pointer',
           }}>

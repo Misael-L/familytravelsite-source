@@ -1,7 +1,8 @@
 import { Calendar, ChevronLeft, ChevronRight, Keyboard } from 'lucide-react';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { useTranslation } from '../../i18n';
+import { useOwnedPickerLayer, useRegisterOwnedPicker } from './ownedPickerLayer';
 
 function daysInMonth(year: number, month: number): number {
   return new Date(year, month + 1, 0).getDate();
@@ -11,6 +12,36 @@ function getWeekday(year: number, month: number, day: number): number {
 }
 const YEAR_PAGE_SIZE = 12;
 type CalendarView = 'days' | 'months' | 'years';
+
+/** Locale date text to YYYY-MM-DD, or null when the text is not a complete date. */
+function parseManualDate(raw: string, locale: string): string | null {
+  const input = raw.trim();
+  if (!input) return null;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(input)) return input;
+
+  const parts = new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'numeric', year: 'numeric' }).formatToParts(
+    new Date(2001, 5, 15)
+  );
+  const order = parts
+    .filter((part) => ['day', 'month', 'year'].includes(part.type))
+    .map((part) => part.type as 'day' | 'month' | 'year');
+  const nums = input.replace(/[^\d]+/g, ' ').trim().split(/\s+/).filter(Boolean);
+  if (nums.length !== 3) return null;
+
+  const get = (field: 'day' | 'month' | 'year') => parseInt(nums[order.indexOf(field)]);
+  let day = get('day');
+  let month = get('month');
+  const yearNum = get('year');
+  if (isNaN(day) || isNaN(month) || isNaN(yearNum)) return null;
+  if (month > 12 && day <= 12) {
+    const swapped = month;
+    month = day;
+    day = swapped;
+  }
+  const year = yearNum < 100 ? 2000 + yearNum : yearNum;
+  if (month < 1 || month > 12 || day < 1 || day > 31) return null;
+  return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+}
 
 interface CustomDatePickerProps {
   value: string;
@@ -34,7 +65,11 @@ export function CustomDatePicker({
   const [view, setView] = useState<CalendarView>('days');
   const [yearPageStart, setYearPageStart] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const dropRef = useRef<HTMLDivElement>(null);
+  const manualButtonRef = useRef<HTMLButtonElement>(null);
+  const ownedLayer = useOwnedPickerLayer();
+  useRegisterOwnedPicker(open, triggerRef, dropRef, () => setOpen(false));
 
   const parsed = value ? new Date(value + 'T00:00:00Z') : null;
   const [viewYear, setViewYear] = useState(parsed?.getUTCFullYear() || new Date().getFullYear());
@@ -175,50 +210,67 @@ export function CustomDatePicker({
 
   const [textInput, setTextInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [manualSession, setManualSession] = useState(0);
+  const focusManualTriggerRef = useRef(false);
+  const manualSessionRef = useRef(0);
+  const activeSessionRef = useRef(0);
+  const textRef = useRef(textInput);
+  const committedTextRef = useRef(inputValue || '');
+  textRef.current = textInput;
+  committedTextRef.current = inputValue || '';
+
+  const beginManualEntry = (closeCalendar = false) => {
+    const next = manualSessionRef.current + 1;
+    manualSessionRef.current = next;
+    activeSessionRef.current = next;
+    setManualSession(next);
+    if (closeCalendar) setOpen(false);
+    setTextInput(inputValue || '');
+    setIsTyping(true);
+  };
+
+  const cancelManualEntry = () => {
+    activeSessionRef.current = 0;
+    focusManualTriggerRef.current = true;
+    setIsTyping(false);
+  };
+
+  useLayoutEffect(() => {
+    if (!isTyping || !ownedLayer) return;
+    return ownedLayer.register({
+      trigger: manualButtonRef.current,
+      portal: null,
+      dismissOnBackdrop: false,
+      retainsDraft: () => {
+        const draft = textRef.current.trim();
+        return draft !== '' && textRef.current !== committedTextRef.current;
+      },
+      close: cancelManualEntry,
+    });
+  }, [isTyping, ownedLayer]);
+
+  useLayoutEffect(() => {
+    if (isTyping || !focusManualTriggerRef.current) return;
+    focusManualTriggerRef.current = false;
+    manualButtonRef.current?.focus();
+  }, [isTyping]);
 
   const handleTextSubmit = () => {
+    activeSessionRef.current = 0;
     setIsTyping(false);
-    if (!textInput.trim()) return;
-    const input = textInput.trim();
+    const next = parseManualDate(textInput, locale);
+    if (next) onChange(next);
+  };
 
-    // Try ISO first — always works
-    if (/^\d{4}-\d{2}-\d{2}$/.test(input)) {
-      onChange(input);
+  const handleTextBlur = (event: React.FocusEvent<HTMLInputElement>) => {
+    if (!ownedLayer) {
+      handleTextSubmit();
       return;
     }
-
-    // Determine field order for active locale via Intl
-    const parts = new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'numeric', year: 'numeric' }).formatToParts(
-      new Date(2001, 5, 15)
-    ); // known date: June 15, 2001
-    const order = parts
-      .filter((p) => ['day', 'month', 'year'].includes(p.type))
-      .map((p) => p.type as 'day' | 'month' | 'year');
-
-    // Strip non-numeric chars (handles RTL marks, dots, slashes, spaces)
-    const nums = input
-      .replace(/[^\d]+/g, ' ')
-      .trim()
-      .split(/\s+/)
-      .filter(Boolean);
-    if (nums.length !== 3) return;
-
-    // nachher:
-    const get = (field: 'day' | 'month' | 'year') => parseInt(nums[order.indexOf(field)]);
-    let d = get('day'),
-      m = get('month');
-    const y = get('year');
-    if (isNaN(d) || isNaN(m) || isNaN(y)) return;
-
-    // If locale order gives impossible month but valid swap, correct it
-    if (m > 12 && d <= 12) {
-      const tmp = m;
-      m = d;
-      d = tmp;
-    }
-    const year = y < 100 ? 2000 + y : y;
-    if (m < 1 || m > 12 || d < 1 || d > 31) return;
-    onChange(`${year}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`);
+    const session = Number(event.currentTarget.dataset.manualSession ?? '0');
+    if (session !== activeSessionRef.current) return;
+    if (textInput.trim() && !parseManualDate(textInput, locale)) return;
+    handleTextSubmit();
   };
 
   const gridCellStyle = (selected: boolean, current: boolean): React.CSSProperties => ({
@@ -240,12 +292,21 @@ export function CustomDatePicker({
           autoFocus
           type="text"
           value={textInput}
+          data-manual-session={manualSession}
           onChange={(e) => setTextInput(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter') handleTextSubmit();
-            if (e.key === 'Escape') setIsTyping(false);
+            if (e.key === 'Escape') {
+              if (ownedLayer) {
+                e.preventDefault();
+                e.stopPropagation();
+                cancelManualEntry();
+                return;
+              }
+              setIsTyping(false);
+            }
           }}
-          onBlur={handleTextSubmit}
+          onBlur={handleTextBlur}
           placeholder="DD.MM.YYYY"
           aria-label="Enter date manually"
           style={{
@@ -264,6 +325,7 @@ export function CustomDatePicker({
         <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
           {/* Calendar trigger */}
           <button
+            ref={triggerRef}
             type="button"
             onClick={() => setOpen((o) => !o)}
             aria-label={displayValue || placeholder || t('common.date')}
@@ -300,11 +362,9 @@ export function CustomDatePicker({
           {/* Keyboard / text-input trigger (non-compact only; compact gets it in the popup footer) */}
           {!compact && !borderless && (
             <button
+              ref={manualButtonRef}
               type="button"
-              onClick={() => {
-                setTextInput(inputValue || '');
-                setIsTyping(true);
-              }}
+              onClick={() => beginManualEntry()}
               aria-label={t('common.datepicker.enterManually')}
               title={t('common.datepicker.typeDate')}
               style={{
@@ -575,12 +635,9 @@ export function CustomDatePicker({
               {/* In compact/borderless mode, the keyboard icon lives here instead of next to the trigger */}
               {compact || borderless ? (
                 <button
+                  ref={manualButtonRef}
                   type="button"
-                  onClick={() => {
-                    setOpen(false);
-                    setTextInput(inputValue || '');
-                    setIsTyping(true);
-                  }}
+                  onClick={() => beginManualEntry(true)}
                   aria-label={t('common.datepicker.enterManually')}
                   title={t('common.datepicker.typeDate')}
                   style={{

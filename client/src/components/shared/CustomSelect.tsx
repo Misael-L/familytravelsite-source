@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import ReactDOM from 'react-dom'
 import { ChevronDown, Check } from 'lucide-react'
+import { useRegisterOwnedPicker } from './ownedPickerLayer'
 
 interface SelectOption {
   // Callers use both string keys and numeric ids (e.g. day/place ids) as values;
@@ -38,8 +39,10 @@ export default function CustomSelect({
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState('')
   const ref = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
   const dropRef = useRef<HTMLDivElement>(null)
   const searchRef = useRef<HTMLInputElement>(null)
+  useRegisterOwnedPicker(open, triggerRef, dropRef, () => setOpen(false))
 
   useEffect(() => {
     if (open && searchable && searchRef.current) searchRef.current.focus()
@@ -87,8 +90,10 @@ export default function CustomSelect({
     <div ref={ref} style={{ position: 'relative', ...style }}>
       {/* Trigger */}
       <button
+        ref={triggerRef}
         type="button"
         disabled={disabled}
+        aria-expanded={open}
         onClick={() => { if (!disabled) { setOpen(o => !o); setSearch('') } }}
         style={{
           width: '100%', display: 'flex', alignItems: 'center', gap: 8,

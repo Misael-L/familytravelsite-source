@@ -1,13 +1,13 @@
 {
-  "privateProductionCommit": "556af456a1a6fc255403ac8e174584d660a76a74",
-  "privateCommitSubject": "fix(security): harden artifact secret scanning",
-  "publicSourceTag": "source-20260914-556af45",
+  "privateProductionCommit": "74edfe903bb1c7f458b560ed6ea1e250d48aa767",
+  "privateCommitSubject": "feat(planner): release Family Days timeline and reservation dialogs",
+  "publicSourceTag": "source-20261027-74edfe9",
   "publicSourceRemote": "https://github.com/Misael-L/familytravelsite-source.git",
-  "workersBuildUuid": "3a426521-a326-4a4a-9086-817f9c282466",
-  "workersVersionId": "ecbf4da5-6469-42c1-bdee-e84b3c807d94",
+  "workersBuildUuid": null,
+  "workersVersionId": null,
   "node": "22",
   "buildCommand": "npm run build:web",
   "origin": "https://familytravelsite.lmisael0721.workers.dev",
   "license": "AGPL-3.0-only",
-  "createdAtUtc": "2026-09-14T16:01:34Z"
+  "createdAtUtc": "2026-10-27T19:10:19Z"
 }

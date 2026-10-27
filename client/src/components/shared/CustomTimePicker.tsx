@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import ReactDOM from 'react-dom'
 import { Clock, ChevronUp, ChevronDown } from 'lucide-react'
 import { useSettingsStore } from '../../store/settingsStore'
+import { useRegisterOwnedPicker } from './ownedPickerLayer'
 
 function formatDisplay(val: string, is12h: boolean): string {
   if (!val) return ''
@@ -25,7 +26,9 @@ export default function CustomTimePicker({ value, onChange, placeholder = '00:00
   const [open, setOpen] = useState(false)
   const [inputFocused, setInputFocused] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
   const dropRef = useRef<HTMLDivElement>(null)
+  useRegisterOwnedPicker(open, triggerRef, dropRef, () => setOpen(false))
 
   const [h, m] = (value || '').split(':').map(Number)
   const hour = isNaN(h) ? null : h
@@ -137,7 +140,9 @@ export default function CustomTimePicker({ value, onChange, placeholder = '00:00
           }}
         />
         <button
+          ref={triggerRef}
           type="button"
+          aria-expanded={open}
           onClick={() => setOpen(o => !o)}
           style={{
             background: 'none', border: 'none', cursor: 'pointer', padding: '8px 10px',

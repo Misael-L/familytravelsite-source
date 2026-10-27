@@ -747,7 +747,7 @@ FamilyTripWorkspaceShell
 
 **Import:** Book and Transport tabs mount `BookingImportModal`. Confirm reviews mixed queue (book → `FamilyBookingEditor`; transport → `FamilyTransportEditor`). Seed two named endpoints from extract `venueName`/`location` when present; exact civil-day match; no clamp; do not guess `airport_id` unless extract IATA exact-matches catalog. AirTrail / Nest Kitinerary / LLM still forbidden.
 
-**Plan shortcut (not Plan-row merge):** day-grid Plus opens Transport create (optional day seed); Tram opens Transport in Automated mode (toast). Do not inject transport rows into the Plan timeline.
+**Plan shortcut:** day-grid Plus opens Transport create (optional day seed); Tram opens Transport in Automated mode (toast). The shortcut does not insert a timeline row. P4 may show an existing booking or transport on the Days rail as a read projection. Do not insert, update, or draft `schedule_items` to represent a reservation, and do not change `startsAt` in order to place one.
 
 **iOS blast radius:** live Transport list, Plan Day Detail non-hotel reservations, Costs `reservation_id`, `sync_trip_days` rematch of endpoint `local_date`. Wrong `type` or writing Bookings `hotel_id` / `schedule_item_id` / lodging metadata on transport rows would break lodging.
 
@@ -757,7 +757,7 @@ FamilyTripWorkspaceShell
 - Nest `airportsApi` / `LocationSelect` / `mapsApi` on the Family plane
 - Write `type=transit` from Automated
 - List booking types (hotel/…) on this tab
-- Map geodesic/OSRM overlays, AirTrail, file attach, Plan timeline merge
+- Map geodesic/OSRM overlays, AirTrail, file attach, or inserting or drafting `schedule_items` for a reservation. A read-only Days projection of an existing booking or transport is allowed.
 - Guess `airline_id` or silent-upsert `trip_places` / `airports`
 
 ### W6.1 checklist

@@ -1,6 +1,7 @@
 import { render, screen, fireEvent, act } from '../../../tests/helpers/render';
 import userEvent from '@testing-library/user-event';
 import CustomTimePicker from './CustomTimePicker';
+import { OwnedPickerLayerRoot } from './ownedPickerLayer';
 import { useSettingsStore } from '../../store/settingsStore';
 import { seedStore, resetAllStores } from '../../../tests/helpers/store';
 import { buildSettings } from '../../../tests/helpers/factories';
@@ -204,5 +205,32 @@ describe('CustomTimePicker', () => {
     const allText = Array.from(document.querySelectorAll('div')).map(d => d.textContent);
     // The "10" in the dropdown display box should no longer be rendered as a standalone element
     expect(screen.queryByText('✕')).toBeNull(); // clear button gone = dropdown closed
+  });
+
+  it('exposes aria-expanded and does not close on Escape when it is not owned', async () => {
+    const user = userEvent.setup();
+    render(<CustomTimePicker value="10:00" onChange={onChange} />);
+    const clock = screen.getByRole('button', { expanded: false });
+    expect(clock).toHaveAttribute('aria-expanded', 'false');
+    await user.click(clock);
+    expect(clock).toHaveAttribute('aria-expanded', 'true');
+    await user.keyboard('{Escape}');
+    expect(screen.getByText('✕')).toBeTruthy();
+  });
+
+  it('closes on Escape and returns focus when a booking layer owns it', async () => {
+    const user = userEvent.setup();
+    render(
+      <OwnedPickerLayerRoot>
+        <CustomTimePicker value="10:00" onChange={onChange} />
+      </OwnedPickerLayerRoot>,
+    );
+    const clock = screen.getByRole('button', { expanded: false });
+    await user.click(clock);
+    expect(screen.getByText('✕')).toBeTruthy();
+    await user.keyboard('{Escape}');
+    expect(screen.queryByText('✕')).toBeNull();
+    expect(clock).toHaveFocus();
+    expect(clock).toHaveAttribute('aria-expanded', 'false');
   });
 });

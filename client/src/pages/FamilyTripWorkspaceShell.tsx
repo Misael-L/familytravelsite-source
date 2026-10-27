@@ -1,3 +1,5 @@
+import RoadtripModeSwitch from '../components/Roadtrip/RoadtripModeSwitch'
+import PlacesToursModeSwitch from '../components/Tours/PlacesToursModeSwitch'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import ReactDOM from 'react-dom'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -915,6 +917,8 @@ export default function FamilyTripWorkspaceShell(): React.ReactElement | null {
   const showMapboxHint = mapProvider === 'mapbox-gl' && !mapboxToken
   const hasInspector = !!selectedPlace
 
+  const reservationTypes = new Map([...(bookings ?? []), ...(transports ?? [])].map(row => [row.id, row.type]))
+
   const planSidebar = (
     <FamilyDayPlanSidebar
       tripId={tripId}
@@ -925,6 +929,7 @@ export default function FamilyTripWorkspaceShell(): React.ReactElement | null {
       notesByCivilDay={notesByDay}
       selectedDayId={selectedDayId}
       onSelectDay={setSelectedDayId}
+      onAddToDay={dayId => { setSelectedDayId(dayId); setRightCollapsed(false); if (isMobile) setMobileSidebarOpen('right') }}
       onRemoveItem={requestRemoveItem}
       onMoveItem={(dayId, itemId, dir) => { void moveItem(dayId, itemId, dir) }}
       onOpenNote={(day) => setNoteDayId(day.id)}
@@ -944,6 +949,7 @@ export default function FamilyTripWorkspaceShell(): React.ReactElement | null {
       onUndo={() => { void undo() }}
       lastActionLabel={lastActionLabel}
       timeline={timeline}
+      reservationTypes={reservationTypes}
       onOpenTimeline={(kind, id, trigger) => timelineDetailsRef.current?.openTarget(kind, id, trigger)}
     />
   )
@@ -1398,6 +1404,7 @@ export default function FamilyTripWorkspaceShell(): React.ReactElement | null {
             transition: 'width 0.25s ease',
             opacity: leftCollapsed ? 0 : 1,
           }}>
+            <RoadtripModeSwitch active={false} onChange={() => {}} unavailableReason={t('trip.family.roadtripUnavailable')} />
             {planSidebar}
             {!leftCollapsed && (
               <div
@@ -1453,6 +1460,7 @@ export default function FamilyTripWorkspaceShell(): React.ReactElement | null {
               />
             )}
             <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', paddingLeft: 4 }}>
+              <PlacesToursModeSwitch active={false} onChange={() => {}} unavailableReason={t('trip.family.toursUnavailable')} />
               {placesSidebar}
             </div>
           </div>
@@ -1544,7 +1552,7 @@ export default function FamilyTripWorkspaceShell(): React.ReactElement | null {
                 </button>
               </div>
               <div style={{ flex: 1, overflow: 'auto', paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
-                {mobileSidebarOpen === 'left' ? planSidebar : placesSidebar}
+                {mobileSidebarOpen === 'left' ? <><RoadtripModeSwitch active={false} onChange={() => {}} unavailableReason={t('trip.family.roadtripUnavailable')} />{planSidebar}</> : <><PlacesToursModeSwitch active={false} onChange={() => {}} unavailableReason={t('trip.family.toursUnavailable')} />{placesSidebar}</>}
               </div>
             </div>
           </div>,

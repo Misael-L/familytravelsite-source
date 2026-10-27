@@ -26,6 +26,7 @@ export type ModalFocusScope = {
 interface ModalProps {
   isOpen: boolean
   onClose: () => void
+  header?: (labelId: string) => React.ReactNode
   title?: React.ReactNode
   children?: React.ReactNode
   size?: string
@@ -39,6 +40,7 @@ export default function Modal({
   isOpen,
   onClose,
   title,
+  header,
   children,
   size = 'md',
   footer,
@@ -165,7 +167,7 @@ export default function Modal({
       tabIndex={hasScope ? -1 : undefined}
       className={`
         trek-modal-enter
-        rounded-2xl overflow-hidden shadow-2xl w-full ${sizeClasses[size] || sizeClasses.md}
+        rounded-2xl overflow-hidden shadow-2xl w-full ${header ? 'max-w-[720px]' : sizeClasses[size] || sizeClasses.md}
         flex flex-col
         max-h-[calc(100dvh-var(--bottom-nav-h)-90px)] sm:max-h-[calc(100dvh-90px)]
         bg-surface-card
@@ -173,7 +175,7 @@ export default function Modal({
       `}
       onClick={e => e.stopPropagation()}
     >
-      <div className="flex items-center justify-between p-6 flex-shrink-0 border-b border-edge-secondary">
+      {header ? header(titleId) : <div className="flex items-center justify-between p-6 flex-shrink-0 border-b border-edge-secondary">
         <h2 id={hasScope ? titleId : undefined} className="text-lg font-semibold text-content">{title}</h2>
         {!hideCloseButton && (
           <button
@@ -183,14 +185,14 @@ export default function Modal({
             <X className="w-5 h-5" />
           </button>
         )}
-      </div>
+      </div>}
 
-      <div className="flex-1 overflow-y-auto p-6 min-h-0">
+      <div className={header ? 'flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto px-6 pb-6 pt-5' : 'flex-1 overflow-y-auto p-6 min-h-0'}>
         {children}
       </div>
 
       {footer && (
-        <div className="p-6 flex-shrink-0 border-t border-edge-secondary">
+        <div className={header ? 'flex flex-none items-center gap-2 border-t border-edge-faint px-6 py-3.5' : 'p-6 flex-shrink-0 border-t border-edge-secondary'}>
           {footer}
         </div>
       )}

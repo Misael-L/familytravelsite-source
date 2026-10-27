@@ -21,6 +21,7 @@ export type FamilyBookingDetail = {
   title: string
   type: FamilyTripReservation['type']
   status: FamilyTripReservation['status']
+  timeLabel?: string | null
   confirmationCode: string | null
   notes: string | null
   url: string | null
@@ -68,6 +69,10 @@ export function projectFamilyBookingDetail(input: {
     title: reservation.title,
     type: reservation.type,
     status: reservation.status,
+    timeLabel: [reservation.startsAt, reservation.endsAt].map(value => {
+      const clock = value?.slice(11, 16)
+      return clock && /^\d{2}:\d{2}$/.test(clock) && clock !== '00:00' ? clock : null
+    }).filter((value, index, values) => value && values.indexOf(value) === index).join(' – ') || null,
     confirmationCode: reservation.confirmationCode,
     notes: reservation.notes,
     url: reservation.url,

@@ -1,3 +1,4 @@
+import { TimePill } from '../planParts'
 import React from 'react'
 import { ArrowDown, ArrowUp, Trash2 } from 'lucide-react'
 import { useTranslation } from '../../../i18n'
@@ -61,7 +62,7 @@ export default function FamilyDayTimelineRow({
           {label}
         </span>
       )}
-      {clockLabel ? <span className="flex-none text-caption text-content-faint">{clockLabel}</span> : null}
+      {clockLabel ? <TimePill>{clockLabel}</TimePill> : null}
       <div className="flex flex-none items-center gap-0.5">
         <button
           type="button"

@@ -1,6 +1,8 @@
 import { useEffect, useId, useLayoutEffect, useRef, type ReactElement, type RefObject } from 'react'
 import ReactDOM from 'react-dom'
-import { X } from 'lucide-react'
+import { BookingDialogHeader, StatusPill, TypePill } from './bookings/BookingDialogShell'
+import { DialogFooter, DialogButton, DeleteButton, FooterSpacer, DialogSection } from '../shared/DialogShell'
+import { Field, BOX } from './bookings/bookingPresentation'
 import { containTab, focusDialog } from '../shared/dialogFocus'
 import { useToast } from '../shared/Toast'
 import { useTranslation } from '../../i18n'
@@ -108,34 +110,34 @@ export default function FamilyBookingDetailDialog({
         role="dialog"
         aria-labelledby={titleId}
         tabIndex={-1}
-        className="trek-modal-enter rounded-2xl overflow-hidden shadow-2xl w-full max-w-lg flex flex-col max-h-[calc(100dvh-var(--bottom-nav-h)-90px)] bg-surface-card outline-none"
+        className="trek-modal-enter rounded-2xl overflow-hidden shadow-2xl w-full max-w-[600px] flex flex-col max-h-[calc(100dvh-var(--bottom-nav-h)-90px)] bg-surface-card outline-none"
         onClick={event => event.stopPropagation()}
       >
-        <div className="flex items-center justify-between p-6 flex-shrink-0 border-b border-edge-secondary">
-          <h2 id={titleId} className="text-lg font-semibold text-content">{detail.title}</h2>
-          <button type="button" onClick={onClose} aria-label={t('common.close')} className="p-2 rounded-lg text-content-muted">
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-        <div className="flex-1 overflow-y-auto p-6 min-h-0 flex flex-col gap-4">
+        <BookingDialogHeader
+          labelId={titleId} title={detail.title} type={detail.type}
+          tone={detail.status === 'confirmed' ? 'confirmed' : 'pending'} onClose={onClose}
+          pills={<><TypePill type={detail.type} /><StatusPill status={detail.status === 'confirmed' ? 'confirmed' : 'pending'} /></>}
+        />
+        <div className="flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto px-6 pb-6 pt-5">
           {(start || end) && (
-            <p className="text-content m-0">
-              {start}{end && end !== start ? ` – ${end}` : ''}
-            </p>
+            <Field label={t('reservations.date')}>{start}{end && end !== start ? ` – ${end}` : ''}</Field>
           )}
+          {detail.timeLabel && <Field label={t('reservations.time')} tabular>{detail.timeLabel}</Field>}
+          {detail.notes && <DialogSection label={t('reservations.notes')}>
+            <div className={`${BOX} whitespace-pre-wrap break-words px-3 py-2 text-content`}>{detail.notes}</div>
+          </DialogSection>}
           {detail.confirmationCode && (
             <div className="flex items-center justify-between gap-3">
               <div>
                 <div className="text-[11px] font-semibold uppercase tracking-[0.03em] text-content-faint">{t('reservations.confirmationCode')}</div>
-                <div className="text-content">{detail.confirmationCode}</div>
+                <div className={`${BOX} px-3 py-2 font-semibold text-content`}>{detail.confirmationCode}</div>
               </div>
               <button type="button" onClick={() => { void copyCode() }} className="text-content border border-edge bg-surface-card rounded-[10px] px-3 py-2">
                 {t('common.copy')}
               </button>
             </div>
           )}
-          <section>
-            <h3 className="text-sm font-semibold text-content m-0 mb-2">{t('reservations.costsLabel')}</h3>
+          <DialogSection label={t('reservations.costsLabel')}>
             {expensesPhase === 'loading' && <p className="text-content-muted m-0">{t('common.loading')}</p>}
             {expensesPhase === 'error' && (
               <div className="flex items-center gap-3">
@@ -159,9 +161,8 @@ export default function FamilyBookingDetailDialog({
                 ))}
               </ul>
             ) : null}
-          </section>
-          <section>
-            <h3 className="text-sm font-semibold text-content m-0 mb-2">{t('files.title')}</h3>
+          </DialogSection>
+          <DialogSection label={t('files.title')}>
             {filesPhase === 'loading' && <p className="text-content-muted m-0">{t('common.loading')}</p>}
             {filesPhase === 'error' && (
               <div className="flex items-center gap-3">
@@ -189,21 +190,14 @@ export default function FamilyBookingDetailDialog({
                 ))}
               </ul>
             )}
-          </section>
+          </DialogSection>
         </div>
         {canMutate && (onEdit || onDelete) && (
-          <div className="p-6 flex-shrink-0 border-t border-edge-secondary flex justify-end gap-2">
-            {onDelete && (
-              <button type="button" onClick={onDelete} className="text-content-muted border border-edge rounded-[10px] px-4 py-2">
-                {t('common.delete')}
-              </button>
-            )}
-            {onEdit && (
-              <button type="button" onClick={onEdit} className="bg-[var(--text-primary)] text-[var(--bg-primary)] rounded-[10px] px-4 py-2">
-                {t('common.edit')}
-              </button>
-            )}
-          </div>
+          <DialogFooter>
+            {onDelete && <DeleteButton onClick={onDelete} />}
+            <FooterSpacer />
+            {onEdit && <DialogButton variant="primary" onClick={onEdit}>{t('common.edit')}</DialogButton>}
+          </DialogFooter>
         )}
       </div>
     </div>,

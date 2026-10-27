@@ -1,3 +1,6 @@
+import { BookingDialogHeader, StatusPill, TypePill } from './bookings/BookingDialogShell'
+import { DialogButton, FooterSpacer } from '../shared/DialogShell'
+import { INPUT, LABEL, Segmented } from '../shared/dialogParts'
 /**
  * W6.1 Family Transport editor — TREK TransportModal field language, UUID SoR.
  * Nest TransportModal / TransitSearchPanel stay on the nest plane.
@@ -46,8 +49,8 @@ const TYPE_OPTIONS: { value: TransportManualType; labelKey: string; Icon: typeof
   { value: 'transport_other', labelKey: 'reservations.type.transport_other', Icon: Route },
 ]
 
-const inputClass = 'w-full border border-edge rounded-[10px] px-[12px] py-[8px] text-[13px] font-[inherit] outline-none box-border text-content bg-surface-input'
-const labelClass = 'block text-[11px] font-semibold text-content-faint mb-[5px] uppercase tracking-[0.03em]'
+const inputClass = INPUT
+const labelClass = LABEL
 
 type FlightWaypoint = {
   airport: FamilyAirportPick | null
@@ -490,29 +493,20 @@ export default function FamilyTransportEditor({
       onClose={onClose}
       focusScope={focusScope}
       title={automated ? t('transit.title') : reservation ? t('transport.modalTitle.edit') : t('transport.modalTitle.create')}
+      header={labelId => <BookingDialogHeader labelId={labelId} type={type}
+        tone={status === 'confirmed' ? 'confirmed' : 'pending'} onClose={onClose}
+        eyebrow={automated ? t('transit.title') : reservation ? t('transport.modalTitle.edit') : t('transport.modalTitle.create')}
+        titleInput={automated ? undefined : {value: title, onChange: setTitle, label: `${t('reservations.titleLabel')} *`, placeholder: t('reservations.titlePlaceholder'), required: true}}
+        title={automated ? t('transit.title') : undefined}
+        pills={<><TypePill type={type} /><StatusPill status={status === 'confirmed' ? 'confirmed' : 'pending'} /></>} />}
       size="2xl"
       footer={
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
-          <button type="button" onClick={onClose} className="text-content-muted" style={{ padding: '8px 16px', borderRadius: 10, border: '1px solid var(--border-primary)', background: 'none', fontSize: 'calc(12px * var(--fs-scale-body, 1))', cursor: 'pointer', fontFamily: 'inherit' }}>
-            {t('common.cancel')}
-          </button>
-          {!automated && (
-            <button
-              type="button"
-              onClick={() => { void handleSubmit(null) }}
-              disabled={saving || !title.trim() || endBeforeStart || !canMutate}
-              className="bg-[var(--text-primary)] text-[var(--bg-primary)]"
-              style={{
-                padding: '8px 20px', borderRadius: 10, border: 'none',
-                fontSize: 'calc(12px * var(--fs-scale-body, 1))', fontWeight: 600,
-                cursor: 'pointer', fontFamily: 'inherit',
-                opacity: saving || !title.trim() || endBeforeStart || !canMutate ? 0.5 : 1,
-              }}
-            >
-              {saving ? t('common.saving') : reservation ? t('common.update') : t('common.add')}
-            </button>
-          )}
-        </div>
+        <><FooterSpacer /><DialogButton onClick={onClose}>{t('common.cancel')}</DialogButton>
+          {!automated && <DialogButton variant="primary" onClick={() => { void handleSubmit(null) }}
+            disabled={saving || !title.trim() || endBeforeStart || !canMutate}>
+            {saving ? t('common.saving') : reservation ? t('common.update') : t('common.add')}
+          </DialogButton>}
+        </>
       }
     >
       {isCreate && tripHasDates && (
@@ -660,29 +654,8 @@ function TransportManualForm({
     <form onSubmit={e => { e.preventDefault(); onSubmit() }} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
       <div>
         <label className={labelClass}>{t('reservations.bookingType')}</label>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
-          {TYPE_OPTIONS.map(({ value, labelKey, Icon }) => (
-            <button
-              key={value}
-              type="button"
-              onClick={() => setType(value)}
-              className={type === value ? 'bg-[var(--text-primary)] text-[var(--bg-primary)]' : 'bg-surface-card text-content-muted'}
-              style={{
-                display: 'flex', alignItems: 'center', gap: 4,
-                padding: '5px 10px', borderRadius: 99, border: '1px solid',
-                fontSize: 'calc(11px * var(--fs-scale-caption, 1))', fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit',
-                borderColor: type === value ? 'var(--text-primary)' : 'var(--border-primary)',
-              }}
-            >
-              <Icon size={11} /> {t(labelKey)}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div>
-        <label className={labelClass}>{t('reservations.titleLabel')} *</label>
-        <input type="text" value={title} onChange={e => setTitle(e.target.value)} required placeholder={t('reservations.titlePlaceholder')} className={inputClass} />
+          <Segmented value={type} onChange={setType} label={t('reservations.bookingType')}
+            columns={3} options={TYPE_OPTIONS.map(({ value, labelKey, Icon }) => ({ value, label: t(labelKey), icon: <Icon size={13} /> }))} />
       </div>
 
       {type === 'flight' ? (

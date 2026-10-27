@@ -1,4 +1,7 @@
 import React from 'react'
+import { ContextMenu, useContextMenu } from '../../shared/ContextMenu'
+import { fs } from '../../shared/DialogShell'
+import { TimePill, SoftPill } from '../planParts'
 import { ChevronDown, ChevronRight, FileText, Pencil, Plus, TramFront } from 'lucide-react'
 import { useTranslation } from '../../../i18n'
 import type { FamilyTripDay } from '../../../data/supabase/tripDays'
@@ -36,169 +39,72 @@ export type FamilyDayHeadProps = {
   onOpenPill?: (key: string, trigger: HTMLElement) => void
 }
 
-export default function FamilyDayHead({
-  day,
-  displayIndex,
-  title,
-  formattedDate,
-  noteBody,
-  isSelected,
-  isExpanded,
-  isEditingTitle,
-  titleDraft,
-  titleInputRef,
-  canMutate,
-  isMobile,
-  onSelect,
-  onToggle,
-  onStartEdit,
-  onTitleDraft,
-  onCommitTitle,
-  onCancelTitle,
-  onOpenNote,
-  onOpenTransport,
-  onToastWrite,
-  pills = [],
-  onOpenPill,
-}: FamilyDayHeadProps): React.ReactElement {
+export default function FamilyDayHead(p: FamilyDayHeadProps): React.ReactElement {
   const { t } = useTranslation()
-  const cell: React.CSSProperties = { padding: 7, cursor: 'pointer', display: 'grid', placeItems: 'center' }
-  const div = '1px solid var(--border-faint)'
-
-  return (
-    <div
-      className="dp-day-header"
-      data-selected={isSelected}
-      data-day-id={day.id}
-      onClick={() => {
-        if (isEditingTitle) return
-        onSelect()
+  const menu = useContextMenu()
+  const { day, displayIndex, title, formattedDate, noteBody, isSelected, isExpanded, isEditingTitle,
+    titleDraft, titleInputRef, canMutate, onSelect, onToggle, onStartEdit, onTitleDraft,
+    onCommitTitle, onCancelTitle, onOpenNote, onOpenTransport, onToastWrite, pills = [], onOpenPill } = p
+  const hasDayPills = pills.length > 0 || !!noteBody
+  return <>
+    <div className="dp-day-header" role="button" tabIndex={0} data-selected={isSelected} data-day-id={day.id}
+      onClick={() => { if (!isEditingTitle) onSelect() }}
+      onKeyDown={event => {
+        if (event.target !== event.currentTarget) return
+        if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onSelect() }
       }}
       style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 10,
-        padding: '11px 14px 11px 12px',
-        cursor: 'pointer',
-        background: isSelected ? DAY_HEAD_SELECTED : DAY_HEAD_REST,
-        transition: 'background 0.12s',
-        userSelect: 'none',
-        touchAction: 'manipulation',
+        display: 'grid', gridTemplateColumns: 'auto minmax(0, 1fr) auto', columnGap: 10, rowGap: 4,
+        alignItems: hasDayPills ? 'start' : 'center',
+        paddingBlock: 10, paddingInlineEnd: 8, paddingInlineStart: 10,
+        cursor: 'pointer', background: isSelected ? DAY_HEAD_SELECTED : DAY_HEAD_REST,
+        transition: 'background 0.12s', userSelect: 'none', touchAction: 'manipulation',
       }}
       onMouseEnter={e => { if (!isSelected) e.currentTarget.style.background = DAY_HEAD_HOVER }}
-      onMouseLeave={e => { if (!isSelected) e.currentTarget.style.background = isSelected ? DAY_HEAD_SELECTED : DAY_HEAD_REST }}
-    >
-      <div className={isSelected ? DAY_INDEX_TILE_SELECTED : DAY_INDEX_TILE} aria-hidden>
-        {displayIndex}
+      onMouseLeave={e => { e.currentTarget.style.background = isSelected ? DAY_HEAD_SELECTED : DAY_HEAD_REST }}>
+      <div className="flex flex-none flex-col items-center overflow-hidden rounded-[10px] font-geist font-bold tabular-nums shadow-sm"
+        style={{ width: 32, gridRow: hasDayPills ? 'span 2' : undefined,
+          background: isSelected ? 'var(--accent)' : 'var(--bg-card)', color: isSelected ? 'var(--accent-text)' : 'var(--text-muted)' }}>
+        <div className="grid h-8 w-full place-items-center" style={{ ...fs(12), lineHeight: 1 }}>{displayIndex}</div>
       </div>
-
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 7, minWidth: 0 }}>
-          {isEditingTitle ? (
-            <input
-              ref={titleInputRef}
-              value={titleDraft}
-              onChange={e => onTitleDraft(e.target.value)}
-              onClick={e => e.stopPropagation()}
-              onBlur={onCommitTitle}
-              onKeyDown={e => {
-                if (e.key === 'Enter') { e.preventDefault(); onCommitTitle() }
-                if (e.key === 'Escape') { e.preventDefault(); onCancelTitle() }
-              }}
-              placeholder={t('dayplan.dayN', { n: displayIndex })}
-              aria-label={t('common.edit')}
-              className="min-w-0 flex-1 border-0 border-b border-edge bg-transparent p-0 text-body font-semibold text-content outline-none"
-            />
-          ) : (
-            <>
-              <span className="min-w-0 flex-shrink truncate text-body font-semibold text-content">
-                {title}
-              </span>
-              {canMutate && (
-                <button
-                  type="button"
-                  onClick={e => {
-                    e.stopPropagation()
-                    onStartEdit()
-                  }}
-                  aria-label={t('common.edit')}
-                  title={t('common.edit')}
-                  className="flex flex-none border-0 bg-transparent p-0.5 text-content-faint"
-                >
-                  <Pencil size={12} strokeWidth={1.8} />
-                </button>
-              )}
-            </>
-          )}
-          {!isEditingTitle && formattedDate && (
-            <>
-              <span className="h-3 w-px flex-none bg-edge" />
-              <span className="flex-none whitespace-nowrap text-caption text-content-faint">
-                {formattedDate}
-              </span>
-            </>
-          )}
+      <div className={hasDayPills ? 'min-w-0 pt-[5px]' : 'min-w-0'}>
+        <div className="flex min-w-0 items-baseline gap-2">
+          {isEditingTitle ? <input ref={titleInputRef} value={titleDraft} onChange={e => onTitleDraft(e.target.value)}
+            onClick={e => e.stopPropagation()} onBlur={onCommitTitle} onKeyDown={e => {
+              if (e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); onCommitTitle() }
+              if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); onCancelTitle() }
+            }} aria-label={t('common.edit')} placeholder={t('dayplan.dayN', {n: displayIndex})}
+            className="min-w-0 flex-1 border-0 border-b border-edge bg-transparent p-0 font-bold text-content outline-none" style={fs(13.5, 'body')} /> : <>
+            <span className="min-w-0 truncate font-bold text-content" style={fs(13.5, 'body')}>{title}</span>
+            {canMutate && <button type="button" onClick={e => { e.stopPropagation(); onStartEdit() }} aria-label={t('common.edit')}
+              className="flex flex-none border-0 bg-transparent p-0.5 text-content-faint"><Pencil size={12} strokeWidth={1.8} /></button>}
+          </>}
+          {!isEditingTitle && formattedDate && <span className="flex-none whitespace-nowrap text-content-faint" style={fs(11)}>{formattedDate}</span>}
         </div>
-        {noteBody ? (
-          <div className="mt-0.5 truncate text-caption text-content-faint">
-            {noteBody}
-          </div>
-        ) : null}
-        {pills.length > 0 && (
-          <div className="mt-1 flex flex-wrap gap-1">
-            {pills.map(pill => (
-              <button
-                key={pill.key}
-                type="button"
-                onClick={event => {
-                  event.stopPropagation()
-                  onOpenPill?.(pill.key, event.currentTarget)
-                }}
-                className="rounded-full border border-edge bg-surface-secondary px-2 py-0.5 text-caption text-content"
-              >
-                {pill.title}
-              </button>
-            ))}
-          </div>
-        )}
       </div>
-
-      {isMobile ? (
-        <div style={{ alignSelf: 'flex-start', flexShrink: 0, display: 'flex', alignItems: 'center', gap: 2 }}>
-          <button
-            type="button"
-            onClick={e => { e.stopPropagation(); onOpenNote() }}
-            aria-label={t('dayplan.addNote')}
-            className="flex border-0 bg-transparent p-1.5 text-content-faint"
-          >
-            <FileText size={16} strokeWidth={1.8} />
-          </button>
-          <button
-            type="button"
-            onClick={onToggle}
-            aria-label={isExpanded ? t('common.collapse') : t('common.expand')}
-            aria-expanded={isExpanded}
-            className="flex border-0 bg-transparent p-1.5 text-content-faint"
-          >
-            {isExpanded ? <ChevronDown size={16} strokeWidth={1.8} /> : <ChevronRight size={16} strokeWidth={1.8} />}
-          </button>
-        </div>
-      ) : (
-        <div className="dp-day-actions" style={{ alignSelf: 'flex-start', flexShrink: 0, display: 'grid', gridTemplateColumns: '1fr 1fr', border: div, borderRadius: 9, overflow: 'hidden' }}>
-          <button type="button" onClick={e => { e.stopPropagation(); onOpenTransport ? onOpenTransport(true) : onToastWrite() }} title={t('transit.title')} aria-label={t('transit.title')} style={{ ...cell, border: 'none', borderRight: div, borderBottom: div }}>
-            <TramFront size={14} strokeWidth={1.8} />
-          </button>
-          <button type="button" onClick={e => { e.stopPropagation(); onOpenTransport ? onOpenTransport(false) : onToastWrite() }} title={t('transport.addTransport')} aria-label={t('transport.addTransport')} style={{ ...cell, border: 'none', borderBottom: div }}>
-            <Plus size={14} strokeWidth={1.8} />
-          </button>
-          <button type="button" onClick={e => { e.stopPropagation(); onOpenNote() }} aria-label={t('dayplan.addNote')} style={{ ...cell, border: 'none', borderRight: div }}>
-            <FileText size={14} strokeWidth={1.8} />
-          </button>
-          <button type="button" onClick={onToggle} title={isExpanded ? t('common.collapse') : t('common.expand')} aria-label={isExpanded ? t('common.collapse') : t('common.expand')} aria-expanded={isExpanded} style={{ ...cell, border: 'none' }}>
-            {isExpanded ? <ChevronDown size={15} strokeWidth={1.8} /> : <ChevronRight size={15} strokeWidth={1.8} />}
-          </button>
-        </div>
-      )}
+      <div className="-my-1 flex flex-none items-center gap-1">
+        {canMutate && <button type="button" onClick={e => menu.open(e, [
+          {label: t('dayplan.addNote'), icon: FileText, onClick: onOpenNote},
+          {label: t('transport.addTransport'), icon: Plus, onClick: () => onOpenTransport ? onOpenTransport(false) : onToastWrite()},
+          {label: t('transit.title'), icon: TramFront, onClick: () => onOpenTransport ? onOpenTransport(true) : onToastWrite()},
+        ])} aria-label={t('planner.addToThisDay')} aria-haspopup="menu"
+          className="dp-day-tools grid h-7 w-7 place-items-center rounded-full bg-surface-card text-content-muted shadow-sm hover:text-content">
+          <Plus size={14} strokeWidth={2.2} />
+        </button>}
+        <button type="button" onClick={e => {e.stopPropagation(); onOpenNote()}} aria-label={t('dayplan.addNote')}
+          className="grid h-7 w-7 place-items-center rounded-full text-content-muted hover:bg-surface-card hover:text-content"><FileText size={14} strokeWidth={2} /></button>
+        <button type="button" onClick={onToggle} aria-label={isExpanded ? t('common.collapse') : t('common.expand')} aria-expanded={isExpanded}
+          className="grid h-7 w-7 place-items-center rounded-full text-content-muted hover:bg-surface-card hover:text-content">
+          {isExpanded ? <ChevronDown size={15} strokeWidth={2} /> : <ChevronRight size={15} strokeWidth={2} />}
+        </button>
+      </div>
+      {hasDayPills && <div className="col-start-2 col-end-4 flex min-w-0 flex-wrap items-center gap-1">
+        {noteBody && <span className="min-w-0 truncate text-content-faint" style={fs(11)}>{noteBody}</span>}
+        {pills.map(pill => <button type="button" key={pill.key} onClick={e => {e.stopPropagation(); onOpenPill?.(pill.key, e.currentTarget)}}>
+          <SoftPill>{pill.title}</SoftPill>
+        </button>)}
+      </div>}
     </div>
-  )
+    <ContextMenu menu={menu.menu} onClose={menu.close} />
+  </>
 }

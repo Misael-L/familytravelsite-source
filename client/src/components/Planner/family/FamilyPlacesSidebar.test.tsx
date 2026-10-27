@@ -38,31 +38,58 @@ const track: FamilyTripTrack = {
   waypoints: [],
 }
 
-function setup(opts?: { canMutate?: boolean; tracks?: FamilyTripTrack[] }) {
+function setup(opts?: { canMutate?: boolean; tracks?: FamilyTripTrack[]; places?: FamilyTripPlace[] }) {
   const onToastWrite = vi.fn()
   const onImportFile = vi.fn()
   const onDeleteTrack = vi.fn()
+  const onSelectPlace = vi.fn()
+  const onAssignToDay = vi.fn()
   render(
     <FamilyPlacesSidebar
-      places={[place]}
+      places={opts?.places ?? [place]}
       tracks={opts?.tracks ?? []}
       plannedPlaceIds={new Set()}
       selectedPlaceId={null}
       canMutate={opts?.canMutate ?? true}
-      onSelectPlace={() => {}}
+      onSelectPlace={onSelectPlace}
       onAddPlace={() => {}}
       onDeletePlace={() => {}}
-      onAssignToDay={() => {}}
+      onAssignToDay={onAssignToDay}
       onImportFile={onImportFile}
       onDeleteTrack={onDeleteTrack}
       onEditPlace={() => {}}
       onToastWrite={onToastWrite}
     />,
   )
-  return { onToastWrite, onImportFile, onDeleteTrack }
+  return { onToastWrite, onImportFile, onDeleteTrack, onSelectPlace, onAssignToDay }
 }
 
 describe('FamilyPlacesSidebar import', () => {
+  it('preserves UUID selection and keeps the assign action separate from row activation', async () => {
+    const user = userEvent.setup()
+    const { onSelectPlace, onAssignToDay } = setup()
+    const row = screen.getByRole('option', {name: 'Cernobbio'})
+    row.focus()
+    await user.keyboard('{Enter}')
+    expect(onSelectPlace).toHaveBeenCalledWith('p1')
+    onSelectPlace.mockClear()
+    await user.click(screen.getByRole('button', {name: '+ Day', exact: true}))
+    expect(onAssignToDay).toHaveBeenCalledWith('p1')
+    expect(onSelectPlace).not.toHaveBeenCalled()
+  })
+
+  it('sorts and searches the existing Family records through the copied header controls', async () => {
+    const user = userEvent.setup()
+    const { onToastWrite } = setup({places: [{...place, name: 'Zed'}, {...place, id: 'p2', name: 'Alpha'}]})
+    const order = () => screen.getAllByRole('option').map(row => row.getAttribute('data-place-id'))
+    expect(order()).toEqual(['p1', 'p2'])
+    await user.click(screen.getByRole('button', {name: 'Sort by', exact: true}))
+    expect(order()).toEqual(['p2', 'p1'])
+    await user.type(screen.getByRole('textbox', {name: 'Search', exact: true}), 'Alpha')
+    expect(order()).toEqual(['p2'])
+    expect(onToastWrite).not.toHaveBeenCalled()
+  })
+
   it('HOF Import file does not toast importLater', async () => {
     const user = userEvent.setup()
     const { onToastWrite, onImportFile } = setup({ canMutate: true })
@@ -71,18 +98,17 @@ describe('FamilyPlacesSidebar import', () => {
     expect(onToastWrite).not.toHaveBeenCalledWith('import')
   })
 
-  it('List Import still toasts importLater', async () => {
-    const user = userEvent.setup()
-    const { onToastWrite, onImportFile } = setup({ canMutate: true })
-    await user.click(screen.getByRole('button', { name: /list import/i }))
-    expect(onToastWrite).toHaveBeenCalledWith('import')
-    expect(onImportFile).not.toHaveBeenCalled()
+  it('omits the unconnected List Import action instead of presenting a placeholder', () => {
+    const { onToastWrite } = setup()
+    expect(screen.queryByRole('button', {name: /list import/i})).not.toBeInTheDocument()
+    expect(onToastWrite).not.toHaveBeenCalled()
   })
 
-  it('shows a Tracks chip when trip_tracks exist', async () => {
+  it('shows recorded tracks through the upstream Show dropdown', async () => {
     const user = userEvent.setup()
     setup({ tracks: [track] })
-    await user.click(screen.getByRole('button', { name: /tracks/i }))
+    await user.click(screen.getByRole('button', {name: 'Show', exact: true}))
+    await user.click(screen.getByRole('option', {name: /tracks/i}))
     expect(screen.getByText('Ridge hike')).toBeInTheDocument()
     expect(screen.queryByText('Cernobbio')).not.toBeInTheDocument()
   })

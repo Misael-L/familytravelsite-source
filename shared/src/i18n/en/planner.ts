@@ -1,6 +1,30 @@
 import type { TranslationStrings } from '../types';
 
 const planner: TranslationStrings = {
+  'common.unsavedTitle': 'Discard your changes?',
+  'common.unsavedMessage': 'What you entered here has not been saved yet.',
+  'common.keepEditing': 'Keep editing',
+  // TREK d4da05b presentation labels (English fallback for untranslated locales).
+  'tours.mode.places': 'Places',
+  'tours.mode.tours': 'Tours',
+  'tours.mode.label': 'Add view',
+  'dayplan.addPlaceHere': 'Add place to this day',
+  'dayplan.export': 'Export',
+  'dayplan.exportIntro': 'Take your plan with you: as a document or in your calendar.',
+  'dayplan.exportDocument': 'Document',
+  'dayplan.exportCalendar': 'Calendar',
+  'places.filterShow': 'Show',
+  'places.clearSearch': 'Clear search',
+  'roadtrip.mode.days': 'Days',
+  'roadtrip.mode.roadtrip': 'Road trip',
+  'roadtrip.mode.label': 'Plan view',
+  'trip.family.roadtripUnavailable': 'Road trip routing is not connected for Family trips yet.',
+  'trip.family.toursUnavailable': 'Tours are not connected for Family trips yet.',
+  'places.sortBy': 'Sort by',
+  'mobileTrip.icsDownload': 'Download .ics',
+  'mobileTrip.icsSubscribe': 'Subscribe to calendar',
+  'mobileTrip.icsSubscribeSub': 'Auto-updates in your calendar app',
+
   'planner.places': 'Places',
   'planner.bookings': 'Bookings',
   'planner.packingList': 'Packing List',

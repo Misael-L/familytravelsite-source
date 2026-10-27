@@ -69,6 +69,14 @@ function file(id: string, reservationIds: string[]): FamilyTripFile {
 }
 
 describe('projectFamilyBookingDetail', () => {
+  it('shows recorded booking civil clocks without adding a place zone or treating an assignment anchor as midnight', () => {
+    const project = (startsAt: string, endsAt: string | null) => projectFamilyBookingDetail({
+      reservation: {...reservation, startsAt, endsAt}, days: [], expenses: [], currencyCode: 'EUR',
+    })
+    expect(project('2026-08-12T15:00:00.000Z', '2026-08-12T17:30:00.000Z').timeLabel).toBe('15:00 – 17:30')
+    expect(project('2026-08-12T00:00:00.000Z', null).timeLabel).toBeNull()
+  })
+
   it('keeps the reservation id and resolves dates from day ids', () => {
     const detail = projectFamilyBookingDetail({
       reservation,

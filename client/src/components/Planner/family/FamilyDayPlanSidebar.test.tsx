@@ -77,6 +77,7 @@ describe('FamilyDayPlanSidebar exports', () => {
   it('opens a print overlay on PDF click instead of toasting exportLater', async () => {
     const user = userEvent.setup()
     const toastWrite = renderSidebar()
+    await user.click(screen.getByRole('button', { name: 'Export' }))
     await user.click(screen.getByText('PDF'))
     expect(document.getElementById('family-pdf-preview-overlay')).not.toBeNull()
     expect(toastWrite).not.toHaveBeenCalledWith('export')
@@ -89,8 +90,8 @@ describe('FamilyDayPlanSidebar exports', () => {
     const createObjectURL = vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:ics')
     vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {})
     const clickSpy = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {})
-    await user.hover(screen.getByText('ICS').closest('button')!)
-    await user.click(await screen.findByText('Download ICS'))
+    await user.click(screen.getByRole('button', { name: 'Export' }))
+    await user.click(await screen.findByText('Download .ics'))
     expect(createObjectURL).toHaveBeenCalled()
     expect(clickSpy).toHaveBeenCalled()
     expect(toastWrite).not.toHaveBeenCalledWith('export')
@@ -100,7 +101,7 @@ describe('FamilyDayPlanSidebar exports', () => {
     const user = userEvent.setup()
     seedStore(useAuthStore, { familyId: 'fam-1', personId: 'per-1' })
     const toastWrite = renderSidebar()
-    await user.hover(screen.getByText('ICS').closest('button')!)
+    await user.click(screen.getByRole('button', { name: 'Export' }))
     await user.click(await screen.findByText('Subscribe to calendar'))
     expect(await screen.findByText('Subscribe to all trips')).toBeInTheDocument()
     expect(await screen.findByText('Enable calendar subscription')).toBeInTheDocument()
@@ -108,14 +109,12 @@ describe('FamilyDayPlanSidebar exports', () => {
     expect(toastWrite).not.toHaveBeenCalledWith('export')
   })
 
-  it('toasts missingPerson when Subscribe is chosen without a linked profile', async () => {
+  it('omits account subscription when no linked profile exists', async () => {
     const user = userEvent.setup()
-    seedStore(useAuthStore, { familyId: null, personId: null })
     renderSidebar()
-    await user.hover(screen.getByText('ICS').closest('button')!)
-    await user.click(await screen.findByText('Subscribe to calendar'))
-    expect(await screen.findByText(/Your family profile is not linked yet/i)).toBeInTheDocument()
-    expect(screen.queryByText('Subscribe to all trips')).not.toBeInTheDocument()
+    await user.click(screen.getByRole('button', {name: 'Export'}))
+    expect(screen.queryByText('Subscribe to calendar')).not.toBeInTheDocument()
+    expect(screen.getByText('Download .ics')).toBeInTheDocument()
   })
 })
 
@@ -272,8 +271,7 @@ describe('FamilyDayPlanSidebar interactions', () => {
   it('hides the title pencil when mutation is off and still offers export', async () => {
     renderInteractive({ canMutate: false })
     expect(screen.queryByRole('button', { name: 'Edit' })).not.toBeInTheDocument()
-    expect(screen.getByText('PDF')).toBeInTheDocument()
-    expect(screen.getByText('ICS')).toBeInTheDocument()
+    expect(screen.getByRole('button', {name: 'Export'})).toBeInTheDocument()
   })
 
   it('opens notes and moves or removes the addressed schedule row', async () => {
@@ -299,15 +297,15 @@ describe('FamilyDayPlanSidebar interactions', () => {
     expect(onRemoveItem).toHaveBeenCalledWith(ITEM_B)
   })
 
-  it('toasts unsupported undo and day reorder when no direct undo exists', async () => {
+  it('disables unavailable undo and omits unconnected day reorder', async () => {
     const user = userEvent.setup()
     const { onUndo, onToastWrite } = renderInteractive()
-    await user.click(screen.getByRole('button', { name: 'Undo' }))
-    await user.click(screen.getByRole('button', { name: 'Reorder days' }))
+    const undo = screen.getByRole('button', {name: 'Undo'})
+    expect(undo).toBeDisabled()
+    await user.click(undo)
+    expect(screen.queryByRole('button', {name: 'Reorder days'})).not.toBeInTheDocument()
     expect(onUndo).not.toHaveBeenCalled()
-    expect(onToastWrite).toHaveBeenCalledTimes(2)
-    expect(onToastWrite).toHaveBeenNthCalledWith(1, 'reorder')
-    expect(onToastWrite).toHaveBeenNthCalledWith(2, 'reorder')
+    expect(onToastWrite).not.toHaveBeenCalled()
   })
 
   it('calls undo and does not toast when a direct undo exists', async () => {

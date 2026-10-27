@@ -1,3 +1,5 @@
+import type { HeaderTitleInput } from '../shared/DialogShell'
+import { BookingDialogHeader, StatusPill, TypePill } from './bookings/BookingDialogShell'
 import { useEffect, useId, useLayoutEffect, useMemo, useRef, type ReactElement, type ReactNode, type RefObject } from 'react'
 import ReactDOM from 'react-dom'
 import { X } from 'lucide-react'
@@ -14,6 +16,10 @@ import { BookingRequestCloseContext } from '../shared/bookingRequestClose'
 
 export type FamilyBookingDialogFrameProps = {
   title: string
+  titleInput?: HeaderTitleInput
+  bookingType?: string
+  bookingTitle?: string
+  bookingStatus?: string
   snapshot: unknown
   baseline: unknown | null
   busy: boolean
@@ -30,6 +36,7 @@ function rememberField(): HTMLElement | null {
 
 export default function FamilyBookingDialogFrame({
   title,
+  bookingType = 'other', bookingTitle, bookingStatus, titleInput,
   snapshot,
   baseline,
   busy,
@@ -226,25 +233,20 @@ export default function FamilyBookingDialogFrame({
             role="dialog"
             aria-labelledby={titleId}
             tabIndex={-1}
-            className="trek-modal-enter rounded-2xl overflow-hidden shadow-2xl w-full max-w-4xl flex flex-col max-h-[calc(100dvh-var(--bottom-nav-h)-90px)] sm:max-h-[calc(100dvh-90px)] bg-surface-card outline-none relative"
+            className="trek-modal-enter rounded-2xl overflow-hidden shadow-2xl w-full max-w-[720px] flex flex-col max-h-[calc(100dvh-var(--bottom-nav-h)-90px)] sm:max-h-[calc(100dvh-90px)] bg-surface-card outline-none relative"
             onClick={event => event.stopPropagation()}
           >
-            <div className="flex items-center justify-between p-6 flex-shrink-0 border-b border-edge-secondary" inert={asking ? true : undefined} aria-hidden={asking ? true : undefined}>
-              <h2 id={titleId} className="text-lg font-semibold text-content">{title}</h2>
-              <button
-                type="button"
-                onClick={guardedClose}
-                aria-label={t('common.close')}
-                className="p-2 rounded-lg text-content-muted"
-              >
-                <X className="w-5 h-5" />
-              </button>
+            <div className="flex-none" inert={asking ? true : undefined} aria-hidden={asking ? true : undefined}>
+              <BookingDialogHeader labelId={titleId} type={bookingType}
+                tone={bookingStatus === 'confirmed' ? 'confirmed' : 'pending'}
+                eyebrow={title} title={bookingTitle || title} titleInput={titleInput} onClose={guardedClose}
+                pills={<><TypePill type={bookingType}/><StatusPill status={bookingStatus === 'confirmed' ? 'confirmed' : 'pending'}/></>} />
             </div>
-            <div className="flex-1 overflow-y-auto p-6 min-h-0" inert={asking ? true : undefined} aria-hidden={asking ? true : undefined}>
+            <div className="flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto px-6 pb-6 pt-5" inert={asking ? true : undefined} aria-hidden={asking ? true : undefined}>
               {children}
             </div>
             {footer && (
-              <div className="p-6 flex-shrink-0 border-t border-edge-secondary" inert={asking ? true : undefined} aria-hidden={asking ? true : undefined}>
+              <div className="flex-none border-t border-edge-faint px-6 py-3.5" inert={asking ? true : undefined} aria-hidden={asking ? true : undefined}>
                 {footer}
               </div>
             )}

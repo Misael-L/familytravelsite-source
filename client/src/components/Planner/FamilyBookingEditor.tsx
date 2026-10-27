@@ -1,3 +1,5 @@
+import { DialogButton } from '../shared/DialogShell'
+import { INPUT, LABEL, Segmented } from '../shared/dialogParts'
 /**
  * W6.2 Family Bookings editor — TREK ReservationModal field language, UUID SoR.
  * Nest ReservationModal stays on the nest plane.
@@ -40,8 +42,8 @@ const TYPE_OPTIONS: { value: BookingType; labelKey: string; Icon: typeof Hotel }
   { value: 'other', labelKey: 'reservations.type.other', Icon: FileText },
 ]
 
-const inputClass = 'w-full border border-edge rounded-[10px] px-[12px] py-[8px] text-[13px] font-[inherit] outline-none box-border text-content bg-surface-input'
-const labelClass = 'block text-[11px] font-semibold text-content-faint mb-[5px] uppercase tracking-[0.03em]'
+const inputClass = INPUT
+const labelClass = LABEL
 
 type BookingFormSnapshot = {
   type: BookingType
@@ -472,6 +474,8 @@ export default function FamilyBookingEditor({
   return (
     <FamilyBookingDialogFrame
       title={reservation ? t('reservations.editTitle') : t('reservations.newTitle')}
+      bookingType={type} bookingTitle={title} bookingStatus={status}
+      titleInput={{value: title, onChange: setTitle, label: `${t('reservations.titleLabel')} *`, placeholder: t('reservations.titlePlaceholder'), required: true}}
       snapshot={snapshot}
       baseline={baseline}
       busy={saving}
@@ -492,38 +496,8 @@ export default function FamilyBookingEditor({
       >
         <div>
           <label className={labelClass}>{t('reservations.bookingType')}</label>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
-            {TYPE_OPTIONS.map(({ value, labelKey, Icon }) => (
-              <button
-                key={value}
-                type="button"
-                onClick={() => setType(value)}
-                className={type === value ? 'bg-[var(--text-primary)] text-[var(--bg-primary)]' : 'bg-surface-card text-content-muted'}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: 4,
-                  padding: '5px 10px', borderRadius: 99, border: '1px solid',
-                  fontSize: 'calc(11px * var(--fs-scale-caption, 1))', fontWeight: 500,
-                  cursor: 'pointer', fontFamily: 'inherit',
-                  borderColor: type === value ? 'var(--text-primary)' : 'var(--border-primary)',
-                }}
-              >
-                <Icon size={11} /> {t(labelKey)}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <label className={labelClass} htmlFor={titleFieldId}>{t('reservations.titleLabel')} *</label>
-          <input
-            id={titleFieldId}
-            type="text"
-            value={title}
-            onChange={e => setTitle(e.target.value)}
-            required
-            placeholder={t('reservations.titlePlaceholder')}
-            className={inputClass}
-          />
+          <Segmented<BookingType> value={type} onChange={setType} label={t('reservations.bookingType')}
+            columns={3} options={TYPE_OPTIONS.map(({ value, labelKey, Icon }) => ({ value, label: t(labelKey), icon: <Icon size={13} /> }))} />
         </div>
 
         {!isHotel && (
@@ -786,29 +760,9 @@ function BookingEditorFooter({
   const { t } = useTranslation()
   const requestClose = useBookingRequestClose()
   return (
-    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
-      <button
-        type="button"
-        onClick={requestClose}
-        className="text-content-muted"
-        style={{ padding: '8px 16px', borderRadius: 10, border: '1px solid var(--border-primary)', background: 'none', fontSize: 'calc(12px * var(--fs-scale-body, 1))', cursor: 'pointer', fontFamily: 'inherit' }}
-      >
-        {t('common.cancel')}
-      </button>
-      <button
-        type="button"
-        onClick={onSubmit}
-        disabled={disabled}
-        className="bg-[var(--text-primary)] text-[var(--bg-primary)]"
-        style={{
-          padding: '8px 20px', borderRadius: 10, border: 'none',
-          fontSize: 'calc(12px * var(--fs-scale-body, 1))', fontWeight: 600,
-          cursor: 'pointer', fontFamily: 'inherit',
-          opacity: disabled ? 0.5 : 1,
-        }}
-      >
-        {saving ? t('common.saving') : label}
-      </button>
+    <div className="flex items-center justify-end gap-2">
+      <DialogButton onClick={requestClose}>{t('common.cancel')}</DialogButton>
+      <DialogButton variant="primary" onClick={onSubmit} disabled={disabled}>{saving ? t('common.saving') : label}</DialogButton>
     </div>
   )
 }

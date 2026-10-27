@@ -214,9 +214,12 @@ describe('FamilyBookingEditor dialog focus', () => {
     await user.type(titleField(), 'Hotel Erba')
     const close = screen.getByRole('button', { name: 'Close' })
     const add = screen.getByRole('button', { name: 'Add' })
-    close.focus()
+    // TREK's title input is the first control in the copied header.
+    titleField().focus()
     await user.tab({ shift: true })
     expect(add).toHaveFocus()
+    await user.tab()
+    expect(titleField()).toHaveFocus()
     await user.tab()
     expect(close).toHaveFocus()
 

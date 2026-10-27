@@ -1,3 +1,6 @@
+import FamilyPlacesEmptyState from './FamilyPlacesEmptyState'
+import { FamilyPlacesHeader } from './FamilyPlacesHeader'
+import { FamilyPlaceRow } from './FamilyPlaceRow'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { CalendarDays, Check, ChevronDown, MapPin, Navigation, Pencil, Plus, Route, Search, Trash2, Upload, X } from 'lucide-react'
 import { useTranslation } from '../../../i18n'
@@ -61,6 +64,7 @@ export default function FamilyPlacesSidebar({
   const { t } = useTranslation()
   const ctxMenu = useContextMenu()
   const [search, setSearch] = useState('')
+  const [sortByName, setSortByName] = useState(false)
   const [filter, setFilter] = useState<FilterTab>('all')
   const [categoryFilters, setCategoryFilters] = useState<Set<string>>(new Set())
   const [catDropOpen, setCatDropOpen] = useState(false)
@@ -94,8 +98,8 @@ export default function FamilyPlacesSidebar({
   const filtered = useMemo(() => {
     if (filter === 'unplanned') return searched.filter(p => !plannedPlaceIds.has(p.id))
     if (filter === 'tracks') return []
-    return searched
-  }, [searched, filter, plannedPlaceIds])
+    return sortByName ? [...searched].sort((a, b) => a.name.localeCompare(b.name) || a.id.localeCompare(b.id)) : searched
+  }, [searched, filter, plannedPlaceIds, sortByName])
 
   const searchedTracks = useMemo(() => {
     const q = search.trim().toLowerCase()
@@ -140,103 +144,10 @@ export default function FamilyPlacesSidebar({
     : (filtered.length === 1 ? t('places.countSingular') : t('places.count', { count: filtered.length }))
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', fontFamily: 'var(--font-system)', position: 'relative' }}>
-      <div className="border-b border-edge-faint" style={{ padding: '14px 16px 10px', flexShrink: 0 }}>
-        <button
-          type="button"
-          onClick={onAddPlace}
-          className="bg-accent text-accent-text"
-          style={{
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-            width: '100%', padding: '8px 12px', borderRadius: 12, border: 'none',
-            fontSize: 'calc(13px * var(--fs-scale-body, 1))', fontWeight: 500,
-            cursor: 'pointer', fontFamily: 'inherit', marginBottom: 10,
-          }}
-        >
-          <Plus size={14} strokeWidth={2} /> {t('places.addPlace')}
-        </button>
-
-        <div style={{ display: 'flex', gap: 6, marginBottom: 10 }}>
-          <button
-            type="button"
-            onClick={onImportFile}
-            className="border border-dashed border-edge text-content-faint"
-            style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
-              flex: 1, padding: '5px 12px', borderRadius: 8,
-              background: 'none', fontSize: 'calc(11px * var(--fs-scale-caption, 1))', fontWeight: 500,
-              cursor: 'pointer', fontFamily: 'inherit',
-            }}
-          >
-            <Upload size={11} strokeWidth={2} /> {t('places.importFile')}
-          </button>
-          <button
-            type="button"
-            onClick={() => onToastWrite('import')}
-            className="border border-dashed border-edge text-content-faint"
-            style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
-              flex: 1, padding: '5px 12px', borderRadius: 8,
-              background: 'none', fontSize: 'calc(11px * var(--fs-scale-caption, 1))', fontWeight: 500,
-              cursor: 'pointer', fontFamily: 'inherit',
-            }}
-          >
-            <MapPin size={11} strokeWidth={2} /> {t('places.importList')}
-          </button>
-        </div>
-        <div className="bg-edge" style={{ height: 1, margin: '2px 0 10px' }} />
-
-        <div style={{ display: 'flex', gap: 6, marginBottom: 8, flexWrap: 'wrap' }}>
-          {tabs.map(tab => {
-            const active = filter === tab.id
-            return (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => setFilter(tab.id)}
-                className={active ? 'bg-accent text-accent-text' : 'bg-surface-card text-content'}
-                style={{
-                  appearance: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit',
-                  display: 'inline-flex', alignItems: 'center', gap: 5,
-                  padding: '4px 9px', borderRadius: 99,
-                  fontSize: 'calc(11px * var(--fs-scale-caption, 1))', fontWeight: 500, whiteSpace: 'nowrap',
-                  boxShadow: active ? 'none' : '0 1px 2px rgba(0,0,0,0.06)',
-                }}
-              >
-                {tab.label}
-                <span className={active ? 'text-accent-text' : 'text-content-faint'} style={{
-                  fontSize: 'calc(9px * var(--fs-scale-caption, 1))', fontWeight: 600, lineHeight: 1,
-                  background: active ? 'color-mix(in srgb, var(--accent-text) 22%, transparent)' : 'var(--bg-tertiary)',
-                  padding: '1px 5px', borderRadius: 99, minWidth: 14, textAlign: 'center',
-                }}>
-                  {counts[tab.id]}
-                </span>
-              </button>
-            )
-          })}
-        </div>
-
-        <div style={{ position: 'relative' }}>
-          <Search size={13} strokeWidth={1.8} color="var(--text-faint)" style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
-          <input
-            type="text"
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            placeholder={t('places.search')}
-            className="bg-surface-tertiary text-content"
-            style={{
-              width: '100%', padding: '7px 30px 7px 30px', borderRadius: 10,
-              border: 'none', fontSize: 'calc(12px * var(--fs-scale-body, 1))',
-              outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box',
-            }}
-          />
-          {search && (
-            <button type="button" onClick={() => setSearch('')} style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex' }}>
-              <X size={12} strokeWidth={2} color="var(--text-faint)" />
-            </button>
-          )}
-        </div>
-
+    <div style={{ display: 'flex', flex: '1 1 0%', minHeight: 0, flexDirection: 'column', height: '100%', fontFamily: 'var(--font-system)', position: 'relative' }}>
+      <FamilyPlacesHeader search={search} setSearch={setSearch} filter={filter} setFilter={value => setFilter(value as FilterTab)}
+        tabs={tabs} counts={counts} onAddPlace={onAddPlace} onImportFile={onImportFile}
+        sortByName={sortByName} onSort={() => setSortByName(value => !value)}>
         {categoriesEnabled && categories.length > 0 && (() => {
           const toggle = (id: string) => {
             setCategoryFilters(prev => {
@@ -254,13 +165,13 @@ export default function FamilyPlacesSidebar({
                 : categories.find(c => categoryFilters.has(c.id))?.name || t('places.allCategories'))
               : `${categoryFilters.size} ${t('places.categoriesSelected')}`
           return (
-            <div style={{ marginTop: 6, position: 'relative' }}>
+            <div style={{ position: 'relative', flexShrink: 0 }}>
               <button
                 type="button"
                 onClick={() => setCatDropOpen(v => !v)}
                 className="bg-surface-card text-content"
                 style={{
-                  width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  maxWidth: 130, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                   padding: '6px 10px', borderRadius: 8, border: '1px solid var(--border-primary)',
                   fontSize: 'calc(12px * var(--fs-scale-body, 1))',
                   cursor: 'pointer', fontFamily: 'inherit',
@@ -334,7 +245,7 @@ export default function FamilyPlacesSidebar({
             </div>
           )
         })()}
-      </div>
+      </FamilyPlacesHeader>
 
       <div style={{ padding: '6px 16px 4px', flexShrink: 0 }}>
         <span className="text-content-faint" style={{ fontSize: 'calc(11px * var(--fs-scale-caption, 1))' }}>
@@ -398,87 +309,24 @@ export default function FamilyPlacesSidebar({
             )
           })
         ) : filtered.length === 0 ? (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '40px 16px', gap: 8 }}>
-            <span className="text-content-faint" style={{ fontSize: 'calc(13px * var(--fs-scale-body, 1))' }}>
-              {emptyLabel}
-            </span>
-            <button type="button" onClick={onAddPlace} className="text-content" style={{ fontSize: 'calc(12px * var(--fs-scale-body, 1))', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline', fontFamily: 'inherit' }}>
-              {t('places.addPlace')}
-            </button>
-          </div>
+          <FamilyPlacesEmptyState scene="search" mood="confused" size={92} fill surface="var(--bg-secondary)"
+            title={emptyLabel} action={<button type="button" onClick={onAddPlace}
+              className="text-caption text-content underline underline-offset-2 hover:text-accent">{t('places.addPlace')}</button>} />
         ) : filtered.map(place => {
           const isSelected = place.id === selectedPlaceId
           return (
-            <div
-              key={place.id}
-              ref={el => {
-                if (el) rowRefs.current.set(place.id, el)
-                else rowRefs.current.delete(place.id)
-              }}
-              role="option"
-              aria-selected={isSelected}
-              onClick={() => onSelectPlace(isSelected && !isMobile ? null : place.id)}
-              onContextMenu={e => openContextMenu(e, place)}
-              style={{
-                display: 'flex', alignItems: 'center', gap: 10,
-                padding: '9px 14px 9px 16px',
-                cursor: 'pointer',
-                background: isSelected ? 'var(--border-faint)' : 'transparent',
-                borderBottom: '1px solid var(--border-faint)',
-                transition: 'background 0.1s',
-              }}
-              onMouseEnter={e => { if (!isSelected) e.currentTarget.style.background = 'var(--bg-hover)' }}
-              onMouseLeave={e => { if (!isSelected) e.currentTarget.style.background = 'transparent' }}
-            >
-              <PlaceAvatar
-                place={{ id: place.id, name: place.name, lat: place.lat, lng: place.lng, image_url: place.imageUrl, google_place_id: null, osm_id: null }}
-                size={34}
-                category={categoriesEnabled && place.familyPlaceCategoryId
-                  ? { color: place.familyPlaceCategoryColor ?? undefined, icon: place.familyPlaceCategoryIcon ?? undefined }
-                  : null}
-              />
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 5, overflow: 'hidden' }}>
-                  <span className="text-content" style={{ fontSize: 'calc(13px * var(--fs-scale-body, 1))', fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.2 }}>
-                    {place.name}
-                  </span>
-                  {place.isPrimary && (
-                    <span style={{
-                      flexShrink: 0, fontSize: 'calc(9px * var(--fs-scale-caption, 1))', fontWeight: 600,
-                      letterSpacing: '0.04em', textTransform: 'uppercase',
-                      color: 'var(--accent-text)', background: 'var(--accent)',
-                      padding: '1px 6px', borderRadius: 99,
-                    }}>
-                      Primary
-                    </span>
-                  )}
-                </div>
-                {categoriesEnabled && place.familyPlaceCategoryName && (
-                  <span className="text-content-faint" style={{ fontSize: 'calc(11px * var(--fs-scale-caption, 1))', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', lineHeight: 1.2, marginTop: 2 }}>
-                    {place.familyPlaceCategoryName}
-                  </span>
-                )}
-                {place.notes && (
-                  <span className="text-content-faint" style={{ fontSize: 'calc(11px * var(--fs-scale-caption, 1))', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', lineHeight: 1.2, marginTop: 2 }}>
-                    {place.notes}
-                  </span>
-                )}
-              </div>
-              <button
-                type="button"
-                onClick={e => { e.stopPropagation(); onAssignToDay(place.id) }}
-                className="bg-surface-hover text-content-faint"
-                aria-label={t('planner.addToDay')}
-                style={{
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  width: 20, height: 20, borderRadius: 6, border: 'none', cursor: 'pointer', padding: 0,
-                }}
-                onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent)'; e.currentTarget.style.color = 'var(--accent-text)' }}
-                onMouseLeave={e => { e.currentTarget.style.background = 'var(--bg-hover)'; e.currentTarget.style.color = 'var(--text-faint)' }}
-              >
-                <Plus size={12} strokeWidth={2.5} />
-              </button>
-            </div>
+            <FamilyPlaceRow key={place.id} place={place}
+              category={categoriesEnabled && place.familyPlaceCategoryId ? {name: place.familyPlaceCategoryName ?? '', icon: place.familyPlaceCategoryIcon ?? '', color: place.familyPlaceCategoryColor ?? undefined} : undefined}
+              isSelected={isSelected} isPlanned={plannedPlaceIds.has(place.id)} inDay={false} isChecked={false} selectMode={false}
+              selectedDayId={null} canEditPlaces={canMutate} isMobile={isMobile} t={t}
+              onPlaceClick={onSelectPlace} onContextMenu={openContextMenu}
+              menuItems={() => [
+                categoriesEnabled && canMutate ? {label: t('common.edit'), icon: Pencil, onClick: () => onEditPlace(place.id)} : null,
+                {label: t('planner.addToDay'), icon: CalendarDays, onClick: () => onAssignToDay(place.id)},
+                canMutate ? {label: t('common.delete'), icon: Trash2, danger: true, onClick: () => onDeletePlace(place.id)} : null,
+              ].filter(Boolean)}
+              onAssignToDay={onAssignToDay} toggleSelected={() => {}} setDayPickerPlace={value => onSelectPlace(value.id)}
+              registerPlaceRow={(id, el) => {if (el) rowRefs.current.set(id, el); else rowRefs.current.delete(id)}} />
           )
         })}
       </div>

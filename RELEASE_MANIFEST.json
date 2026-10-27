@@ -1,7 +1,7 @@
 {
-  "privateProductionCommit": "acae39758463422184914cafe442713e629f55bd",
-  "privateCommitSubject": "fix(planner): reuse upstream TREK presentation across Family phases",
-  "publicSourceTag": "source-20261027-acae397",
+  "privateProductionCommit": "247b76ea94942e511a663f3f840c81821c556fc5",
+  "privateCommitSubject": "test(planner): correct accessible-query option types",
+  "publicSourceTag": "source-20261027-247b76e",
   "publicSourceRemote": "https://github.com/Misael-L/familytravelsite-source.git",
   "workersBuildUuid": null,
   "workersVersionId": null,
@@ -9,5 +9,5 @@
   "buildCommand": "npm run build:web",
   "origin": "https://familytravelsite.lmisael0721.workers.dev",
   "license": "AGPL-3.0-only",
-  "createdAtUtc": "2026-10-27T20:11:27Z"
+  "createdAtUtc": "2026-10-27T20:17:49Z"
 }

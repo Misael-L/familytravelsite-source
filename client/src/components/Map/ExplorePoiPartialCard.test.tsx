@@ -4,13 +4,17 @@ import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { ToastContainer } from '../shared/Toast'
 import { useSaveToCollectionStore } from '../../store/saveToCollectionStore'
+import { useAddonStore } from '../../store/addonStore'
 import { listFamilyListMembership } from '../../data/supabase/familyLists'
 import type { Poi } from './poiCategories'
 
-vi.mock('../../data/supabase/catalogExploreMedia', () => ({
-  listCatalogMediaUrlsForEntity: vi.fn().mockResolvedValue([]),
-  toDisplayImageUrl: (url: string) => url,
-}))
+vi.mock('../../data/supabase/catalogExploreMedia', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../data/supabase/catalogExploreMedia')>()
+  return {
+    ...actual,
+    listCatalogVariantSlidesForEntity: vi.fn().mockResolvedValue([]),
+  }
+})
 
 vi.mock('../../data/supabase/catalogSaves', () => ({
   isCatalogSaved: vi.fn().mockResolvedValue(false),
@@ -25,6 +29,7 @@ vi.mock('../../data/supabase/familyLists', async (importOriginal) => {
   }
 })
 
+import { listCatalogVariantSlidesForEntity } from '../../data/supabase/catalogExploreMedia'
 import ExplorePoiPartialCard from './ExplorePoiPartialCard'
 
 const FOOD_ID = '550e8400-e29b-41d4-a716-446655440000'
@@ -74,6 +79,10 @@ describe('ExplorePoiPartialCard — Add to list', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     useSaveToCollectionStore.setState({ target: null, version: 0 })
+    useAddonStore.setState({
+      addons: [{ id: 'collections', name: 'Collections', type: 'collections', icon: 'bookmark', enabled: true }],
+      loaded: true,
+    })
     vi.mocked(listFamilyListMembership).mockResolvedValue([])
   })
 
@@ -118,5 +127,52 @@ describe('ExplorePoiPartialCard — Add to list', () => {
     expect(screen.queryByRole('button', { name: 'Add to list' })).toBeNull()
     expect(screen.queryByRole('button', { name: 'Save' })).toBeNull()
     expect(screen.getByRole('button', { name: 'Close' })).toBeInTheDocument()
+  })
+})
+
+const HERO_A =
+  'https://catalog.example.invalid/storage/v1/object/public/catalog/variants/v1/aa/hero-a.webp'
+const HERO_B =
+  'https://catalog.example.invalid/storage/v1/object/public/catalog/variants/v1/bb/hero-b.webp'
+
+describe('ExplorePoiPartialCard — variant heroes', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    useSaveToCollectionStore.setState({ target: null, version: 0 })
+    useAddonStore.setState({ addons: [], loaded: true })
+  })
+
+  it('renders a ready hero and advances to the next one', async () => {
+    const user = userEvent.setup()
+    vi.mocked(listCatalogVariantSlidesForEntity).mockResolvedValue([
+      { position: 0, mediaAssetId: 'a', canonicalUrl: 'https://cdn.example/a.jpg', heroUrl: HERO_A },
+      { position: 1, mediaAssetId: 'b', canonicalUrl: 'https://cdn.example/b.jpg', heroUrl: HERO_B },
+    ])
+    const view = renderCard()
+    const image = await waitFor(() => {
+      const node = view.container.querySelector('img')
+      expect(node).toHaveAttribute('src', HERO_A)
+      return node
+    })
+    expect(view.container.innerHTML).not.toContain('/render/image/')
+    expect(view.container.innerHTML).not.toContain('cdn.example/a.jpg')
+    await user.click(screen.getByRole('button', { name: 'Next photo' }))
+    expect(image).toHaveAttribute('src', HERO_B)
+  })
+
+  it('keeps the placeholder when the gallery has no ready hero', async () => {
+    vi.mocked(listCatalogVariantSlidesForEntity).mockResolvedValue([
+      { position: 0, mediaAssetId: 'a', canonicalUrl: 'https://cdn.example/a.jpg', heroUrl: null },
+    ])
+    const view = renderCard()
+    await waitFor(() => {
+      expect(listCatalogVariantSlidesForEntity).toHaveBeenCalled()
+    })
+    await waitFor(() => {
+      expect(view.container.querySelector('.animate-spin')).toBeNull()
+    })
+    expect(view.container.querySelector('img')).toBeNull()
+    expect(view.container.innerHTML).not.toContain('/render/image/')
+    expect(view.container.innerHTML).not.toContain('cdn.example/a.jpg')
   })
 })

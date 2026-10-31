@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { isReadyCatalogVariantUrl } from '../../data/supabase/catalogExploreMedia'
 
 /**
  * iOS `CatalogExploreMediaStore.openPrefetchCount`: warm the current hero
@@ -69,6 +70,7 @@ export function prefetchHeroAround(
 ): void {
   if (typeof Image === 'undefined') return
   for (const url of heroPrefetchUrls(urls, centerIndex, count)) {
+    if (!isReadyCatalogVariantUrl(url)) continue
     enqueueWarm(url)
   }
   pump()

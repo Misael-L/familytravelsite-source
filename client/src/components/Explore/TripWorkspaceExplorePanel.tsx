@@ -11,7 +11,6 @@ import {
   type ExploreDeepLink,
 } from '../../data/supabase/catalogExploreLists'
 import { listSavedCatalogEntityIds } from '../../data/supabase/catalogSaves'
-import { toDisplayImageUrl } from '../../data/supabase/catalogExploreMedia'
 import type { FamilyScheduleItem } from '../../data/supabase/scheduleItems'
 import type { FamilyTripDay } from '../../data/supabase/tripDays'
 import type { StageExploreOp } from '../../data/supabase/exploreAddToTrip'
@@ -337,10 +336,12 @@ export default function TripWorkspaceExplorePanel({
                 >
                   {item.coverUrl ? (
                     <img
-                      src={toDisplayImageUrl(item.coverUrl)}
+                      src={item.coverUrl}
                       alt=""
                       width={48}
                       height={48}
+                      loading="lazy"
+                      decoding="async"
                       style={{
                         width: 48,
                         height: 48,

@@ -1,13 +1,13 @@
 {
-  "privateProductionCommit": "247b76ea94942e511a663f3f840c81821c556fc5",
-  "privateCommitSubject": "test(planner): correct accessible-query option types",
-  "publicSourceTag": "source-20261027-247b76e",
+  "privateProductionCommit": "1bf654b84042208e1be6c351402b6d713f4d4537",
+  "privateCommitSubject": "feat(catalog): read ready image variants on member web",
+  "publicSourceTag": "source-20261031-1bf654b",
   "publicSourceRemote": "https://github.com/Misael-L/familytravelsite-source.git",
   "workersBuildUuid": null,
-  "workersVersionId": null,
+  "workersVersionId": "a5814c29-fe0c-446c-bd89-146e549a4be4",
   "node": "22",
   "buildCommand": "npm run build:web",
   "origin": "https://familytravelsite.lmisael0721.workers.dev",
   "license": "AGPL-3.0-only",
-  "createdAtUtc": "2026-10-27T20:17:49Z"
+  "createdAtUtc": "2026-10-31T17:16:23Z"
 }

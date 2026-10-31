@@ -4,7 +4,7 @@
  */
 import { getSupabaseBrowserClient } from './client'
 import type { CatalogPoiKind } from '../../lib/map/catalogPoiRef'
-import type { CatalogMediaKind } from './catalogExploreMedia'
+import { listCatalogVariantsForAssets, type CatalogMediaKind } from './catalogExploreMedia'
 
 export type ExploreCatalogKind = 'place' | 'experience' | 'food' | 'hotel'
 
@@ -34,19 +34,41 @@ export type ExploreCatalogEntityDetail = {
   latitude: number | null
   longitude: number | null
   coverUrl: string | null
+  canonicalCoverUrl: string | null
   placeId: string | null
 }
 
 const LIST_LIMIT = 200
 
 type LabelEmbed = { label?: string | null } | null
-type CoverMediaRow = { public_url?: string | null }
+type CoverMediaRow = { id?: string | null; public_url?: string | null }
 type CoverEmbed = CoverMediaRow | CoverMediaRow[] | null
 
 function sanitizedLabel(embed: LabelEmbed): string | null {
   if (!embed || Array.isArray(embed)) return null
   const label = embed.label?.trim()
   return label || null
+}
+
+function coverMediaId(embed: CoverEmbed): string | null {
+  if (!embed) return null
+  const row: CoverMediaRow | undefined = Array.isArray(embed) ? embed[0] : embed
+  const id = row?.id?.trim()
+  return id || null
+}
+
+async function withReadyCovers<T extends { coverUrl: string | null; coverMediaId: string | null }>(
+  items: T[],
+  role: 'thumb' | 'hero',
+): Promise<Array<Omit<T, 'coverMediaId'>>> {
+  const variants = await listCatalogVariantsForAssets(
+    items.map(item => item.coverMediaId).filter((id): id is string => Boolean(id)),
+  )
+  return items.map(({ coverMediaId: mediaId, ...item }) => {
+    const descriptor = mediaId ? variants.get(mediaId) : undefined
+    const ready = role === 'thumb' ? descriptor?.thumbUrl : descriptor?.heroUrl
+    return { ...item, coverUrl: ready ?? null }
+  })
 }
 
 function coverPublicUrl(embed: CoverEmbed): string | null {
@@ -147,14 +169,14 @@ async function queryCatalogList(opts: {
     case 'place': {
       let q = sb
         .from('places')
-        .select('id,name,place_types(label),cover_media:media_assets!cover_media_id(public_url)')
+        .select('id,name,place_types(label),cover_media:media_assets!cover_media_id(id,public_url)')
         .in('country_id', countryIds)
         .is('archived_at', null)
       if (byIds) q = q.in('id', [...opts.ids!])
       else q = q.order('name').limit(opts.limit)
       const { data, error } = await q
       if (error) throw error
-      return ((data ?? []) as Array<{
+      return withReadyCovers(((data ?? []) as Array<{
         id: string
         name: string | null
         place_types: LabelEmbed
@@ -164,20 +186,21 @@ async function queryCatalogList(opts: {
         kind: 'place' as const,
         name: row.name?.trim() || 'Untitled place',
         subtitle: sanitizedLabel(row.place_types),
-        coverUrl: coverPublicUrl(row.cover_media),
-      }))
+        coverUrl: null,
+        coverMediaId: coverMediaId(row.cover_media),
+      })), 'thumb')
     }
     case 'experience': {
       let q = sb
         .from('experiences')
-        .select('id,name,address,experience_types(label),cover_media:media_assets!cover_media_id(public_url)')
+        .select('id,name,address,experience_types(label),cover_media:media_assets!cover_media_id(id,public_url)')
         .in('country_id', countryIds)
         .is('archived_at', null)
       if (byIds) q = q.in('id', [...opts.ids!])
       else q = q.order('name').limit(opts.limit)
       const { data, error } = await q
       if (error) throw error
-      return ((data ?? []) as Array<{
+      return withReadyCovers(((data ?? []) as Array<{
         id: string
         name: string | null
         address: string | null
@@ -188,20 +211,21 @@ async function queryCatalogList(opts: {
         kind: 'experience' as const,
         name: row.name?.trim() || 'Untitled experience',
         subtitle: listSubtitle(row.address, sanitizedLabel(row.experience_types)),
-        coverUrl: coverPublicUrl(row.cover_media),
-      }))
+        coverUrl: null,
+        coverMediaId: coverMediaId(row.cover_media),
+      })), 'thumb')
     }
     case 'food': {
       let q = sb
         .from('foods')
-        .select('id,name,address,establishment_types(label),cover_media:media_assets!cover_media_id(public_url)')
+        .select('id,name,address,establishment_types(label),cover_media:media_assets!cover_media_id(id,public_url)')
         .in('country_id', countryIds)
         .is('archived_at', null)
       if (byIds) q = q.in('id', [...opts.ids!])
       else q = q.order('name').limit(opts.limit)
       const { data, error } = await q
       if (error) throw error
-      return ((data ?? []) as Array<{
+      return withReadyCovers(((data ?? []) as Array<{
         id: string
         name: string | null
         address: string | null
@@ -212,20 +236,21 @@ async function queryCatalogList(opts: {
         kind: 'food' as const,
         name: row.name?.trim() || 'Untitled food',
         subtitle: listSubtitle(row.address, sanitizedLabel(row.establishment_types)),
-        coverUrl: coverPublicUrl(row.cover_media),
-      }))
+        coverUrl: null,
+        coverMediaId: coverMediaId(row.cover_media),
+      })), 'thumb')
     }
     case 'hotel': {
       let q = sb
         .from('hotels')
-        .select('id,name,address,cover_media:media_assets!cover_media_id(public_url)')
+        .select('id,name,address,cover_media:media_assets!cover_media_id(id,public_url)')
         .in('country_id', countryIds)
         .is('archived_at', null)
       if (byIds) q = q.in('id', [...opts.ids!])
       else q = q.order('name').limit(opts.limit)
       const { data, error } = await q
       if (error) throw error
-      return ((data ?? []) as Array<{
+      return withReadyCovers(((data ?? []) as Array<{
         id: string
         name: string | null
         address: string | null
@@ -235,8 +260,9 @@ async function queryCatalogList(opts: {
         kind: 'hotel' as const,
         name: row.name?.trim() || 'Untitled hotel',
         subtitle: row.address?.trim() || null,
-        coverUrl: coverPublicUrl(row.cover_media),
-      }))
+        coverUrl: null,
+        coverMediaId: coverMediaId(row.cover_media),
+      })), 'thumb')
     }
   }
 }
@@ -258,7 +284,7 @@ export async function fetchExploreCatalogDetail(opts: {
     case 'place': {
       const { data, error } = await sb
         .from('places')
-        .select('id,name,notes,latitude,longitude,place_types(label),cover_media:media_assets!cover_media_id(public_url)')
+        .select('id,name,notes,latitude,longitude,place_types(label),cover_media:media_assets!cover_media_id(id,public_url)')
         .eq('id', id)
         .is('archived_at', null)
         .maybeSingle()
@@ -273,7 +299,7 @@ export async function fetchExploreCatalogDetail(opts: {
         place_types: LabelEmbed
         cover_media: CoverEmbed
       }
-      return {
+      return (await withReadyCovers([{
         id: row.id,
         kind: 'place',
         name: row.name?.trim() || 'Untitled place',
@@ -284,15 +310,17 @@ export async function fetchExploreCatalogDetail(opts: {
         typeLabel: sanitizedLabel(row.place_types),
         latitude: numOrNull(row.latitude),
         longitude: numOrNull(row.longitude),
-        coverUrl: coverPublicUrl(row.cover_media),
+        coverUrl: null,
+        coverMediaId: coverMediaId(row.cover_media),
+        canonicalCoverUrl: coverPublicUrl(row.cover_media),
         placeId: row.id,
-      }
+      }], 'hero'))[0] as ExploreCatalogEntityDetail
     }
     case 'experience': {
       const { data, error } = await sb
         .from('experiences')
         .select(
-          'id,name,notes,address,inspiration_url,place_id,latitude,longitude,experience_types(label),cover_media:media_assets!cover_media_id(public_url)',
+          'id,name,notes,address,inspiration_url,place_id,latitude,longitude,experience_types(label),cover_media:media_assets!cover_media_id(id,public_url)',
         )
         .eq('id', id)
         .is('archived_at', null)
@@ -311,7 +339,7 @@ export async function fetchExploreCatalogDetail(opts: {
         experience_types: LabelEmbed
         cover_media: CoverEmbed
       }
-      return {
+      return (await withReadyCovers([{
         id: row.id,
         kind: 'experience',
         name: row.name?.trim() || 'Untitled experience',
@@ -322,15 +350,17 @@ export async function fetchExploreCatalogDetail(opts: {
         typeLabel: sanitizedLabel(row.experience_types),
         latitude: numOrNull(row.latitude),
         longitude: numOrNull(row.longitude),
-        coverUrl: coverPublicUrl(row.cover_media),
+        coverUrl: null,
+        coverMediaId: coverMediaId(row.cover_media),
+        canonicalCoverUrl: coverPublicUrl(row.cover_media),
         placeId: row.place_id,
-      }
+      }], 'hero'))[0] as ExploreCatalogEntityDetail
     }
     case 'food': {
       const { data, error } = await sb
         .from('foods')
         .select(
-          'id,name,notes,address,link_url,place_id,latitude,longitude,establishment_types(label),cover_media:media_assets!cover_media_id(public_url)',
+          'id,name,notes,address,link_url,place_id,latitude,longitude,establishment_types(label),cover_media:media_assets!cover_media_id(id,public_url)',
         )
         .eq('id', id)
         .is('archived_at', null)
@@ -349,7 +379,7 @@ export async function fetchExploreCatalogDetail(opts: {
         establishment_types: LabelEmbed
         cover_media: CoverEmbed
       }
-      return {
+      return (await withReadyCovers([{
         id: row.id,
         kind: 'food',
         name: row.name?.trim() || 'Untitled food',
@@ -360,15 +390,17 @@ export async function fetchExploreCatalogDetail(opts: {
         typeLabel: sanitizedLabel(row.establishment_types),
         latitude: numOrNull(row.latitude),
         longitude: numOrNull(row.longitude),
-        coverUrl: coverPublicUrl(row.cover_media),
+        coverUrl: null,
+        coverMediaId: coverMediaId(row.cover_media),
+        canonicalCoverUrl: coverPublicUrl(row.cover_media),
         placeId: row.place_id,
-      }
+      }], 'hero'))[0] as ExploreCatalogEntityDetail
     }
     case 'hotel': {
       const { data, error } = await sb
         .from('hotels')
         .select(
-          'id,name,notes,address,website,contact_phone,place_id,latitude,longitude,cover_media:media_assets!cover_media_id(public_url)',
+          'id,name,notes,address,website,contact_phone,place_id,latitude,longitude,cover_media:media_assets!cover_media_id(id,public_url)',
         )
         .eq('id', id)
         .is('archived_at', null)
@@ -387,7 +419,7 @@ export async function fetchExploreCatalogDetail(opts: {
         longitude: unknown
         cover_media: CoverEmbed
       }
-      return {
+      return (await withReadyCovers([{
         id: row.id,
         kind: 'hotel',
         name: row.name?.trim() || 'Untitled hotel',
@@ -398,9 +430,11 @@ export async function fetchExploreCatalogDetail(opts: {
         typeLabel: null,
         latitude: numOrNull(row.latitude),
         longitude: numOrNull(row.longitude),
-        coverUrl: coverPublicUrl(row.cover_media),
+        coverUrl: null,
+        coverMediaId: coverMediaId(row.cover_media),
+        canonicalCoverUrl: coverPublicUrl(row.cover_media),
         placeId: row.place_id,
-      }
+      }], 'hero'))[0] as ExploreCatalogEntityDetail
     }
   }
 }

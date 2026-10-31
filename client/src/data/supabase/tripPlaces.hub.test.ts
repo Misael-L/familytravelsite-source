@@ -7,15 +7,21 @@ vi.mock('./client', () => ({
 }))
 
 const COVER_SELECT =
-  'trip_id,place_id,places(name,latitude,longitude,cover_media:media_assets!cover_media_id(public_url))'
+  'trip_id,place_id,places(name,latitude,longitude,cover_media:media_assets!cover_media_id(id,public_url))'
 const FALLBACK_SELECT = 'trip_id,place_id,places(name,latitude,longitude)'
+
+const READY_THUMB =
+  'https://catalog.example.invalid/storage/v1/object/public/catalog/variants/v1/aa/thumb-aa.webp'
 
 describe('listHubTripPlaces', () => {
   const from = vi.fn()
+  const rpc = vi.fn()
 
   beforeEach(() => {
     from.mockReset()
-    vi.mocked(getSupabaseBrowserClient).mockReturnValue({ from } as never)
+    rpc.mockReset()
+    rpc.mockResolvedValue({ data: [], error: { code: 'PGRST202', message: 'could not find the function' } })
+    vi.mocked(getSupabaseBrowserClient).mockReturnValue({ from, rpc } as never)
   })
 
   it('returns [] without querying when tripIds is empty', async () => {
@@ -33,7 +39,7 @@ describe('listHubTripPlaces', () => {
             name: 'Paris',
             latitude: 48.8,
             longitude: '2.3',
-            cover_media: { public_url: 'https://cdn.example/paris.jpg' },
+            cover_media: { id: 'm1', public_url: 'https://cdn.example/paris.jpg' },
           },
         },
         {
@@ -58,10 +64,16 @@ describe('listHubTripPlaces', () => {
         name: 'Paris',
         lat: 48.8,
         lng: 2.3,
-        imageUrl: 'https://cdn.example/paris.jpg',
+        imageUrl: null,
       },
       { tripId: 't1', placeId: 'pl2', name: 'Lyon', lat: null, lng: null, imageUrl: null },
     ])
+    expect(rpc).toHaveBeenCalledWith('catalog_media_variants_for_assets', {
+      p_media_ids: ['m1'],
+      p_recipe: 'v1',
+    })
+    expect(JSON.stringify(rows)).not.toContain('/render/image/')
+    expect(JSON.stringify(rows)).not.toContain('cdn.example/paris.jpg')
   })
 
   it('retries name/coords when the cover embed fails', async () => {
@@ -85,6 +97,41 @@ describe('listHubTripPlaces', () => {
     expect(rows).toEqual([
       { tripId: 't1', placeId: 'pl1', name: 'Paris', lat: 48.8, lng: 2.3, imageUrl: null },
     ])
+    expect(JSON.stringify(rows)).not.toContain('/render/image/')
+  })
+
+  it('uses a ready thumb and does not transform the canonical cover', async () => {
+    const inFn = vi.fn().mockResolvedValue({
+      data: [{
+        trip_id: 't1',
+        place_id: 'pl1',
+        places: {
+          name: 'Paris',
+          latitude: 48.8,
+          longitude: 2.3,
+          cover_media: { id: 'm1', public_url: 'https://cdn.example/paris.jpg' },
+        },
+      }],
+      error: null,
+    })
+    from.mockReturnValue({ select: vi.fn().mockReturnValue({ in: inFn }) })
+    rpc.mockResolvedValue({
+      data: [{
+        media_asset_id: 'm1',
+        public_url: 'https://cdn.example/paris.jpg',
+        thumb_url: READY_THUMB,
+        hero_url: null,
+        recipe_version: 'v1',
+      }],
+      error: null,
+    })
+    const rows = await listHubTripPlaces(['t1'])
+    expect(rpc).toHaveBeenCalledWith('catalog_media_variants_for_assets', {
+      p_media_ids: ['m1'],
+      p_recipe: 'v1',
+    })
+    expect(rows[0]?.imageUrl).toBe(READY_THUMB)
+    expect(rows[0]?.imageUrl).not.toContain('/render/image/')
   })
 
   it('throws on { error } when fallback also fails', async () => {

@@ -7,7 +7,7 @@
 
 import type { Trip } from '../../types'
 import type { FamilyDashboardTrip } from './familyDashboardModel'
-import { toThumbImageUrl } from '../../data/supabase/catalogExploreMedia'
+import { isReadyCatalogVariantUrl, resolveCatalogImageUrl } from '../../data/supabase/catalogExploreMedia'
 import { localIsoDate } from '../../utils/localIsoDate'
 
 /**
@@ -92,7 +92,11 @@ export function familyTripToHeroBundle(trip: FamilyDashboardTrip): HeroBundle {
   const places: Place[] = (trip.hub_places ?? []).map((p) => ({
     id: p.id,
     name: p.name,
-    image_url: p.imageUrl ? toThumbImageUrl(p.imageUrl) : null,
+    image_url: resolveCatalogImageUrl({
+      canonicalUrl: p.imageUrl,
+      role: 'thumb',
+      thumbUrl: p.imageUrl && isReadyCatalogVariantUrl(p.imageUrl) ? p.imageUrl : null,
+    }),
     lat: p.lat,
     lng: p.lng,
     google_place_id: null,

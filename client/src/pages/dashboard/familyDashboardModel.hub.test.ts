@@ -179,8 +179,15 @@ describe('familyTripToHeroBundle', () => {
     ])
   })
 
-  it('rewrites catalog cover URLs to thumb transforms on chips', () => {
-    const bundle = familyTripToHeroBundle(trip({
+  it('keeps a ready thumb and does not transform a canonical cover', () => {
+    const variant =
+      'https://catalog.example.invalid/storage/v1/object/public/catalog/variants/v1/aa/thumb-bb.webp'
+    const ready = familyTripToHeroBundle(trip({
+      id: 't1',
+      hub_places: [{ id: 'pl1', name: 'Gubbio', lat: 43.35, lng: 12.57, imageUrl: variant }],
+    }))
+    expect(ready.places[0]?.image_url).toBe(variant)
+    const canonical = familyTripToHeroBundle(trip({
       id: 't1',
       hub_places: [{
         id: 'pl1',
@@ -190,8 +197,6 @@ describe('familyTripToHeroBundle', () => {
         imageUrl: 'https://catalog.example.invalid/storage/v1/object/public/catalog/places/gubbio.jpg',
       }],
     }))
-    expect(bundle.places[0]?.image_url).toBe(
-      'https://catalog.example.invalid/storage/v1/render/image/public/catalog/places/gubbio.jpg?width=96&resize=contain&quality=75',
-    )
+    expect(canonical.places[0]?.image_url).toBeNull()
   })
 })

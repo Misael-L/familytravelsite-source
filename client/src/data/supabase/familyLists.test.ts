@@ -377,6 +377,83 @@ describe('familyLists adapter', () => {
     expect(loaded.collections[0].place_count).toBe(1)
     expect(loaded.places[0].name).toBe('Gubbio')
     expect(loaded.places[0].lat).toBe(43.35)
+    expect(loaded.places[0].image_url).toBeNull()
+  })
+
+  it('hydrates a ready catalog thumb instead of the canonical cover', async () => {
+    const thumb =
+      'https://catalog.example.invalid/storage/v1/object/public/catalog/variants/v1/aa/thumb-aa.webp'
+    const listsChain = thenable({
+      data: [{
+        id: 'list-1',
+        family_id: 'fam-1',
+        name: 'Eats',
+        description: null,
+        color: '#6366f1',
+        visibility: 'private',
+        sort_order: 0,
+        owner_person_id: 'p1',
+        archived_at: null,
+        created_at: null,
+        updated_at: null,
+        cover_media: null,
+      }],
+      error: null,
+    })
+    const itemsChain = thenable({
+      data: [{
+        id: 'item-1',
+        list_id: 'list-1',
+        item_kind: 'place',
+        status: 'idea',
+        sort_order: 0,
+        name: null,
+        notes: null,
+        country_id: null,
+        place_id: 'pl-1',
+        experience_id: null,
+        hotel_id: null,
+        airport_id: null,
+        airline_id: null,
+        guide_id: null,
+        food_id: null,
+        added_at: null,
+      }],
+      error: null,
+    })
+    const placesChain = thenable({
+      data: [{
+        id: 'pl-1',
+        name: 'Gubbio',
+        latitude: 43.35,
+        longitude: 12.57,
+        notes: null,
+        cover_media: { id: 'm1', public_url: 'https://cdn.example/g.jpg' },
+      }],
+      error: null,
+    })
+    from
+      .mockReturnValueOnce(listsChain)
+      .mockReturnValueOnce(itemsChain)
+      .mockReturnValueOnce(placesChain)
+    rpc.mockResolvedValue({
+      data: [{
+        media_asset_id: 'm1',
+        public_url: 'https://cdn.example/g.jpg',
+        thumb_url: thumb,
+        hero_url: null,
+        recipe_version: 'v1',
+      }],
+      error: null,
+    })
+
+    const loaded = await loadFamilyCollections({ familyId: 'fam-1', personId: 'p1' })
+    expect(rpc).toHaveBeenCalledWith('catalog_media_variants_for_assets', {
+      p_media_ids: ['m1'],
+      p_recipe: 'v1',
+    })
+    expect(loaded.places[0].image_url).toBe(thumb)
+    expect(loaded.places[0].image_url).not.toContain('/render/image/')
   })
 
   it('creates via RPC and throws on { error }', async () => {

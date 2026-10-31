@@ -1,4 +1,5 @@
 import { getSupabaseBrowserClient } from './client'
+import { listCatalogVariantsForAssets } from './catalogExploreMedia'
 
 /** UUID trip destination — not `@trek/shared` Place. */
 export type FamilyTripPlace = {
@@ -27,7 +28,7 @@ export type FamilyTripPlacePin = {
   isPrimary: boolean
 }
 
-type CoverMediaRow = { public_url?: string | null }
+type CoverMediaRow = { id?: string | null; public_url?: string | null }
 type CoverEmbed = CoverMediaRow | CoverMediaRow[] | null
 
 type PlaceEmbed = {
@@ -57,7 +58,7 @@ type TripPlaceJoinRow = {
   family_place_categories?: CategoryEmbed | CategoryEmbed[] | null
 }
 
-const COVER_EMBED = 'cover_media:media_assets!cover_media_id(public_url)'
+const COVER_EMBED = 'cover_media:media_assets!cover_media_id(id,public_url)'
 const PLACE_EMBED =
   `id,name,latitude,longitude,notes,time_zone,country_id,place_type_id,${COVER_EMBED}`
 const PLACE_EMBED_FALLBACK =
@@ -72,6 +73,20 @@ function embedPlace(raw: PlaceEmbed | PlaceEmbed[] | null): PlaceEmbed | null {
 function embedCategory(raw: CategoryEmbed | CategoryEmbed[] | null | undefined): CategoryEmbed | null {
   if (!raw) return null
   return Array.isArray(raw) ? (raw[0] ?? null) : raw
+}
+
+function coverMediaId(embed: CoverEmbed | undefined): string | null {
+  if (!embed) return null
+  const row: CoverMediaRow | undefined = Array.isArray(embed) ? embed[0] : embed
+  const id = row?.id?.trim()
+  return id || null
+}
+
+async function thumbsFor(ids: Array<string | null>): Promise<Map<string, string | null>> {
+  const variants = await listCatalogVariantsForAssets(ids.filter((id): id is string => Boolean(id)))
+  const out = new Map<string, string | null>()
+  for (const [id, descriptor] of variants) out.set(id, descriptor.thumbUrl)
+  return out
 }
 
 function coverPublicUrl(embed: CoverEmbed | undefined): string | null {
@@ -105,8 +120,8 @@ export type FamilyHubPlaceRow = {
 const HUB_PLACE_EMBED = 'name,latitude,longitude'
 const HUB_PLACE_EMBED_COVER = `${HUB_PLACE_EMBED},${COVER_EMBED}`
 
-function mapHubRows(data: unknown): FamilyHubPlaceRow[] {
-  const out: FamilyHubPlaceRow[] = []
+function mapHubRows(data: unknown): Array<FamilyHubPlaceRow & { coverMediaId: string | null }> {
+  const out: Array<FamilyHubPlaceRow & { coverMediaId: string | null }> = []
   for (const row of (data ?? []) as unknown as HubPlaceJoinRow[]) {
     if (!row.trip_id || !row.place_id) continue
     const place = embedPlace(row.places)
@@ -116,10 +131,21 @@ function mapHubRows(data: unknown): FamilyHubPlaceRow[] {
       name: place?.name?.trim() || null,
       lat: toCoord(place?.latitude ?? null),
       lng: toCoord(place?.longitude ?? null),
-      imageUrl: coverPublicUrl(place?.cover_media),
+      imageUrl: null,
+      coverMediaId: coverMediaId(place?.cover_media),
     })
   }
   return out
+}
+
+async function applyHubThumbs(
+  rows: Array<FamilyHubPlaceRow & { coverMediaId: string | null }>,
+): Promise<FamilyHubPlaceRow[]> {
+  const thumbs = await thumbsFor(rows.map(row => row.coverMediaId))
+  return rows.map(({ coverMediaId: mediaId, ...row }) => ({
+    ...row,
+    imageUrl: mediaId ? thumbs.get(mediaId) ?? null : null,
+  }))
 }
 
 /**
@@ -135,17 +161,17 @@ export async function listHubTripPlaces(tripIds: string[]): Promise<FamilyHubPla
     .select(`trip_id,place_id,places(${HUB_PLACE_EMBED_COVER})`)
     .in('trip_id', tripIds)
 
-  if (!error) return mapHubRows(data)
+  if (!error) return applyHubThumbs(mapHubRows(data))
 
   const retry = await sb
     .from('trip_places')
     .select(`trip_id,place_id,places(${HUB_PLACE_EMBED})`)
     .in('trip_id', tripIds)
   if (retry.error) throw retry.error
-  return mapHubRows(retry.data)
+  return applyHubThumbs(mapHubRows(retry.data))
 }
 
-function rowToFamilyTripPlace(row: TripPlaceJoinRow): FamilyTripPlace | null {
+function rowToFamilyTripPlace(row: TripPlaceJoinRow): (FamilyTripPlace & { coverMediaId: string | null }) | null {
   const place = embedPlace(row.places)
   if (!place?.id) return null
   const category = embedCategory(row.family_place_categories)
@@ -160,7 +186,8 @@ function rowToFamilyTripPlace(row: TripPlaceJoinRow): FamilyTripPlace | null {
     countryId: place.country_id ?? null,
     placeTypeId: place.place_type_id ?? null,
     isPrimary: Boolean(row.is_primary),
-    imageUrl: coverPublicUrl(place.cover_media),
+    imageUrl: null,
+    coverMediaId: coverMediaId(place.cover_media),
     familyPlaceCategoryId: categoryId,
     familyPlaceCategoryName: category?.name?.trim() || null,
     familyPlaceCategoryColor: category?.color_hex?.trim() || null,
@@ -187,9 +214,14 @@ export async function listTripPlaces(tripId: string): Promise<FamilyTripPlace[]>
         return retry.data
       })())
 
-  return ((rows ?? []) as unknown as TripPlaceJoinRow[])
+  const places = ((rows ?? []) as unknown as TripPlaceJoinRow[])
     .map(rowToFamilyTripPlace)
-    .filter((p): p is FamilyTripPlace => p != null)
+    .filter((p): p is FamilyTripPlace & { coverMediaId: string | null } => p != null)
+  const thumbs = await thumbsFor(places.map(place => place.coverMediaId))
+  return places.map(({ coverMediaId: mediaId, ...place }) => ({
+    ...place,
+    imageUrl: mediaId ? thumbs.get(mediaId) ?? null : null,
+  }))
 }
 
 export function tripPlacesToPins(places: FamilyTripPlace[]): FamilyTripPlacePin[] {

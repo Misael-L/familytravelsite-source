@@ -2,7 +2,7 @@ import { useEffect, useState, type CSSProperties } from 'react'
 import { ChevronLeft, ChevronRight, ExternalLink, MapPin, Phone, X } from 'lucide-react'
 import { POI_CATEGORY_BY_KEY, type Poi } from './poiCategories'
 import { parseCatalogPoiRef } from '../../lib/map/catalogPoiRef'
-import { listCatalogMediaUrlsForEntity } from '../../data/supabase/catalogExploreMedia'
+import { listCatalogVariantSlidesForEntity } from '../../data/supabase/catalogExploreMedia'
 import { catalogPoiKindToExploreKind } from '../../data/supabase/catalogExploreLists'
 import { usePrefetchHeroAround } from '../../lib/media/prefetchHeroImages'
 import { useTranslation } from '../../i18n'
@@ -73,9 +73,9 @@ export default function ExplorePoiPartialCard({
       return
     }
     setLoading(true)
-    void listCatalogMediaUrlsForEntity(ref.kind, ref.id)
+    void listCatalogVariantSlidesForEntity(ref.kind, ref.id)
       .then(list => {
-        if (!cancelled) setUrls(list)
+        if (!cancelled) setUrls(list.flatMap(item => (item.heroUrl ? [item.heroUrl] : [])))
       })
       .catch(() => {
         if (!cancelled) setUrls([])

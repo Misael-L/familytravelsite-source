@@ -10,7 +10,7 @@ import {
   type ExploreCatalogEntityDetail,
   type ExploreCatalogKind,
 } from '../../data/supabase/catalogExploreLists'
-import { listCatalogMediaUrlsForEntity, toDisplayImageUrl } from '../../data/supabase/catalogExploreMedia'
+import { listCatalogVariantSlidesForEntity, readyHeroSlides } from '../../data/supabase/catalogExploreMedia'
 import {
   addCatalogHotelStayToTrip,
   addCatalogPlaceToTrip,
@@ -101,7 +101,8 @@ export default function ExploreEntityDetailPanel({
   const [detail, setDetail] = useState<ExploreCatalogEntityDetail | null>(null)
   const [phase, setPhase] = useState<'loading' | 'loaded' | 'notFound' | 'error'>('loading')
   const [error, setError] = useState<string | null>(null)
-  const [imageUrls, setImageUrls] = useState<string[]>([])
+  const [slides, setSlides] = useState<Array<{ heroUrl: string | null; canonicalUrl: string }>>([])
+  const [showOriginal, setShowOriginal] = useState(false)
   const [mediaLoading, setMediaLoading] = useState(false)
   const [slide, setSlide] = useState(0)
   const [adding, setAdding] = useState(false)
@@ -150,7 +151,8 @@ export default function ExploreEntityDetailPanel({
     setPhase('loading')
     setError(null)
     setDetail(null)
-    setImageUrls([])
+    setSlides([])
+    setShowOriginal(false)
     setSlide(0)
     setShowDayPicker(false)
     setShowHotel(false)
@@ -178,19 +180,20 @@ export default function ExploreEntityDetailPanel({
     if (!detail) return
     const mediaKind = exploreKindToMediaKind(detail.kind)
     if (!mediaKind) {
-      setImageUrls([])
+      setSlides([])
       setMediaLoading(false)
       return
     }
     let cancelled = false
     setMediaLoading(true)
     setSlide(0)
-    void listCatalogMediaUrlsForEntity(mediaKind, detail.id)
-      .then(urls => {
-        if (!cancelled) setImageUrls(urls)
+    setShowOriginal(false)
+    void listCatalogVariantSlidesForEntity(mediaKind, detail.id)
+      .then(rows => {
+        if (!cancelled) setSlides(rows)
       })
       .catch(() => {
-        if (!cancelled) setImageUrls([])
+        if (!cancelled) setSlides([])
       })
       .finally(() => {
         if (!cancelled) setMediaLoading(false)
@@ -198,7 +201,9 @@ export default function ExploreEntityDetailPanel({
     return () => { cancelled = true }
   }, [detail])
 
-  usePrefetchHeroAround(imageUrls, slide)
+  const readySlides = readyHeroSlides(slides)
+  const heroes = readySlides.map(item => item.heroUrl as string)
+  usePrefetchHeroAround(heroes, slide)
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -423,10 +428,12 @@ export default function ExploreEntityDetailPanel({
   const accent = KIND_ACCENT[kind]
   const kindLabel = tr(KIND_LABEL_KEY[kind].key, KIND_LABEL_KEY[kind].fallback)
   const title = detail?.name ?? kindLabel
-  const hasSlides = imageUrls.length > 0
-  const current = hasSlides ? imageUrls[Math.min(slide, imageUrls.length - 1)] : null
-  const coverOnly = !hasSlides && detail?.coverUrl ? toDisplayImageUrl(detail.coverUrl) : null
-  const heroSrc = current || coverOnly
+  const hasSlides = readySlides.length > 0
+  const currentSlide = hasSlides ? readySlides[Math.min(slide, readySlides.length - 1)] : null
+  const current = currentSlide?.heroUrl ?? null
+  const currentCanonical = currentSlide?.canonicalUrl ?? detail?.canonicalCoverUrl ?? null
+  const coverOnly = !hasSlides ? detail?.coverUrl ?? null : null
+  const heroSrc = showOriginal && currentCanonical ? currentCanonical : current || coverOnly
 
   const purviewId = detail ? purviewPlaceIdFor(detail.kind, detail.id, detail.placeId) : null
   const outOfPurview = detail ? !isCatalogInPurview(purviewId, tripPlaceIdSet) : false
@@ -581,13 +588,38 @@ export default function ExploreEntityDetailPanel({
                   {tr('trip.explore.detail.loading', 'Loading…')}
                 </div>
               ) : heroSrc ? (
-                <img
-                  src={heroSrc}
-                  alt=""
-                  decoding="async"
-                  fetchPriority="high"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                />
+                <>
+                  <img
+                    src={heroSrc}
+                    alt=""
+                    decoding="async"
+                    fetchPriority="high"
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                  />
+                  {currentCanonical ? (
+                    <button
+                      type="button"
+                      onClick={() => setShowOriginal(value => !value)}
+                      style={{
+                        position: 'absolute',
+                        right: 12,
+                        bottom: 12,
+                        border: 'none',
+                        borderRadius: 999,
+                        padding: '6px 10px',
+                        background: 'rgba(17,24,39,0.72)',
+                        color: '#fff',
+                        font: 'inherit',
+                        fontSize: 12,
+                        cursor: 'pointer',
+                      }}
+                    >
+                      {showOriginal
+                        ? tr('trip.explore.detail.showDisplay', 'Show display image')
+                        : tr('trip.explore.detail.viewOriginal', 'View original')}
+                    </button>
+                  ) : null}
+                </>
               ) : (
                 <div
                   aria-hidden
@@ -630,12 +662,12 @@ export default function ExploreEntityDetailPanel({
                 </div>
               )}
 
-              {hasSlides && imageUrls.length > 1 && (
+              {hasSlides && heroes.length > 1 && (
                 <>
                   <button
                     type="button"
                     aria-label={tr('trip.explore.detail.prevPhoto', 'Previous photo')}
-                    onClick={() => setSlide(s => (s - 1 + imageUrls.length) % imageUrls.length)}
+                    onClick={() => setSlide(s => (s - 1 + heroes.length) % heroes.length)}
                     style={navBtnStyle('left')}
                   >
                     <ChevronLeft size={18} />
@@ -643,7 +675,7 @@ export default function ExploreEntityDetailPanel({
                   <button
                     type="button"
                     aria-label={tr('trip.explore.detail.nextPhoto', 'Next photo')}
-                    onClick={() => setSlide(s => (s + 1) % imageUrls.length)}
+                    onClick={() => setSlide(s => (s + 1) % heroes.length)}
                     style={navBtnStyle('right')}
                   >
                     <ChevronRight size={18} />
@@ -659,7 +691,7 @@ export default function ExploreEntityDetailPanel({
                       gap: 5,
                     }}
                   >
-                    {imageUrls.map((_, i) => (
+                    {heroes.map((_, i) => (
                       <button
                         key={i}
                         type="button"

@@ -4,6 +4,7 @@
  */
 import type { Collection, CollectionPlace, CollectionStatus } from '@trek/shared'
 import { getSupabaseBrowserClient } from './client'
+import { listCatalogVariantsForAssets } from './catalogExploreMedia'
 import { normalizeImageFile } from '../../utils/convertHeic'
 import { finalizePrivateUpload } from './privateUploads'
 
@@ -45,6 +46,7 @@ export type FamilyListView = Collection & {
 }
 
 type CoverMediaRow = {
+  id?: string | null
   public_url?: string | null
   bucket?: string | null
   storage_path?: string | null
@@ -112,12 +114,12 @@ const KIND_TABLE: Record<FamilyListCatalogKind, string> = {
 }
 
 const KIND_SELECT: Record<FamilyListCatalogKind, string> = {
-  place: 'id,name,latitude,longitude,notes,cover_media:media_assets!cover_media_id(public_url)',
+  place: 'id,name,latitude,longitude,notes,cover_media:media_assets!cover_media_id(id,public_url)',
   experience:
-    'id,name,latitude,longitude,address,notes,inspiration_url,cover_media:media_assets!cover_media_id(public_url)',
-  food: 'id,name,latitude,longitude,address,notes,link_url,cover_media:media_assets!cover_media_id(public_url)',
+    'id,name,latitude,longitude,address,notes,inspiration_url,cover_media:media_assets!cover_media_id(id,public_url)',
+  food: 'id,name,latitude,longitude,address,notes,link_url,cover_media:media_assets!cover_media_id(id,public_url)',
   hotel:
-    'id,name,latitude,longitude,address,notes,website,contact_phone,cover_media:media_assets!cover_media_id(public_url)',
+    'id,name,latitude,longitude,address,notes,website,contact_phone,cover_media:media_assets!cover_media_id(id,public_url)',
 }
 
 const KIND_SELECT_FALLBACK: Record<FamilyListCatalogKind, string> = {
@@ -414,9 +416,22 @@ async function hydrateCatalog(items: FamilyListItemRow[]): Promise<Map<string, C
           if (retry.error) throw retry.error
           return retry.data
         })())
+    const pending: Array<{ key: string; snap: CatalogSnap; mediaId: string | null }> = []
     for (const row of ((rows ?? []) as unknown as CatalogRow[])) {
       if (!row.id) continue
-      out.set(`${kind}:${row.id}`, snapFromCatalog(kind, row))
+      const media = Array.isArray(row.cover_media) ? row.cover_media[0] : row.cover_media
+      pending.push({
+        key: `${kind}:${row.id}`,
+        snap: snapFromCatalog(kind, row),
+        mediaId: media?.id?.trim() || null,
+      })
+    }
+    const variants = await listCatalogVariantsForAssets(
+      pending.map(item => item.mediaId).filter((id): id is string => Boolean(id)),
+    )
+    for (const item of pending) {
+      const thumb = item.mediaId ? variants.get(item.mediaId)?.thumbUrl ?? null : null
+      out.set(item.key, { ...item.snap, coverUrl: thumb })
     }
   }))
   return out

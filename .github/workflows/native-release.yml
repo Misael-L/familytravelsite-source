@@ -39,7 +39,7 @@ jobs:
     timeout-minutes: 40
     environment: store
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-node@v6
         with:
@@ -112,7 +112,7 @@ jobs:
     timeout-minutes: 60
     environment: store
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       # The iOS 27.1 SDK, on the xcode-27 image: an app built against an older SDK
       # runs letterboxed on the inner display of an iPhone Duo.

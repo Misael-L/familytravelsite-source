@@ -6,6 +6,8 @@
 
 ## Current release checkpoint
 
+**21 November 2026 — original-origin recovery and conditional migration approval prepared.** The fallback at `6ef85890f` adds standalone recovery for both exact HTTPS origins. Both deployed service workers were replayed against the final package with synthetic drafts. All 220 focused checks passed. The archived Mac and X8 dumps, worklists and verification manifests match. The 67 migration files match the isolated replay byte for byte. The authorized window will establish live recovery access, confirm the write pause and verify a fresh X8 recovery point before schema changes. [Cutover approval and stop rules](preview-cutover-and-fallback.md#maintenance-window-and-conditional-approval)
+
 **21 November 2026 — Cloudflare candidates built locally.** The preview writer, production writer and no-write fallback were built from `021be9846`. All three passed artifact checks and Cloudflare dry runs. The read-only Supabase check observed 88 applied migrations and PostgreSQL 17.12. The signed-in hosted preview and switch to the fallback await an authorized window. Complete the detached-draft handover plan and confirm fresh protection before requesting migration approval. [Candidate checks and scope](supported-core-readiness/recheck-20261121-schema154/cloudflare-candidates.json)
 
 **21 November 2026 — production path selected.** The owner declined a second hosted Supabase project and the associated cost. The completed local migration and recovery rehearsals supply pre-release database evidence. Cloudflare can preview the website build and public delivery. Both existing sites use the primary Supabase project, so live write admission and the signed-in save check belong to a separately authorized production window. [Rollout decision](preview-cutover-and-fallback.md#production-path-without-hosted-staging)
@@ -368,7 +370,7 @@ Tours, Collab, Studio, AI and other unsupported features may remain off. iOS app
 ## Order from here
 
 1. Prepare the production-bound writer, schema-compatible fallback and recovery artifacts. Pin their HTTPS origins, backend and corresponding source. Document how to verify and reverse the production write pause. The existing Cloudflare preview remains available for optional website-only checks.
-2. Preserve and reconcile affected browser drafts on their original origins. Confirm fresh database and media protection for the window. Obtain authorization for the hosted cutover.
+2. Obtain authorization for the maintenance window and the pinned migration set. In the window, verify and preserve affected browser drafts on their original origins. Capture and verify fresh database and media protection after writers drain.
 3. At the start of the window, verify the managed pause and writer drain across the affected routes. Stop if a prerequisite fails. With the pause proved, apply the pinned migrations and deploy the compatible website build. Run the scoped signed-in checks before reopening normal writes. [Cutover and stop conditions](preview-cutover-and-fallback.md)
 
 ### Earlier checkpoint sequence

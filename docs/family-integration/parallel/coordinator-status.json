@@ -23020,9 +23020,16 @@
     "migration_approval_ready": false,
     "evidence": "docs/family-integration/supported-core-readiness/recheck-20261121-schema154/cloudflare-candidates.json"
   },
+  "original_origin_cutover_preparation": {
+    "status": "prepared_for_conditional_window_approval",
+    "fallback_source_commit": "6ef85890f9f4c5a22b800be7f8f337b17d6af3a3",
+    "migrations_pinned": 67,
+    "hosted_execution_ready": false,
+    "evidence": "docs/family-integration/supported-core-readiness/recheck-20261121-schema154/original-origin-cutover-preparation.json"
+  },
   "next_proposed": {
-    "title": "Qualify original-origin draft recovery delivery and finish the cutover approval record",
-    "status": "ready_for_local_production_preparation",
-    "handoff": "docs/family-integration/preview-cutover-and-fallback.md#before-scheduling-hosted-work"
+    "title": "Obtain maintenance-window approval for the 67 pinned migrations",
+    "status": "awaiting_user_authorization_and_window",
+    "handoff": "docs/family-integration/preview-cutover-and-fallback.md#maintenance-window-and-conditional-approval"
   }
 }

@@ -1886,6 +1886,12 @@ Prepared primary-project preview, production and fallback builds from `021be9846
 
 Next, qualify the original-origin detached-draft delivery artifact and finish the cutover approval record. Confirm independent backup freshness for the chosen window and document the supported managed pause route, drain checks and abort conditions. Verify the pause during the authorized window before applying any of the 67 pinned migrations. [Preparation and stop rules](../preview-cutover-and-fallback.md#before-scheduling-hosted-work)
 
+## Original-origin recovery and conditional migration approval
+
+The fallback at `6ef85890f` qualifies the standalone recovery page on both original HTTPS origins. The 220 focused tests, both Cloudflare dry runs and exact-host local service-worker replay passed. Existing X8 and Mac recovery metadata and database files match. The 67 pinned SQL hashes match the private backend source, and the hosted state remains at 88 migrations. [Evidence](../supported-core-readiness/recheck-20261121-schema154/original-origin-cutover-preparation.json)
+
+Next, obtain explicit approval for the maintenance window and the pinned migrations. Before the first migration, verify recovery delivery for affected profiles, the managed write pause and drain, and the fresh incremental backup. [Approval and stop rules](../preview-cutover-and-fallback.md#maintenance-window-and-conditional-approval)
+
 ## Integration and continuation
 
 Only this lane writes shared qualification/release metadata, master handoffs, canonical preservation state and the main private integration checkpoint. At each meaningful endpoint, inspect B's own status/report and fetch its private branch read-only if needed. Review each scoped worker commit, cherry-pick approved packets, update source rows, validate the combined tree and push the integration branch. Do not modify or advance B's checkout/branch after initial setup; do not treat B's moving head as a frozen “other checkout” preservation invariant. Its authorized progress is tracked through branch/status/commit ownership instead.

@@ -85,7 +85,7 @@ jobs:
           -PtrekVersionCode=${{ steps.version.outputs.build }}
           -PtrekKeystore="$RUNNER_TEMP/upload.jks"
 
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: trek-android-${{ steps.version.outputs.version }}-${{ steps.version.outputs.build }}
           path: client/android/app/build/outputs/bundle/release/app-release.aab

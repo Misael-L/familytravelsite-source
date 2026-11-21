@@ -1,47 +1,56 @@
-import { useState, useMemo, useRef, useEffect } from 'react'
-import type { ChangeEvent } from 'react'
+import { usePackingCategoryOrder } from './usePackingCategoryOrder'
+import { hasReadOnlySession } from '../../db/readOnlySession';
+import { usePackingBagTracking, usePackingCategoryViews } from './usePackingSnapshot'
+import { usePackingCategoryActions } from './usePackingCategoryActions'
+import { packingGroupActionsAvailable, packingCategoryCreateAvailable, packingSetArgs } from '../../repo/plannerPackingPort'
+import { useState, useMemo, useRef, useEffect, useCallback, useEffectEvent } from 'react'
 import { useTripStore } from '../../store/tripStore'
 import { useCanDo } from '../../store/permissionsStore'
 import { useAuthStore } from '../../store/authStore'
 import { useToast } from '../shared/Toast'
 import { useTranslation } from '../../i18n'
+import { tripsApi } from '../../api/client'
 import { useAddonStore } from '../../store/addonStore'
-import { BAG_COLORS, PACKING_PLACEHOLDER_NAME } from './packingListPanel.constants'
-import { parseImportLines } from './packingListPanel.helpers'
-import {
-  nestPackingListOps,
-  type PackingEntityId,
-  type PackingListAssignee,
-  type PackingListBag,
-  type PackingListItem,
-  type PackingListMember,
-  type PackingListOps,
-  type PackingListTemplate,
-} from './packingListOps'
+import { useServerPing } from '../../sync/useServerPing'
+import type { PackingItem } from '../../types'
+import { parseImportLines, sortItemsByName } from './packingListPanel.helpers'
+import { groupPackingItems, itemOrderWithCategoryMoved, packingCategoryOrder, packingProgress, packingViewItems } from './packingListModel'
+import { usePackingBags } from './usePackingBags'
+import { usePackingCategoryAssignees } from './usePackingCategoryAssignees'
+import { usePackingImport } from './usePackingImport'
+import { usePackingGroupActions } from './usePackingGroupActions'
+import { usePackingItemActions } from './usePackingItemActions'
+import { usePackingTemplates } from './usePackingTemplates'
 
-export type TripMember = PackingListMember
-export type CategoryAssignee = PackingListAssignee
+export type { CategoryAssignee } from './usePackingCategoryAssignees'
+
+const PACKING_SORT_KEY = 'trek:packing-sort'
+
+/** The roster events that change who the pickers offer. */
+const MEMBER_EVENTS = ['member:added', 'member:updated', 'member:removed'] as const
+
+export type PackingSort = 'manual' | 'name'
+
+export interface TripMember {
+  eligible?: boolean
+  id: number
+  username: string
+  avatar?: string | null
+  avatar_url?: string | null
+  is_guest?: boolean
+}
 
 export interface PackingListPanelProps {
-  tripId: PackingEntityId
-  items: PackingListItem[]
+  tripId: number
+  items: PackingItem[]
   openImportSignal?: number
-  clearCheckedSignal?: number
+  // Raised by the Lists bar's Add list button, which opens the name field here.
+  addCategorySignal?: number
   saveTemplateSignal?: number
   inlineHeader?: boolean
+  // Lifted so an out-of-panel Apply Template button knows the active view (#1565).
   view?: 'common' | 'personal'
   onViewChange?: (view: 'common' | 'personal') => void
-  /** Default Nest tripStore + packingApi. Family injects packing.ts. */
-  ops?: PackingListOps
-  /** When set, packing writes follow HOF 2A instead of Nest packing_edit. */
-  canMutate?: boolean
-  /** Family HOF may save family-scoped templates. Nest uses instance admin. */
-  canSaveTemplate?: boolean
-  /** Family bags/weight are always on. Nest follows the addon flag. */
-  bagTrackingEnabled?: boolean
-  currentUserId?: PackingEntityId
-  /** Nest plugins stay on dev:nest. */
-  enablePlugins?: boolean
 }
 
 /**
@@ -51,255 +60,177 @@ export interface PackingListPanelProps {
  * sections below render header, filters, the grouped list, the bag sidebar/
  * modal and the import dialog.
  */
-export function usePackingList({
-  tripId,
-  items,
-  openImportSignal = 0,
-  clearCheckedSignal = 0,
-  saveTemplateSignal = 0,
-  inlineHeader = true,
-  view: viewProp,
-  onViewChange,
-  ops = nestPackingListOps,
-  canMutate,
-  canSaveTemplate,
-  bagTrackingEnabled: bagTrackingProp,
-  currentUserId: currentUserIdProp,
-  enablePlugins = true,
-}: PackingListPanelProps) {
-  const [filter, setFilter] = useState('alle')
+export function usePackingList({ tripId, items, openImportSignal = 0, addCategorySignal = 0, saveTemplateSignal = 0, inlineHeader = true, view: viewProp, onViewChange }: PackingListPanelProps) {
+  const [filter, setFilter] = useState('alle') // 'alle' | 'offen' | 'erledigt'
+  // A-Z only changes what is shown; the manual order stays stored underneath and
+  // comes back when the switch is turned off. Remembered per browser.
+  const [sort, setSortState] = useState<PackingSort>(() => {
+    try { return localStorage.getItem(PACKING_SORT_KEY) === 'name' ? 'name' : 'manual' } catch { return 'manual' }
+  })
+  const setSort = (next: PackingSort) => {
+    setSortState(next)
+    try { localStorage.setItem(PACKING_SORT_KEY, next) } catch { /* storage unavailable: the choice lasts until reload */ }
+  }
+  // Three-tier sharing (#858): 'common' = the group pool (where existing items
+  // live — non-breaking), 'personal' = my own list (private + shared-to-me).
   const [ownView, setOwnView] = useState<'common' | 'personal'>('common')
   const view = viewProp ?? ownView
   const setView = onViewChange ?? setOwnView
-  const [addingCategory, setAddingCategory] = useState(false)
-  const [newCatName, setNewCatName] = useState('')
-  const nestCan = useCanDo()
+  const { addPackingItem, updatePackingItem, deletePackingItem, togglePackingItem, reorderPackingItems,
+    setPackingItemSharing, clonePackingItem, addPackingContributor, removePackingContributor } = useTripStore()
+  const can = useCanDo()
   const trip = useTripStore((s) => s.trip)
-  const canEdit = canMutate !== undefined ? canMutate : nestCan('packing_edit', trip)
-  const nestIsAdmin = useAuthStore((s) => s.user?.role === 'admin')
-  const isAdmin = canSaveTemplate !== undefined ? canSaveTemplate : nestIsAdmin
-  const nestUserId = useAuthStore((s) => s.user?.id)
-  const currentUserId = currentUserIdProp ?? nestUserId
+  const canEdit = !hasReadOnlySession() && can('packing_edit', trip)
+  const canEditGroups = canEdit && packingGroupActionsAvailable()
+  const canCreateCategory = packingCategoryCreateAvailable(canEdit)
+  const groupActions = usePackingGroupActions(tripId, view, filter === 'offen' ? 'open' : filter === 'erledigt' ? 'done' : 'all')
+  const canClearCompleted = groupActions.available('clear-completed', canEdit)
+  const isAdmin = useAuthStore((s) => s.user?.role === 'admin')
+  const currentUserId = useAuthStore((s) => s.user?.id)
   const toast = useToast()
-  const { t } = useTranslation()
+  const { t, locale } = useTranslation()
+  const categoryActions = usePackingCategoryActions({ trip: tripId, view, items, defaultCategory: t('packing.defaultCategory'), authorized: canEdit, report: error => toast.error(error instanceof Error ? error.message : t('packing.toast.saveError')) })
 
-  const [tripMembers, setTripMembers] = useState<PackingListMember[]>([])
-  const [categoryAssignees, setCategoryAssignees] = useState<Record<string, PackingListAssignee[]>>({})
+  // Trip members & category assignees
+  const [tripMembers, setTripMembers] = useState<TripMember[]>([])
+
+  const readMembers = useCallback(() => tripsApi.getMembers(tripId).then(data => {
+    const all: TripMember[] = []
+    if (data.owner) all.push({ id: data.owner.id, username: data.owner.username, avatar: data.owner.avatar_url, is_guest: false })
+    if (data.members) all.push(...data.members.map((m: any) => ({ id: m.id, username: m.username, avatar: m.avatar_url, is_guest: !!m.is_guest })))
+    setTripMembers(all)
+  }).catch(() => {}), [tripId])
 
   useEffect(() => {
-    ops.loadMembers(tripId).then(setTripMembers).catch(() => {})
-    ops.loadCategoryAssignees(tripId).then(setCategoryAssignees).catch(() => {})
-  }, [tripId, ops])
+    void readMembers()
+  }, [readMembers])
+  // A traveller or guest added, renamed or removed elsewhere: the pickers read the
+  // roster again, once per burst (the phone list reads the planner's roster).
+  useServerPing(MEMBER_EVENTS, true, readMembers)
 
-  const handleSetAssignees = async (category: string, userIds: PackingEntityId[]) => {
-    try {
-      const assignees = await ops.setCategoryAssignees(tripId, category, userIds)
-      setCategoryAssignees(prev => ({ ...prev, [category]: assignees }))
-    } catch {
-      toast.error(t('packing.toast.saveError'))
-    }
-  }
+  const { categoryAssignees, setAssignees: handleSetAssignees } = usePackingCategoryAssignees({ tripId, t, toast })
 
-  const viewItems = useMemo(
-    () => items.filter(i => {
-      if (view === 'common') return !i.is_private
-      if (!i.is_private) return false
-      if (canMutate === undefined || currentUserId == null) return true
-      return i.owner_id == null
-        || i.owner_id === currentUserId
-        || (i.recipients || []).some(r => r.user_id === currentUserId)
-    }),
-    [items, view, currentUserId, canMutate],
-  )
+  // Split by the active view (#858): Common = group pool (is_private 0), Personal =
+  // my own + shared-to-me (is_private 1, already filtered to me by the server).
+  const viewItems = useMemo(() => packingViewItems(items, view), [items, view])
 
-  const allCategories = useMemo(() => {
-    const seen: string[] = []
-    for (const item of viewItems) {
-      const cat = item.category || t('packing.defaultCategory')
-      if (!seen.includes(cat)) seen.push(cat)
-    }
-    return seen
-  }, [viewItems, t])
+  const categoryViews = usePackingCategoryViews(tripId, view, items)
+  const categoryLabels = Object.fromEntries((categoryViews ?? []).map(c => [c.key, c.rawName || t('packing.defaultCategory')]))
+  const categoryLabel = (key: string) => Object.prototype.hasOwnProperty.call(categoryLabels, key) ? categoryLabels[key] : key
+  const allCategories = useMemo(() => packingCategoryOrder(viewItems, t('packing.defaultCategory'), categoryViews), [viewItems, t, categoryViews])
 
   const gruppiert = useMemo(() => {
-    const filtered = viewItems.filter(i => {
-      if (filter === 'offen') return !i.checked
-      if (filter === 'erledigt') return i.checked
-      return true
-    })
-    const groups: Record<string, PackingListItem[]> = {}
-    for (const item of filtered) {
-      const kat = item.category || t('packing.defaultCategory')
-      if (!groups[kat]) groups[kat] = []
-      groups[kat].push(item)
-    }
-    return groups
-  }, [viewItems, filter, t])
+    const status = filter === 'offen' ? 'open' : filter === 'erledigt' ? 'done' : 'all'
+    // Category labels are data, including __proto__; create own properties without prototype setters.
+    return Object.fromEntries(groupPackingItems(viewItems, status, t('packing.defaultCategory'), categoryViews).map(group => [
+      group.key ?? group.category, sort === 'name' ? sortItemsByName(group.items, locale) : group.items,
+    ]))
+  }, [viewItems, filter, sort, locale, t, categoryViews])
 
-  const abgehakt = viewItems.filter(i => i.checked).length
-  const fortschritt = viewItems.length > 0 ? Math.round((abgehakt / viewItems.length) * 100) : 0
+  const { checked: abgehakt, pct: fortschritt, total: viewTotal } = packingProgress(viewItems)
 
-  const handleAddItemToCategory = async (category: string, name: string) => {
-    try {
-      const placeholder = items.find(
-        i => i.category === category && i.name === PACKING_PLACEHOLDER_NAME,
-      )
-      if (placeholder) {
-        await ops.updateItem(tripId, placeholder.id, { name })
-      } else {
-        await ops.addItem(tripId, { name, category, visibility: view === 'personal' ? 'personal' : 'common' })
-      }
-    } catch { toast.error(t('packing.toast.addError')) }
+  // A category dropped onto another takes its place; the slice reorders
+  // optimistically and rolls back with a toast of its own.
+  const moveCategory = (from: string, to: string) => {
+    const orderedIds = itemOrderWithCategoryMoved(items, viewItems, from, to, t('packing.defaultCategory'))
+    if (orderedIds) void reorderPackingItems(tripId, orderedIds, ...packingSetArgs(items)).catch((error: unknown) => toast.error(error instanceof Error ? error.message : t('packing.toast.saveError')))
   }
 
-  const handleDeleteItem = async (item: PackingListItem) => {
-    const category = item.category
-    const isLastInCategory = !!category
-      && item.name !== PACKING_PLACEHOLDER_NAME
-      && !items.some(i => i.id !== item.id && i.category === category)
-    try {
-      if (isLastInCategory) {
-        if (item.checked) await ops.toggleItem(tripId, item.id, false)
-        await ops.updateItem(tripId, item.id, {
-          name: PACKING_PLACEHOLDER_NAME, weight_grams: null, bag_id: null, quantity: 1,
-        })
-      } else {
-        await ops.deleteItem(tripId, item.id)
-      }
-    } catch {
-      toast.error(t('packing.toast.deleteError'))
-    }
-  }
+  const categoryOrder = usePackingCategoryOrder({trip:tripId,view,keys:allCategories,
+    eligible:canEdit && filter === 'alle' && sort === 'manual' && !!categoryViews?.every(c=>c.owned),
+    report:error=>toast.error(error instanceof Error ? error.message : t('packing.toast.saveError'))})
+  const canReorderCategories = canEditGroups || categoryOrder.available()
+  const beginCategoryMove = () => groupActions.family ? categoryOrder.begin() : moveCategory
 
-  const handleAddNewCategory = async () => {
-    if (!newCatName.trim()) return
-    let catName = newCatName.trim()
-    while (allCategories.includes(catName)) {
-      catName += '​'
-    }
-    try {
-      await ops.addItem(tripId, { name: '...', category: catName, visibility: view === 'personal' ? 'personal' : 'common' })
-      setNewCatName('')
-      setAddingCategory(false)
-    } catch { toast.error(t('packing.toast.addError')) }
-  }
+  const {
+    beginItem: handleBeginItem, cancelItem: handleCancelItem, addingCategory, setAddingCategory, newCategoryName: newCatName, setNewCategoryName: setNewCatName,
+    addItemToCategory: handleAddItemToCategory, deleteItem: handleDeleteItem, addNewCategory: handleAddNewCategory,
+    renameCategory: legacyRenameCategory, deleteCategoryItems: handleDeleteCategory, clearChecked,
+  } = usePackingItemActions({
+    tripId, items, view, currentUserId, categories: allCategories, defaultCategory: t('packing.defaultCategory'),
+    actions: { addPackingItem, updatePackingItem, deletePackingItem, togglePackingItem }, t, toast, placeholderFrom: 'store',
+  })
 
-  const handleRenameCategory = async (oldName: string, newName: string) => {
-    const toUpdate = items.filter(i => (i.category || t('packing.defaultCategory')) === oldName)
-    await ops.renameCategory(tripId, oldName, newName, toUpdate.map(i => i.id))
-  }
-
-  const handleDeleteCategory = async (catItems: PackingListItem[]) => {
-    let failed = false
-    for (const item of catItems) {
-      try { await ops.deleteItem(tripId, item.id) } catch { failed = true }
-    }
-    if (failed) toast.error(t('packing.toast.deleteError'))
-  }
+  const handleRenameCategory = (label: string, name: string) => categoryActions.family ? categoryActions.rename(label, name) : legacyRenameCategory(label, name)
 
   const handleClearChecked = async () => {
-    if (!confirm(t('packing.confirm.clearChecked', { count: abgehakt }))) return
-    let failed = false
-    for (const item of items.filter(i => i.checked)) {
-      try { await ops.deleteItem(tripId, item.id) } catch { failed = true }
-    }
-    if (failed) toast.error(t('packing.toast.deleteError'))
+    try {
+      if (!canClearCompleted) return
+      if (groupActions.family) groupActions.beginClear(items)
+      if (!confirm(t('packing.confirm.clearChecked', { count: abgehakt }))) { groupActions.cancelClear(); return }
+      if (groupActions.family) await groupActions.clear()
+      else await clearChecked()
+    } catch (error) { toast.error(error instanceof Error ? error.message : t('packing.toast.saveError')) }
   }
 
-  const nestBagTracking = useAddonStore(s => s.bagTracking)
+  // Bag tracking — the global toggle is a packing sub-flag surfaced to every
+  // authenticated user via the addon store (loaded on app start), not the
+  // admin-only endpoint, so non-admin members see weights/bags too.
+  const bagTrackingEnabled = usePackingBagTracking(tripId)
   const addonsLoaded = useAddonStore(s => s.loaded)
   const loadAddons = useAddonStore(s => s.loadAddons)
-  const bagTrackingEnabled = bagTrackingProp ?? nestBagTracking
-  const [bags, setBags] = useState<PackingListBag[]>([])
   const [newBagName, setNewBagName] = useState('')
-  const [showAddBag, setShowAddBag] = useState(false)
+  const [showAddBag, setShowAddBagRaw] = useState(false)
   const [showBagModal, setShowBagModal] = useState(false)
 
   useEffect(() => {
-    if (bagTrackingProp !== undefined) return
     if (!addonsLoaded) loadAddons()
-  }, [addonsLoaded, loadAddons, bagTrackingProp])
+  }, [addonsLoaded, loadAddons])
 
-  useEffect(() => {
-    if (bagTrackingEnabled) ops.listBags(tripId).then(setBags).catch(() => {})
-  }, [tripId, bagTrackingEnabled, ops])
+  const {
+    people: bagPeople, beginCreate, cancelCreate, bags, unassignedWeightGrams, serverWeightsFresh, tryCreateBag, createBag: handleCreateBagByName,
+    deleteBag: handleDeleteBag, updateBag: handleUpdateBag, setBagMembers: handleSetBagMembers,
+  } = usePackingBags({ tripId, bagTrackingEnabled, t, toast })
 
+  const setShowAddBag = (open:boolean) => { if(open)beginCreate();else cancelCreate();setShowAddBagRaw(open); };
   const handleCreateBag = async () => {
     if (!newBagName.trim()) return
-    try {
-      const bag = await ops.createBag(tripId, { name: newBagName.trim(), color: BAG_COLORS[bags.length % BAG_COLORS.length] })
-      setBags(prev => [...prev, bag])
+    if (await tryCreateBag(newBagName.trim())) {
       setNewBagName(''); setShowAddBag(false)
-    } catch { toast.error(t('packing.toast.saveError')) }
+    }
   }
 
-  const handleCreateBagByName = async (name: string): Promise<PackingListBag | undefined> => {
-    try {
-      const bag = await ops.createBag(tripId, { name, color: BAG_COLORS[bags.length % BAG_COLORS.length] })
-      setBags(prev => [...prev, bag])
-      return bag
-    } catch { toast.error(t('packing.toast.saveError')); return undefined }
-  }
-
-  const handleDeleteBag = async (bagId: PackingEntityId) => {
-    try {
-      await ops.deleteBag(tripId, bagId)
-      setBags(prev => prev.filter(b => b.id !== bagId))
-    } catch { toast.error(t('packing.toast.deleteError')) }
-  }
-
-  const handleUpdateBag = async (bagId: PackingEntityId, data: Record<string, unknown>) => {
-    try {
-      const bag = await ops.updateBag(tripId, bagId, data)
-      setBags(prev => prev.map(b => b.id === bagId ? { ...b, ...bag } : b))
-    } catch { toast.error(t('common.error')) }
-  }
-
-  const handleSetBagMembers = async (bagId: PackingEntityId, userIds: PackingEntityId[]) => {
-    try {
-      const members = await ops.setBagMembers(tripId, bagId, userIds)
-      setBags(prev => prev.map(b => b.id === bagId ? { ...b, members } : b))
-    } catch { toast.error(t('common.error')) }
-  }
-
-  const [availableTemplates, setAvailableTemplates] = useState<PackingListTemplate[]>([])
+  // Templates
   const [showTemplateDropdown, setShowTemplateDropdown] = useState(false)
-  const [applyingTemplate, setApplyingTemplate] = useState(false)
   const [showSaveTemplate, setShowSaveTemplate] = useState(false)
-  const [saveTemplateName, setSaveTemplateName] = useState('')
   const [showImportModal, setShowImportModal] = useState(false)
-  const [importText, setImportText] = useState('')
   const lastHandledImportSignal = useRef(openImportSignal)
-  const lastHandledClearSignal = useRef(clearCheckedSignal)
+  const lastHandledAddCategorySignal = useRef(addCategorySignal)
   const lastHandledSaveSignal = useRef(saveTemplateSignal)
 
+  const openImport = useEffectEvent(() => { if (packingGroupActionsAvailable()) setShowImportModal(true) })
+  const openSaveTemplate = useEffectEvent(() => { if (packingGroupActionsAvailable()) setShowSaveTemplate(true) })
   useEffect(() => {
     if (openImportSignal !== lastHandledImportSignal.current && openImportSignal > 0) {
-      setShowImportModal(true)
+      openImport()
     }
     lastHandledImportSignal.current = openImportSignal
   }, [openImportSignal])
 
   useEffect(() => {
-    if (clearCheckedSignal !== lastHandledClearSignal.current && clearCheckedSignal > 0) {
-      handleClearChecked()
+    if (addCategorySignal !== lastHandledAddCategorySignal.current && addCategorySignal > 0) {
+      setAddingCategory(true)
     }
-    lastHandledClearSignal.current = clearCheckedSignal
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [clearCheckedSignal])
+    lastHandledAddCategorySignal.current = addCategorySignal
+  }, [addCategorySignal, setAddingCategory])
 
   useEffect(() => {
     if (saveTemplateSignal !== lastHandledSaveSignal.current && saveTemplateSignal > 0) {
-      setShowSaveTemplate(true)
+      openSaveTemplate()
     }
     lastHandledSaveSignal.current = saveTemplateSignal
   }, [saveTemplateSignal])
   const csvInputRef = useRef<HTMLInputElement>(null)
   const templateDropdownRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    ops.listTemplates(tripId).then(setAvailableTemplates).catch(() => {})
-  }, [tripId, ops])
+  const {
+    templates: availableTemplates, applyingTemplate, applyTemplate: handleApplyTemplate,
+    saveTemplateName, setSaveTemplateName, saveAsTemplate: handleSaveAsTemplate,
+  } = usePackingTemplates({
+    tripId, view, t, toast,
+    onApplied: () => setShowTemplateDropdown(false),
+    onSaved: () => setShowSaveTemplate(false),
+  })
 
   useEffect(() => {
     if (!showTemplateDropdown) return
@@ -310,78 +241,33 @@ export function usePackingList({
     return () => document.removeEventListener('mousedown', handler)
   }, [showTemplateDropdown])
 
-  const handleApplyTemplate = async (templateId: PackingEntityId) => {
-    setApplyingTemplate(true)
-    try {
-      const data = await ops.applyTemplate(tripId, templateId, view)
-      toast.success(t('packing.templateApplied', { count: data.count }))
-      setShowTemplateDropdown(false)
-    } catch {
-      toast.error(t('packing.templateError'))
-    } finally {
-      setApplyingTemplate(false)
-    }
-  }
-
-  const handleSaveAsTemplate = async () => {
-    if (!saveTemplateName.trim()) return
-    try {
-      await ops.saveAsTemplate(tripId, saveTemplateName.trim())
-      toast.success(t('packing.templateSaved'))
-      setShowSaveTemplate(false)
-      setSaveTemplateName('')
-      ops.listTemplates(tripId).then(setAvailableTemplates).catch(() => {})
-    } catch {
-      toast.error(t('common.error'))
-    }
-  }
-
-  const handleBulkImport = async () => {
-    const parsed = parseImportLines(importText)
-    if (parsed.length === 0) { toast.error(t('packing.importEmpty')); return }
-    try {
-      const result = await ops.bulkImport(tripId, parsed)
-      if (bagTrackingEnabled) ops.listBags(tripId).then(setBags).catch(() => {})
-      toast.success(t('packing.importSuccess', { count: result.count }))
-      setImportText('')
-      setShowImportModal(false)
-    } catch { toast.error(t('packing.importError')) }
-  }
-
-  const handleCsvFile = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-    e.target.value = ''
-    const reader = new FileReader()
-    reader.onload = () => { if (typeof reader.result === 'string') setImportText(reader.result) }
-    reader.readAsText(file)
-  }
+  const {
+    text: importText, setText: setImportText, readFile: handleCsvFile, runImport: handleBulkImport,
+  } = usePackingImport({ tripId, t, toast, onImported: () => setShowImportModal(false), reportEmpty: true })
 
   const font = { fontFamily: "var(--font-system)" }
 
-  const handleSetSharing = (id: PackingEntityId, visibility: 'common' | 'personal' | 'shared', recipientIds: PackingEntityId[]) =>
-    ops.setSharing(tripId, id, visibility, recipientIds)
-  const handleCloneItem = (id: PackingEntityId) => ops.cloneItem(tripId, id)
-  const handleJoinItem = (id: PackingEntityId) => ops.addContributor(tripId, id)
-  const handleLeaveItem = (id: PackingEntityId, userId: PackingEntityId) => ops.removeContributor(tripId, id, userId)
-
-  const reorderPackingItems = (tid: PackingEntityId, orderedIds: PackingEntityId[]) =>
-    ops.reorderItems(tid, orderedIds)
+  // ── Three-tier sharing handlers (#858) ──────────────────────────────────────
+  const handleSetSharing = (id: number, visibility: 'common' | 'personal' | 'shared', recipientIds: number[]) =>
+    setPackingItemSharing(tripId, id, visibility, recipientIds)
+  const handleCloneItem = (id: number) => clonePackingItem(tripId, id)
+  const handleJoinItem = (id: number) => addPackingContributor(tripId, id)
+  const handleLeaveItem = (id: number, userId: number) => removePackingContributor(tripId, id, userId)
 
   return {
+    categoryViews, categoryLabel,
     view, setView, currentUserId,
     handleSetSharing, handleCloneItem, handleJoinItem, handleLeaveItem,
-    tripId, items, inlineHeader, t, canEdit, isAdmin, font, reorderPackingItems,
-    filter, setFilter, addingCategory, setAddingCategory, newCatName, setNewCatName,
-    tripMembers, categoryAssignees, handleSetAssignees, allCategories, gruppiert, abgehakt, fortschritt,
-    handleAddItemToCategory, handleAddNewCategory, handleRenameCategory, handleDeleteCategory, handleDeleteItem, handleClearChecked,
-    bagTrackingEnabled, bags, newBagName, setNewBagName, showAddBag, setShowAddBag, showBagModal, setShowBagModal,
+    tripId, items, inlineHeader, t, canEdit, canCreateCategory, canEditGroups, canReorderCategories, beginCategoryMove, canClearCompleted, groupActions, categoryActions, isAdmin, font, reorderPackingItems,
+    filter, setFilter, sort, setSort, addingCategory, setAddingCategory, newCatName, setNewCatName,
+    tripMembers, bagPeople, categoryAssignees, handleSetAssignees, allCategories, gruppiert, abgehakt, fortschritt, viewTotal, moveCategory,
+    handleBeginItem, handleCancelItem, handleAddItemToCategory, handleAddNewCategory, handleRenameCategory, handleDeleteCategory, handleDeleteItem, handleClearChecked,
+    bagTrackingEnabled, bags, unassignedWeightGrams, serverWeightsFresh, newBagName, setNewBagName, showAddBag, setShowAddBag, showBagModal, setShowBagModal,
     handleCreateBag, handleCreateBagByName, handleDeleteBag, handleUpdateBag, handleSetBagMembers,
     availableTemplates, showTemplateDropdown, setShowTemplateDropdown, applyingTemplate,
     showSaveTemplate, setShowSaveTemplate, saveTemplateName, setSaveTemplateName,
     showImportModal, setShowImportModal, importText, setImportText,
     csvInputRef, templateDropdownRef, handleApplyTemplate, handleSaveAsTemplate, parseImportLines, handleBulkImport, handleCsvFile,
-    enablePlugins, canMutate, ops,
   }
 }
 

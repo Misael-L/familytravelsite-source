@@ -1,38 +1,71 @@
 /**
  * OIDC e2e — exercises the migrated /api/auth/oidc flow with the real cookie
- * service. The OIDC service + auth toggles are mocked; this proves the flow is
- * unauthenticated, the sso-disabled 403, the login redirect, and that /exchange
- * sets the httpOnly trek_session cookie from a valid auth code.
+ * service. The OIDC methods and the auth toggles are stubbed with vi.spyOn on
+ * the container's real OidcService/AuthService instances (the domain is
+ * DI-native since the oidc fold — a services/oidcService path mock would
+ * silently miss); this proves the flow is unauthenticated, the sso-disabled
+ * 403, the login redirect, and that /exchange sets the httpOnly trek_session
+ * cookie from a valid auth code.
  */
-import { describe, it, expect, beforeAll, afterAll, beforeEach, vi } from 'vitest';
-import request from 'supertest';
-import cookieParser from 'cookie-parser';
-import type { Server } from 'http';
+import { AuthService } from '../../src/nest/auth/auth.service';
+import { TrekExceptionFilter } from '../../src/nest/common/trek-exception.filter';
+import { OidcModule } from '../../src/nest/oidc/oidc.module';
+import { OidcService } from '../../src/nest/oidc/oidc.service';
+import { createTestMikroOrmModule } from '../helpers/test-orm';
+import { TestUnitOfWorkModule } from '../helpers/test-uow';
 import { Test } from '@nestjs/testing';
 
-vi.mock('../../src/services/notifications', () => ({ getAppUrl: () => 'https://app' }));
+import cookieParser from 'cookie-parser';
+import type { Server } from 'http';
+import request from 'supertest';
+import { describe, it, expect, beforeAll, afterAll, beforeEach, vi } from 'vitest';
+import type { MockInstance } from 'vitest';
 
-const { toggles } = vi.hoisted(() => ({ toggles: { oidc_login: true } }));
-vi.mock('../../src/services/authService', () => ({ resolveAuthToggles: () => toggles }));
+vi.mock('../../src/app-config', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../src/app-config')>();
+  return { ...actual, getAppUrl: () => 'https://app' };
+});
 
-const { oidcSvc } = vi.hoisted(() => ({
-  oidcSvc: {
-    getOidcConfig: vi.fn(), discover: vi.fn(), createState: vi.fn(), consumeState: vi.fn(), createAuthCode: vi.fn(),
-    consumeAuthCode: vi.fn(), exchangeCodeForToken: vi.fn(), getUserInfo: vi.fn(), verifyIdToken: vi.fn(),
-    findOrCreateUser: vi.fn(), touchLastLogin: vi.fn(), generateToken: vi.fn(), frontendUrl: (p: string) => 'https://app' + p,
-  },
+const { db } = vi.hoisted(() => {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const Database = require('better-sqlite3');
+  const tmp = new Database(':memory:');
+  // Otherwise-bare :memory: db — nothing in these flows queries it (the
+  // db-touching OidcService methods and the toggles are stubbed on the
+  // container instances below), the container just needs a connection to
+  // construct the oidc/auth/permissions/atlas providers. app_settings is the
+  // one real exception: StorageRegistryService (behind AuthModule →
+  // StorageModule) reads it at onModuleInit.
+  tmp.exec('CREATE TABLE app_settings (key TEXT PRIMARY KEY, value TEXT);');
+  return { db: tmp };
+});
+vi.mock('../../src/db/database', () => ({
+  db,
+  closeDb: () => {},
+  reinitialize: () => {},
+  getPlaceWithTags: () => null,
+  canAccessTrip: () => undefined,
+  isOwner: () => false,
 }));
-vi.mock('../../src/services/oidcService', () => oidcSvc);
+vi.mock('../../src/nest/audit/audit-log.logger', () => ({
+  LOG_LEVEL: 'error',
+  logInfo: vi.fn(),
+  logDebug: vi.fn(),
+  logError: vi.fn(),
+  logWarn: vi.fn(),
+}));
 
-import { OidcModule } from '../../src/nest/oidc/oidc.module';
-import { TrekExceptionFilter } from '../../src/nest/common/trek-exception.filter';
+const toggles = { oidc_login: true };
 
 describe('OIDC e2e (real cookie service)', () => {
   let server: Server;
   let app: Awaited<ReturnType<typeof build>>;
+  let consumeAuthCode: MockInstance;
 
   async function build() {
-    const moduleRef = await Test.createTestingModule({ imports: [OidcModule] }).compile();
+    const moduleRef = await Test.createTestingModule({
+      imports: [await TestUnitOfWorkModule.forRoot(db), await createTestMikroOrmModule(db), OidcModule],
+    }).compile();
     const nest = moduleRef.createNestApplication();
     nest.use(cookieParser());
     nest.useGlobalFilters(new TrekExceptionFilter());
@@ -44,13 +77,27 @@ describe('OIDC e2e (real cookie service)', () => {
     vi.spyOn(console, 'error').mockImplementation(() => {});
     app = await build();
     server = app.getHttpServer();
-    oidcSvc.getOidcConfig.mockReturnValue({ issuer: 'https://idp', clientId: 'c', clientSecret: 's', discoveryUrl: null });
-    oidcSvc.discover.mockResolvedValue({ authorization_endpoint: 'https://idp/auth', userinfo_endpoint: 'https://idp/ui', issuer: 'https://idp' });
-    oidcSvc.createState.mockReturnValue({ state: 'st', codeChallenge: 'cc' });
-    oidcSvc.consumeAuthCode.mockReturnValue({ token: 'jwt.value' });
+    vi.spyOn(app.get(AuthService), 'resolveAuthToggles').mockImplementation(() => toggles as never);
+    const oidc = app.get(OidcService);
+    vi.spyOn(oidc, 'getOidcConfig').mockResolvedValue({
+      issuer: 'https://idp',
+      clientId: 'c',
+      clientSecret: 's',
+      displayName: 'SSO',
+      discoveryUrl: null,
+    });
+    vi.spyOn(oidc, 'discover').mockResolvedValue({
+      authorization_endpoint: 'https://idp/auth',
+      userinfo_endpoint: 'https://idp/ui',
+      issuer: 'https://idp',
+    } as never);
+    vi.spyOn(oidc, 'createState').mockResolvedValue({ state: 'st', codeChallenge: 'cc' });
+    consumeAuthCode = vi.spyOn(oidc, 'consumeAuthCode').mockResolvedValue({ token: 'jwt.value' });
   });
 
-  beforeEach(() => { toggles.oidc_login = true; });
+  beforeEach(() => {
+    toggles.oidc_login = true;
+  });
 
   afterAll(async () => {
     await app.close();
@@ -75,12 +122,29 @@ describe('OIDC e2e (real cookie service)', () => {
     expect(res.body).toEqual({ error: 'Code required' });
   });
 
-  it('GET /exchange sets the httpOnly trek_session cookie + returns the token', async () => {
-    oidcSvc.consumeAuthCode.mockReturnValue({ token: 'jwt.value' });
+  it('GET /exchange sets the httpOnly trek_session cookie + answers success (and the deprecated token)', async () => {
+    consumeAuthCode.mockResolvedValue({ token: 'jwt.value' });
     const res = await request(server).get('/api/auth/oidc/exchange').query({ code: 'good' });
     expect(res.status).toBe(200);
-    expect(res.body).toEqual({ token: 'jwt.value' });
+    expect(res.body).toEqual({ success: true, token: 'jwt.value' });
     const setCookie = res.headers['set-cookie'] as unknown as string[];
     expect(setCookie.some((c) => c.startsWith('trek_session=') && /HttpOnly/i.test(c))).toBe(true);
+  });
+
+  it('GET /exchange with a remembered code sets a persistent Max-Age cookie (#1927)', async () => {
+    consumeAuthCode.mockResolvedValue({ token: 'jwt.value', remember: true });
+    const res = await request(server).get('/api/auth/oidc/exchange').query({ code: 'good' });
+    expect(res.status).toBe(200);
+    const cookie = (res.headers['set-cookie'] as unknown as string[]).find((c) => c.startsWith('trek_session='))!;
+    expect(cookie).toContain('Max-Age=2592000');
+  });
+
+  it('GET /exchange with remember=false sets a browser-session cookie (no Max-Age) (#1927)', async () => {
+    consumeAuthCode.mockResolvedValue({ token: 'jwt.value', remember: false });
+    const res = await request(server).get('/api/auth/oidc/exchange').query({ code: 'good' });
+    expect(res.status).toBe(200);
+    const cookie = (res.headers['set-cookie'] as unknown as string[]).find((c) => c.startsWith('trek_session='))!;
+    expect(cookie).not.toContain('Max-Age=');
+    expect(cookie).not.toContain('Expires=');
   });
 });

@@ -28,12 +28,13 @@ export class ExtractError extends Error {}
 
 /** Assert a member path stays within dest; return the safe absolute path. */
 export function safeJoin(dest: string, name: string): string {
-  const norm = name.replace(/\\/g, '/');
+  const norm = name.replaceAll(/\\/g, '/');
   if (norm.startsWith('/') || /^[a-zA-Z]:/.test(norm)) throw new ExtractError(`absolute path rejected: ${name}`);
   if (norm.split('/').some((seg) => seg === '..')) throw new ExtractError(`path traversal rejected: ${name}`);
   const resolved = path.resolve(dest, norm);
   const root = path.resolve(dest);
-  if (resolved !== root && !resolved.startsWith(root + path.sep)) throw new ExtractError(`escapes destination: ${name}`);
+  if (resolved !== root && !resolved.startsWith(root + path.sep))
+    throw new ExtractError(`escapes destination: ${name}`);
   return resolved;
 }
 
@@ -82,14 +83,26 @@ function readTarGz(buf: Buffer, lim: Required<ExtractLimits>): Member[] {
     let name = block.subarray(0, 100).toString('utf8').replace(/\0.*$/, '');
     const prefix = block.subarray(345, 500).toString('utf8').replace(/\0.*$/, '');
     if (prefix) name = `${prefix}/${name}`;
-    const size = parseInt(block.subarray(124, 136).toString('utf8').replace(/\0.*$/, '').trim() || '0', 8);
-    const typeflag = String.fromCharCode(block[156]);
+    const size = Number.parseInt(block.subarray(124, 136).toString('utf8').replace(/\0.*$/, '').trim() || '0', 8);
+    // A negative size walks the cursor backwards: `off += 512` and then
+    // `off += Math.ceil(size / 512) * 512` cancel out at -512 and go negative
+    // below it, so the same header is read forever while every pass appends a
+    // member — a 70-byte archive is enough to hold the main thread and exhaust
+    // memory. The entry budgets in extractArchive never get a say; they run on
+    // the list this function has to finish building first.
+    if (!Number.isSafeInteger(size) || size < 0) {
+      throw new ExtractError(
+        `invalid entry size in tar header: ${block.subarray(124, 136).toString('utf8').replace(/\0.*$/, '').trim()}`,
+      );
+    }
+    const typeflag = String.fromCodePoint(block[156]);
     off += 512;
     const data = tar.subarray(off, off + size);
     off += Math.ceil(size / 512) * 512;
     if (!name || name.endsWith('/PaxHeader/') || typeflag === 'x' || typeflag === 'g') continue;
     if (typeflag === '5') members.push({ name, type: 'dir' });
-    else if (typeflag === '0' || typeflag === '\0' || typeflag === '') members.push({ name, type: 'file', data: Buffer.from(data) });
+    else if (typeflag === '0' || typeflag === '\0' || typeflag === '')
+      members.push({ name, type: 'file', data: Buffer.from(data) });
     else members.push({ name, type: 'other' }); // links (1,2), devices, fifo
   }
   return members;
@@ -100,7 +113,10 @@ function readZip(buf: Buffer, lim: Required<ExtractLimits>): Member[] {
   // Find End Of Central Directory.
   let eocd = -1;
   for (let i = buf.length - 22; i >= 0 && i > buf.length - 22 - 65536; i--) {
-    if (buf.readUInt32LE(i) === 0x06054b50) { eocd = i; break; }
+    if (buf.readUInt32LE(i) === 0x06054b50) {
+      eocd = i;
+      break;
+    }
   }
   if (eocd < 0) throw new ExtractError('invalid zip (no EOCD)');
   const count = buf.readUInt16LE(eocd + 10);
@@ -131,8 +147,14 @@ function readZip(buf: Buffer, lim: Required<ExtractLimits>): Member[] {
     const comp = buf.subarray(dataStart, dataStart + compSize);
     p += 46 + nameLen + extraLen + commentLen;
 
-    if (isSymlink) { members.push({ name, type: 'other' }); continue; }
-    if (name.endsWith('/')) { members.push({ name, type: 'dir' }); continue; }
+    if (isSymlink) {
+      members.push({ name, type: 'other' });
+      continue;
+    }
+    if (name.endsWith('/')) {
+      members.push({ name, type: 'dir' });
+      continue;
+    }
     let data: Buffer;
     if (method === 0) {
       if (compSize > lim.maxFileBytes) throw new ExtractError(`file too large: ${name}`);

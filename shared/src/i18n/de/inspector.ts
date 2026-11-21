@@ -7,12 +7,16 @@ const inspector: TranslationStrings = {
   'inspector.showHours': 'Öffnungszeiten anzeigen',
   'inspector.files': 'Dateien',
   'inspector.filesCount': '{count} Dateien',
+  'inspector.filesCount.one': '{count} Datei',
   'inspector.removeFromDay': 'Vom Tag entfernen',
   'inspector.remove': 'Entfernen',
   'inspector.addToDay': 'Zum Tag hinzufügen',
   'inspector.confirmedRes': 'Bestätigte Reservierung',
   'inspector.pendingRes': 'Ausstehende Reservierung',
   'inspector.google': 'Google Maps',
+  'inspector.navigation': 'Navigation', // same-as-en
+  'inspector.otherMapApp': 'Andere Karten-App',
+  'inspector.openWith': 'Öffnen mit',
   'inspector.openStreetMap': 'OpenStreetMap',
   'inspector.website': 'Webseite öffnen',
   'inspector.saveToCollection': 'In Sammlung speichern',
@@ -21,5 +25,8 @@ const inspector: TranslationStrings = {
   'inspector.editRes': 'Reservierung bearbeiten',
   'inspector.participants': 'Teilnehmer',
   'inspector.trackStats': 'Streckendaten',
+  'inspector.trackColor': 'Streckenfarbe',
+  'inspector.trackColorAuto': 'Automatische Farbe',
+  'inspector.trackColorCustom': 'Eigene Farbe wählen',
 };
 export default inspector;

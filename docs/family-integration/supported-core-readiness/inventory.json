@@ -1,0 +1,554 @@
+{
+  "date": "2026-11-12",
+  "candidate_head": "4d6f4817f1d2ed9f4fb415c17ca9a61deba555cc",
+  "qualified_runtime": "b93124b2609a614ce67420bab77fa8a8580d154b",
+  "upstream_trek": "5.1.2",
+  "decision": "NOT_READY_FOR_PREVIEW_UPDATE",
+  "matrix_semantics": "Local qualification and code inspection are separate from hosted acceptance. Deliberate disabled features need not be implemented for a supported-core preview. Core journeys with real connector gaps must be repaired or truthfully unavailable.",
+  "blockers": {
+    "R1": "Hosted schema/semantics: 88 applied migrations versus128 local;40 pending;10/15 base RPCs absent; old Journey deletes remain physical. Rehearse restored real backup plus exact upgrade first.",
+    "R2": "Corresponding-source check fails on tracked private Cursor plan; sanitized archive scan has not run. Prepare separate narrow publication-hygiene repair and clean publication clone.",
+    "R3": "Scope/availability gaps: map category discovery/coordinates, Atlas compatibility empties and partial global-domain actions. Do not label every visible control functional.",
+    "R4": "Release-specific acceptance: current live version/Auth redirects/backend assumptions/source parity unknown; anonymous preview observations403. Need explicit preview name, approved public build profile/Family release ID, current rollback capture and bounded signed-in smoke.",
+    "R5": "Engine parity: hosted17.6 differs from local17.11 for3 literal timezone conversions; plan/validate separately with no in-place engine upgrade in this packet."
+  },
+  "domains": [
+    {
+      "id": "C01",
+      "domain": "Startup, login, MFA, logout",
+      "default_candidate_state": "locally-qualified",
+      "read_contract": "Validated membership before private startup",
+      "write_contract": "Supabase Auth and existing Family assurance",
+      "evidence": "u03d6-application-entry-handoff.md; F1 actual local Auth/AAL2",
+      "desktop_and_phone_acceptance_journey": "Sign in, return to chosen Trip, verify MFA, logout, retry another account",
+      "accepted_or_required_limits": "Password-reset preview allowlist remains unverified; no Auth setting changed",
+      "release_blockers": [
+        "R1",
+        "R4"
+      ],
+      "hosted_signed_in_acceptance": "not performed"
+    },
+    {
+      "id": "C02",
+      "domain": "Dashboard and Trip lifecycle",
+      "default_candidate_state": "mixed",
+      "read_contract": "Existing Trip list/archive reads",
+      "write_contract": "Native plan creation and recoverable Trip Trash need new DB APIs",
+      "evidence": "tripRecovery.ts; plannerCohortCreation.ts; earlier recovery acceptance",
+      "desktop_and_phone_acceptance_journey": "Open an existing Trip; create a synthetic Trip; Trash/restore it without changing shared catalog",
+      "accepted_or_required_limits": "Old duplicate RPC copies an envelope, not a complete plan; native Trip metadata edits are unavailable in planner scope",
+      "release_blockers": [
+        "R1"
+      ],
+      "hosted_signed_in_acceptance": "not performed"
+    },
+    {
+      "id": "C03",
+      "domain": "Plan, saved locations and visits",
+      "default_candidate_state": "locally-qualified",
+      "read_contract": "One coherent planner-view/bundle publication",
+      "write_contract": "Observed saved-location/visit editor and creation commands",
+      "evidence": "plannerBootstrap.ts; plannerCohortBundle.ts; plannerCohort.test.tsx; prior U03 actual-App acceptance",
+      "desktop_and_phone_acceptance_journey": "Load populated days/locations/visits, edit one original location, reopen and compare",
+      "accepted_or_required_limits": "Requires normalized locations and the new snapshot/form APIs; no legacy aggregate fallback",
+      "release_blockers": [
+        "R1"
+      ],
+      "hosted_signed_in_acceptance": "not performed"
+    },
+    {
+      "id": "C04",
+      "domain": "Day scheduling and repeat visits",
+      "default_candidate_state": "locally-qualified",
+      "read_contract": "Explicit day/calendar/visit relationships",
+      "write_contract": "Observed day/calendar/arrangement commands with direct/propose/deny",
+      "evidence": "plannerCohortCalendar.ts; plannerCohortAssignments.ts",
+      "desktop_and_phone_acceptance_journey": "Untimed day visit, genuine midnight appointment, two restaurant visits, move/reorder and restore",
+      "accepted_or_required_limits": "Unknown time is not midnight; classification of real legacy records must be rehearsed",
+      "release_blockers": [
+        "R1"
+      ],
+      "hosted_signed_in_acceptance": "not performed"
+    },
+    {
+      "id": "C05",
+      "domain": "Booking/stay/transport details",
+      "default_candidate_state": "locally-qualified",
+      "read_contract": "Coherent booking snapshot reconciled with the calendar",
+      "write_contract": "Observed booking forms; raw mutations remain refused",
+      "evidence": "plannerBookings.ts; plannerCohortBookings.ts",
+      "desktop_and_phone_acceptance_journey": "Open a multi-night stay and a transport; edit supported facts; verify dates/visits",
+      "accepted_or_required_limits": "Stored transit records, unsupported fields and optional provider imports are not general parity",
+      "release_blockers": [
+        "R1"
+      ],
+      "hosted_signed_in_acceptance": "not performed"
+    },
+    {
+      "id": "C06",
+      "domain": "Catalog media and galleries",
+      "default_candidate_state": "locally-qualified",
+      "read_contract": "Stored v1 variant objects and explicit canonical originals",
+      "write_contract": "No transformation or media regeneration",
+      "evidence": "plannerView.ts; qualified image port; F1 zero-transform browser evidence",
+      "desktop_and_phone_acceptance_journey": "Decode covers/gallery slides, navigate slides, explicitly open correct original",
+      "accepted_or_required_limits": "Missing variants remain placeholders. No new hosted image smoke performed",
+      "release_blockers": [
+        "R1",
+        "R4"
+      ],
+      "hosted_signed_in_acceptance": "not performed"
+    },
+    {
+      "id": "C07",
+      "domain": "Existing Trip map pins",
+      "default_candidate_state": "locally-qualified",
+      "read_contract": "Native map consumes projected current Trip locations",
+      "write_contract": "Scheduling/editor commands retain typed locations",
+      "evidence": "plannerProjection.ts; prior actual native planner browser acceptance",
+      "desktop_and_phone_acceptance_journey": "Open populated Trip map and select a saved venue, compare correct coordinates",
+      "accepted_or_required_limits": "Map tiles/provider byte fidelity is not proved by synthetic local responses",
+      "release_blockers": [
+        "R1",
+        "R4"
+      ],
+      "hosted_signed_in_acceptance": "not performed"
+    },
+    {
+      "id": "C08",
+      "domain": "Restaurants/Cafes discovery and autocomplete",
+      "default_candidate_state": "connector-gap",
+      "read_contract": "/maps/pois is unimplemented; autocomplete returns empty compatibility data",
+      "write_contract": "No catalog add flow qualified through this missing endpoint",
+      "evidence": "applicationHandler.ts; transport.ts; F2 actual-adapter probes",
+      "desktop_and_phone_acceptance_journey": "Toggle native restaurant/cafe categories, discover real typed catalog venue, select then save it",
+      "accepted_or_required_limits": "City-only search currently returns null coordinates; an empty compatibility response is not a working discovery feature",
+      "release_blockers": [
+        "R3"
+      ],
+      "hosted_signed_in_acceptance": "not performed"
+    },
+    {
+      "id": "C09",
+      "domain": "Routes and external enrichment",
+      "default_candidate_state": "restricted",
+      "read_contract": "Explicit unsupported provider responses",
+      "write_contract": "No new routing/community/provider writer",
+      "evidence": "serviceCompatibility.test.ts; /auth/app-config disabled enrichment flags",
+      "desktop_and_phone_acceptance_journey": "Navigation links may be tested explicitly; route calculation needs its own provider proof",
+      "accepted_or_required_limits": "Tours/Roadtrip/Collab remain absent; ordinary calculated routes are not newly accepted here",
+      "release_blockers": [
+        "R3",
+        "R4"
+      ],
+      "hosted_signed_in_acceptance": "not performed"
+    },
+    {
+      "id": "C10",
+      "domain": "Tasks",
+      "default_candidate_state": "locally-qualified",
+      "read_contract": "Canonical task snapshot",
+      "write_contract": "Observed native create/edit/check/reorder/Trash/restore and original queue",
+      "evidence": "plannerTasks.ts; taskTransport.ts; u03d12-phone-task-draft-preservation-handoff.md",
+      "desktop_and_phone_acceptance_journey": "Create two tasks consecutively, edit/complete/reorder, retry original operation and restore",
+      "accepted_or_required_limits": "Direct authority required; source/actor/layer changes retire callbacks",
+      "release_blockers": [
+        "R1"
+      ],
+      "hosted_signed_in_acceptance": "not performed"
+    },
+    {
+      "id": "C11",
+      "domain": "Packing items and observed groups",
+      "default_candidate_state": "locally-qualified",
+      "read_contract": "Canonical v1 visible packing publication",
+      "write_contract": "Base item/group observed commands and retained queue",
+      "evidence": "packing-native-controls-handoff.md; packing-group-native-controls-handoff.md",
+      "desktop_and_phone_acceptance_journey": "Create Common/Personal items, edit/check counts, reorder, Trash/restore, retry exact original",
+      "accepted_or_required_limits": "No raw group loops, automatic defaults, sharing/clone/templates/import/contributors",
+      "release_blockers": [
+        "R1"
+      ],
+      "hosted_signed_in_acceptance": "not performed"
+    },
+    {
+      "id": "C12",
+      "domain": "Packing export",
+      "default_candidate_state": "accepted-current-runtime",
+      "read_contract": "Owned visible snapshot and bag names/colors",
+      "write_contract": "Read only: CSV/Markdown/print",
+      "evidence": "packing-export-ownership-handoff.md; runtime b93124b; 2661 regressions/16 App observations inherited",
+      "desktop_and_phone_acceptance_journey": "Download Common/Personal, verify bag labels, close print, change owner/Trip and ensure no old output",
+      "accepted_or_required_limits": "Saved/read-only proof is admitted-lease scope; not a new hosted/offline admission",
+      "release_blockers": [
+        "R1"
+      ],
+      "hosted_signed_in_acceptance": "not performed"
+    },
+    {
+      "id": "C13",
+      "domain": "New packing categories/bags/recovery",
+      "default_candidate_state": "strict-local-only",
+      "read_contract": "Latest category identity/aggregate and bag snapshots",
+      "write_contract": "Qualified only by exact loopback selectors",
+      "evidence": "offlineTripQualification.ts; plannerBootstrap.ts; F2 selector/default-port probes",
+      "desktop_and_phone_acceptance_journey": "Use only the qualified local build; later explicit hosted profile needs separate acceptance",
+      "accepted_or_required_limits": "Default/hosted build leaves these advanced ports/modes off even if their DB migrations are applied",
+      "release_blockers": [],
+      "hosted_signed_in_acceptance": "not performed"
+    },
+    {
+      "id": "C14",
+      "domain": "Costs",
+      "default_candidate_state": "read-only-core",
+      "read_contract": "Existing expense/settlement projection",
+      "write_contract": "Native planner budget_edit is unavailable",
+      "evidence": "plannerActionAvailability.ts; budgetHandler.ts; P04au ancillary read proof",
+      "desktop_and_phone_acceptance_journey": "Read existing amounts/currency/settlement; verify unsupported editing is unavailable",
+      "accepted_or_required_limits": "Ledger/payment/split/import parity is not part of supported writer scope",
+      "release_blockers": [
+        "R1",
+        "R4"
+      ],
+      "hosted_signed_in_acceptance": "not performed"
+    },
+    {
+      "id": "C15",
+      "domain": "Files",
+      "default_candidate_state": "read-only-or-narrow-preview-core",
+      "read_contract": "File metadata plus separately authorized private preview",
+      "write_contract": "Native file upload/edit/delete remain unavailable in the planner",
+      "evidence": "plannerActionAvailability.ts; filePreview.ts; prior private preview proof",
+      "desktop_and_phone_acceptance_journey": "Read authorized file metadata and preview explicit available bytes; verify denied private access",
+      "accepted_or_required_limits": "Whole offline bytes/downloads and all upload targets are not accepted; cleanup/hold contracts need backend parity",
+      "release_blockers": [
+        "R1",
+        "R4"
+      ],
+      "hosted_signed_in_acceptance": "not performed"
+    },
+    {
+      "id": "C16",
+      "domain": "Trip/Journey recovery",
+      "default_candidate_state": "hosted-incompatible",
+      "read_contract": "New Trash/history/restore contracts accepted locally",
+      "write_contract": "Hosted old Journey delete functions still physically delete rows",
+      "evidence": "tripRecovery.ts; journeyHandler.ts; hosted-recovery-schema.json",
+      "desktop_and_phone_acceptance_journey": "Trash/restore synthetic Trips/Journeys/entries with media links intact and recover overwritten text",
+      "accepted_or_required_limits": "Catalog existence alone does not prove recovery semantics; no hosted delete function was called",
+      "release_blockers": [
+        "R1"
+      ],
+      "hosted_signed_in_acceptance": "not performed"
+    },
+    {
+      "id": "C17",
+      "domain": "Atlas",
+      "default_candidate_state": "limited-read",
+      "read_contract": "Country geometry and Family travel stats",
+      "write_contract": "Atlas mutations not connected",
+      "evidence": "applicationHandler.ts; F2 empty-response probes",
+      "desktop_and_phone_acceptance_journey": "Open map/stats; compare real visited facts after database upgrade",
+      "accepted_or_required_limits": "Bucket list, regions and extra layers currently return empty compatibility responses, not real feature reads",
+      "release_blockers": [
+        "R3",
+        "R4"
+      ],
+      "hosted_signed_in_acceptance": "not performed"
+    },
+    {
+      "id": "C18",
+      "domain": "Vacay",
+      "default_candidate_state": "limited-existing-adapter",
+      "read_contract": "Family annual calendar/member/settings reads",
+      "write_contract": "Existing whole-day operations/authorized settings",
+      "evidence": "vacayHandler.ts; serviceCompatibility.test.ts",
+      "desktop_and_phone_acceptance_journey": "Open year, inspect data; on isolated fixture toggle/clear whole day and verify Family scope",
+      "accepted_or_required_limits": "Fractions other than one and several new native settings are explicitly refused; not complete v5 parity",
+      "release_blockers": [
+        "R3",
+        "R4"
+      ],
+      "hosted_signed_in_acceptance": "not performed"
+    },
+    {
+      "id": "C19",
+      "domain": "Collections",
+      "default_candidate_state": "limited-existing-adapter",
+      "read_contract": "Existing Family named lists/items",
+      "write_contract": "Existing adapters; normalized planner round-trip identity needs acceptance",
+      "evidence": "collectionHandler.ts; serviceCompatibility.test.ts",
+      "desktop_and_phone_acceptance_journey": "Open collection/item; test save/copy with normalized saved-location IDs on isolated data",
+      "accepted_or_required_limits": "Legacy source mapping and broad native actions cannot be inferred from navigation or earlier legacy-copy mocks",
+      "release_blockers": [
+        "R1",
+        "R3",
+        "R4"
+      ],
+      "hosted_signed_in_acceptance": "not performed"
+    },
+    {
+      "id": "C20",
+      "domain": "Journey pages",
+      "default_candidate_state": "limited-existing-adapter",
+      "read_contract": "Existing Journey/entry reads with newer recovery references",
+      "write_contract": "Partially connected entry/media operations; recovery incompatible on hosted",
+      "evidence": "journeyHandler.ts; earlier Oct31 page smoke",
+      "desktop_and_phone_acceptance_journey": "Open existing journal; test entry edit/history/Trash/restore only on isolated upgraded copy",
+      "accepted_or_required_limits": "Map layers and native feature parity remain incomplete; hosted old deletes are not recoverable",
+      "release_blockers": [
+        "R1",
+        "R3",
+        "R4"
+      ],
+      "hosted_signed_in_acceptance": "not performed"
+    },
+    {
+      "id": "C21",
+      "domain": "Plan exports/imports",
+      "default_candidate_state": "mixed",
+      "read_contract": "Published Family plan PDF/ICS and bounded preview extraction exist",
+      "write_contract": "Review/apply must use qualified observed commands",
+      "evidence": "planExport.ts; bookingImportJobs.ts; importReviewSession.test.tsx",
+      "desktop_and_phone_acceptance_journey": "Compare downloaded published plan against source; cancel/reopen import without replay or file loss",
+      "accepted_or_required_limits": "GPX/my-plan/subscribe and AI/automatic import remain excluded; parsing success is not persisted booking acceptance",
+      "release_blockers": [
+        "R1",
+        "R4"
+      ],
+      "hosted_signed_in_acceptance": "not performed"
+    },
+    {
+      "id": "C22",
+      "domain": "Offline, retained work and release update",
+      "default_candidate_state": "bounded-local-qualification",
+      "read_contract": "Recent saved read leases only on exact selectors; worker/release recovery inherited",
+      "write_contract": "Read-only cold views and deliberate original-work recovery only",
+      "evidence": "offlineTripQualification.ts; deviceRecoveryGate.ts; deployment-metadata-shell-recovery-handoff.md",
+      "desktop_and_phone_acceptance_journey": "Preserve original fields/files across reload/logout; verify explicit update, not mid-edit auto-reload",
+      "accepted_or_required_limits": "No full offline Trip/media download or physical Safari acceptance; local128 does not activate source-owned cold namespace",
+      "release_blockers": [],
+      "hosted_signed_in_acceptance": "not performed"
+    }
+  ],
+  "fresh_checks": {
+    "actual_module_probes": 36,
+    "existing_gate_service_nav_tests": 59,
+    "new_browser_or_hosted_business_write_claim": false
+  },
+  "hosted_metadata": {
+    "project_ref": "REDACTED_PRODUCTION_PROJECT",
+    "business_rows_read": false,
+    "RPC_behavior_executed": false,
+    "changes": false,
+    "migration_comparison": {
+      "project_ref": "REDACTED_PRODUCTION_PROJECT",
+      "local_ledger_count": 128,
+      "hosted_ledger_count": 88,
+      "canonical_pending_versions": [
+        {
+          "name": "journey_entry_recovery",
+          "version": "20261104175741"
+        },
+        {
+          "name": "journey_aggregate_recovery",
+          "version": "20261104192908"
+        },
+        {
+          "name": "trip_aggregate_recovery",
+          "version": "20261104200550"
+        },
+        {
+          "name": "trip_plan_locations",
+          "version": "20261104230709"
+        },
+        {
+          "name": "trip_visit_location_bridge",
+          "version": "20261104233950"
+        },
+        {
+          "name": "trip_untimed_visit_commands",
+          "version": "20261105001102"
+        },
+        {
+          "name": "typed_plan_change_proposals",
+          "version": "20261105004710"
+        },
+        {
+          "name": "legacy_visit_time_classification",
+          "version": "20261105012509"
+        },
+        {
+          "name": "named_zone_visit_timing",
+          "version": "20261105015237"
+        },
+        {
+          "name": "visit_timing_proposals",
+          "version": "20261105030029"
+        },
+        {
+          "name": "visit_partial_time_semantics",
+          "version": "20261105040722"
+        },
+        {
+          "name": "atomic_trip_plan_entries",
+          "version": "20261105054629"
+        },
+        {
+          "name": "trip_planner_state_snapshot",
+          "version": "20261105194324"
+        },
+        {
+          "name": "trip_destination_location_bridge",
+          "version": "20261105201625"
+        },
+        {
+          "name": "trip_location_form_commands",
+          "version": "20261105205015"
+        },
+        {
+          "name": "trip_visit_form_commands",
+          "version": "20261105212614"
+        },
+        {
+          "name": "trip_private_planner_snapshot",
+          "version": "20261106005109"
+        },
+        {
+          "name": "native_planner_creation",
+          "version": "20261106023651"
+        },
+        {
+          "name": "native_visit_arrangements",
+          "version": "20261106030729"
+        },
+        {
+          "name": "observed_trip_calendar",
+          "version": "20261106035504"
+        },
+        {
+          "name": "recoverable_trip_day_order",
+          "version": "20261106043206"
+        },
+        {
+          "name": "recoverable_trip_day_insertion",
+          "version": "20261106185358"
+        },
+        {
+          "name": "recoverable_unreferenced_trip_days",
+          "version": "20261106193124"
+        },
+        {
+          "name": "recoverable_trip_day_contents",
+          "version": "20261106201143"
+        },
+        {
+          "name": "recoverable_trip_day_file_links",
+          "version": "20261106213759"
+        },
+        {
+          "name": "booking_calendar_date_facts",
+          "version": "20261106222223"
+        },
+        {
+          "name": "recoverable_day_booking_bindings",
+          "version": "20261106230656"
+        },
+        {
+          "name": "observed_booking_detail_commands",
+          "version": "20261106234140"
+        },
+        {
+          "name": "observed_plan_governance",
+          "version": "20261107021228"
+        },
+        {
+          "name": "observed_trip_task_commands",
+          "version": "20261109000220"
+        },
+        {
+          "name": "observed_trip_packing_commands",
+          "version": "20261109032335"
+        },
+        {
+          "name": "observed_trip_packing_groups",
+          "version": "20261111201637"
+        },
+        {
+          "name": "normalized_trip_packing_categories",
+          "version": "20261111234537"
+        },
+        {
+          "name": "observed_trip_packing_categories",
+          "version": "20261112005447"
+        },
+        {
+          "name": "normalized_packing_category_lifecycle",
+          "version": "20261112050004"
+        },
+        {
+          "name": "category_bound_packing_items",
+          "version": "20261112055647"
+        },
+        {
+          "name": "packing_category_aggregate_commands",
+          "version": "20261112084121"
+        },
+        {
+          "name": "observed_trip_packing_bags",
+          "version": "20261112112956"
+        },
+        {
+          "name": "terminal_trip_packing_restore_cancellation",
+          "version": "20261112132958"
+        },
+        {
+          "name": "terminal_trip_packing_bag_commands",
+          "version": "20261112162520"
+        }
+      ],
+      "hosted_only_versions": [],
+      "missing_declared_base_functions": [
+        "get_family_trip_planner_view_v1",
+        "get_family_trip_booking_view_v1",
+        "get_family_trip_tasks_v1",
+        "execute_family_trip_task_v1",
+        "get_family_trip_task_receipt_v1",
+        "get_family_trip_packing_v1",
+        "execute_family_trip_packing_v1",
+        "get_family_trip_packing_receipt_v1",
+        "get_family_plan_governance_v1",
+        "execute_family_plan_governance_v1"
+      ],
+      "present_base_function_signature_or_grant_differences": {},
+      "no_business_rows_read": true,
+      "no_hosted_changes": true,
+      "hosted_versions_match_local_prefix": true,
+      "migration_name_label_differences": [
+        {
+          "version": "20260714000000",
+          "hosted_name": "fix_table_ownership",
+          "local_name": "invite_only_access_requests"
+        }
+      ],
+      "historical_migration_sql_parity": "not established; matching versions and one differing name require provenance reconciliation"
+    }
+  },
+  "source_archive": {
+    "checked_commit": "4d6f4817f1d2ed9f4fb415c17ca9a61deba555cc",
+    "exit": 1,
+    "blocked_path": ".cursor/plans/existing-family-backend-integration.plan.md",
+    "secret_scan_completed": false
+  },
+  "local_build_only": "F1 artifact binds b93124b and loopback56041 with recovery qualifier; cannot deploy that artifact to a public host",
+  "next": "U04-F3a real-backup database restore baseline, then exact40-migration upgrade rehearsal and default-profile App acceptance",
+  "_sourcePublication": {
+    "redactedFields": [
+      "/hosted_metadata/project_ref",
+      "/hosted_metadata/migration_comparison/project_ref"
+    ],
+    "reason": "Operational project and database host identity withheld from public source. Unredacted original retained in private Git history.",
+    "originalPrivateCommit": "2d25cc818b9844e77b693b4cde2393388184b12f",
+    "originalFileSha256": "c9d8df4a891b6d0b7ad71c72cda84a8ce502cdf20e63e29245dfd9c483ec5e90"
+  }
+}

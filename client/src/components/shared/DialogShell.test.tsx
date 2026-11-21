@@ -79,6 +79,25 @@ describe('DialogShell unsaved-changes question (#2253)', () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
+  it('only dismisses a backdrop click when the press also ends there', () => {
+    render(<Editor />);
+    const panel = screen.getByRole('dialog');
+    const outside = backdrop();
+
+    fireEvent.mouseDown(outside);
+    fireEvent.mouseUp(panel);
+    fireEvent.click(outside);
+    fireEvent.mouseDown(panel);
+    fireEvent.mouseUp(outside);
+    fireEvent.click(outside);
+    expect(onClose).not.toHaveBeenCalled();
+
+    fireEvent.mouseDown(outside);
+    fireEvent.mouseUp(outside);
+    fireEvent.click(outside);
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
   it('FE-COMP-DIALOGSHELL-2253-2: after typing, the backdrop asks; keep editing stays, discard closes', async () => {
     const user = userEvent.setup();
     render(<Editor />);
@@ -100,6 +119,38 @@ describe('DialogShell unsaved-changes question (#2253)', () => {
     clickBackdrop();
     await user.click(screen.getByRole('button', { name: 'Discard' }));
     expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps keyboard focus inside the discard question in both directions', async () => {
+    const user = userEvent.setup();
+    render(<Editor />);
+    await user.type(screen.getByLabelText('Name'), 'Cafe');
+    await user.keyboard('{Escape}');
+
+    const keep = screen.getByRole('button', { name: 'Keep editing' });
+    const discard = screen.getByRole('button', { name: 'Discard' });
+    expect(keep).toHaveFocus();
+    await user.tab({ shift: true });
+    expect(discard).toHaveFocus();
+    await user.tab();
+    expect(keep).toHaveFocus();
+    expect(onClose).not.toHaveBeenCalled();
+  });
+
+  it.each(['Escape', 'Keep editing'])('returns focus to the edited field after %s', async (action) => {
+    const user = userEvent.setup();
+    render(<Editor />);
+    const input = screen.getByLabelText('Name');
+    await user.type(input, 'Cafe');
+    await user.keyboard('{Escape}');
+
+    if (action === 'Escape') await user.keyboard('{Escape}');
+    else await user.click(screen.getByRole('button', { name: action }));
+
+    expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+    expect(input).toHaveFocus();
+    expect(input).toHaveValue('Cafe');
+    expect(onClose).not.toHaveBeenCalled();
   });
 
   it('FE-COMP-DIALOGSHELL-2253-3: typing back to where it started closes without asking', async () => {

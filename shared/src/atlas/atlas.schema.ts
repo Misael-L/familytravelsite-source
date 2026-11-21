@@ -21,14 +21,29 @@ export const markRegionRequestSchema = z.object({
 });
 export type MarkRegionRequest = z.infer<typeof markRegionRequestSchema>;
 
-export const createBucketItemRequestSchema = z.object({
-  name: z.string().min(1),
-  lat: z.number().nullable().optional(),
-  lng: z.number().nullable().optional(),
-  country_code: z.string().nullable().optional(),
-  notes: z.string().nullable().optional(),
-  target_date: z.string().nullable().optional(),
-});
+export const createBucketItemRequestSchema = z
+  .object({
+    name: z.string().min(1),
+    lat: z.number().nullable().optional(),
+    lng: z.number().nullable().optional(),
+    country_code: z.string().nullable().optional(),
+    notes: z.string().nullable().optional(),
+    target_date: z.string().nullable().optional(),
+    // A state or province wished for (#1901), ISO 3166-2 like "DE-BY". It belongs to
+    // the item's country, so it comes with one and starts with it.
+    region_code: z
+      .string()
+      .max(12)
+      .regex(/^[A-Za-z]{2}-[A-Za-z0-9]{1,8}$/)
+      .nullable()
+      .optional(),
+  })
+  .refine(
+    (b) =>
+      !b.region_code ||
+      (!!b.country_code && b.region_code.toUpperCase().startsWith(`${b.country_code.toUpperCase()}-`)),
+    { message: 'region_code must belong to country_code', path: ['region_code'] },
+  );
 export type CreateBucketItemRequest = z.infer<typeof createBucketItemRequestSchema>;
 
 export const updateBucketItemRequestSchema = z.object({
@@ -55,6 +70,72 @@ export const regionGeoSchema = z.object({
   features: z.array(z.unknown()),
 });
 export type RegionGeo = z.infer<typeof regionGeoSchema>;
+
+/** GET /regions/geo/:code — one country's regions, by ISO 3166-1 alpha-2 code in any case. */
+export const regionGeoParamsSchema = z.object({
+  code: z
+    .string()
+    .regex(/^[A-Za-z]{2}$/, 'a two-letter country code')
+    .transform((code) => code.toUpperCase()),
+});
+export type RegionGeoParams = z.infer<typeof regionGeoParamsSchema>;
+
+/**
+ * Where a coordinate lands on the atlas map (#1115). Both fields are nullable: the
+ * point may sit outside every bundled polygon (open sea, a simplification gap at a
+ * coastline), and plenty of countries have no admin1 coverage in the bundle at all,
+ * in which case the country resolves and the region does not.
+ */
+export const atlasLocateResponseSchema = z.object({
+  country_code: z.string().nullable(),
+  region_code: z.string().nullable(),
+  region_name: z.string().nullable(),
+});
+export type AtlasLocateResponse = z.infer<typeof atlasLocateResponseSchema>;
+
+/**
+ * How a country/region ended up on the atlas map. Before this, every trip counted as a
+ * visit, so a booked-but-not-taken trip painted the map as if you had already been there.
+ * Requested in discussion #1048 — note that's a discussion, not an issue:
+ * https://github.com/liketrek/TREK/discussions/1048
+ *
+ *  - visited: at least one source is a trip that has already started, or a manual mark
+ *  - planned: every source is a trip starting in the future
+ *  - idea:    every source is a trip with no dates at all
+ */
+export const visitStatusSchema = z.enum(['visited', 'planned', 'idea']);
+export type VisitStatus = z.infer<typeof visitStatusSchema>;
+
+/** Today as 'YYYY-MM-DD' in UTC — the comparison base the rest of TREK uses. */
+export function todayUtc(): string {
+  return new Date().toISOString().slice(0, 10);
+}
+
+/**
+ * Bucket a trip by its dates. A trip that has started but not ended still counts as
+ * visited — you are there right now. A trip with neither date is an idea, not a plan,
+ * and must stay out of the visit stats.
+ */
+export function tripVisitStatus(
+  startDate: string | null | undefined,
+  endDate: string | null | undefined,
+  today: string = todayUtc(),
+): VisitStatus {
+  const effectiveStart = startDate || endDate || null;
+  if (!effectiveStart) return 'idea';
+  return effectiveStart <= today ? 'visited' : 'planned';
+}
+
+/** visited beats planned beats idea — a country takes its strongest source. */
+export const VISIT_STATUS_RANK: Record<VisitStatus, number> = {
+  visited: 0,
+  planned: 1,
+  idea: 2,
+};
+
+export function strongerVisitStatus(a: VisitStatus, b: VisitStatus): VisitStatus {
+  return VISIT_STATUS_RANK[a] <= VISIT_STATUS_RANK[b] ? a : b;
+}
 
 /**
  * ISO 3166-1 alpha-2 country code → continent. Single source of truth for the

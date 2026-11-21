@@ -1,6 +1,7 @@
 import type { TranslationStrings } from '../types';
 
 const todo: TranslationStrings = {
+  'todo.emptyFiltered': 'Немає завдань, що відповідають цьому фільтру',
   'todo.subtab.packing': 'Список речей',
   'todo.subtab.todo': 'Задачі',
   'todo.completed': 'виконано',
@@ -10,6 +11,7 @@ const todo: TranslationStrings = {
   'todo.uncategorized': 'Без списку',
   'todo.namePlaceholder': 'Назва завдання',
   'todo.descriptionPlaceholder': 'Опис (необов’язково)',
+  'todo.editDescription': 'Натисніть, щоб редагувати, посилання відкриваються одразу',
   'todo.unassigned': 'Не призначено',
   'todo.noCategory': 'Без списку',
   'todo.hasDescription': 'Є опис',

@@ -1,0 +1,14 @@
+
+> @trek/client@5.1.4 lint:pairs
+> node scripts/pairs-lint.mjs
+
+FAIL  src/mobile/screens/trip/tabs/MPackingItemRow.tsx is a phone screen file that scripts/feature-pairs.json does not list
+A feature that has a desktop view and a phone view keeps its logic in one shared hook both import. Add a new phone screen to scripts/feature-pairs.json: as a view of the pair whose hook it runs on, or under mobileOnly with the reason it has no twin. See client/CLAUDE.md, "Desktop and phone views".
+pairs: 143 shared feature(s), 83 phone-only screen file(s), 1 problem(s)
+npm error Lifecycle script `lint:pairs` failed with error:
+npm error code 1
+npm error path /Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client
+npm error workspace @trek/client@5.1.4
+npm error location /Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client
+npm error command failed
+npm error command sh -c node scripts/pairs-lint.mjs

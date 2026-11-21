@@ -1,26 +1,26 @@
 import React from 'react'
-import { Plus, Layers, Users } from 'lucide-react'
+import { Plus, Layers, Users, Upload } from 'lucide-react'
 import type { Collection } from '@trek/shared'
 import type { TranslationFn } from '../../types'
 import { ALL_SAVED } from '../../store/collectionStore'
-import type { IncomingCollectionInvite } from '../../store/collectionStore'
-import type { CollectionEntityId } from '../../pages/collections/collectionsModel'
-
-type RailActiveId = CollectionEntityId | typeof ALL_SAVED | null
+import type { ActiveCollectionId, IncomingCollectionInvite } from '../../store/collectionStore'
+import CollectionInviteCard from './CollectionInviteCard'
 
 interface ListsRailProps {
   ownedLists: Collection[]
   sharedLists: Collection[]
-  activeId: RailActiveId
+  activeId: ActiveCollectionId
   incomingInvites: IncomingCollectionInvite[]
-  onSelect: (id: RailActiveId) => void
+  onSelect: (id: ActiveCollectionId) => void
   onNewList: () => void
-  onAcceptInvite: (id: CollectionEntityId) => void
-  onDeclineInvite: (id: CollectionEntityId) => void
+  /** Read a list file as a new list (#2198). */
+  onImportList: () => void
+  onAcceptInvite: (id: number) => void
+  onDeclineInvite: (id: number) => void
   t: TranslationFn
 }
 
-function ListRow({ list, active, onSelect }: { list: Collection; active: boolean; onSelect: (id: CollectionEntityId) => void }): React.ReactElement {
+function ListRow({ list, active, onSelect }: { list: Collection; active: boolean; onSelect: (id: number) => void }): React.ReactElement {
   return (
     <div className="col-row">
       <button type="button" onClick={() => onSelect(list.id)} className={`col-row-btn${active ? ' on' : ''}`}>
@@ -33,7 +33,7 @@ function ListRow({ list, active, onSelect }: { list: Collection; active: boolean
 }
 
 /**
- * Left rail of the user's lists: a "New list" action, the "All saved" union
+ * Left rail of the user's lists: "New list" and "Import list" actions, the "All saved" union
  * pseudo-list, owned lists (colour dot + count), a shared section, and an
  * incoming-invites block. Selecting a list makes it active; editing / deleting
  * happens from the Edit button in the hero of the active list.
@@ -41,14 +41,27 @@ function ListRow({ list, active, onSelect }: { list: Collection; active: boolean
 export default function ListsRail(props: ListsRailProps): React.ReactElement {
   const {
     ownedLists, sharedLists, activeId, incomingInvites,
-    onSelect, onNewList, onAcceptInvite, onDeclineInvite, t,
+    onSelect, onNewList, onImportList, onAcceptInvite, onDeclineInvite, t,
   } = props
 
   return (
     <>
-      <button type="button" onClick={onNewList} className="col-rail-new">
-        <Plus size={16} /> {t('collections.newList')}
-      </button>
+      <div className="col-rail-newrow">
+        <button type="button" onClick={onNewList} className="col-rail-new">
+          <Plus size={16} /> {t('collections.newList')}
+        </button>
+        {/* Import sits beside New rather than in the hero: a file becomes a NEW
+            list, so it belongs where lists are made, not on the one open. */}
+        <button
+          type="button"
+          onClick={onImportList}
+          className="col-rail-new col-rail-import"
+          aria-label={t('collections.file.importButton')}
+          title={t('collections.file.importTitle')}
+        >
+          <Upload size={15} />
+        </button>
+      </div>
 
       <div className="col-row">
         <button type="button" onClick={() => onSelect(ALL_SAVED)} className={`col-row-btn${activeId === ALL_SAVED ? ' on' : ''}`}>
@@ -78,18 +91,7 @@ export default function ListsRail(props: ListsRailProps): React.ReactElement {
             <span className="badge">{incomingInvites.length}</span>
           </div>
           {incomingInvites.map(inv => (
-            <div key={inv.collection_id} className="col-invite">
-              <div className="t">{inv.name}</div>
-              <div className="s">{t('collections.invites.from')} {inv.from.username}</div>
-              <div className="col-invite-actions">
-                <button type="button" onClick={() => onAcceptInvite(inv.collection_id)} className="col-invite-accept">
-                  {t('collections.invites.accept')}
-                </button>
-                <button type="button" onClick={() => onDeclineInvite(inv.collection_id)} className="col-invite-decline">
-                  {t('collections.invites.decline')}
-                </button>
-              </div>
-            </div>
+            <CollectionInviteCard key={inv.collection_id} invite={inv} onAccept={onAcceptInvite} onDecline={onDeclineInvite} t={t} />
           ))}
         </>
       )}

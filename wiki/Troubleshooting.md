@@ -40,10 +40,10 @@ Log in with what it shows; you will be asked to set a new password.
 **Reset the admin without losing data** (locked-out, existing install):
 
 ```bash
-docker exec -it trek node server/reset-admin.js
+docker exec -it -u node trek node server/reset-admin.js
 ```
 
-This resets (or creates) `admin@trek.local` and prints a generated password. Override with `-e RESET_ADMIN_EMAIL=you@example.com -e RESET_ADMIN_PASSWORD=yourpass`. You will be asked to change it on first login.
+This resets (or creates) `admin@trek.local` and prints a generated password. Override with `-e RESET_ADMIN_EMAIL=you@example.com -e RESET_ADMIN_PASSWORD=yourpass`. You will be asked to change it on first login. Resetting an existing account also signs it out of every session it still had.
 
 **Start over with chosen credentials** (fresh install, no data to keep):
 
@@ -105,15 +105,19 @@ If you are accessing TREK directly on `http://<host>:3000` with no proxy, remove
 
 ## Locked out of MFA / lost authenticator
 
-**Fix:** If you still have access to your account, use one of the 10 backup codes generated during MFA setup to complete login. After signing in, go to **Settings > Security** to disable or reconfigure MFA.
+**Fix:** If you still have access to your account, use one of the 10 backup codes generated during MFA setup to complete login. After signing in, go to **Settings > Account** to disable or reconfigure MFA.
 
-If you no longer have access to backup codes and cannot log in, an admin must disable MFA for your account directly in the database, or use the `reset-admin.js` script to regain access to an admin account. There is no per-user MFA reset in the Admin Panel UI — the Admin Panel only controls the global "require MFA for all users" policy. See [Admin: Users and Invites](Admin-Users-and-Invites).
+If you no longer have access to backup codes and cannot log in, an admin can clear your MFA for you: `DELETE /api/admin/users/<id>/mfa` (admin session required). It clears `mfa_enabled`, `mfa_secret` and `mfa_backup_codes` — the same three columns a self-service disable clears — and is written to the audit log as `admin.user_mfa_reset`.
+
+The endpoint refuses to reset the caller's own account (*"Use Settings to change your own two-factor setup"*), so an admin cannot unlock themselves with it. If the locked-out account is the only admin, run `reset-admin.js` with a **new** `RESET_ADMIN_EMAIL` to create a second admin account — for an email that already exists the script only resets the password and role and leaves MFA untouched, so you would still hit the TOTP prompt — then sign in as that account and clear the first one's MFA. Hand-editing the database is the last resort, not the only route.
+
+There is no button for it: the Admin Panel UI has no per-user MFA reset (the user modal offers only **Reset passkeys**) — it only controls the global "require MFA for all users" policy. See [Admin: Users and Invites](Admin-Users-and-Invites).
 
 ---
 
-## Demo user cannot edit or create
+## Demo user cannot upload files or change account settings
 
-**Cause:** The instance is running with `DEMO_MODE=true`. All write operations are blocked for the demo account by design.
+**Cause:** The instance is running with `DEMO_MODE=true`. For the demo account, file uploads (avatar, trip cover, documents, place and collection images), password change, account deletion, MFA changes and the MCP write tools answer 403 by design. Everything else the demo user can create, edit and delete, trips, days, places and costs included; the hourly reset puts it all back to the saved baseline.
 
 **Fix:** This is intentional behavior for public demo deployments. If you are self-hosting and want full access, remove the `DEMO_MODE` variable (or set it to `false`). See [Demo Mode](Demo-Mode).
 
@@ -123,7 +127,7 @@ If you no longer have access to backup codes and cannot log in, an admin must di
 
 **Cause:** Your reverse proxy has a default body size limit (commonly 1 MB or 10 MB) that is smaller than the backup ZIP. Backup archives include the full uploads directory and can be large.
 
-**Fix:** Raise the body size limit in your proxy config. TREK's own backup upload cap is 500 MB. For nginx:
+**Fix:** Raise the body size limit in your proxy config. TREK's own cap on the uploaded (compressed) archive is 500 MB by default. For nginx:
 
 ```nginx
 client_max_body_size 500m;
@@ -131,17 +135,56 @@ client_max_body_size 500m;
 
 Add this to the `location /` block (or the specific backup route). See [Reverse Proxy](Reverse-Proxy) and [Backups](Backups).
 
+If the archive is genuinely larger than that, raise TREK's own caps too. There are two, and they are independent: one on the compressed upload, one on the total **decompressed** size of the archive (the zip-bomb guard). An archive that gets past the upload limit can still be refused part-way through extraction with `Backup exceeds the maximum decompressed size.`
+
+```yaml
+environment:
+  - BACKUP_UPLOAD_LIMIT_MB=2000       # compressed upload cap (default: 500)
+  - BACKUP_MAX_DECOMPRESSED_MB=20480  # decompressed cap (default: 5120, i.e. 5 GB)
+```
+
+Keep the proxy's `client_max_body_size` at or above `BACKUP_UPLOAD_LIMIT_MB`. Non-positive or invalid values for either variable abort startup.
+
+---
+
+## File upload refused: "File is too large"
+
+**Cause:** A file uploaded to a trip, a booking or a collab note is capped at 50 MB by default. The Files tab refuses a bigger file before the upload starts with `File is too large (max 50 MB)`, and the server answers the same check with `400 File is too large`. Videos have their own 500 MB cap, and trip covers and place images 20 MB. If the upload instead fails with a `413` or without any message, your reverse proxy refused the request body before TREK saw it.
+
+**Fix:** Raise the limit with `FILE_UPLOAD_LIMIT_MB` and restart:
+
+```yaml
+environment:
+  - FILE_UPLOAD_LIMIT_MB=200   # in MB (default: 50)
+```
+
+Keep the proxy's body limit (`client_max_body_size` on nginx) at or above that value. On Helm the chart does not pass this variable through, so patch it onto the Deployment. See [Environment Variables](Environment-Variables#storage--paths) and [Reverse Proxy](Reverse-Proxy).
+
 ---
 
 ## "Cannot find module" on startup
 
-**Likely cause:** A Docker volume mount is missing or the `/app/data` and `/app/uploads` directories are not writable by the container process. TREK automatically creates all required subdirectories on startup (`data/logs`, `data/backups`, `data/tmp`, `uploads/files`, `uploads/covers`, `uploads/avatars`, `uploads/photos`) — if this fails because the volume is read-only or owned by the wrong user, startup will abort.
+**Likely cause:** A volume is mounted at `/app`, which hides the application code (`node_modules` and `dist`) shipped inside the image. Mount only the data and uploads directories — `-v ./data:/app/data -v ./uploads:/app/uploads` — never `/app` itself. Current images detect this before Node starts and print `FATAL: TREK application files are missing from the image.` instead of the bare module error.
 
-**Fix:** Check your Docker volume configuration. Both `./data:/app/data` and `./uploads:/app/uploads` must be mounted and writable. Run `docker inspect <container> --format '{{json .Mounts}}'` to verify the mounts are present and point to valid host paths. If the host directories are owned by root, the container's `chown` step (which runs as root before dropping to `node`) should correct permissions automatically — but if your host filesystem is read-only or permissions are locked down, grant write access manually:
+**Fix:** List your mounts and remove any that target `/app`:
 
 ```bash
-sudo chown -R 1000:1000 ./data ./uploads
+docker inspect <container> --format '{{json .Mounts}}'
 ```
+
+Keep only `./data:/app/data` and `./uploads:/app/uploads`, then recreate the container. Your data in those two directories is preserved when you switch.
+
+> **Note:** Unwritable `data`/`uploads` directories are a *different* failure — they abort with a permission error (`EACCES`), not with `Cannot find module`. TREK creates the subdirectories it needs on startup (`data/logs`, `data/backups`, `data/tmp`, `uploads/files`, `uploads/covers`, `uploads/avatars`, `uploads/photos`, `uploads/journey`, `uploads/places`). The container's `chown` step (which runs as root before dropping to `node`) normally corrects ownership, but if your host filesystem is read-only or permissions are locked down, grant write access manually:
+>
+> ```bash
+> sudo chown -R 1000:1000 ./data ./uploads
+> ```
+>
+> The start-up step only looks at `data`, `uploads` and what sits directly in them. Files copied in as root further down, into a subdirectory that already belongs to `node` (for example a restore with `docker cp ./photos/. trek:/app/uploads/photos/` or with `sudo cp` on the bind mount), stay root-owned across restarts. Hand them over once:
+>
+> ```bash
+> docker exec trek chown -R node:node /app/uploads /app/data
+> ```
 
 ---
 
@@ -175,6 +218,30 @@ docker compose up -d
 
 ---
 
+## Container won't start: `Syntax error: end of file unexpected (expecting "fi")`
+
+**Symptoms:** The container restarts in a loop and the log holds a single line, with no TREK banner and no Node error:
+
+```
+TREK: 1: Syntax error: end of file unexpected (expecting "fi")
+```
+
+It typically shows up right after you changed an environment variable — `COOKIE_SECURE=false`, for example — on a container that had been running fine.
+
+**Cause:** The environment variable is innocent. The message comes from `/bin/sh` inside the container, before Node is ever reached. Some container management UIs — Portainer's **Duplicate/Edit** form among them — let you edit a running container's command by rendering it back into a text field and re-splitting that text when you submit. Older images shipped their start-up logic as a single quoted shell command, and the quotes do not survive that round-trip: the command comes back truncated, and the shell refuses to parse the half of an `if` block that is left. `TREK` is simply the word the re-split happened to strand as the shell's program name, from the message quoted in [**"Cannot find module" on startup**](#cannot-find-module-on-startup).
+
+Once a container is in this state it stays broken across restarts and image pulls, because the mangled command is stored in the container's own configuration, not in the image.
+
+**Fix:** Clear the command override so the image's own start-up command applies again.
+
+In Portainer, open the container → **Duplicate/Edit** → **Command & logging**, empty the **Command** field completely, then deploy. An empty field means "use the image's command". Recreating the container from the image, or redeploying it as a stack, has the same effect.
+
+> **Note:** `COOKIE_SECURE=false` is still the right setting if you reach TREK over plain HTTP — without it the browser will not send the session cookie and you cannot log in. Set it, just not by editing the container in place. Change environment variables by editing the **stack** and redeploying it; see [Install: Portainer](Install-Portainer).
+
+Current images run their start-up logic from a script file, and their command is a single word with nothing left for a UI to mangle.
+
+---
+
 ## Encryption key regenerated on restart — stored secrets stop working
 
 **Cause:** On every startup, TREK resolves its encryption key in this order: (1) `ENCRYPTION_KEY` env var, (2) `data/.encryption_key` file, (3) legacy `data/.jwt_secret` fallback, (4) auto-generate a fresh key. If neither the env var nor the `data/` volume is persisted — for example after recreating a container without a volume mount — a new random key is generated and all stored secrets (SMTP password, OIDC client secret, API keys, MFA TOTP seeds) become unrecoverable.
@@ -192,7 +259,7 @@ See [Encryption Key Rotation](Encryption-Key-Rotation) for how to retrieve or ro
 
 ## OIDC login returns "APP_URL is not configured"
 
-**Cause:** When OIDC is enabled, TREK needs to know its own public URL to build the redirect URI. It resolves this from (1) `APP_URL` env var, (2) the first entry in `ALLOWED_ORIGINS`, (3) `http://localhost:<PORT>` as a last resort. If none of these are set and the request is not coming from localhost, TREK returns a 500 error.
+**Cause:** When OIDC is enabled, TREK needs to know its own public URL to build the redirect URI. It resolves this from (1) `APP_URL` env var, (2) the first entry in `ALLOWED_ORIGINS`, (3) `http://localhost:<PORT>` as a last resort. Step (3) always produces a value, so the message in the heading is a guard that never actually fires. What you get instead, with `APP_URL` and `ALLOWED_ORIGINS` both unset, is a redirect URI of `http://localhost:<PORT>/api/auth/oidc/callback` — and the provider rejects it as an unregistered `redirect_uri`.
 
 **Fix:** Set `APP_URL` to the public URL of your instance:
 
@@ -205,7 +272,7 @@ environment:
 
 ## OIDC login fails with issuer mismatch
 
-**Cause:** TREK validates that the `issuer` field in the provider's discovery document exactly matches the configured `OIDC_ISSUER`. A trailing-slash difference (e.g. `https://auth.example.com` vs `https://auth.example.com/`) is enough to fail.
+**Cause:** TREK validates that the `issuer` field in the provider's discovery document matches the configured `OIDC_ISSUER`. Trailing slashes are stripped from both sides before the comparison, so `https://auth.example.com` and `https://auth.example.com/` are the same value here — the difference is somewhere else: a realm path the provider adds, an internal hostname configured where the provider advertises the public one, or `http://` against `https://`.
 
 **Fix:** Check the exact issuer value your provider advertises and match it:
 
@@ -215,18 +282,49 @@ curl -s https://<your-oidc-issuer>/.well-known/openid-configuration | jq .issuer
 
 Set `OIDC_ISSUER` to that exact string.
 
+> **Note:** The mismatch is only fatal while no custom discovery URL is set. With `OIDC_DISCOVERY_URL` configured — which is how Authentik realm paths are usually wired up — TREK treats the discovery document's issuer as the canonical one, logs `[OIDC] Discovery doc issuer … differs from configured OIDC_ISSUER …` and continues.
+
 ---
 
 ## OIDC login fails when provider is on a private/internal network
 
-**Cause:** TREK's SSRF guard blocks outbound requests to private IP ranges by default. If your OIDC provider (e.g. Keycloak, Authentik) is running on an internal address, the discovery document fetch will be blocked with: `Requests to private/internal network addresses are not allowed.`
+**Cause:** Not the SSRF guard, despite what it looks like. All four OIDC calls (discovery, token, userinfo, JWKS) go through the admin-configured fetch path, which deliberately **allows** loopback and private/LAN targets: a Keycloak or Authentik on `192.168.x` or `10.x` is a supported setup and needs no extra variable. `ALLOW_INTERNAL_NETWORK` belongs to the guard on *user*-supplied URLs and changes nothing about OIDC. The only addresses that path refuses are link-local and cloud-metadata ones (`169.254.0.0/16`, `fe80::/10`), which fail with `Requests to link-local / cloud-metadata addresses are not allowed`. A provider behind the host gateway of a rootless Podman container resolves to `169.254.1.2` and fails exactly like that; list that address in `ALLOW_LINK_LOCAL_IPS`, see [Internal-Network-Access](Internal-Network-Access#a-link-local-address-you-need).
 
-**Fix:**
+Versions 4.3.0 to 4.3.2 also failed like that when the provider's hostname had an IPv6 link-local (`fe80::`) record next to its LAN address, which many LAN DNS servers hand out. From 4.3.3 on, TREK leaves such an address out and connects over the LAN address, so only a hostname that resolves to nothing but link-local or metadata addresses still fails.
 
-```yaml
-environment:
-  - ALLOW_INTERNAL_NETWORK=true
+**Fix:** Look for the reasons an internal provider actually fails. A failed discovery fetch answers `500 { "error": "OIDC login failed" }` and logs the real message as `[OIDC] Login error: …`, so start there:
+
+```bash
+docker logs <container> 2>&1 | grep "OIDC"
 ```
+
+- **The container cannot reach the issuer.** Test from inside it, not from your desktop — the container has its own DNS and its own network: `docker exec <container> wget -qO- https://<issuer>/.well-known/openid-configuration`. A `Could not resolve hostname` in the log is this.
+- **The issuer is not HTTPS.** In production TREK refuses a plain-HTTP issuer up front with `400 { "error": "OIDC issuer must use HTTPS in production" }`, before any request goes out.
+- **The provider's certificate is not trusted by the container.** A self-signed certificate on an internal Keycloak fails the TLS handshake; issue it from a CA the container trusts.
+
+---
+
+## "Send test email" fails and says nothing else
+
+**Cause:** older builds swallowed the SMTP error. Nothing was written to the container log, and the toast fell back to a bare *Test email failed*. A blocked port made it worse: nodemailer waited up to two minutes for the connection while the browser gave up after eight seconds, so the eventual error had nobody left to report to. Both are fixed. Every SMTP phase is now bounded, and the button names the cause.
+
+**Fix:** press **Send test email** again and read the toast. The same diagnosis, plus the SMTP error code, is in the log:
+
+```bash
+docker logs <container> 2>&1 | grep -E "SMTP test email (sent|failed)|SMTP test not attempted"
+```
+
+| What the message says | What to change |
+|-----------------------|----------------|
+| `rejected the credentials` (`code=EAUTH`) | Wrong SMTP user or password. Mailboxes with 2FA normally need an app-specific password, not the account one. |
+| `refused the connection` | Nothing is listening on that port, or a firewall closed it. |
+| `did not answer in time` | The port is filtered, or 465 and 587 are swapped: TREK dials 465 with implicit TLS and every other port in plain mode with STARTTLS. |
+| `could not be resolved` | The container's DNS cannot resolve the host. Test with `docker exec <container> nc -zv <SMTP_HOST> <SMTP_PORT>`. |
+| `TLS certificate ... was not accepted` | Turn on **Skip TLS certificate check** (or `SMTP_SKIP_TLS_VERIFY=true`) for an internal relay carrying its own certificate. |
+| `rejected the envelope` | The from address usually has to belong to the authenticated mailbox. |
+| `SMTP not configured: ...` | The named field is empty, or the port is not a number. Host, port and from address are all required. |
+
+> **Note:** a saved SMTP password is shown as a placeholder, never as a value. Leave the field alone to keep it, or type into it to replace it.
 
 ---
 
@@ -236,9 +334,13 @@ environment:
 
 **Fix:**
 
-1. Check server logs for `Email send failed`:
+1. Check server logs for a failed send. The password-reset path and the generic notification path log different lines, so match both:
    ```bash
-   docker logs <container> 2>&1 | grep "Email send failed"
+   docker logs <container> 2>&1 | grep -E "Password reset email failed|Email send failed"
+   ```
+   If neither matches, check whether the mail ever left at all — TREK needs a host, a port **and** a from-address (`SMTP_HOST` / `SMTP_PORT` / `SMTP_FROM`, or the same three fields under **Admin > Notifications**). With any one of them missing it skips SMTP entirely and logs `Password reset link issued (no SMTP)` plus the `===== PASSWORD RESET LINK =====` block instead of any error:
+   ```bash
+   docker logs <container> 2>&1 | grep "no SMTP"
    ```
 2. If the error mentions TLS or certificate, set `SMTP_SKIP_TLS_VERIFY=true`.
 3. Verify the port: `587` for STARTTLS, `465` for implicit TLS, `25` for plain SMTP.
@@ -251,9 +353,29 @@ environment:
 
 ---
 
+## My location does not work: "Location requires a secure (HTTPS) connection"
+
+**Cause:** Browsers only hand out the device location in a [secure context](https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts). Over plain HTTP at an address other than `localhost`, the location button on the map shows *Location requires a secure (HTTPS) connection*, and the journal's current location stays empty. The same goes for a phone opening TREK by its LAN address.
+
+**Fix:** Open TREK over HTTPS. Two common ways when TREK runs at home:
+
+- **A reverse proxy with a certificate**, see [Reverse-Proxy](Reverse-Proxy).
+- **An HTTPS tunnel** (Cloudflare Tunnel, Tailscale Serve, ngrok and the like) that ends at TREK's HTTP port.
+
+With a tunnel or proxy in front and plain HTTP still used on the LAN, set:
+
+- `APP_URL` to the HTTPS address, so links in emails and calendar feeds use it.
+- `TRUST_PROXY=1`, so TREK sees that the request came in over HTTPS.
+- `COOKIE_SECURE=false` only if you also sign in over plain HTTP on the LAN; without it, that sign-in keeps no session. HTTPS sign-ins work either way.
+- `ALLOWED_ORIGINS` needs no entry for either address: the address in the browser's address bar is always allowed. Add origins only for other sites that call TREK.
+
+See [Environment Variables](Environment-Variables) for each of them.
+
+---
+
 ## CORS error — API requests blocked in the browser
 
-**Cause:** If `ALLOWED_ORIGINS` is set, only those origins are permitted. Any request from a different origin is rejected with a CORS error visible in the browser console.
+**Cause:** If `ALLOWED_ORIGINS` is set, only those origins are permitted, plus the host the request was sent to (the address in the browser's address bar is never cross-origin to itself). A request from any other origin is refused with `403 Not allowed by CORS`, and the server logs a `CORS: refused origin ...` warning naming the origin to add.
 
 **Fix:** Add your origin to the comma-separated list:
 
@@ -262,7 +384,7 @@ environment:
   - ALLOWED_ORIGINS=https://trek.example.com,https://other.example.com
 ```
 
-If `ALLOWED_ORIGINS` is not set, TREK allows all origins (development default). See [Environment Variables](Environment-Variables).
+If `ALLOWED_ORIGINS` is not set, the default is **same-origin only** — cross-origin browser requests are rejected — because every shipped deployment path (Dockerfile, `docker-compose.yml`, the Helm chart) runs with `NODE_ENV=production`. Allowing any origin is the development default, and only applies outside production. See [Environment Variables](Environment-Variables).
 
 ---
 
@@ -272,32 +394,44 @@ If `ALLOWED_ORIGINS` is not set, TREK allows all origins (development default). 
 
 | Code | Reason |
 |------|--------|
-| `4001` | No token, expired/invalid token, or user not found — re-login required |
+| `4001` | No token, expired/invalid token, or user not found — re-login required; or an unexpected error during connection setup (reason `connection setup failed`) — reconnect; if it persists check the server log |
 | `4403` | MFA is required globally but the user has not enabled it |
 
 **Fix:**
 
 - Code `4001`: Log out and log back in. If it persists, check that your reverse proxy is not stripping the `token` query parameter from the WebSocket upgrade request.
-- Code `4403`: The user must enable MFA in **Settings > Security**, or an admin can disable the global MFA requirement in **Admin > Settings**.
+- Code `4403`: The user must enable MFA in **Settings > Account**, or an admin can disable the global MFA requirement in **Admin > Settings**.
 
 ---
 
 ## Clipboard features not working (copy link, share, etc.)
 
-**Cause:** The browser Clipboard API (`navigator.clipboard`) is only available in a [secure context](https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts). When accessing TREK over plain HTTP on a non-localhost address, the API is unavailable and clipboard operations silently fail or show an error.
+**Cause:** The browser Clipboard API (`navigator.clipboard`) is only available in a [secure context](https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts), so on plain HTTP at a non-localhost address it is undefined.
 
-**Fix:** The only supported options are:
+TREK works around this where it matters most. The share-link and invite-link buttons in the trip's **Trip settings** dialog, the journey share link, and the calendar-subscribe URLs fall back to a hidden textarea plus the deprecated `document.execCommand('copy')`, which is not secure-context gated, so **those keep working over plain HTTP**, on desktop and mobile alike.
+
+The remaining copy buttons call `navigator.clipboard` directly and have no fallback:
+
+- **Settings > Integrations (MCP)** — the MCP endpoint URL, the JSON client config, a newly created MCP token, and OAuth client IDs, client secrets and rotated secrets. These fail with no message at all, because the click handler throws before any toast is shown.
+- **Settings > Account** — the 2FA backup codes. This one shows a generic error toast. Use the **Download** button next to it as a workaround; it does not need a secure context.
+- **Admin Panel > Users** (the **Invite Links** card): the registration invite link, both on create ("create and copy") and via the copy button on an existing invite.
+- The copy button next to a booking's confirmation code in the booking's detail popup. It shows `Could not copy`.
+- The webhook URL of a [Document-Sync](Document-Sync) connection in the Files tab.
+
+**Fix:** For those buttons, one of:
 
 - Access TREK over HTTPS with a valid SSL certificate.
-- Access TREK directly from `http://localhost:<port>` — browsers treat `localhost` as a secure context for the Clipboard API (unlike the session cookie, which always requires HTTPS regardless of hostname).
+- Access TREK directly from `http://localhost:<port>` — browsers treat `localhost` as a secure context for the Clipboard API.
+
+Failing that, select the value shown in the field and copy it manually; every one of these buttons sits next to the text it copies.
 
 ---
 
 ## Place photos not loading / place thumbnail shows default map pin (Google Maps API key configured)
 
-**Cause:** When a Google Maps API key is set, TREK fetches photo references and image bytes from the Google Places API on the server side. If the server-side call is rejected or returns no photos, the `/place-photo/:id` endpoint returns 404 and the place falls back to the default map-pin thumbnail. The most common causes are:
+**Cause:** When a Google Maps API key is set, TREK fetches photo references and image bytes from the Google Places API on the server side. If the server-side call is rejected or returns no photos, the `/place-photo/:id` endpoint answers `200 { "photoUrl": null }` and the place falls back to the default map-pin thumbnail. The image proxy behind it, `/place-photo/:id/bytes`, answers `204 No Content` when it has nothing cached — neither endpoint returns 404, so a trip full of photo-less places cannot trip a 404 rate limit in a reverse proxy or IPS. The most common causes are:
 
-1. **HTTP referrer restriction on the API key.** Google Cloud Console lets you restrict a key to specific HTTP referrers. Because TREK calls Google from the server (not the browser), it sends a `Referer` header derived from `APP_URL`. If `APP_URL` is not set, the fallback is `http://localhost:<PORT>`, which will not match any domain whitelist in GCP.
+1. **HTTP referrer restriction on the API key.** Google Cloud Console lets you restrict a key to specific HTTP referrers. Because TREK calls Google from the server (not the browser), it sends a `Referer` header only when `APP_URL` is set — the header is the value of `APP_URL`. If `APP_URL` is not set, TREK sends no `Referer` header at all, and a referrer-restricted key rejects a request with no referrer just as it rejects a wrong one.
 
 2. **Wrong key restriction type.** API keys restricted by **HTTP referrers** are designed for browser-side JavaScript. For a self-hosted server application, use **IP address** restrictions instead — add the public IP of your TREK server and no `APP_URL` configuration is needed.
 
@@ -334,7 +468,7 @@ If the response is `{}` or `{"error": {...}}`, the key or its restrictions are b
 
 ## MCP OAuth flow does not initiate / "Connect" redirects but authentication never starts
 
-**Cause:** TREK builds the OAuth 2.1 redirect URI from `APP_URL`. If `APP_URL` is not set, the authorization URL is constructed from a localhost fallback that external clients (Claude.ai, Claude Desktop) cannot reach, so the OAuth handshake never completes.
+**Cause:** TREK advertises its OAuth 2.1 issuer and authorization endpoint from its resolved public base URL (`APP_URL`, else the first entry of `ALLOWED_ORIGINS`, else `http://localhost:<PORT>`; the resolved value is kept only if it is `https://` or `localhost`/`127.0.0.1`). If that resolution lands on `http://localhost:<PORT>`, external clients (Claude.ai, Claude Desktop) cannot reach the authorization endpoint and the OAuth handshake never completes.
 
 **Fix:** Set `APP_URL` to the public URL of your instance:
 
@@ -345,7 +479,7 @@ environment:
 
 Restart the container after adding the variable. Once set, clicking **Connect** in the MCP client should redirect to your TREK instance and complete the OAuth flow normally.
 
-> **Note:** `APP_URL` is required for any MCP OAuth integration. Without it, the authorization endpoint resolves to `http://localhost:<PORT>`, which is unreachable from external MCP clients.
+> **Note:** Set `APP_URL` for any MCP OAuth integration. TREK resolves its public base URL **once**, in this order: (1) `APP_URL`, (2) the first entry of `ALLOWED_ORIGINS`, (3) `http://localhost:<PORT>` as a last resort — a step is skipped only when the value is unset or not a valid URL. The winner is then checked for MCP: only an `https://` URL or a `localhost` / `127.0.0.1` host is kept; anything else is replaced by `http://localhost:<PORT>`, which external MCP clients cannot reach. Because only the resolved winner is checked, a valid but plain-HTTP `APP_URL` (e.g. `http://trek.internal.lan`) is **not** rescued by an `https://` entry in `ALLOWED_ORIGINS` — it still ends up on localhost.
 
 ---
 
@@ -407,11 +541,16 @@ the client (check that your reverse proxy forwards it).
 
 ## MCP requests blocked by Cloudflare WAF (Bot Fight Mode)
 
-**Cause:** When TREK is proxied through Cloudflare, **Bot Fight Mode** and **Super Bot Fight Mode** classify requests from ChatGPT as bots and block them at the WAF level — before the request ever reaches TREK. This is specific to ChatGPT; Claude.ai is not affected. ChatGPT's exit node IPs have low reputation scores in Cloudflare's threat intelligence and the User-Agent matches Cloudflare's automated-traffic heuristics. TREK itself never receives the request, so there is nothing in TREK's logs; the block is silent from TREK's perspective.
+**Cause:** When TREK is proxied through Cloudflare, **Bot Fight Mode** and **Super Bot Fight Mode** classify server-to-server requests as bots and block them at the WAF level — before the request ever reaches TREK. Their exit-node IPs have low reputation scores in Cloudflare's threat intelligence and the User-Agent matches Cloudflare's automated-traffic heuristics. TREK itself never receives the request, so there is nothing in TREK's logs; the block is silent from TREK's perspective.
+
+This affects **ChatGPT** and **Google account linking (Gemini, Assistant)**. Claude.ai is not affected.
+
+Note that Bot Fight Mode does **not** honour IP allowlists, so adding the provider's published ranges to a Cloudflare IP Access rule does not help; you need one of the two fixes below.
 
 Symptoms:
 - ChatGPT shows a connection error or times out immediately after OAuth completes.
-- Cloudflare's Security → Events log shows blocked requests to `/mcp` with action `block` and source `bfm` (Bot Fight Mode) or `managed_rule`.
+- With Google account linking the symptom looks different, and more confusing: the browser part succeeds (you approve the consent screen and are redirected back), then linking fails. Google exchanges the authorization code from its own servers, and that call is what gets blocked. In TREK's logs you see `POST /api/oauth/authorize` answered `200` and then **no** `POST /oauth/token` at all.
+- Cloudflare's Security → Events log shows blocked requests to `/mcp` or `/oauth/token` with action `block` and source `bfm` (Bot Fight Mode) or `managed_rule`.
 
 **Fix — Option 1: Disable Bot Fight Mode (free plan and paid plan)**
 
@@ -454,3 +593,61 @@ Create a WAF skip rule that bypasses bot management only for the MCP and OAuth p
 4. Save and deploy.
 
 This allows MCP and OAuth traffic through while keeping Cloudflare bot protection active for all other paths.
+
+
+---
+
+## Web Push notifications do not arrive
+
+**Cause:** Push depends on several things at once, and the card under **Settings → Notifications** tells you which one is missing.
+
+**Fix:** Check them in this order:
+
+- TREK has to be opened over **HTTPS**. On any `http://` address other than `localhost` the card says that push needs HTTPS.
+- On an iPhone or iPad, push only works in the Home Screen app. Add TREK to the Home Screen, open it from there and turn push on there.
+- Push is per device. Press **Turn on for this device** on every device that should receive it, and use **Send test** to check. Logging out, or changing your password, removes the device, so turn it on again afterwards.
+- The admin has to switch the **Web Push** channel on in **Admin → Notifications**, and the **Push** column of your matrix has to allow the event.
+- If you set `VAPID_PUBLIC_KEY` and `VAPID_PRIVATE_KEY` yourself, both have to be set and belong together. If only one is set, or the stored key cannot be decrypted because `ENCRYPTION_KEY` changed, push is off and the server log says why.
+- Notifications must not be blocked for TREK in the browser or the system settings.
+
+See [Notifications](Notifications#web-push) for the details.
+
+---
+
+## The app shows an old version after an update
+
+**Cause:** The installed app and open tabs keep running the build they loaded. TREK does not reload a page under your hands.
+
+**Fix:** When a release is deployed while TREK is open, a notice reads **A new version is available** with a **Reload page** button. Click it. If you closed the notice, reload the page, or close the installed app and open it again. Changes you made offline with the newer version wait in the queue until a tab on the current version is open, then they are sent. See [Offline-Mode-and-PWA](Offline-Mode-and-PWA#stats--cache).
+
+---
+
+## TREK refuses to start after an update or a rollback
+
+**Cause:** There are two different refusals. TREK 5.0 and later refuse to start on a database that a newer TREK has already migrated, and they refuse to migrate when they cannot write the safety copy of the database first (a full disk or a read-only data directory).
+
+**Fix:** Read the first lines of the server log, which name the problem and the path. For a full disk, free space and start again. To go back to the previous image, restore the `data/pre-migrate-<schema>-<time>.db` copy over `data/travel.db`, delete `travel.db-wal` and `travel.db-shm`, and start the older image. The exact steps, and the `TREK_DB_PRE_MIGRATE_SNAPSHOT` switch, are in [Updating](Updating#database-migrations).
+
+---
+
+## AI booking import times out or comes back cut off
+
+**Cause:** One AI parsing call is limited in time and in answer length. A local model on a slow host can need minutes, and a document with many bookings needs a long answer.
+
+**Fix:** Raise `LLM_TIMEOUT_MS` (default 900000, which is 15 minutes) for a timeout, and `LLM_MAX_OUTPUT_TOKENS` (default 4096, or 8192 on Anthropic) when the import says the answer was cut off. See [AI-Booking-Import](AI-Booking-Import) and [Environment-Variables](Environment-Variables).
+
+---
+
+## Place search only shows OpenStreetMap results
+
+**Cause:** TREK asks its own place index, the [TREK Places API](TREK-Places-API), first. When that service cannot be reached, the server logs `TREK Places ... failed, falling back` and search carries on with OpenStreetMap alone. The same happens when `TREK_PLACES_ENABLED` is set to `false`.
+
+**Fix:** Check that `TREK_PLACES_ENABLED` is not `false` and that the server can reach `https://places.liketrek.com`, or your own copy named in `TREK_PLACES_URL`. See [Environment-Variables](Environment-Variables#place-search-trek-places-api).
+
+---
+
+## Offline changes do not sync
+
+**Cause:** The server kept refusing a queued change (after eight attempts it counts as failed), or an edit you made offline collided with a newer one on the server.
+
+**Fix:** The status pill at the bottom of the window reads **Failed to sync: N** or **Conflicts: N**. Open **Settings → Offline**. Under **Failed changes**, use **Try again** or **Discard** on each item. Under conflicts, choose **Keep mine** or **Keep theirs**. If the local copy itself looks wrong, **Clear cache** empties it and the next sync downloads it again. Unsynced changes are kept when a trip is cleared from the device. See [Offline-Mode-and-PWA](Offline-Mode-and-PWA).

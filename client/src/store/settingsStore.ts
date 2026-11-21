@@ -1,39 +1,26 @@
+import { assertFamilyMapSettingsPatch, nativeFamilyMapSettings } from '../integrations/family/familyMapProjection'
+import { isFamilyFrontendActive } from '../integrations/family/runtime'
+import { captureReadSession } from '../sync/readSession'
+import { useAssistantHintsStore } from './assistantHintsStore'
+import { captureAssistantPreferences, noteAssistantPreferenceWrite } from './assistantPreferenceRevision'
 import { create } from 'zustand'
 import { settingsApi } from '../api/client'
 import type { Settings } from '../types'
-import { DEFAULT_APPEARANCE } from '@trek/shared'
+import { DEFAULT_APPEARANCE, DEFAULT_DATE_FORMAT, DEFAULT_WEEK_START } from '@trek/shared'
 import { getApiErrorMessage } from '../types'
 import { SUPPORTED_LANGUAGE_CODES } from '../i18n/supportedLanguages'
-import { getDataPlane, getMapboxAccessToken } from '../data/supabase/env'
-import { readLocal, writeLocal } from '../startup/safeStorage'
-import { useAuthStore } from './authStore'
-import {
-  getMyEffectivePreferences,
-  isPortableSettingKey,
-  memberCurrencyPatch,
-  storeCurrencyFromEffective,
-  updateMyFamilyPreferences,
-  type EffectivePreferences,
-  type PreferenceFields,
-  type PreferencePatch,
-  type PreferenceSource,
-  type PortableSettingKey,
-} from '../data/supabase/familyPreferences'
+import { detectBrowserLanguage } from '../i18n/detectBrowserLanguage'
+import { normalizeTileUrl, stripTileApiKey } from '../utils/tileUrl'
+import { clearTileCache } from '../sync/tilePrefetcher'
+import { forgetStartDestination, rememberStartDestination, DEFAULT_START_PAGE, DEFAULT_START_TRIP_TAB } from '../utils/startDestination'
 
 interface SettingsState {
   settings: Settings
   isLoaded: boolean
-  preferenceSources: Record<PortableSettingKey, PreferenceSource>
-  preferenceFamily: PreferenceFields
-  preferenceOverrides: PreferenceFields
-  preferenceError: string | null
 
+  resetSettings: () => void
   loadSettings: () => Promise<void>
-  /** Seed Mapbox-default settings for supabase plane (no Nest). */
-  hydrateSupabasePlaneSettings: () => void
-  hydrateFamilyPreferences: (familyId: string) => Promise<void>
   updateSetting: (key: keyof Settings, value: Settings[keyof Settings]) => Promise<void>
-  resetFamilyPreference: (key: PortableSettingKey) => Promise<void>
   setLanguageLocal: (lang: string) => void
   setLanguageTransient: (lang: string) => void
   updateSettings: (settingsObj: Partial<Settings>) => Promise<void>
@@ -41,10 +28,35 @@ interface SettingsState {
 
 // Returns true when the user has explicitly chosen a language (persisted in localStorage).
 // Use this instead of reading localStorage directly so the key stays encapsulated here.
-export const hasStoredLanguage = (): boolean => !!readLocal('app_language')
+export const hasStoredLanguage = (): boolean =>
+  typeof localStorage !== 'undefined' && !!localStorage.getItem('app_language')
 
-const LOCAL_MAP_3D_KEY = 'fta_mapbox_3d_enabled'
-const LOCAL_MAP_QUALITY_KEY = 'fta_mapbox_quality_mode'
+const SERVER_LANGUAGE_KEY = 'app_language_server'
+
+// An account that never picked a language sends no language key at all
+// (getUserSettings returns only what was set), so a mirror left over from
+// whoever used this browser before has to go rather than survive the load.
+function rememberServerLanguage(settings: Partial<Settings>): void {
+  try {
+    const language = settings.language
+    if (language && SUPPORTED_LANGUAGE_CODES.includes(language)) {
+      localStorage.setItem(SERVER_LANGUAGE_KEY, language)
+    } else {
+      localStorage.removeItem(SERVER_LANGUAGE_KEY)
+    }
+  } catch {
+    // Private mode: the session still has the value in the store.
+  }
+}
+
+/** On logout, so the next account on this browser starts in its own language. */
+export function forgetServerLanguage(): void {
+  try {
+    localStorage.removeItem(SERVER_LANGUAGE_KEY)
+  } catch {
+    // Nothing to clean up if storage is unavailable.
+  }
+}
 
 // The effective client-side defaults for a fresh instance. The server sends no value for
 // a setting an admin hasn't defaulted (see settingsService.getAdminUserDefaults), so these
@@ -54,17 +66,43 @@ const LOCAL_MAP_QUALITY_KEY = 'fta_mapbox_quality_mode'
 // can't drift apart again.
 export const DEFAULT_SETTINGS: Settings = {
   map_tile_url: '',
+  // Empty = the public routing hosts TREK ships with.
+  routing_base_url: '',
+  // Empty = no own Valhalla. Which one is asked then is valhallaBase()'s to say.
+  valhalla_base_url: '',
+  // Empty = not chosen: the TREK services, FOSSGIS where they cannot answer, none
+  // beside an own router alone. See valhallaBase().
+  routing_valhalla_provider: '',
+  // Empty = not said, and then a stop of either kind fills up. See refuelsRange().
+  roadtrip_vehicle: '',
+  // Off = the rail routes a day at a time, the way the day plan stores it, and the road
+  // between one day's last stop and the next day's first is simply not drawn. On = the
+  // trip is one continuous drive and every one of those gaps is routed too.
+  roadtrip_connect_days: false,
+  // Off = one blue line for the whole trip. On = a colour per day, so a route drawn end
+  // to end can still be read as days.
+  roadtrip_day_colors: false,
   dark_mode: false,
   // Empty = no personal display currency, so Costs falls back to the trip's own.
   default_currency: '',
-  language: readLocal('app_language') || 'en',
+  // Explicit in-app choice first, then the mirror of the account's server-side
+  // language (written by loadSettings below), then the browser's, then English.
+  // Without the mirror an offline cold start would boot in English: the account's
+  // language lives on the server, and the fetch that would apply it cannot happen.
+  language: localStorage.getItem('app_language') || localStorage.getItem(SERVER_LANGUAGE_KEY) || detectBrowserLanguage() || 'en',
   temperature_unit: 'celsius',
   distance_unit: 'metric',
   time_format: '24h',
+  week_start: DEFAULT_WEEK_START,
+  date_format: DEFAULT_DATE_FORMAT,
   show_place_description: false,
   optimize_from_accommodation: true,
   map_provider: 'leaflet',
+  map_base_layer: 'default',
   map_poi_pill_enabled: true,
+  assistant_map_follow: true,
+  assistant_hints: true,
+  carto_api_key: '',
   mapbox_access_token: '',
   mapbox_style: 'mapbox://styles/mapbox/standard',
   maplibre_style: '',
@@ -72,190 +110,128 @@ export const DEFAULT_SETTINGS: Settings = {
   mapbox_quality_mode: false,
   dashboard_fx_from: 'EUR',
   dashboard_fx_to: 'USD',
+  start_page: DEFAULT_START_PAGE,
+  start_trip_tab: DEFAULT_START_TRIP_TAB,
   appearance: DEFAULT_APPEARANCE,
   // dashboard_timezones is intentionally left unset so the widget can tell "never
   // chosen" (fall back to home + defaults) from an explicitly emptied list.
 }
 
-export const EMPTY_PREFERENCE_FIELDS: PreferenceFields = {
-  temperatureUnit: null,
-  distanceUnit: null,
-  timeFormat: null,
-  displayCurrency: null,
+// De-dupe concurrent loads: the reconnection triggers (online / visibility /
+// periodic) can all fire a retry at once — collapse them into one in-flight GET.
+let _loadInFlight: { current: () => boolean; promise: Promise<void> } | null = null
+let settingsGeneration = 0
+
+// Every tile consumer (planner map, journey map, tile prefetcher, the settings
+// preview) reads the template from this store, so the retired
+// {s}.tile.openstreetmap.org host is rewritten here — on the way in from the
+// server and on the way out to it. Rewriting only on read would let a template
+// typed by hand survive in the database until the next load put it back (#1733).
+function withNormalizedTileUrl<T extends Partial<Settings>>(patch: T): T {
+  if (typeof patch.map_tile_url !== 'string') return patch
+  return { ...patch, map_tile_url: cleanTileTemplate(patch.map_tile_url) }
 }
 
-export const DEFAULT_PREFERENCE_SOURCES: Record<PortableSettingKey, PreferenceSource> = {
-  temperature_unit: 'builtin',
-  distance_unit: 'builtin',
-  time_format: 'builtin',
-  default_currency: 'builtin',
+// A CARTO key pasted along with a full tile URL is dropped here: the key lives
+// in its own setting and is appended at render time, so leaving it in the
+// template would freeze it into the saved value and break on the next rotation.
+function cleanTileTemplate(url: string): string {
+  return stripTileApiKey(normalizeTileUrl(url))
 }
 
-function settingsFromEffective(settings: Settings, effective: PreferenceFields): Settings {
-  return {
-    ...settings,
-    temperature_unit: effective.temperatureUnit || DEFAULT_SETTINGS.temperature_unit,
-    distance_unit: effective.distanceUnit || DEFAULT_SETTINGS.distance_unit,
-    time_format: effective.timeFormat || DEFAULT_SETTINGS.time_format,
-    default_currency: storeCurrencyFromEffective(effective.displayCurrency),
-  }
+/** Reset must still complete if browser storage becomes unavailable during sign-out. */
+function deviceLanguage(): string {
+  try { return localStorage.getItem('app_language') || detectBrowserLanguage() || 'en' }
+  catch { return detectBrowserLanguage() || 'en' }
 }
-
-function metaFromEffective(result: EffectivePreferences) {
-  return {
-    preferenceSources: {
-      temperature_unit: result.sources.temperatureUnit,
-      distance_unit: result.sources.distanceUnit,
-      time_format: result.sources.timeFormat,
-      default_currency: result.sources.displayCurrency,
-    } as Record<PortableSettingKey, PreferenceSource>,
-    preferenceFamily: result.family,
-    preferenceOverrides: result.overrides,
-    preferenceError: null as string | null,
-  }
-}
-
-function patchFromPortableKey(key: PortableSettingKey, value: Settings[keyof Settings] | null): PreferencePatch {
-  if (key === 'temperature_unit') {
-    return { temperatureUnit: value == null ? null : (String(value) as PreferencePatch['temperatureUnit']) }
-  }
-  if (key === 'distance_unit') {
-    return { distanceUnit: value == null ? null : (String(value) as PreferencePatch['distanceUnit']) }
-  }
-  if (key === 'time_format') {
-    return { timeFormat: value == null ? null : (String(value) as PreferencePatch['timeFormat']) }
-  }
-  return { displayCurrency: value == null ? null : memberCurrencyPatch(String(value)) }
-}
-
-let prefsHydrateGeneration = 0
 
 export const useSettingsStore = create<SettingsState>((set, get) => ({
   settings: { ...DEFAULT_SETTINGS },
   isLoaded: false,
-  preferenceSources: { ...DEFAULT_PREFERENCE_SOURCES },
-  preferenceFamily: { ...EMPTY_PREFERENCE_FIELDS },
-  preferenceOverrides: { ...EMPTY_PREFERENCE_FIELDS },
-  preferenceError: null,
+
+  resetSettings: () => {
+    useAssistantHintsStore.getState().reset()
+    settingsGeneration++
+    _loadInFlight = null
+    forgetStartDestination()
+    forgetServerLanguage()
+    set({ settings: { ...DEFAULT_SETTINGS, language: deviceLanguage() }, isLoaded: false })
+  },
 
   loadSettings: async () => {
-    try {
-      const data = await settingsApi.get()
-      set((state) => ({
-        settings: { ...state.settings, ...data.settings },
-        isLoaded: true,
-      }))
-    } catch (err: unknown) {
-      set({ isLoaded: true })
-      console.error('Failed to load settings:', err)
-    }
-  },
-
-  hydrateSupabasePlaneSettings: () => {
-    const envToken = getMapboxAccessToken() ?? ''
-    const mapbox3d = readLocal(LOCAL_MAP_3D_KEY)
-    const mapboxQuality = readLocal(LOCAL_MAP_QUALITY_KEY)
-    set((state) => ({
-      settings: {
-        ...state.settings,
-        mapbox_access_token: envToken || state.settings.mapbox_access_token,
-        mapbox_3d_enabled: mapbox3d == null ? state.settings.mapbox_3d_enabled : mapbox3d === 'true',
-        mapbox_quality_mode: mapboxQuality == null ? state.settings.mapbox_quality_mode : mapboxQuality === 'true',
-      },
-      isLoaded: true,
-    }))
-  },
-
-  hydrateFamilyPreferences: async (familyId: string) => {
-    const gen = ++prefsHydrateGeneration
-    const requestedFamily = familyId
-    try {
-      const result = await getMyEffectivePreferences(familyId)
-      if (gen !== prefsHydrateGeneration) return
-      if (useAuthStore.getState().familyId !== requestedFamily) return
-      set((state) => ({
-        settings: settingsFromEffective(state.settings, result.effective),
-        ...metaFromEffective(result),
-      }))
-    } catch (err: unknown) {
-      if (gen !== prefsHydrateGeneration) return
-      if (useAuthStore.getState().familyId !== requestedFamily) return
-      set({
-        preferenceError: err instanceof Error ? err.message : 'Failed to load family preferences',
-      })
-    }
+    if (_loadInFlight?.current()) return _loadInFlight.promise
+    const session = captureReadSession(), generation = settingsGeneration
+    const acceptPreferences = captureAssistantPreferences()
+    const current = () => session.current() && generation === settingsGeneration
+    const flight = { current, promise: Promise.resolve() }
+    _loadInFlight = flight
+    flight.promise = (async () => {
+      try {
+        const data = await settingsApi.get()
+        if (!current()) return
+        // Rewritten here so the Map settings input already shows the host that
+        // still resolves, and persists it on the next save.
+        const incoming = withNormalizedTileUrl(acceptPreferences({ ...data.settings } as Partial<Settings>))
+        set((state) => ({
+          settings: {
+            ...state.settings,
+            ...incoming,
+            // A settings read that started before a map save must use the latest confirmed option.
+            ...(isFamilyFrontendActive() ? nativeFamilyMapSettings() : {}),
+          },
+          isLoaded: true,
+        }))
+        // The startup redirect runs before this ever resolves, so keep a mirror
+        // it can read synchronously on the next launch.
+        rememberStartDestination(incoming)
+        // Same trick for the language: mirror the account's value so the next
+        // launch — including an offline one, where this fetch fails — boots in
+        // it instead of English (#1618 fixed the same stranding for currency
+        // and units, but the language never made it into that fix). Its own
+        // key rather than 'app_language': that one means an explicit in-app
+        // choice, and the login page's detection chain must keep running for
+        // users who never made one.
+        rememberServerLanguage(incoming)
+        // An account without a language of its own, and no choice made in this
+        // browser: the browser's language, as wiki/Languages.md has it. That step
+        // used to run on the login page only, so a session opened straight onto a
+        // trip stayed English. For this session only, nothing is saved.
+        const detected = !incoming.language && !hasStoredLanguage() ? detectBrowserLanguage() : null
+        if (detected) get().setLanguageTransient(detected)
+      } catch (err: unknown) {
+        // Leave isLoaded false so a transient failure — offline at launch, or a
+        // (docker) server cold-start racing the first request — is retried on
+        // reconnect instead of stranding the user on built-in defaults (wrong
+        // currency/units) for the whole session (#1618).
+        if (current()) console.error('Failed to load settings:', err)
+      } finally {
+        if (_loadInFlight === flight) _loadInFlight = null
+      }
+    })()
+    return flight.promise
   },
 
   updateSetting: async (key: keyof Settings, value: Settings[keyof Settings]) => {
-    const previous = get().settings[key]
-    const previousMeta = {
-      preferenceSources: get().preferenceSources,
-      preferenceFamily: get().preferenceFamily,
-      preferenceOverrides: get().preferenceOverrides,
-    }
+    if (isFamilyFrontendActive()) assertFamilyMapSettingsPatch({ [key]: value })
+    const next =
+      key === 'map_tile_url' && typeof value === 'string' ? cleanTileTemplate(value) : value
+    const saved = noteAssistantPreferenceWrite({ [key]: next })
+    if (key === 'carto_api_key' && next !== get().settings.carto_api_key) void clearTileCache()
     set((state) => ({
-      settings: { ...state.settings, [key]: value },
+      settings: { ...state.settings, [key]: next },
     }))
-    if (key === 'language') writeLocal('app_language', value as string)
-    if (getDataPlane() === 'supabase') {
-      if (key === 'mapbox_3d_enabled') writeLocal(LOCAL_MAP_3D_KEY, String(!!value))
-      if (key === 'mapbox_quality_mode') writeLocal(LOCAL_MAP_QUALITY_KEY, String(!!value))
-      if (isPortableSettingKey(key)) {
-        const familyId = useAuthStore.getState().familyId
-        if (!familyId) {
-          set((state) => ({ settings: { ...state.settings, [key]: previous } }))
-          throw new Error('Family membership is required to save this setting')
-        }
-        try {
-          const result = await updateMyFamilyPreferences(familyId, patchFromPortableKey(key, value))
-          set((state) => ({
-            settings: settingsFromEffective(state.settings, result.effective),
-            ...metaFromEffective(result),
-          }))
-        } catch (err: unknown) {
-          set((state) => ({
-            settings: { ...state.settings, [key]: previous },
-            ...previousMeta,
-          }))
-          throw new Error(getApiErrorMessage(err, 'Error saving setting'))
-        }
-      }
-      return
-    }
+    if (key === 'language') localStorage.setItem('app_language', next as string)
+    rememberStartDestination({ [key]: next } as Partial<Settings>)
     try {
-      await settingsApi.set(key, value)
+      await settingsApi.set(key, next)
     } catch (err: unknown) {
       console.error('Failed to save setting:', err)
       throw new Error(getApiErrorMessage(err, 'Error saving setting'))
-    }
-  },
-
-  resetFamilyPreference: async (key: PortableSettingKey) => {
-    const previous = get().settings[key]
-    const previousMeta = {
-      preferenceSources: get().preferenceSources,
-      preferenceFamily: get().preferenceFamily,
-      preferenceOverrides: get().preferenceOverrides,
-    }
-    const familyId = useAuthStore.getState().familyId
-    if (!familyId) throw new Error('Family membership is required to save this setting')
-    try {
-      const result = await updateMyFamilyPreferences(familyId, patchFromPortableKey(key, null))
-      set((state) => ({
-        settings: settingsFromEffective(state.settings, result.effective),
-        ...metaFromEffective(result),
-      }))
-    } catch (err: unknown) {
-      set((state) => ({
-        settings: { ...state.settings, [key]: previous },
-        ...previousMeta,
-      }))
-      throw new Error(getApiErrorMessage(err, 'Error saving setting'))
-    }
+    } finally { saved() }
   },
 
   setLanguageLocal: (lang: string) => {
-    writeLocal('app_language', lang)
+    localStorage.setItem('app_language', lang)
     set((state) => ({ settings: { ...state.settings, language: lang } }))
   },
 
@@ -268,59 +244,23 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
   },
 
   updateSettings: async (settingsObj: Partial<Settings>) => {
-    const previous = get().settings
-    const previousMeta = {
-      preferenceSources: get().preferenceSources,
-      preferenceFamily: get().preferenceFamily,
-      preferenceOverrides: get().preferenceOverrides,
+    if (isFamilyFrontendActive()) assertFamilyMapSettingsPatch(settingsObj)
+    const patch = withNormalizedTileUrl(settingsObj)
+    const saved = noteAssistantPreferenceWrite(patch)
+    // Cached tiles are keyed by their full URL, so a new key leaves the whole
+    // offline cache stranded behind the old one.
+    if ('carto_api_key' in patch && patch.carto_api_key !== get().settings.carto_api_key) {
+      void clearTileCache()
     }
     set((state) => ({
-      settings: { ...state.settings, ...settingsObj },
+      settings: { ...state.settings, ...patch },
     }))
-    if (getDataPlane() === 'supabase') {
-      if (settingsObj.mapbox_3d_enabled !== undefined) {
-        writeLocal(LOCAL_MAP_3D_KEY, String(!!settingsObj.mapbox_3d_enabled))
-      }
-      if (settingsObj.mapbox_quality_mode !== undefined) {
-        writeLocal(LOCAL_MAP_QUALITY_KEY, String(!!settingsObj.mapbox_quality_mode))
-      }
-      const portablePatch: PreferencePatch = {}
-      if (settingsObj.temperature_unit !== undefined) {
-        portablePatch.temperatureUnit = String(settingsObj.temperature_unit) as PreferencePatch['temperatureUnit']
-      }
-      if (settingsObj.distance_unit !== undefined) {
-        portablePatch.distanceUnit = String(settingsObj.distance_unit) as PreferencePatch['distanceUnit']
-      }
-      if (settingsObj.time_format !== undefined) {
-        portablePatch.timeFormat = String(settingsObj.time_format) as PreferencePatch['timeFormat']
-      }
-      if (settingsObj.default_currency !== undefined) {
-        portablePatch.displayCurrency = memberCurrencyPatch(String(settingsObj.default_currency ?? ''))
-      }
-      if (Object.keys(portablePatch).length > 0) {
-        const familyId = useAuthStore.getState().familyId
-        if (!familyId) {
-          set({ settings: previous, ...previousMeta })
-          throw new Error('Family membership is required to save this setting')
-        }
-        try {
-          const result = await updateMyFamilyPreferences(familyId, portablePatch)
-          set((state) => ({
-            settings: settingsFromEffective(state.settings, result.effective),
-            ...metaFromEffective(result),
-          }))
-        } catch (err: unknown) {
-          set({ settings: previous, ...previousMeta })
-          throw new Error(getApiErrorMessage(err, 'Error saving settings'))
-        }
-      }
-      return
-    }
+    rememberStartDestination(patch)
     try {
-      await settingsApi.setBulk(settingsObj)
+      await settingsApi.setBulk(patch)
     } catch (err: unknown) {
       console.error('Failed to save settings:', err)
       throw new Error(getApiErrorMessage(err, 'Error saving settings'))
-    }
+    } finally { saved() }
   },
 }))

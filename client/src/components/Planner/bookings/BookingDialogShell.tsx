@@ -1,9 +1,8 @@
-// Presentation copied from TREK d4da05b. Family controllers retain data and focus ownership.
 import { useTranslation } from '../../../i18n'
 import { Tooltip } from '../../shared/Tooltip'
 import { DialogHeader, PILL, type DialogHeaderProps } from '../../shared/DialogShell'
-import { typeInfo } from './bookingTypePresentation'
-import { TypeTile, toneColor, toneTint, type StatusTone } from './bookingPresentation'
+import { typeInfo, toneColor, toneTint, type StatusTone } from './bookingsModel'
+import { TypeTile } from './bookingParts'
 
 export interface BookingDialogHeaderProps extends Omit<DialogHeaderProps, 'tile' | 'tint'> {
   tone: StatusTone

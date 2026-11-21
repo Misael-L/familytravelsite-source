@@ -12,6 +12,8 @@ export interface McpSession {
   /** true when authenticated via static trek_ token — triggers deprecation prompt */
   isStaticToken: boolean;
   lastActivity: number;
+  /** IP of the most recent authorized request — what mcp.tool_call audit rows record */
+  lastClientIp: string | null;
 }
 
 export const sessions = new Map<string, McpSession>();
@@ -19,8 +21,16 @@ export const sessions = new Map<string, McpSession>();
 /** Close both halves of a session and drop it from the map. Close errors are non-fatal:
  *  a transport whose socket is already gone must not block eviction of the map entry. */
 function closeSession(sid: string, session: McpSession): void {
-  try { session.server.close(); } catch { /* ignore */ }
-  try { session.transport.close(); } catch { /* ignore */ }
+  try {
+    session.server.close();
+  } catch {
+    /* ignore */
+  }
+  try {
+    session.transport.close();
+  } catch {
+    /* ignore */
+  }
   sessions.delete(sid);
 }
 
@@ -38,6 +48,26 @@ export function revokeUserSessionsForClient(userId: number, clientId: string): v
   for (const [sid, session] of sessions) {
     if (session.userId === userId && session.clientId === clientId) closeSession(sid, session);
   }
+}
+
+/**
+ * Terminate every active MCP session, so the next request re-initializes and
+ * picks up a changed tool surface.
+ *
+ * Lives here rather than in the barrel because callers outside src/mcp/ need
+ * it: index.ts evaluates readEnv().mcp at module scope and installs the sweep
+ * interval, so importing the barrel from a domain module drags both into every
+ * test file that mocks app-config with a partial export set. This module has
+ * no module-scope side effects.
+ *
+ * Unconditional by design. The advertised surface is per-session (it depends on
+ * the caller's scopes and grants), so there is no ctx-free set to diff, and
+ * tools/list_changed is not an alternative: no event store is configured and
+ * the surface is frozen at initialize anyway.
+ */
+export function invalidateMcpSessions(): void {
+  for (const [sid, session] of sessions) closeSession(sid, session);
+  console.log('[MCP] All sessions invalidated after a tool-surface change');
 }
 
 /**

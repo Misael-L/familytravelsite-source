@@ -1,0 +1,5 @@
+
+> @trek/client@5.1.4 lint:size
+> node scripts/size-lint.mjs
+
+size: 5817 file(s), 22 past their limit held at their baseline

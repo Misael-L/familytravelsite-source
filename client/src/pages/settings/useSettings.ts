@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router'
 import { authApi } from '../../api/client'
-import { useAddonStore } from '../../store/addonStore'
-import { isSupabaseDataPlane } from '../../data/supabase/auth'
+import { useIntegrationGates } from '../../components/Settings/useIntegrationGates'
+import { usePluginStore } from '../../store/pluginStore'
 
 /**
  * Settings page logic — loads addons + the app version, tracks the active tab
@@ -13,20 +13,14 @@ import { isSupabaseDataPlane } from '../../data/supabase/auth'
  */
 export function useSettings() {
   const [searchParams] = useSearchParams()
-  const { isEnabled: addonEnabled, loadAddons } = useAddonStore()
-
-  const memoriesEnabled = addonEnabled('memories')
-  const mcpEnabled = addonEnabled('mcp')
-  const airtrailEnabled = addonEnabled('airtrail')
-  const llmEnabled = addonEnabled('llm_parsing')
-  const hasIntegrations = memoriesEnabled || mcpEnabled || airtrailEnabled || llmEnabled
+  const { hasIntegrations, managed, loadAddons } = useIntegrationGates({ reloadAddons: false })
+  const hasPlugins = usePluginStore(s => s.plugins.length > 0)
 
   const [appVersion, setAppVersion] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState('display')
+  const [requestedTab, setActiveTab] = useState('display')
 
   useEffect(() => {
     loadAddons()
-    if (isSupabaseDataPlane()) return
     authApi.getAppConfig?.().then(c => setAppVersion(c?.version)).catch(() => {})
   }, [])
 
@@ -45,5 +39,8 @@ export function useSettings() {
     if (tab) setActiveTab(tab)
   }, [searchParams])
 
-  return { hasIntegrations, appVersion, activeTab, setActiveTab }
+  // Keep the requested tab so a plugin list that loads later can open the deep link.
+  const activeTab = requestedTab === 'plugins' && (!hasPlugins || managed) ? 'display' : requestedTab
+
+  return { hasIntegrations, hasPlugins, appVersion, activeTab, setActiveTab, managed }
 }

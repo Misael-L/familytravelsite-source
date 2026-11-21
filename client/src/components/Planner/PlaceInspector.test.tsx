@@ -1,10 +1,18 @@
-import { render, screen, waitFor, fireEvent, act } from '../../../tests/helpers/render';
+import { render, screen, waitFor, fireEvent, act, within } from '../../../tests/helpers/render';
 import userEvent from '@testing-library/user-event';
 import { buildUser, buildTrip, buildPlace, buildCategory, buildReservation } from '../../../tests/helpers/factories';
 import { resetAllStores, seedStore } from '../../../tests/helpers/store';
 import { useAuthStore } from '../../store/authStore';
 import { useTripStore } from '../../store/tripStore';
 import { useSettingsStore } from '../../store/settingsStore';
+import { useAddonStore } from '../../store/addonStore';
+import { usePluginStore } from '../../store/pluginStore';
+import { useSaveToCollectionStore } from '../../store/saveToCollectionStore';
+import { usePermissionsStore } from '../../store/permissionsStore';
+import { http, HttpResponse } from 'msw';
+import { server } from '../../../tests/helpers/msw/server';
+import type { AssignmentsMap, Place, Reservation } from '../../types';
+import { isBlurred } from '../../../tests/helpers/bookingCodeBlur';
 
 // ── Module mocks ──────────────────────────────────────────────────────────────
 
@@ -12,7 +20,11 @@ vi.mock('../../api/client', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../../api/client')>();
   return {
     ...actual,
-    mapsApi: { details: vi.fn().mockResolvedValue({ place: null }) },
+    mapsApi: {
+      details: vi.fn().mockResolvedValue({ place: null }),
+      placePhotoCredit: vi.fn().mockResolvedValue({ credit: null }),
+      placeEnrichment: vi.fn().mockResolvedValue({ photos: [], facts: [], description: null }),
+    },
   };
 });
 
@@ -43,6 +55,7 @@ beforeAll(() => {
 
 import PlaceInspector from './PlaceInspector';
 import { mapsApi } from '../../api/client';
+import { __clearEnrichmentCacheForTests } from './placeEnrichment';
 
 // ── Shared fixtures ───────────────────────────────────────────────────────────
 
@@ -89,6 +102,8 @@ beforeEach(() => {
   seedStore(useSettingsStore, { settings: { time_format: '24h', temperature_unit: 'celsius' } });
 
   vi.mocked(mapsApi.details).mockResolvedValue({ place: null });
+  vi.mocked(mapsApi.placeEnrichment).mockResolvedValue({ photos: [], facts: [], description: null } as never);
+  __clearEnrichmentCacheForTests();
 });
 
 // ── Tests ─────────────────────────────────────────────────────────────────────
@@ -166,13 +181,8 @@ describe('PlaceInspector', () => {
     const user = userEvent.setup();
     const onClose = vi.fn();
     render(<PlaceInspector {...defaultProps} onClose={onClose} />);
-    // Find the X button — it's the close button with an X icon inside
-    const buttons = screen.getAllByRole('button');
-    // The close button is typically in the header, first button with X icon
-    const closeBtn = buttons.find(btn => btn.querySelector('svg'));
-    // Click the last-found header button that has no text label (the X)
-    // More reliable: find button by its position as close button
-    await user.click(buttons[0]); // first button is the close X
+    // The round X on the head band is named by its tooltip.
+    await user.click(screen.getByRole('button', { name: 'Close' }));
     expect(onClose).toHaveBeenCalled();
   });
 
@@ -188,11 +198,11 @@ describe('PlaceInspector', () => {
   it('FE-PLANNER-INSPECTOR-013: clicking Edit button calls onEdit', async () => {
     const user = userEvent.setup();
     const onEdit = vi.fn();
-    const { container } = render(<PlaceInspector {...defaultProps} onEdit={onEdit} />);
-    // The edit button has Edit2 icon — find footer buttons
+    render(<PlaceInspector {...defaultProps} onEdit={onEdit} />);
+    // Edit is the primary action at the right end of the footer.
     const allButtons = screen.getAllByRole('button');
-    // Edit button is second-to-last in footer (before delete)
-    const editBtn = allButtons[allButtons.length - 2];
+    const editBtn = screen.getByRole('button', { name: 'Edit' });
+    expect(allButtons[allButtons.length - 1]).toBe(editBtn);
     await user.click(editBtn);
     expect(onEdit).toHaveBeenCalled();
   });
@@ -202,8 +212,9 @@ describe('PlaceInspector', () => {
     const onDelete = vi.fn();
     render(<PlaceInspector {...defaultProps} onDelete={onDelete} />);
     const allButtons = screen.getAllByRole('button');
-    // Delete button is the last button in the footer
-    const deleteBtn = allButtons[allButtons.length - 1];
+    // The square delete button sits just before Edit, named by its tooltip.
+    const deleteBtn = screen.getByRole('button', { name: 'Delete' });
+    expect(allButtons[allButtons.length - 2]).toBe(deleteBtn);
     await user.click(deleteBtn);
     expect(onDelete).toHaveBeenCalled();
   });
@@ -329,7 +340,7 @@ describe('PlaceInspector', () => {
     } as any);
     const p = buildPlace({ id: 201, google_place_id: 'ChIJ002' });
     render(<PlaceInspector {...defaultProps} place={p} />);
-    await screen.findByText(/4\.5/);
+    expect(await screen.findByText(/4\.5/)).toBeInTheDocument();
   });
 
   it('FE-PLANNER-INSPECTOR-025: opening hours shown when available', async () => {
@@ -339,14 +350,18 @@ describe('PlaceInspector', () => {
     const user = userEvent.setup();
     const p = buildPlace({ id: 202, google_place_id: 'ChIJ003' });
     render(<PlaceInspector {...defaultProps} place={p} />);
-    // Wait for hours to load — the button text shows a day's hours line
-    const hoursBtn = await screen.findByText(/Show opening hours|Opening Hours|Mon:|9:00|09:00/i);
-    const btn = hoursBtn.closest('button')!;
+    // Wait for hours to load: the section is labelled, its toggle shows a day's hours line
+    expect(await screen.findByText('Opening Hours')).toBeTruthy();
+    const btn = screen.getByRole('button', { name: /Show opening hours|Mon:|Tue:/i });
+    expect(btn).toHaveAttribute('aria-expanded', 'false');
     await user.click(btn);
-    // After expand, one of the hours lines should be visible
+    // After expand, the whole week is listed and the toggle folds it again
     await waitFor(() => {
       expect(screen.getByText(/Mon:/)).toBeTruthy();
+      expect(screen.getByText(/Tue:/)).toBeTruthy();
     });
+    await user.click(screen.getByRole('button', { name: 'Collapse' }));
+    expect(screen.getByRole('button', { name: /Show opening hours|Mon:|Tue:/i })).toHaveAttribute('aria-expanded', 'false');
   });
 
   it('FE-PLANNER-INSPECTOR-026: open/closed badge shown when open_now is available', async () => {
@@ -355,7 +370,7 @@ describe('PlaceInspector', () => {
     } as any);
     const p = buildPlace({ id: 203, google_place_id: 'ChIJ004' });
     render(<PlaceInspector {...defaultProps} place={p} />);
-    await screen.findByText(/open/i);
+    expect(await screen.findByText(/open/i)).toBeInTheDocument();
   });
 
   it('FE-PLANNER-INSPECTOR-027: mapsApi.details NOT called when place has no google_place_id or osm_id', async () => {
@@ -388,7 +403,7 @@ describe('PlaceInspector', () => {
     // Click the expand button (file count label button)
     if (filesBtn) {
       await user.click(filesBtn);
-      await screen.findByText('photo.jpg');
+      expect(await screen.findByText('photo.jpg')).toBeInTheDocument();
     } else {
       // Try clicking the last non-footer button
       const toggleButtons = allButtons.filter(btn => !btn.closest('footer'));
@@ -417,6 +432,212 @@ describe('PlaceInspector', () => {
       />
     );
     expect(screen.getByText('Museum Ticket')).toBeTruthy();
+  });
+
+  it('FE-PLANNER-INSPECTOR-030h: a hotel shows the stay booked for it and opens that booking (#2363)', () => {
+    const onOpenBooking = vi.fn();
+    const stay = buildReservation({
+      id: 540, title: 'Hotel Adlon, 3 nights', status: 'confirmed', type: 'hotel', assignment_id: null,
+      accommodation_place_id: place.id,
+    } as any);
+    const elsewhere = buildReservation({ id: 541, title: 'Other hotel', type: 'hotel', accommodation_place_id: place.id + 1 } as any);
+    render(<PlaceInspector {...defaultProps} reservations={[stay, elsewhere]} onOpenBooking={onOpenBooking} />);
+
+    expect(screen.queryByText('Other hotel')).toBeNull();
+    fireEvent.click(screen.getByText('Hotel Adlon, 3 nights').closest('[role="button"]') as HTMLElement);
+    expect(onOpenBooking).toHaveBeenCalledWith(stay);
+  });
+
+  it('FE-PLANNER-INSPECTOR-030g: every booking on the stop gets its own strip (#2201)', () => {
+    const onEditReservation = vi.fn();
+    const parking = buildReservation({
+      id: 530, title: 'Parking pass', status: 'confirmed', type: 'parking', assignment_id: 99,
+      reservation_time: '2025-06-01T09:00:00',
+    } as any);
+    const tickets = buildReservation({
+      id: 531, title: 'Zoo tickets', status: 'pending', type: 'activity', assignment_id: 99,
+      reservation_time: '2025-06-01T10:15:00',
+    } as any);
+    const assignmentInDay = [{ id: 99, place, day_id: 1, place_id: place.id, order_index: 0, notes: null }];
+    render(
+      <PlaceInspector
+        {...defaultProps}
+        selectedDayId={1}
+        selectedAssignmentId={99}
+        assignments={{ '1': assignmentInDay }}
+        reservations={[tickets, parking]}
+        onEditReservation={onEditReservation}
+      />
+    );
+    expect(screen.getByText('Parking pass')).toBeTruthy();
+    expect(screen.getByText('Zoo tickets')).toBeTruthy();
+    fireEvent.click(screen.getByText('Zoo tickets').closest('[role="button"]') as HTMLElement);
+    expect(onEditReservation).toHaveBeenCalledWith(tickets);
+  });
+
+  it('FE-PLANNER-INSPECTOR-030b: the linked reservation opens its editor (#2012)', () => {
+    const onEditReservation = vi.fn();
+    const reservation = buildReservation({ title: 'Museum Ticket', status: 'confirmed', assignment_id: 99 } as any);
+    const assignmentInDay = [{ id: 99, place, day_id: 1, place_id: place.id, order_index: 0, notes: null }];
+    render(
+      <PlaceInspector
+        {...defaultProps}
+        selectedDayId={1}
+        selectedAssignmentId={99}
+        assignments={{ '1': assignmentInDay }}
+        reservations={[reservation]}
+        onEditReservation={onEditReservation}
+      />
+    );
+    const strip = screen.getByText('Museum Ticket').closest('[role="button"]') as HTMLElement;
+    expect(strip).toBeTruthy();
+    fireEvent.click(strip);
+    expect(onEditReservation).toHaveBeenCalledWith(reservation);
+  });
+
+  it('FE-PLANNER-INSPECTOR-030e: a transport booking goes to the transport editor (#2012)', () => {
+    const onEditTransport = vi.fn();
+    const onEditReservation = vi.fn();
+    // A ferry is a transport, and ReservationModal has no transport type to hold it.
+    const reservation = buildReservation({ title: 'Ferry to Corfu', status: 'pending', type: 'ferry', assignment_id: 99 } as any);
+    const assignmentInDay = [{ id: 99, place, day_id: 1, place_id: place.id, order_index: 0, notes: null }];
+    render(
+      <PlaceInspector
+        {...defaultProps}
+        selectedDayId={1}
+        selectedAssignmentId={99}
+        assignments={{ '1': assignmentInDay }}
+        reservations={[reservation]}
+        onEditTransport={onEditTransport}
+        onEditReservation={onEditReservation}
+      />
+    );
+    fireEvent.click(screen.getByText('Ferry to Corfu').closest('[role="button"]') as HTMLElement);
+    expect(onEditTransport).toHaveBeenCalledWith(reservation);
+    expect(onEditReservation).not.toHaveBeenCalled();
+  });
+
+  it('FE-PLANNER-INSPECTOR-030f: no transport handler means no affordance on a transport (#2012)', () => {
+    // A member who may edit bookings but not days must not get a button that no-ops.
+    const reservation = buildReservation({ title: 'Ferry to Corfu', status: 'pending', type: 'ferry', assignment_id: 99 } as any);
+    const assignmentInDay = [{ id: 99, place, day_id: 1, place_id: place.id, order_index: 0, notes: null }];
+    render(
+      <PlaceInspector
+        {...defaultProps}
+        selectedDayId={1}
+        selectedAssignmentId={99}
+        assignments={{ '1': assignmentInDay }}
+        reservations={[reservation]}
+        onEditReservation={vi.fn()}
+      />
+    );
+    expect(screen.getByText('Ferry to Corfu').closest('[role="button"]')).toBeNull();
+  });
+
+  it('FE-PLANNER-INSPECTOR-030c: Enter and Space open it too (#2012)', () => {
+    const onEditReservation = vi.fn();
+    const reservation = buildReservation({ title: 'Museum Ticket', status: 'confirmed', assignment_id: 99 } as any);
+    const assignmentInDay = [{ id: 99, place, day_id: 1, place_id: place.id, order_index: 0, notes: null }];
+    render(
+      <PlaceInspector
+        {...defaultProps}
+        selectedDayId={1}
+        selectedAssignmentId={99}
+        assignments={{ '1': assignmentInDay }}
+        reservations={[reservation]}
+        onEditReservation={onEditReservation}
+      />
+    );
+    const strip = screen.getByText('Museum Ticket').closest('[role="button"]') as HTMLElement;
+    expect(strip.getAttribute('tabindex')).toBe('0');
+    fireEvent.keyDown(strip, { key: 'Enter' });
+    fireEvent.keyDown(strip, { key: ' ' });
+    expect(onEditReservation).toHaveBeenCalledTimes(2);
+  });
+
+  it('FE-PLANNER-INSPECTOR-030d: without a handler the strip stays a read-only summary', () => {
+    const reservation = buildReservation({ title: 'Museum Ticket', status: 'confirmed', assignment_id: 99 } as any);
+    const assignmentInDay = [{ id: 99, place, day_id: 1, place_id: place.id, order_index: 0, notes: null }];
+    render(
+      <PlaceInspector
+        {...defaultProps}
+        selectedDayId={1}
+        selectedAssignmentId={99}
+        assignments={{ '1': assignmentInDay }}
+        reservations={[reservation]}
+      />
+    );
+    // A viewer with no edit right gets no target, and no misleading pointer.
+    expect(screen.getByText('Museum Ticket').closest('[role="button"]')).toBeNull();
+    expect(screen.getByText('Museum Ticket')).toBeTruthy();
+  });
+
+  it('FE-PLANNER-INSPECTOR-109: with a detail to show, the booking card opens it instead of the editor', async () => {
+    const onOpenBooking = vi.fn();
+    const onEditTransport = vi.fn();
+    const onEditReservation = vi.fn();
+    const ferry = buildReservation({ title: 'Ferry to Corfu', status: 'pending', type: 'ferry', assignment_id: 99 } as Partial<Reservation>);
+    const assignmentInDay = [{ id: 99, place, day_id: 1, place_id: place.id, order_index: 0, notes: null }];
+    render(
+      <PlaceInspector
+        {...defaultProps}
+        selectedDayId={1}
+        selectedAssignmentId={99}
+        assignments={{ '1': assignmentInDay }}
+        reservations={[ferry]}
+        onEditTransport={onEditTransport}
+        onEditReservation={onEditReservation}
+        onOpenBooking={onOpenBooking}
+      />
+    );
+    // The card is the booking, so it says it opens it rather than edits it.
+    expect(screen.queryByRole('button', { name: 'Edit Reservation' })).toBeNull();
+    await userEvent.click(screen.getByRole('button', { name: 'Open booking: Ferry to Corfu' }));
+    expect(onOpenBooking).toHaveBeenCalledWith(ferry);
+    expect(onEditTransport).not.toHaveBeenCalled();
+    expect(onEditReservation).not.toHaveBeenCalled();
+  });
+
+  it('FE-PLANNER-INSPECTOR-110: with a detail to show, a viewer without an editor can still open the card, by keyboard too', () => {
+    const onOpenBooking = vi.fn();
+    const ticket = buildReservation({ title: 'Museum Ticket', status: 'confirmed', assignment_id: 99 } as Partial<Reservation>);
+    const assignmentInDay = [{ id: 99, place, day_id: 1, place_id: place.id, order_index: 0, notes: null }];
+    render(
+      <PlaceInspector
+        {...defaultProps}
+        selectedDayId={1}
+        selectedAssignmentId={99}
+        assignments={{ '1': assignmentInDay }}
+        reservations={[ticket]}
+        onOpenBooking={onOpenBooking}
+      />
+    );
+    const card = screen.getByRole('button', { name: 'Open booking: Museum Ticket' });
+    fireEvent.keyDown(card, { key: 'Enter' });
+    fireEvent.keyDown(card, { key: ' ' });
+    expect(onOpenBooking).toHaveBeenCalledTimes(2);
+    expect(onOpenBooking).toHaveBeenCalledWith(ticket);
+  });
+
+  it('FE-PLANNER-INSPECTOR-111: several bookings on one stop are told apart by name', async () => {
+    const onOpenBooking = vi.fn();
+    const lunch = buildReservation({ id: 61, title: 'Lunch at Nishiki', status: 'confirmed', type: 'restaurant', assignment_id: 99 } as Partial<Reservation>);
+    const tour = buildReservation({ id: 62, title: 'Market Tour', status: 'pending', type: 'tour', assignment_id: 99 } as Partial<Reservation>);
+    const assignmentInDay = [{ id: 99, place, day_id: 1, place_id: place.id, order_index: 0, notes: null }];
+    render(
+      <PlaceInspector
+        {...defaultProps}
+        selectedDayId={1}
+        selectedAssignmentId={99}
+        assignments={{ '1': assignmentInDay }}
+        reservations={[lunch, tour]}
+        onOpenBooking={onOpenBooking}
+      />
+    );
+
+    await userEvent.click(screen.getByRole('button', { name: 'Open booking: Market Tour' }));
+    expect(onOpenBooking).toHaveBeenCalledWith(tour);
+    expect(screen.getByRole('button', { name: 'Open booking: Lunch at Nishiki' })).toBeInTheDocument();
   });
 
   // ── Participants ───────────────────────────────────────────────────────────
@@ -469,6 +690,24 @@ describe('PlaceInspector', () => {
     const p = buildPlace({ id: 301, phone: '+33 1 23 45 67 89' } as any);
     render(<PlaceInspector {...defaultProps} place={p} />);
     expect(screen.getByText(/\+33 1 23 45 67 89/)).toBeTruthy();
+  });
+
+  it('FE-PLANNER-INSPECTOR-2472: the own e-mail and hours show, the hours ahead of looked-up ones', async () => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    try {
+      vi.setSystemTime(new Date('2026-06-02T12:00:00Z'));
+      const user = userEvent.setup();
+      const week = JSON.stringify(Array.from({ length: 7 }, (_, i) => (i === 6 ? { closed: true } : { closed: false, open: '08:00', close: '12:00' })));
+      const placeWithHours = { id: 302, email: 'hi@bakery.test', opening_hours: week };
+      const p = buildPlace(placeWithHours);
+      render(<PlaceInspector {...defaultProps} place={p} />);
+      expect(screen.getByRole('link', { name: /hi@bakery\.test/ })).toHaveAttribute('href', 'mailto:hi@bakery.test');
+      expect(screen.getByText('Opening Hours')).toBeInTheDocument();
+      await user.click(screen.getByRole('button', { expanded: false, name: /08:00|Show/ }));
+      expect(screen.getByText(/Sunday: Closed/)).toBeInTheDocument();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   // ── File size display ──────────────────────────────────────────────────────
@@ -626,13 +865,18 @@ describe('PlaceInspector', () => {
 
   // ── Google Maps URL action ─────────────────────────────────────────────────
 
-  it('FE-PLANNER-INSPECTOR-043: Google Maps lat/lng button visible when no google_maps_url', () => {
+  it('FE-PLANNER-INSPECTOR-043: the navigation button offers every app the place can be opened in', async () => {
+    const user = userEvent.setup();
     render(<PlaceInspector {...defaultProps} />);
-    // place has lat/lng so Google Maps button should appear with Navigation icon
-    const allButtons = screen.getAllByRole('button');
-    // Find button containing "Google Maps" text
-    const mapsBtn = allButtons.find(btn => btn.textContent?.includes('Google Maps'));
-    expect(mapsBtn).toBeTruthy();
+    // A place with coordinates reaches Google Maps and Waze (Apple Maps only on
+    // Apple platforms), so the button collects them behind one entry.
+    const navBtn = screen.getAllByRole('button').find(btn => btn.textContent?.includes('Navigation'))!;
+    expect(navBtn).toBeTruthy();
+
+    await user.click(navBtn);
+    const menu = await screen.findByRole('menu');
+    expect(within(menu).getByRole('menuitem', { name: 'Google Maps' })).toBeInTheDocument();
+    expect(within(menu).getByRole('menuitem', { name: 'Waze' })).toBeInTheDocument();
   });
 
   it('FE-PLANNER-INSPECTOR-043b: Google Maps action uses google_ftid over coordinates', async () => {
@@ -645,9 +889,10 @@ describe('PlaceInspector', () => {
       lng: -80.5542617,
       google_ftid: '0x882bf179e806d471:0x8591dde29c821a93',
     })} />);
-    const mapsBtn = screen.getAllByRole('button').find(btn => btn.textContent?.includes('Google Maps'))!;
-    await user.click(mapsBtn);
-    expect(openSpy).toHaveBeenCalledWith(mapsUrl, '_blank');
+    const navBtn = screen.getAllByRole('button').find(btn => btn.textContent?.includes('Navigation'))!;
+    await user.click(navBtn);
+    await user.click(await screen.findByRole('menuitem', { name: 'Google Maps' }));
+    expect(openSpy).toHaveBeenCalledWith(mapsUrl, '_blank', 'noopener,noreferrer');
     openSpy.mockRestore();
   });
 
@@ -658,6 +903,13 @@ describe('PlaceInspector', () => {
       <PlaceInspector {...defaultProps} files={[]} onFileUpload={undefined} />
     );
     expect(container.querySelector('input[type="file"]')).toBeNull();
+  });
+
+  it('FE-PLANNER-INSPECTOR-044b: with upload but no files, the files row does not open to nothing', () => {
+    render(<PlaceInspector {...defaultProps} files={[]} />);
+    const row = screen.getByRole('button', { name: 'Files' });
+    expect(row).toBeDisabled();
+    expect(row).toHaveAttribute('aria-expanded', 'false');
   });
 
   // ── Participants section hidden when tripMembers <= 1 ─────────────────────
@@ -687,11 +939,14 @@ describe('PlaceInspector', () => {
     const p = buildPlace({ id: 200, description: longText, notes: longText } as any);
     render(<PlaceInspector {...defaultProps} place={p} />);
     const scroll = screen.getByTestId('inspector-scroll') as HTMLElement;
-    expect(scroll.style.overflowY).toBe('auto');
-    expect(scroll.style.minHeight).toBe('0px');
+    const cls = scroll.className.split(/\s+/);
+    expect(cls).toContain('overflow-y-auto');
+    expect(cls).toContain('min-h-0');
     // flex must allow the region to shrink/grow within the capped card
-    expect(scroll.style.flex).not.toBe('');
-    expect(scroll.style.flex).not.toBe('0 0 auto');
+    expect(cls).toContain('flex-1');
+    expect(cls).not.toContain('flex-none');
+    // and the card around it is the one that is capped
+    expect((scroll.parentElement as HTMLElement).className).toContain('max-h-[60vh]');
   });
 
   it('FE-PLANNER-INSPECTOR-047: long unbroken description wraps instead of clipping horizontally', () => {
@@ -709,13 +964,870 @@ describe('PlaceInspector', () => {
     const p = buildPlace({ id: 202, description: longText, notes: longText } as any);
     const { container } = render(<PlaceInspector {...defaultProps} place={p} />);
     const notes = Array.from(container.querySelectorAll('.collab-note-md')) as HTMLElement[];
-    // Both description and notes containers must keep their natural height
-    // (flex-shrink: 0) — otherwise they compress inside the flex column and
-    // overflow:hidden clips the text with no scroll (issue #1195).
+    // Both description and notes blocks must keep their natural height
+    // (flex-none), otherwise they compress inside the flex column and
+    // clip the text with no scroll (issue #1195).
     expect(notes.length).toBe(2);
     for (const el of notes) {
-      expect(el.style.flexShrink).toBe('0');
+      expect((el.closest('section') as HTMLElement).className.split(/\s+/)).toContain('flex-none');
+      expect(el.style.overflow).toBe('');
     }
   });
 
+  // ── The avatar opens the place's photos (#1136) ─────────────────────────────
+
+  it('FE-PLANNER-INSPECTOR-049: the avatar opens the photos and offers no upload, the picture is changed in the editor', () => {
+    render(<PlaceInspector {...defaultProps} />);
+    expect(screen.getByRole('button', { name: 'Show photos' })).toBeTruthy();
+    expect(screen.queryByRole('button', { name: 'Upload image' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Change image' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Remove image' })).toBeNull();
+  });
+
+  it('FE-PLANNER-INSPECTOR-050: with no picture and nobody to ask for one the avatar stays a plain picture', () => {
+    seedStore(useAuthStore, { placesEnrichEnabled: false });
+    render(<PlaceInspector {...defaultProps} />);
+    expect(screen.queryByRole('button', { name: 'Show photos' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Upload image' })).toBeNull();
+  });
+
+// ── Track colour (#776) ──────────────────────────────────────────────────────
+
+  it('FE-PLANNER-INSPECTOR-051: the colour row only exists for a place with geometry', () => {
+    const { rerender } = render(<PlaceInspector {...defaultProps} />);
+    expect(screen.queryByText('Track color')).toBeNull();
+
+    rerender(<PlaceInspector {...defaultProps} place={{ ...place, route_geometry: '[[48.0,2.0],[49.0,3.0]]' }} />);
+    expect(screen.getAllByText('Track color').length).toBeGreaterThan(0);
+  });
+
+  it('FE-PLANNER-INSPECTOR-052: picking a swatch saves that colour', () => {
+    const onUpdatePlace = vi.fn();
+    const track = { ...place, route_geometry: '[[48.0,2.0],[49.0,3.0]]' };
+    render(<PlaceInspector {...defaultProps} place={track} onUpdatePlace={onUpdatePlace} />);
+
+    // The labelled row shows the colour in use and opens the picker.
+    const toggle = screen.getByRole('button', { name: /^Track color/ });
+    expect(toggle).toHaveTextContent('Automatic color');
+    expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    fireEvent.click(toggle);
+    expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    fireEvent.click(screen.getByRole('button', { name: '#059669' }));
+    expect(onUpdatePlace).toHaveBeenCalledWith(track.id, { route_color: '#059669' });
+  });
+
+  it('FE-PLANNER-INSPECTOR-053: the auto cell saves null, not undefined', () => {
+    const onUpdatePlace = vi.fn();
+    const track = { ...place, route_geometry: '[[48.0,2.0],[49.0,3.0]]', route_color: '#059669' };
+    render(<PlaceInspector {...defaultProps} place={track} onUpdatePlace={onUpdatePlace} />);
+
+    const toggle = screen.getByRole('button', { name: /^Track color/ });
+    expect(toggle).toHaveTextContent('#059669');
+    fireEvent.click(toggle);
+    fireEvent.click(screen.getByRole('button', { name: 'Automatic color' }));
+    // null is what clears the column; undefined would leave the colour in place.
+    expect(onUpdatePlace).toHaveBeenCalledWith(track.id, { route_color: null });
+  });
+
+  // ── Google details cache ─────────────────────────────────────────────────────
+
+  it('FE-PLANNER-INSPECTOR-054: a cached detail payload is reused without a second request', async () => {
+    const withId = buildPlace({ id: 700, name: 'Cached Place', google_place_id: 'gp-700' });
+    vi.mocked(mapsApi.details).mockResolvedValue({ place: { phone: '+49 30 111', rating: 4.2, rating_count: 12 } } as any);
+    const { unmount } = render(<PlaceInspector {...defaultProps} place={withId} />);
+    expect(await screen.findByText('+49 30 111')).toBeTruthy();
+    expect(vi.mocked(mapsApi.details)).toHaveBeenCalledTimes(1);
+    unmount();
+
+    render(<PlaceInspector {...defaultProps} place={withId} />);
+    expect(await screen.findByText('+49 30 111')).toBeTruthy();
+    // Second mount is served from the in-memory cache.
+    expect(vi.mocked(mapsApi.details)).toHaveBeenCalledTimes(1);
+  });
+
+  it('FE-PLANNER-INSPECTOR-055: an unreadable session cache entry falls back to a fresh fetch', async () => {
+    const withId = buildPlace({ id: 701, name: 'Broken Cache', google_place_id: 'gp-701' });
+    sessionStorage.setItem('gdetails_gp-701_en', '{not json');
+    vi.mocked(mapsApi.details).mockResolvedValue({ place: { phone: '+49 30 222' } } as any);
+    render(<PlaceInspector {...defaultProps} place={withId} />);
+    expect(await screen.findByText('+49 30 222')).toBeTruthy();
+  });
+
+  it('FE-PLANNER-INSPECTOR-056: the rating chip shows the review count and the first usable review', async () => {
+    const withId = buildPlace({ id: 702, name: 'Rated Place', google_place_id: 'gp-702' });
+    vi.mocked(mapsApi.details).mockResolvedValue({
+      place: { rating: 4.5, rating_count: 1200, reviews: [{ text: 'ok' }, { text: 'Great view over the city' }] },
+    } as any);
+    render(<PlaceInspector {...defaultProps} place={withId} />);
+    expect(await screen.findByText('4.5')).toBeTruthy();
+    expect(screen.getByText(/Great view over the city/)).toBeTruthy();
+  });
+
+  // ── Opening hours conversion ─────────────────────────────────────────────────
+
+  it('FE-PLANNER-INSPECTOR-057: 12h source hours are converted to 24h, midnight included', async () => {
+    const withId = buildPlace({ id: 703, name: 'Hours Place', google_place_id: 'gp-703' });
+    vi.mocked(mapsApi.details).mockResolvedValue({
+      place: { opening_hours: ['Monday: 12:30 AM – 9:00 PM', 'Tuesday: 10:00 AM – 12:00 PM'] },
+    } as any);
+    render(<PlaceInspector {...defaultProps} place={withId} />);
+    fireEvent.click(await screen.findByText(/Show opening hours|Monday|Tuesday/));
+    expect(await screen.findByText('Monday: 00:30 – 21:00')).toBeTruthy();
+    expect(screen.getByText('Tuesday: 10:00 – 12:00')).toBeTruthy();
+  });
+
+  it('FE-PLANNER-INSPECTOR-058: 24h source hours are left untouched in 24h mode', async () => {
+    const withId = buildPlace({ id: 704, name: 'Hours 24h', google_place_id: 'gp-704' });
+    vi.mocked(mapsApi.details).mockResolvedValue({
+      place: { opening_hours: ['Monday: 09:00 – 18:00'] },
+    } as any);
+    render(<PlaceInspector {...defaultProps} place={withId} />);
+    fireEvent.click(await screen.findByText(/Show opening hours|Monday: 09:00/));
+    expect(await screen.findByText('Monday: 09:00 – 18:00')).toBeTruthy();
+  });
+
+  // ── Name editing ─────────────────────────────────────────────────────────────
+
+  it('FE-PLANNER-INSPECTOR-059: without onUpdatePlace a double-click does not start an edit', async () => {
+    render(<PlaceInspector {...defaultProps} onUpdatePlace={undefined} />);
+    fireEvent.doubleClick(screen.getByText('Eiffel Tower'));
+    expect(screen.queryByDisplayValue('Eiffel Tower')).toBeNull();
+  });
+
+  it('FE-PLANNER-INSPECTOR-060: Escape abandons the edit and the following blur saves nothing', async () => {
+    const onUpdatePlace = vi.fn();
+    render(<PlaceInspector {...defaultProps} onUpdatePlace={onUpdatePlace} />);
+    fireEvent.doubleClick(screen.getByText('Eiffel Tower'));
+    const input = await screen.findByDisplayValue('Eiffel Tower');
+    fireEvent.change(input, { target: { value: 'Tour Eiffel' } });
+    fireEvent.keyDown(input, { key: 'Escape' });
+    fireEvent.blur(input);
+    expect(onUpdatePlace).not.toHaveBeenCalled();
+    expect(screen.getByText('Eiffel Tower')).toBeTruthy();
+  });
+
+  // ── Files ────────────────────────────────────────────────────────────────────
+
+  const placeFile = (over: Record<string, unknown> = {}) => ({
+    id: 1, trip_id: 1, place_id: 1, original_name: 'map.pdf', filename: 'map.pdf',
+    mime_type: 'application/pdf', url: '/uploads/map.pdf', created_at: '2025-01-01T00:00:00.000Z',
+    ...over,
+  });
+
+  it('FE-PLANNER-INSPECTOR-061: file sizes render in B, KB and MB, and a zero size is omitted', async () => {
+    const files = [
+      placeFile({ id: 1, original_name: 'tiny.txt', file_size: 512, mime_type: 'text/plain' }),
+      placeFile({ id: 2, original_name: 'medium.pdf', file_size: 2048 }),
+      placeFile({ id: 3, original_name: 'big.png', file_size: 3 * 1024 * 1024, mime_type: 'image/png' }),
+      placeFile({ id: 4, original_name: 'unknown.bin', file_size: 0 }),
+    ];
+    render(<PlaceInspector {...defaultProps} files={files as any} />);
+    fireEvent.click(screen.getByText('4 files'));
+    expect(await screen.findByText('512 B')).toBeTruthy();
+    expect(screen.getByText('2.0 KB')).toBeTruthy();
+    expect(screen.getByText('3.0 MB')).toBeTruthy();
+    expect(screen.getByText('unknown.bin')).toBeTruthy();
+  });
+
+  it('FE-PLANNER-INSPECTOR-062: clicking an attached file opens it', async () => {
+    const { openFile } = await import('../../utils/fileDownload');
+    const spy = vi.spyOn({ openFile }, 'openFile');
+    render(<PlaceInspector {...defaultProps} files={[placeFile()] as any} />);
+    fireEvent.click(screen.getByText('1 file'));
+    const link = await screen.findByText('map.pdf');
+    fireEvent.click(link);
+    // The click is handled without throwing; the row stays in the list.
+    expect(screen.getByText('map.pdf')).toBeTruthy();
+    spy.mockRestore();
+  });
+
+  it('FE-PLANNER-INSPECTOR-063: an empty file selection is ignored', async () => {
+    const onFileUpload = vi.fn().mockResolvedValue(undefined);
+    render(<PlaceInspector {...defaultProps} onFileUpload={onFileUpload} />);
+    const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+    fireEvent.change(input, { target: { files: [] } });
+    expect(onFileUpload).not.toHaveBeenCalled();
+  });
+
+  it('FE-PLANNER-INSPECTOR-064: a failing upload surfaces an error and re-enables the control', async () => {
+    const onFileUpload = vi.fn().mockRejectedValue(new Error('disk full'));
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    render(<PlaceInspector {...defaultProps} onFileUpload={onFileUpload} />);
+    const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+    fireEvent.change(input, { target: { files: [new File(['x'], 'a.pdf', { type: 'application/pdf' })] } });
+    await waitFor(() => expect(onFileUpload).toHaveBeenCalled());
+    await waitFor(() => expect(screen.getByText('Upload')).toBeTruthy());
+    expect(errorSpy).toHaveBeenCalled();
+    errorSpy.mockRestore();
+  });
+
+  it('FE-PLANNER-INSPECTOR-065: a successful upload expands the file list', async () => {
+    const onFileUpload = vi.fn().mockResolvedValue(undefined);
+    render(<PlaceInspector {...defaultProps} files={[placeFile()] as any} onFileUpload={onFileUpload} />);
+    const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+    fireEvent.change(input, { target: { files: [new File(['x'], 'b.pdf', { type: 'application/pdf' })] } });
+    await waitFor(() => expect(onFileUpload).toHaveBeenCalled());
+    expect(await screen.findByText('map.pdf')).toBeTruthy();
+  });
+
+  // ── Track stats edge cases ───────────────────────────────────────────────────
+
+  it('FE-PLANNER-INSPECTOR-066: a single-point track renders the colour row but no stats', () => {
+    render(<PlaceInspector {...defaultProps} place={{ ...place, route_geometry: '[[48.0,2.0]]' } as any} />);
+    expect(screen.getAllByText('Track color').length).toBeGreaterThan(0);
+    expect(screen.queryByText('Track')).toBeNull();
+  });
+
+  it('FE-PLANNER-INSPECTOR-067: unparsable geometry is swallowed instead of crashing the panel', () => {
+    render(<PlaceInspector {...defaultProps} place={{ ...place, route_geometry: 'not-json' } as any} />);
+    expect(screen.getByText('Eiffel Tower')).toBeTruthy();
+    expect(screen.getAllByText('Track color').length).toBeGreaterThan(0);
+  });
+
+  it('FE-PLANNER-INSPECTOR-068: a track with elevations reports distance, peaks and an elevation profile', () => {
+    const geom = JSON.stringify([[48.0, 2.0, 100], [48.01, 2.01, 180], [48.02, 2.02, 140]]);
+    render(<PlaceInspector {...defaultProps} place={{ ...place, route_geometry: geom } as any} />);
+    expect(screen.getByText('Track Stats')).toBeTruthy();
+    expect(screen.getByText(/↑/)).toBeTruthy();
+    expect(document.querySelector('svg path[stroke]')).toBeTruthy();
+  });
+
+  // ── Footer actions ───────────────────────────────────────────────────────────
+
+  it('FE-PLANNER-INSPECTOR-069: OpenStreetMap sits in the navigation menu, the website keeps its own button', async () => {
+    const user = userEvent.setup();
+    const open = vi.fn();
+    vi.stubGlobal('open', open);
+    const p = buildPlace({ id: 705, name: 'Linked Place', osm_id: 'node/12345', website: 'https://example.org' });
+    render(<PlaceInspector {...defaultProps} place={p} />);
+
+    // OSM moved in with the other map apps rather than standing beside them.
+    await user.click(screen.getAllByRole('button').find(b => b.textContent?.includes('Navigation'))!);
+    await user.click(await screen.findByRole('menuitem', { name: 'OpenStreetMap' }));
+
+    fireEvent.click(screen.getByText('Open Website').closest('button')!);
+    expect(open).toHaveBeenCalledTimes(2);
+    expect(open.mock.calls[1]).toEqual(['https://example.org', '_blank', 'noopener,noreferrer']);
+    vi.unstubAllGlobals();
+  });
+
+  it('FE-PLANNER-INSPECTOR-070: the footer keeps the ways out on the left and delete + edit on the right', () => {
+    const p = buildPlace({ id: 712, name: 'Footer Place', lat: 48.1, lng: 2.1, website: 'https://example.org' });
+    render(<PlaceInspector {...defaultProps} place={p} selectedDayId={1} assignments={{ '1': [] }} />);
+    const footer = document.querySelector('footer') as HTMLElement;
+    const names = within(footer).getAllByRole('button').map(b => b.getAttribute('aria-label') || b.textContent);
+    expect(names).toEqual(['Add to Day', 'Navigation', 'Open Website', 'Delete', 'Edit']);
+    // Hover looks are classes on the tokens now, not inline styles swapped by handlers.
+    const edit = within(footer).getByRole('button', { name: 'Edit' });
+    expect(edit.getAttribute('style') ?? '').not.toMatch(/background/);
+    expect(edit.className).toContain('bg-accent');
+  });
+
+  it('FE-PLANNER-INSPECTOR-071: the header close button is named and shows its tooltip', async () => {
+    render(<PlaceInspector {...defaultProps} />);
+    const close = screen.getByRole('button', { name: 'Close' });
+    expect(close.getAttribute('title')).toBeNull();
+    fireEvent.mouseEnter(close);
+    expect(await screen.findByRole('tooltip')).toHaveTextContent('Close');
+    fireEvent.mouseLeave(close);
+    await waitFor(() => expect(screen.queryByRole('tooltip')).toBeNull());
+  });
+
+  it('FE-PLANNER-INSPECTOR-072: rating a place forwards the vote', () => {
+    const onRate = vi.fn();
+    render(<PlaceInspector {...defaultProps} onRate={onRate} />);
+    const stars = screen.getAllByRole('radio');
+    expect(stars).toHaveLength(5);
+    fireEvent.click(stars[2]);
+    expect(onRate).toHaveBeenCalledWith(place.id, 3);
+  });
+
+  // ── Reservation summary ──────────────────────────────────────────────────────
+
+  it('FE-PLANNER-INSPECTOR-073: the linked reservation summarises flight, platform and check-in metadata', () => {
+    const res = buildReservation({
+      id: 1, title: 'Flight to Nice', status: 'pending', assignment_id: 9,
+      reservation_time: '2025-06-15T08:30', reservation_end_time: '2025-06-15T10:15',
+      confirmation_number: 'ABC999', notes: 'Aisle seat',
+      metadata: JSON.stringify({ airline: 'Air France', flight_number: 'AF123', departure_airport: 'CDG', arrival_airport: 'NCE', train_number: 'TGV1', platform: '7', check_in_time: '06:00', check_out_time: '12:00' }),
+    } as any);
+    render(<PlaceInspector {...defaultProps} selectedDayId={1} selectedAssignmentId={9}
+      assignments={{ '1': [{ id: 9, place, place_id: place.id, day_id: 1, order_index: 0, notes: null }] }}
+      reservations={[res]} />);
+    expect(screen.getByText('Flight to Nice')).toBeTruthy();
+    expect(screen.getByText('ABC999')).toBeTruthy();
+    expect(screen.getByText('Aisle seat')).toBeTruthy();
+    // Each fact of the metadata is its own pill, labelled in the user's language.
+    for (const fact of ['Air France AF123', 'CDG → NCE', 'TGV1', 'Platform 7', 'Check-in 06:00', 'Check-out 12:00']) {
+      expect(screen.getByText(fact)).toBeTruthy();
+    }
+    expect(screen.queryByText(/·/)).toBeNull();
+    // Date, time and code are labelled fields.
+    expect(screen.getByText('Date')).toBeTruthy();
+    expect(screen.getByText('Time')).toBeTruthy();
+    expect(screen.getByText('Booking Code')).toBeTruthy();
+    expect(screen.getByText('Pending')).toBeTruthy();
+  });
+
+  it('FE-PLANNER-INSPECTOR-074: a reservation whose metadata has no printable fields shows no meta line', () => {
+    const res = buildReservation({ id: 2, title: 'Plain booking', status: 'confirmed', assignment_id: 9, metadata: JSON.stringify({ seat: '4A' }) } as any);
+    render(<PlaceInspector {...defaultProps} selectedDayId={1} selectedAssignmentId={9}
+      assignments={{ '1': [{ id: 9, place, place_id: place.id, day_id: 1, order_index: 0, notes: null }] }}
+      reservations={[res]} />);
+    expect(screen.getByText('Plain booking')).toBeTruthy();
+    expect(screen.queryByText(/Platform|Gl\./)).toBeNull();
+  });
+
+  // ── Participants ─────────────────────────────────────────────────────────────
+
+  const members = [
+    { id: 1, username: 'ada', avatar_url: null },
+    { id: 2, username: 'bob', avatar_url: null },
+    { id: 3, username: 'cleo', avatar_url: null, is_guest: true },
+  ];
+  const participantProps = (participants: Array<{ user_id: number; username?: string }> = []) => ({
+    selectedDayId: 1,
+    selectedAssignmentId: 9,
+    tripMembers: members,
+    assignments: { '1': [{ id: 9, place, place_id: place.id, day_id: 1, order_index: 0, notes: null, participants }] } as unknown as AssignmentsMap,
+  });
+
+  it('FE-PLANNER-INSPECTOR-075: with nobody explicitly set, every member counts as joined', () => {
+    render(<PlaceInspector {...defaultProps} {...participantProps()} />);
+    expect(screen.getByText('Participants')).toBeTruthy();
+    for (const m of members) expect(screen.getByText(m.username)).toBeTruthy();
+    // Everyone is in, so there is nothing left to add.
+    expect(screen.queryByText('+')).toBeNull();
+  });
+
+  it('FE-PLANNER-INSPECTOR-076: removing a member from the all-joined state sends the remaining ids', () => {
+    const onSetParticipants = vi.fn();
+    render(<PlaceInspector {...defaultProps} {...participantProps()} onSetParticipants={onSetParticipants} />);
+    fireEvent.click(screen.getByText('bob'));
+    expect(onSetParticipants).toHaveBeenCalledWith(9, 1, [1, 3]);
+  });
+
+  it('FE-PLANNER-INSPECTOR-077: removing down to the full member list is stored as "everyone" again', () => {
+    const onSetParticipants = vi.fn();
+    render(<PlaceInspector {...defaultProps} {...participantProps([{ user_id: 1 }, { user_id: 2 }, { user_id: 3 }])} onSetParticipants={onSetParticipants} />);
+    // The chip is hovered first, which flags it removable.
+    fireEvent.mouseEnter(screen.getByText('ada').closest('div')!);
+    fireEvent.click(screen.getByText('cleo'));
+    expect(onSetParticipants).toHaveBeenCalledWith(9, 1, [1, 2]);
+  });
+
+  it('FE-PLANNER-INSPECTOR-078: the last remaining participant cannot be removed', () => {
+    const onSetParticipants = vi.fn();
+    render(<PlaceInspector {...defaultProps} {...participantProps([{ user_id: 1 }])} onSetParticipants={onSetParticipants} />);
+    fireEvent.click(screen.getByText('ada'));
+    expect(onSetParticipants).not.toHaveBeenCalled();
+  });
+
+  it('FE-PLANNER-INSPECTOR-079: the add menu lists the missing members and marks guests', () => {
+    const onSetParticipants = vi.fn();
+    render(<PlaceInspector {...defaultProps} {...participantProps([{ user_id: 1 }])} onSetParticipants={onSetParticipants} />);
+    fireEvent.click(screen.getByText('+'));
+    expect(screen.getByText('bob')).toBeTruthy();
+    expect(screen.getByText('Guest')).toBeTruthy();
+    fireEvent.click(screen.getByText('bob'));
+    expect(onSetParticipants).toHaveBeenCalledWith(9, 1, [1, 2]);
+  });
+
+  it('FE-PLANNER-INSPECTOR-080: adding the final missing member stores "everyone" instead of a full list', () => {
+    const onSetParticipants = vi.fn();
+    render(<PlaceInspector {...defaultProps} {...participantProps([{ user_id: 1 }, { user_id: 2 }])} onSetParticipants={onSetParticipants} />);
+    fireEvent.click(screen.getByText('+'));
+    fireEvent.click(screen.getByText('cleo'));
+    expect(onSetParticipants).toHaveBeenCalledWith(9, 1, []);
+  });
+
+  // ── Save to collection ───────────────────────────────────────────────────────
+
+  it('FE-PLANNER-INSPECTOR-081: with collections enabled the footer offers to save the place', async () => {
+    seedStore(useAddonStore, { addons: [{ id: 'collections', name: 'Collections', type: 'addon', icon: 'bookmark', enabled: true }], loaded: true });
+    server.use(
+      http.get('/api/addons/collections/membership', () => HttpResponse.json({ saved: true, collections: [] })),
+    );
+    render(<PlaceInspector {...defaultProps} />);
+    expect(await screen.findByText('Saved')).toBeTruthy();
+  });
+
+  it('FE-PLANNER-INSPECTOR-082: clicking save hands the whole place to the collection picker', async () => {
+    seedStore(useAddonStore, { addons: [{ id: 'collections', name: 'Collections', type: 'addon', icon: 'bookmark', enabled: true }], loaded: true });
+    server.use(
+      http.get('/api/addons/collections/membership', () => HttpResponse.json({ saved: false, collections: [] })),
+    );
+    render(<PlaceInspector {...defaultProps} />);
+    fireEvent.click((await screen.findByText('Save to Collection')).closest('button')!);
+    expect(useSaveToCollectionStore.getState().target).toMatchObject({
+      name: 'Eiffel Tower', source_place_id: place.id, lat: 48.8584, lng: 2.2945,
+    });
+  });
+
+  it('FE-PLANNER-INSPECTOR-083: a failing membership check leaves the unsaved label', async () => {
+    seedStore(useAddonStore, { addons: [{ id: 'collections', name: 'Collections', type: 'addon', icon: 'bookmark', enabled: true }], loaded: true });
+    server.use(
+      http.get('/api/addons/collections/membership', () => new HttpResponse(null, { status: 500 })),
+    );
+    render(<PlaceInspector {...defaultProps} />);
+    expect(await screen.findByText('Save to Collection')).toBeTruthy();
+  });
+
+  // ── Plugin contributions (#1429) ─────────────────────────────────────────────
+
+  it('FE-PLANNER-INSPECTOR-084: placeDetailProvider rows render as label/value and links', async () => {
+    server.use(
+      http.get('/api/place-details/1', () => HttpResponse.json({
+        providers: [
+          { pluginId: 'tides', items: [{ label: 'High tide', value: '14:20' }, { label: 'Forecast', url: 'https://tides.example' }] },
+          // Empty providers are dropped before render.
+          { pluginId: 'empty', items: [] },
+        ],
+      })),
+    );
+    render(<PlaceInspector {...defaultProps} />);
+    expect(await screen.findByText('High tide')).toBeTruthy();
+    expect(screen.getByText('14:20')).toBeTruthy();
+    expect(screen.getByRole('link', { name: '↗' })).toHaveAttribute('href', 'https://tides.example');
+  });
+
+  it('FE-PLANNER-INSPECTOR-085: a failing provider request adds no rows', async () => {
+    server.use(http.get('/api/place-details/1', () => new HttpResponse(null, { status: 500 })));
+    render(<PlaceInspector {...defaultProps} />);
+    await waitFor(() => expect(screen.getByText('Eiffel Tower')).toBeTruthy());
+    expect(screen.queryByText('High tide')).toBeNull();
+  });
+
+  it('FE-PLANNER-INSPECTOR-086: a place-detail widget plugin mounts a frame scoped to the place', async () => {
+    seedStore(usePluginStore, {
+      plugins: [
+        { id: 'tide-widget', name: 'Tides', type: 'widget', icon: null, slot: 'place-detail' },
+        { id: 'hero-widget', name: 'Hero', type: 'widget', icon: null, slot: 'hero' },
+      ],
+    });
+    render(<PlaceInspector {...defaultProps} />);
+    await waitFor(() => expect(document.querySelector('iframe[src*="tide-widget"]')).toBeTruthy());
+    expect(document.querySelector('iframe[src*="hero-widget"]')).toBeNull();
+  });
+
+  it('FE-PLANNER-INSPECTOR-087: in collection mode neither provider rows nor plugin frames are fetched', async () => {
+    let called = false;
+    server.use(http.get('/api/place-details/1', () => { called = true; return HttpResponse.json({ providers: [] }); }));
+    seedStore(usePluginStore, {
+      plugins: [{ id: 'tide-widget', name: 'Tides', type: 'widget', icon: null, slot: 'place-detail' }],
+    });
+    render(<PlaceInspector {...defaultProps} mode="collection" onCopyToTrip={vi.fn()} onRemoveFromList={vi.fn()} />);
+    await waitFor(() => expect(screen.getByText('Copy to trip')).toBeTruthy());
+    expect(called).toBe(false);
+    expect(document.querySelector('iframe[src*="tide-widget"]')).toBeNull();
+  });
+
+  // ── The avatar's gallery (#1136) ────────────────────────────────────────────
+
+  it('FE-PLANNER-INSPECTOR-088: the custom image opens at once in the gallery, and the avatar has no remove control', async () => {
+    seedStore(useAuthStore, { placesEnrichEnabled: false });
+    const onUpdatePlace = vi.fn();
+    const withImage = buildPlace({ id: 706, name: 'Pictured', image_url: '/uploads/places/x.jpg' });
+    render(<PlaceInspector {...defaultProps} place={withImage} onUpdatePlace={onUpdatePlace} />);
+    expect(screen.queryByRole('button', { name: 'Remove image' })).toBeNull();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Show photos' }));
+    const gallery = await screen.findByRole('dialog', { name: 'Show photos' });
+    expect(gallery.querySelector('img')).toHaveAttribute('src', '/uploads/places/x.jpg');
+    expect(mapsApi.placeEnrichment).not.toHaveBeenCalled();
+    expect(onUpdatePlace).not.toHaveBeenCalled();
+
+    fireEvent.click(within(gallery).getByRole('button', { name: 'Close' }));
+    await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Show photos' })).toBeNull());
+  });
+
+  it('FE-PLANNER-INSPECTOR-090: opening hours are read for the selected day, not for today', async () => {
+    const withId = buildPlace({ id: 707, name: 'Day-aware', google_place_id: 'gp-707' });
+    vi.mocked(mapsApi.details).mockResolvedValue({
+      place: { opening_hours: ['Mon 08:00', 'Tue 09:00', 'Wed 10:00', 'Thu 11:00', 'Fri 12:00', 'Sat 13:00', 'Sun 14:00'] },
+    } as any);
+    // 2025-06-18 is a Wednesday → index 2.
+    render(<PlaceInspector {...defaultProps} place={withId} days={[{ id: 5, date: '2025-06-18' }] as any} selectedDayId={5} />);
+    expect(await screen.findByText('Wed 10:00')).toBeTruthy();
+  });
+
+  it('FE-PLANNER-INSPECTOR-091: without an onSetParticipants handler the chips are inert', () => {
+    render(<PlaceInspector {...defaultProps} {...participantProps([{ user_id: 1 }, { user_id: 2 }])} onSetParticipants={undefined} />);
+    fireEvent.click(screen.getByText('ada'));
+    fireEvent.click(screen.getByText('+'));
+    fireEvent.click(screen.getByText('cleo'));
+    // Nothing blew up and the box is still on screen.
+    expect(screen.getByText('Participants')).toBeTruthy();
+  });
+
+  it('FE-PLANNER-INSPECTOR-092: a stale participant id outside the member list collapses back to "everyone"', () => {
+    const onSetParticipants = vi.fn();
+    render(<PlaceInspector {...defaultProps} {...participantProps([{ user_id: 1 }, { user_id: 2 }, { user_id: 3 }, { user_id: 99 }])} onSetParticipants={onSetParticipants} />);
+    fireEvent.click(screen.getByText('ada'));
+    expect(onSetParticipants).toHaveBeenCalledWith(9, 1, []);
+  });
+
+  it('FE-PLANNER-INSPECTOR-093: participant chips show the removal in the danger tokens, the add menu opens and closes', () => {
+    render(<PlaceInspector {...defaultProps} {...participantProps([{ user_id: 1 }, { user_id: 2 }])} />);
+    const chip = screen.getByText('ada').closest('button') as HTMLElement;
+    // A removable chip turns to the danger tokens on hover and strikes its name through.
+    expect(chip.className).toContain('enabled:hover:text-danger');
+    expect(chip.className).not.toMatch(/#[0-9a-f]{3,6}/i);
+    expect(screen.getByText('ada').className).toContain('group-hover/chip:line-through');
+
+    const add = screen.getByRole('button', { name: 'Add' });
+    expect(add).toHaveTextContent('+');
+    expect(add).toHaveAttribute('aria-expanded', 'false');
+    fireEvent.click(add);
+    expect(add).toHaveAttribute('aria-expanded', 'true');
+    const entry = screen.getByText('cleo').closest('button') as HTMLButtonElement;
+    expect(entry.className).toContain('hover:bg-surface-hover');
+
+    // Escape and a click elsewhere close the list again.
+    fireEvent.keyDown(document, { key: 'Escape' });
+    expect(screen.queryByText('cleo')).toBeNull();
+    fireEvent.click(add);
+    expect(screen.getByText('cleo')).toBeTruthy();
+    fireEvent.mouseDown(document.body);
+    expect(screen.queryByText('cleo')).toBeNull();
+  });
+
+  it('FE-PLANNER-INSPECTOR-094: a flight number without an airline is still summarised', () => {
+    const res = buildReservation({ id: 3, title: 'Numbered flight', status: 'confirmed', assignment_id: 9, metadata: JSON.stringify({ flight_number: 'LH400' }) } as any);
+    render(<PlaceInspector {...defaultProps} selectedDayId={1} selectedAssignmentId={9}
+      assignments={{ '1': [{ id: 9, place, place_id: place.id, day_id: 1, order_index: 0, notes: null }] }}
+      reservations={[res]} />);
+    expect(screen.getByText('LH400')).toBeTruthy();
+  });
+
+  // ── Open/closed ring (#1680) ─────────────────────────────────────────────────
+
+  it('FE-PLANNER-INSPECTOR-095: the ring follows the periods, not the cached open_now', async () => {
+    const seoul = buildPlace({ id: 708, name: 'Round the clock', google_place_id: 'gp-708', lat: 37.5665, lng: 126.978 });
+    vi.mocked(mapsApi.details).mockResolvedValue({
+      place: {
+        open_now: false,
+        // A period with no close is Google's round-the-clock place. The weekday lines
+        // arrive in the user's language and are shown, never parsed.
+        opening_hours: ['月曜日: 24 時間営業'],
+        opening_periods: [{ open: { day: 0, hour: 0, minute: 0 } }],
+      },
+    } as any);
+    render(<PlaceInspector {...defaultProps} place={seoul} />);
+    expect(await screen.findByText('Open')).toBeTruthy();
+  });
+
+  it('FE-PLANNER-INSPECTOR-096: the ring is read in the timezone of the place', async () => {
+    // Sunday 20:00 UTC — already Monday 05:00 in Seoul, still Sunday 22:00 in Paris.
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    vi.setSystemTime(new Date('2026-07-26T20:00:00Z'));
+    try {
+      const periods = [{ open: { day: 1, hour: 0, minute: 0 }, close: { day: 1, hour: 12, minute: 0 } }];
+      vi.mocked(mapsApi.details).mockResolvedValue({
+        place: { open_now: false, opening_periods: periods },
+      } as any);
+
+      const seoul = buildPlace({ id: 709, name: 'Seoul spot', google_place_id: 'gp-709', lat: 37.5665, lng: 126.978 });
+      const { unmount } = render(<PlaceInspector {...defaultProps} place={seoul} />);
+      expect(await screen.findByText('Open')).toBeTruthy();
+      unmount();
+
+      const paris = buildPlace({ id: 710, name: 'Paris spot', google_place_id: 'gp-710', lat: 48.8566, lng: 2.3522 });
+      render(<PlaceInspector {...defaultProps} place={paris} />);
+      expect(await screen.findByText('Closed')).toBeTruthy();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('FE-PLANNER-INSPECTOR-097: a holiday in the payload leaves the verdict to the server', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    // Wednesday 12:00 in Seoul, inside the regular Wednesday period.
+    vi.setSystemTime(new Date('2026-07-29T03:00:00Z'));
+    try {
+      vi.mocked(mapsApi.details).mockResolvedValue({
+        place: {
+          open_now: false,
+          opening_periods: [{ open: { day: 3, hour: 9, minute: 0 }, close: { day: 3, hour: 18, minute: 0 } }],
+          opening_special_days: ['2026-07-29'],
+        },
+      } as any);
+      const seoul = buildPlace({ id: 711, name: 'Holiday spot', google_place_id: 'gp-711', lat: 37.5665, lng: 126.978 });
+      render(<PlaceInspector {...defaultProps} place={seoul} />);
+      expect(await screen.findByText('Closed')).toBeTruthy();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("FE-PLANNER-INSPECTOR-089: the avatar asks the sources for the place's photos on click and shows them credited", async () => {
+    vi.mocked(mapsApi.placeEnrichment).mockResolvedValue({
+      photos: [{
+        key: 'gp~p0', url: '/api/maps/place-photo/gp~p0/bytes', attribution: 'Alice', license: 'CC BY 4.0',
+        licenseUrl: null, sourceUrl: 'https://commons.wikimedia.org/wiki/File:T.jpg', source: 'wikimedia',
+      }],
+      facts: [],
+      description: null,
+    } as never);
+    render(<PlaceInspector {...defaultProps} />);
+    // Nothing is asked before the click: selecting a place is not worth the provider fan-out.
+    expect(mapsApi.placeEnrichment).not.toHaveBeenCalled();
+    expect(document.querySelector('input[type="file"][accept*="image"]')).toBeNull();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Show photos' }));
+    const gallery = await screen.findByRole('dialog', { name: 'Show photos' });
+    // The query, then the signal the repo passes on (placePictureRepo.ts).
+    expect(vi.mocked(mapsApi.placeEnrichment).mock.calls[0]?.[0]).toMatchObject({ lat: place.lat, lng: place.lng, name: 'Eiffel Tower' });
+    expect(within(gallery).getByRole('img')).toHaveAttribute('src', '/api/maps/place-photo/gp~p0/bytes');
+    expect(within(gallery).getByRole('link', { name: 'Alice, CC BY 4.0' })).toHaveAttribute(
+      'href', 'https://commons.wikimedia.org/wiki/File:T.jpg',
+    );
+  });
+
+  it('FE-PLANNER-INSPECTOR-098: deselecting and reselecting a place survives a rerender', async () => {
+    // The component bails out with `if (!place) return null`. Any hook below that
+    // line runs only while a place is selected, so clearing the selection changes
+    // the hook count and React tears the whole tree down.
+    const { rerender } = render(<PlaceInspector {...defaultProps} />);
+    expect(screen.getByText('Eiffel Tower')).toBeTruthy();
+
+    rerender(<PlaceInspector {...defaultProps} place={null} />);
+    expect(screen.queryByText('Eiffel Tower')).toBeNull();
+
+    rerender(<PlaceInspector {...defaultProps} />);
+    expect(screen.getByText('Eiffel Tower')).toBeTruthy();
+  });
+
+  // ── Day-specific assignment note (#2163) ─────────────────────────────────────
+
+  it('FE-PLANNER-INSPECTOR-099: the assignment note renders as markdown under its own eyebrow', () => {
+    const assignmentInDay = [{ id: 99, place, day_id: 1, place_id: place.id, order_index: 0, notes: 'Book the **10:00** timed entry' }];
+    render(
+      <PlaceInspector
+        {...defaultProps}
+        selectedDayId={1}
+        selectedAssignmentId={99}
+        assignments={{ '1': assignmentInDay }}
+      />
+    );
+    expect(screen.getByText('Notes for this day')).toBeTruthy();
+    const strong = Array.from(document.querySelectorAll('strong')).find(el => el.textContent === '10:00');
+    expect(strong).toBeTruthy();
+  });
+
+  it('FE-PLANNER-INSPECTOR-100: without a note (or without a day in context) the block stays away', () => {
+    const assignmentInDay = [{ id: 99, place, day_id: 1, place_id: place.id, order_index: 0, notes: null }];
+    const { rerender } = render(
+      <PlaceInspector {...defaultProps} selectedDayId={1} selectedAssignmentId={99} assignments={{ '1': assignmentInDay }} />
+    );
+    expect(screen.queryByText('Notes for this day')).toBeNull();
+    // A note exists but no day is selected — nothing to attribute it to, so no block.
+    rerender(
+      <PlaceInspector {...defaultProps} selectedDayId={null} assignments={{ '1': [{ ...assignmentInDay[0], notes: 'hidden' }] }} />
+    );
+    expect(screen.queryByText('Notes for this day')).toBeNull();
+  });
+
+  it('FE-PLANNER-INSPECTOR-101: the reservation strip opts out of the press-scale (#2158)', () => {
+    // jsdom cannot replay the browser mechanics: the :active scale on the
+    // composite strip slid the links inside out from under the pointer, so the
+    // click landed elsewhere. The data-no-press attribute is the pin.
+    const reservation = buildReservation({ title: 'Museum Ticket', status: 'confirmed', assignment_id: 99 } as any);
+    const assignmentInDay = [{ id: 99, place, day_id: 1, place_id: place.id, order_index: 0, notes: null }];
+    render(
+      <PlaceInspector
+        {...defaultProps}
+        selectedDayId={1}
+        selectedAssignmentId={99}
+        assignments={{ '1': assignmentInDay }}
+        reservations={[reservation]}
+        onEditReservation={vi.fn()}
+      />
+    );
+    expect(screen.getByText('Museum Ticket').closest('[role="button"]')).toHaveAttribute('data-no-press');
+  });
+
+  it('FE-PLANNER-INSPECTOR-102: a member without place_edit gets neither Edit nor Delete nor the inline rename (#2446)', () => {
+    // buildUser() is a plain member and buildTrip({ id: 1 }) belongs to somebody else.
+    usePermissionsStore.setState({ permissions: { place_edit: 'trip_owner' } });
+    const onEdit = vi.fn();
+    const onDelete = vi.fn();
+    const onUpdatePlace = vi.fn();
+    const member = render(<PlaceInspector {...defaultProps} onEdit={onEdit} onDelete={onDelete} onUpdatePlace={onUpdatePlace} />);
+    expect(screen.queryByText('Edit')).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Delete' })).not.toBeInTheDocument();
+    fireEvent.doubleClick(screen.getByText(place.name));
+    expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
+    member.unmount();
+    // the same trip owned by this member shows them again
+    seedStore(useTripStore, { trip: buildTrip({ id: 1, user_id: useAuthStore.getState().user!.id }) });
+    render(<PlaceInspector {...defaultProps} onEdit={onEdit} onDelete={onDelete} onUpdatePlace={onUpdatePlace} />);
+    expect(screen.getByText('Edit')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Delete' })).toBeInTheDocument();
+  });
+
+
+  it('FE-PLANNER-INSPECTOR-017b: a stop a booked night wrote is neither removed nor doubled here', () => {
+    // Taking it off the day would leave the booking behind with nothing on the drive and
+    // no way back short of saving it again; offering to add it would put a second copy
+    // of the same hotel beside it. The night is removed where it is made: the day's
+    // overnight block, or turning it back into a pause in road trip mode.
+    const onRemoveAssignment = vi.fn();
+    const booked = [{ id: 99, place, day_id: 1, place_id: place.id, order_index: 0, notes: null, accommodation_id: 4 }];
+    render(
+      <PlaceInspector
+        {...defaultProps}
+        selectedDayId={1}
+        assignments={{ '1': booked } as never}
+        onRemoveAssignment={onRemoveAssignment}
+      />
+    );
+
+    expect(screen.queryByRole('button', { name: /remove from day/i })).toBeNull();
+    expect(screen.queryByRole('button', { name: /add to day/i })).toBeNull();
+  });
+
+  it('FE-PLANNER-INSPECTOR-017c: the booked stop stays off the buttons when the day list hides it', () => {
+    // The day view hands the inspector the day without the stop a booking wrote,
+    // while the store still holds it. Judged on the list alone the hotel looked
+    // unassigned, and "Add to day" put a second copy beside the booked night.
+    const booked = [{ id: 99, place, day_id: 1, place_id: place.id, order_index: 0, notes: null, accommodation_id: 4 }];
+    seedStore(useTripStore, { assignments: { '1': booked } as never });
+    render(<PlaceInspector {...defaultProps} selectedDayId={1} assignments={{ '1': [] }} />);
+
+    expect(screen.queryByText('Add to Day')).toBeNull();
+    expect(screen.queryByText('Remove from Day')).toBeNull();
+  });
+
+  it('FE-PLANNER-INSPECTOR-017d: a stop the traveller placed at the booked hotel can still be removed', () => {
+    // A second copy that did get onto the day is the traveller's own row and shows
+    // in the list. That one keeps its "Remove from day", which is the way back.
+    const onRemoveAssignment = vi.fn();
+    const booked = { id: 99, place, day_id: 1, place_id: place.id, order_index: 0, notes: null, accommodation_id: 4 };
+    const own = { id: 100, place, day_id: 1, place_id: place.id, order_index: 1, notes: null };
+    seedStore(useTripStore, { assignments: { '1': [booked, own] } as never });
+    render(
+      <PlaceInspector
+        {...defaultProps}
+        selectedDayId={1}
+        assignments={{ '1': [own] } as never}
+        onRemoveAssignment={onRemoveAssignment}
+      />
+    );
+
+    fireEvent.click(screen.getByText('Remove from Day').closest('button')!);
+    expect(onRemoveAssignment).toHaveBeenCalledWith(1, 100);
+    expect(screen.queryByText('Add to Day')).toBeNull();
+  });
+
+  it('FE-PLANNER-INSPECTOR-017e: any booked stop at the place keeps the buttons off, whichever row the store lists first', () => {
+    // With the service stops switched off the day list can hide a hotel the traveller
+    // placed as well, so the store may list that row ahead of the booked one. The
+    // question is whether a booking holds this place on this day, not which row comes first.
+    const own = { id: 100, place, day_id: 1, place_id: place.id, order_index: 0, notes: null };
+    const booked = { id: 99, place, day_id: 1, place_id: place.id, order_index: 1, notes: null, accommodation_id: 4 };
+    seedStore(useTripStore, { assignments: { '1': [own, booked] } as never });
+    render(<PlaceInspector {...defaultProps} selectedDayId={1} assignments={{ '1': [] }} />);
+
+    expect(screen.queryByText('Add to Day')).toBeNull();
+    expect(screen.queryByText('Remove from Day')).toBeNull();
+  });
+
+  // ── Head band (booking-detail language) ──────────────────────────────────────
+
+  it('FE-PLANNER-INSPECTOR-105: the photo credit stays under the avatar next to the open/closed state (CC BY-SA)', async () => {
+    // It used to be dropped whenever the open/closed tag took its place under the
+    // avatar; the tag is a pill now, and the licence credit is always shown.
+    vi.mocked(mapsApi.placePhotoCredit).mockResolvedValue({ credit: 'Jane Doe, CC BY-SA 4.0' } as never);
+    vi.mocked(mapsApi.details).mockResolvedValue({ place: { open_now: true } } as never);
+    const p = buildPlace({ id: 713, name: 'Credited', google_place_id: 'gp-713', image_url: '/api/maps/place-photo/commons%3Aabc/bytes', lat: null, lng: null });
+    render(<PlaceInspector {...defaultProps} place={p} />);
+    expect(await screen.findByText('Open')).toBeTruthy();
+    const credit = await screen.findByText('Jane Doe, CC BY-SA 4.0');
+    expect(credit.getAttribute('title')).toBeNull();
+    expect(vi.mocked(mapsApi.placePhotoCredit)).toHaveBeenCalledWith('commons:abc');
+    // The full credit is one hover away when the line is cut short.
+    fireEvent.mouseEnter(credit);
+    expect(await screen.findByRole('tooltip')).toHaveTextContent('Jane Doe, CC BY-SA 4.0');
+  });
+
+  it('FE-PLANNER-INSPECTOR-106: the head band states its facts as pills and takes the category tint', async () => {
+    const coloured = { ...cat, color: '#10b981' };
+    const p: Place = { ...place, id: 714, category_id: cat.id, source: 'dawarich', phone: '+33 1 00', price: 12, currency: 'EUR' };
+    render(<PlaceInspector {...defaultProps} place={p} categories={[coloured]} />);
+    const header = document.querySelector('header') as HTMLElement;
+    expect(header.style.background).toContain('color-mix');
+    // Category as a pill with its colour dot.
+    const categoryPill = within(header).getByText('Landmark');
+    expect((categoryPill.querySelector('span') as HTMLElement).style.background).toBe('rgb(16, 185, 129)');
+    // The Dawarich mark keeps its tooltip and gets a name.
+    const mark = within(header).getByRole('img', { name: 'Added from your Dawarich recordings' });
+    fireEvent.mouseEnter(mark);
+    expect(await screen.findByRole('tooltip')).toHaveTextContent('Added from your Dawarich recordings');
+    // Phone is a call link, the price a pill, the coordinates only from sm up.
+    expect(within(header).getByText('+33 1 00').closest('a')).toHaveAttribute('href', 'tel:+33 1 00');
+    expect(within(header).getByText(/12,00/)).toBeTruthy();
+    const coords = within(header).getByText(/48\.858400/);
+    expect(coords.className.split(/\s+/)).toEqual(expect.arrayContaining(['hidden', 'sm:inline-flex']));
+    // Nothing in the head band is separated with a middle dot any more.
+    expect(header.textContent).not.toContain('·');
+  });
+
+  it('FE-PLANNER-INSPECTOR-107: the rating block is labelled and quotes the first usable review', async () => {
+    vi.mocked(mapsApi.details).mockResolvedValue({
+      place: { rating: 4.1, reviews: [{ text: 'meh' }, { text: 'Lovely staff and view' }] },
+    } as never);
+    const p = buildPlace({ id: 715, name: 'Reviewed', google_place_id: 'gp-715' });
+    render(<PlaceInspector {...defaultProps} place={p} onRate={vi.fn()} />);
+    expect(await screen.findByText(/Lovely staff and view/)).toBeTruthy();
+    const section = screen.getByText('Rating').closest('section') as HTMLElement;
+    expect(within(section).getAllByRole('radio')).toHaveLength(5);
+    expect(within(section).getByText(/Lovely staff and view/)).toBeTruthy();
+  });
+
+  it('FE-PLANNER-INSPECTOR-108: every body block sits under its own label', () => {
+    const p: Place = { ...place, id: 716, notes: 'Bring cash', description: 'Iron lady' };
+    const assignmentInDay = [{ id: 99, place: p, day_id: 1, place_id: p.id, order_index: 0, notes: 'Early entry' }];
+    render(
+      <PlaceInspector
+        {...defaultProps}
+        place={p}
+        selectedDayId={1}
+        selectedAssignmentId={99}
+        assignments={{ '1': assignmentInDay }}
+        reservations={[buildReservation({ id: 610, title: 'Summit ticket', assignment_id: 99 })]}
+        tripMembers={[{ id: 1, username: 'ada' }, { id: 2, username: 'bob' }]}
+      />
+    );
+    for (const [label, content] of [['Description', 'Iron lady'], ['Notes', 'Bring cash'], ['Notes for this day', 'Early entry'], ['Bookings', 'Summit ticket'], ['Participants', 'ada'], ['Files', '']] as const) {
+      const section = screen.getByText(label, { selector: 'div' }).closest('section') as HTMLElement;
+      expect(section).toBeTruthy();
+      if (content) expect(within(section).getByText(content)).toBeTruthy();
+    }
+    // Bookings and participants sit side by side from sm up.
+    const grid = screen.getByText('Bookings').closest('section')!.parentElement as HTMLElement;
+    expect(grid.className).toContain('sm:grid-cols-2');
+  });
+})
+
+// ── Blur booking codes on the linked-booking strip (#2457) ────────────────────
+
+describe('PlaceInspector blur booking codes (#2457)', () => {
+  const renderWithBooking = (blur: boolean) => {
+    seedStore(useSettingsStore, { settings: { time_format: '24h', temperature_unit: 'celsius', blur_booking_codes: blur } });
+    const res = { ...buildReservation({ id: 3, title: 'Dinner at Jules Verne', status: 'confirmed', confirmation_number: 'TABLE-SECRET' }), assignment_id: 9 };
+    render(<PlaceInspector {...defaultProps} selectedDayId={1} selectedAssignmentId={9}
+      assignments={{ '1': [{ id: 9, place, place_id: place.id, day_id: 1, order_index: 0, notes: null }] }}
+      reservations={[res]} onEditReservation={vi.fn()} />);
+  };
+
+  it('FE-PLANNER-INSPECTOR-103: the booking code on the linked-booking strip is blurred while the setting is on', () => {
+    renderWithBooking(true);
+    expect(isBlurred(screen.getByText(/TABLE-SECRET/))).toBe(true);
+  });
+
+  it('FE-PLANNER-INSPECTOR-104: with the setting off the strip shows the code plainly', () => {
+    renderWithBooking(false);
+    expect(isBlurred(screen.getByText(/TABLE-SECRET/))).toBe(false);
+  });
 });

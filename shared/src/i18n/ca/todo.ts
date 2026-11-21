@@ -10,6 +10,7 @@ const todo: TranslationStrings = {
   'todo.uncategorized': 'Sense categoria',
   'todo.namePlaceholder': 'Nom de la tasca',
   'todo.descriptionPlaceholder': 'Descripció (opcional)',
+  'todo.editDescription': 'Fes clic per editar, els enllaços s’obren directament',
   'todo.unassigned': 'Sense assignar',
   'todo.noCategory': 'Sense categoria',
   'todo.hasDescription': 'Amb descripció',
@@ -36,5 +37,6 @@ const todo: TranslationStrings = {
   'todo.detail.priority': 'Prioritat',
   'todo.detail.noPriority': 'Cap',
   'todo.sortByPrio': 'Prioritat',
+  'todo.emptyFiltered': 'Cap tasca coincideix amb aquest filtre',
 };
 export default todo;

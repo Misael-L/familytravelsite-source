@@ -9,13 +9,13 @@ The Family Travel **member web client** is hosted at `https://familytravelsite.l
 | **Public mirror** | https://github.com/Misael-L/familytravelsite-source |
 | **Private development repo** | https://github.com/Misael-L/FamilyTravelSite (not the public offer) |
 | **License** | AGPL-3.0-only (`LICENSE`) |
-| **In-app link** | “Source code (AGPL-3.0)” on the public login surface and Settings → About / Help |
+| **In-app link** | “Source code” on the public login surface, using `FAMILY_SOURCE_URL` |
 | **Publication script** | `scripts/publish-corresponding-source.sh` |
-| **Program lock** | [`docs/web-trek-supabase-locks.md`](docs/web-trek-supabase-locks.md) §7 and §39 |
+| **Program lock** | [`docs/web-trek-supabase-locks.md`](docs/web-trek-supabase-locks.md) |
 
 ## Reproduce the deployed SPA
 
-Requirements: **Node 22** (see `.node-version`) and npm. Unset `VITE_DATA_PLANE` defaults to `supabase`.
+Requirements: **Node 24** (see `.node-version`) and npm. The workspaces include `family-shared` (`@family/shared-compat`), `family-backend`, `shared`, and `client`. Unset `VITE_DATA_PLANE` defaults to `supabase`.
 
 ```bash
 git clone https://github.com/Misael-L/familytravelsite-source.git
@@ -28,13 +28,13 @@ cp client/.env.example client/.env.local
 npm run build:web
 ```
 
-`npm run build:web` builds `@trek/shared` then the Vite client into `client/dist`. Root [`wrangler.jsonc`](wrangler.jsonc) serves that directory as a single-page Worker (`assets.not_found_handling = "single-page-application"`). There is no Worker `main`, no Pages Functions, and no Cloudflare Access in front of member login.
+`npm run build:web` builds `@family/shared-compat`, then `@trek/shared`, then the Vite client into `client/dist`. Root [`wrangler.jsonc`](wrangler.jsonc) serves that directory as a single-page Worker (`assets.not_found_handling = "single-page-application"`). There is no Worker `main`, no Pages Functions, and no Cloudflare Access in front of member login.
 
 Family data lives in the shared Supabase project used by iOS. Schema/migrations are **not** in this web tree; they live in the sibling FamilyTravelApp repository.
 
 ## What the public snapshot must include
 
-`LICENSE`, `NOTICE.md`, this file, package lockfiles, source, build scripts, `wrangler.jsonc`, `.node-version`, and the install/build instructions above.
+`LICENSE`, `NOTICE.md`, this file, package lockfiles, source, build scripts, `wrangler.jsonc`, `.node-version`, `family-backend`, `family-shared`, and the install/build instructions above.
 
 ## What the public snapshot must never include
 

@@ -1,8 +1,10 @@
 import { test as setup, expect } from '@playwright/test'
+import { dismissSystemNotices } from './helpers'
+import { E2E_STATE_FILE } from '../playwright.config'
 
 // Relative to the config dir (client/), matching `storageState` in
 // playwright.config.ts. Playwright runs from the client workspace root.
-const stateFile = 'e2e/.tmp/state.json'
+const stateFile = E2E_STATE_FILE
 
 // Credentials match e2e/server-launch.mjs (ADMIN_EMAIL/ADMIN_PASSWORD). The
 // seeded admin is created with must_change_password=1, so the first login goes
@@ -27,16 +29,12 @@ setup('authenticate the seeded admin (incl. forced password change)', async ({ p
 
   await page.waitForURL('**/dashboard', { timeout: 30_000 })
 
-  // Dismiss the first-run "Welcome to TREK" system-notice modal(s). It renders
-  // asynchronously (after the notices fetch), so wait for it before clicking.
-  // Dismissal is recorded server-side against this user, so clearing it here
-  // keeps it cleared for every authenticated flow in the run (shared test DB).
-  const ok = page.getByRole('button', { name: 'OK', exact: true })
-  await ok.waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {})
-  for (let i = 0; i < 8 && (await ok.isVisible().catch(() => false)); i++) {
-    await ok.click()
-    await page.waitForTimeout(400)
-  }
+  // Dismiss the first-run system-notice modal(s) — currently the thank-you /
+  // support modal, which has NO "OK" button (only CTAs + the X). The shared
+  // helper handles both notice shapes; dismissal is recorded server-side
+  // against this user, so clearing it here keeps it cleared for every
+  // authenticated flow in the run (shared test DB).
+  await dismissSystemNotices(page, 10_000)
 
   await page.context().storageState({ path: stateFile })
 })

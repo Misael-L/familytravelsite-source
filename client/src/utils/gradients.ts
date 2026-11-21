@@ -15,20 +15,8 @@ export const GRADIENTS = [
   'linear-gradient(135deg, #30cfd0 0%, #330867 100%)',
 ] as const
 
-function gradientIndex(id: string | number): number {
-  const n = GRADIENTS.length
-  if (typeof id === 'number' && Number.isFinite(id)) {
-    return ((id % n) + n) % n
-  }
-  let h = 0
-  const s = String(id)
-  for (let i = 0; i < s.length; i++) {
-    h = (h * 31 + s.charCodeAt(i)) | 0
-  }
-  return ((Math.abs(h) % n) + n) % n
-}
-
-/** Deterministic cover gradient. Numeric ids keep the historic modulo; UUIDs hash. */
-export function entityGradient(id: string | number): string {
-  return GRADIENTS[gradientIndex(id)]
+/** Deterministic gradient for a numeric id (handles negatives defensively). */
+export function entityGradient(id: number): string {
+  const i = ((id % GRADIENTS.length) + GRADIENTS.length) % GRADIENTS.length
+  return GRADIENTS[i]
 }

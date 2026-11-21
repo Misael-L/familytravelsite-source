@@ -1,4 +1,5 @@
 import type { NotificationLocale } from '../externalNotifications/types';
+import { pluralForm } from '../plural';
 
 const en: NotificationLocale = {
   email: {
@@ -28,13 +29,20 @@ const en: NotificationLocale = {
       title: 'Vacay sammanslagnings inbjudan',
       body: `${p.actor} bjöd in dig att slå samman semesterplaner. Öppna TREK för att acceptera eller avvisa.`,
     }),
+    vacay_share: (p) => ({
+      title: 'Vacay kalender delad',
+      body: `${p.actor} delade sin semesterkalender med dig. Öppna TREK för att se den.`,
+    }),
     collection_invite: (p) => ({
       title: 'Inbjudan till samling',
       body: `${p.actor} bjöd in dig att dela en samling. Öppna TREK för att acceptera eller avvisa.`,
     }),
     photos_shared: (p) => ({
-      title: `${p.count} foton delade`,
-      body: `${p.actor} delade ${p.count} foto(n) i "${p.trip}".`,
+      title: pluralForm(p.count, 'sv', { one: `${p.count} foto delat`, other: `${p.count} foton delade` }),
+      body: pluralForm(p.count, 'sv', {
+        one: `${p.actor} delade ${p.count} foto i "${p.trip}".`,
+        other: `${p.actor} delade ${p.count} foton i "${p.trip}".`,
+      }),
     }),
     collab_message: (p) => ({
       title: `Nytt meddelande i "${p.trip}"`,
@@ -48,9 +56,33 @@ const en: NotificationLocale = {
       title: 'Ny TREK version tillgänglig',
       body: `TREK ${p.version} är nu tillgänglig. Gå till adminpanelen för att uppdatera.`,
     }),
+    replica_failure: (p) => ({
+      title: 'Fel i lagringsreplik',
+      body:
+        `Skrivning till replik '${p.backend}' misslyckades: ${p.op} för ${p.key} — ${p.error}.` +
+        (p.suppressed !== '0'
+          ? pluralForm(p.suppressed, 'sv', {
+              one: ' Ytterligare ett fel har undertryckts sedan senaste aviseringen.',
+              other: ` Ytterligare ${p.suppressed} fel har undertryckts sedan senaste aviseringen.`,
+            })
+          : ''),
+    }),
+    paddle_region_requested: (p) => ({
+      title: 'Paddelregion efterfrågad',
+      body: `${p.actor} planerar en paddeltur i ${p.region}. Läs in eller avböj dess vattendata i administrationen under Tillägg.`,
+    }),
     synology_session_cleared: () => ({
       title: 'Synology session rensad',
       body: 'Ditt Synology-konto eller din webbadress har ändrats. Du har loggats ut från Synology Photos.',
+    }),
+    wanderer_source_hint: (p) => ({
+      title: `wanderer-led: ${p.tour}`,
+      body:
+        p.state === 'changed'
+          ? `”${p.tour}” i ”${p.trip}” har ändrats i wanderer. Öppna turen och kontrollera dess källa för att se alla ändringar. Inget i resan ändras av sig självt.`
+          : p.state === 'unverifiable'
+            ? `”${p.tour}” i ”${p.trip}” kan inte längre kontrolleras i wanderer. Turen i din resa förblir som den är.`
+            : `”${p.tour}” i ”${p.trip}” kan ha ändrats i wanderer. Öppna turen och kontrollera dess källa. Inget i resan ändras av sig självt.`,
     }),
     plugin_notification: (p) => ({ title: p.title ?? '', body: p.body ?? '' }),
   },

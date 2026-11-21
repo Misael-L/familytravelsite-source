@@ -7,6 +7,7 @@ import { isMarkdown } from './FileManager.helpers'
 import { FileManagerToolbar } from './FileManagerToolbar'
 import { TrashView } from './FileManagerTrashView'
 import { FilesView } from './FileManagerFilesView'
+import DocSyncPanel from './docsync/DocSyncPanel'
 
 export default function FileManager(props: FileManagerProps) {
   const S = useFileManager(props)
@@ -14,14 +15,7 @@ export default function FileManager(props: FileManagerProps) {
   return (
     <div className="flex flex-col h-full" style={{ fontFamily: "var(--font-system)" }} onPaste={handlePaste} tabIndex={-1}>
       {/* Lightbox */}
-      {lightboxIndex !== null && (
-        <ImageLightbox
-          files={mediaFiles}
-          initialIndex={lightboxIndex}
-          onClose={() => setLightboxIndex(null)}
-          resolveActionUrl={S.ops.resolveActionUrl}
-        />
-      )}
+      {lightboxIndex !== null && <ImageLightbox files={mediaFiles} initialIndex={lightboxIndex} onClose={() => setLightboxIndex(null)} />}
 
       {/* Assign modal */}
       {assignFileId && <AssignModal {...S} />}
@@ -31,13 +25,26 @@ export default function FileManager(props: FileManagerProps) {
         ? <MarkdownPreviewModal {...S} />
         : <PdfPreviewModal {...S} />)}
 
+      {/* Document sync opens as its own dialog: it is configuration for the
+          documents on this screen, so it belongs here rather than in settings,
+          but it is a task with a beginning and an end and does not belong
+          inside the list it configures. */}
+      {S.showDocSync && (
+        <DocSyncPanel
+          tripId={props.tripId}
+          tripTitle={S.trip?.title}
+          canManage={S.canManageSync}
+          onClose={() => S.setShowDocSync(false)}
+        />
+      )}
+
       {/* Toolbar */}
       <FileManagerToolbar {...S} />
 
       {showTrash ? <TrashView {...S} /> : <FilesView {...S} />}
 
       <style>{`
-        @media (max-width: 767px) {
+        @media (max-width: 767px), (pointer: coarse) and (max-height: 500px) {
           .file-actions button { padding: 8px !important; }
           .file-actions svg { width: 18px !important; height: 18px !important; }
         }

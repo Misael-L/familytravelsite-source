@@ -1,3 +1,8 @@
+import { currentPlannerReadPort } from '../repo/plannerReadPort'
+import { refreshCanonical, evictCanonical } from './canonicalCache'
+import { captureQueueSession, QueueSessionChanged } from './queueSession'
+import { roadtripPreferencesRepo } from '../repo/roadtripPreferencesRepo'
+import { tourRepo } from '../repo/tourRepo'
 /**
  * Trip sync manager — seeds Dexie with trip data for offline use.
  *
@@ -10,18 +15,13 @@
  *   - trip list refresh (DashboardPage)
  *   - WS reconnect (phase 7)
  */
-import { tripsApi, tagsApi, categoriesApi } from '../api/client'
+import { tripsApi, tagsApi, categoriesApi, toursApi } from '../api/client'
+import { tourVisitsApi } from '../api/tourVisits'
+import { replaceTripVisits } from '../db/cacheTourVisits'
 import {
-  offlineDb,
   upsertTrip,
-  upsertDays,
-  upsertPlaces,
-  upsertPackingItems,
-  upsertTodoItems,
-  upsertBudgetItems,
-  upsertReservations,
-  upsertTripFiles,
-  upsertAccommodations,
+  replaceTripRows,
+  replaceTripTours,
   upsertTripMembers,
   upsertTags,
   upsertCategories,
@@ -29,16 +29,18 @@ import {
   clearTripData,
   enforceBlobBudget,
 } from '../db/offlineDb'
+import { prefetchPlacesForTrip } from './placePrefetcher'
 import { prefetchTilesForTrip } from './tilePrefetcher'
 import { isAuthed } from './authGate'
-import { getOfflinePrefs, isTripOfflineEnabled } from './offlinePrefs'
+import { isEffectivelyOffline } from './networkMode'
+import { getOfflinePrefs, isTripOfflineEnabled, isTripPinned } from './offlinePrefs'
 import { useSettingsStore } from '../store/settingsStore'
-import { isSupabaseDataPlane } from '../data/supabase/auth'
-import { useFamilyMapStore } from '../store/familyMapStore'
-import { prefetchTemplateFor, renderFromEffective } from '../components/Map/resolveMapRender'
+import { useAddonStore } from '../store/addonStore'
 import type { Trip, Day, Place, PackingItem, TodoItem, BudgetItem, Reservation, TripFile, Accommodation, TripMember } from '../types'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
+
+type CacheSession = ReturnType<typeof captureQueueSession>
 
 interface TripBundle {
   trip: Trip
@@ -55,20 +57,49 @@ interface TripBundle {
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-function todayStr(): string {
-  return new Date().toISOString().slice(0, 10)
+// Trip dates are plain local calendar dates, so format ours the same way.
+// toISOString() would hand back the UTC day and drop an ongoing trip a day
+// early west of UTC (and keep a finished one a day too long east of it).
+function ymd(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 }
 
-function shouldCache(trip: Trip): boolean {
+function todayStr(): string {
+  return ymd(new Date())
+}
+
+/**
+ * Run work once the browser has nothing better to do, with a ceiling so it
+ * still happens on browsers without requestIdleCallback (Safari) or in a tab
+ * that never goes idle.
+ */
+function whenIdle(fn: () => void | Promise<void>): void {
+  const run = () => { void Promise.resolve(fn()).catch(console.error) }
+  if (typeof requestIdleCallback === 'function') requestIdleCallback(run, { timeout: 10_000 })
+  else setTimeout(run, 2_000)
+}
+
+/**
+ * Would the date rule keep this trip on its own? Exported so the offline
+ * settings screen can show the honest state of a trip's switch: a finished trip
+ * is not stored unless the user pins it, and a switch that reads "on" while
+ * nothing is stored is what made "Download for offline use" look broken (#2228).
+ */
+export function isDateEligible(trip: Trip): boolean {
   if (!trip.end_date) return true            // no end date → cache forever
   return trip.end_date >= todayStr()          // ongoing or future
 }
 
+function shouldCache(trip: Trip): boolean {
+  return isTripPinned(trip.id) || isDateEligible(trip)
+}
+
 function isStale(trip: Trip): boolean {
   if (!trip.end_date) return false
+  if (isTripPinned(trip.id)) return false     // the user asked for it, keep it
   const cutoff = new Date()
   cutoff.setDate(cutoff.getDate() - 7)
-  return trip.end_date < cutoff.toISOString().slice(0, 10)
+  return trip.end_date < ymd(cutoff)
 }
 
 function isPhoto(file: TripFile): boolean {
@@ -84,58 +115,130 @@ function isVideo(file: TripFile): boolean {
 // ── Core logic ────────────────────────────────────────────────────────────────
 
 /** Fetch bundle + write all entities for one trip into Dexie. */
-async function syncTrip(tripId: number): Promise<void> {
-  const bundle = await tripsApi.bundle(tripId) as TripBundle
-
-  await upsertTrip(bundle.trip)
-  await upsertDays(bundle.days)
-  await upsertPlaces(bundle.places)
-  await upsertPackingItems(bundle.packingItems)
-  await upsertTodoItems(bundle.todoItems)
-  await upsertBudgetItems(bundle.budgetItems)
-  await upsertReservations(bundle.reservations)
-  await upsertTripFiles(bundle.files)
-  await upsertAccommodations(bundle.accommodations || [])
-  await upsertTripMembers(tripId, bundle.members || [])
-  await upsertSyncMeta({
-    tripId,
-    lastSyncedAt: Date.now(),
-    status: 'idle',
-    tilesBbox: null,
-    filesCachedCount: 0,
+async function syncTrip(tripId: number, session: CacheSession): Promise<boolean> {
+  session.assertCurrent()
+  const db = session.db
+  const result = await refreshCanonical<TripBundle | null>(session, tripId, {
+    fetch: () => tripsApi.bundle(tripId) as Promise<TripBundle>,
+    cached: async () => null,
+    cache: async bundle => {
+      if (!bundle) return
+    
+      // Replace, not merge: deletions made elsewhere while this device was offline
+      // reach the cache only through here, since the live events were missed.
+      await upsertTrip(bundle.trip, db)
+      await replaceTripRows('days', tripId, bundle.days, db)
+      await replaceTripRows('places', tripId, bundle.places, db)
+      await replaceTripRows('packingItems', tripId, bundle.packingItems, db)
+      await replaceTripRows('todoItems', tripId, bundle.todoItems, db)
+      await replaceTripRows('budgetItems', tripId, bundle.budgetItems, db)
+      await replaceTripRows('reservations', tripId, bundle.reservations, db)
+      await replaceTripRows('tripFiles', tripId, bundle.files, db)
+      await replaceTripRows('accommodations', tripId, bundle.accommodations || [], db)
+      await upsertTripMembers(tripId, bundle.members || [], db)
+      // Merged onto the existing row, not written over it: `put` replaces the whole
+      // record, and the row also carries `areaPlacesKey` — the fingerprint that says
+      // the cached places for this trip's area are still current. Losing it on every
+      // sync meant the prefetch re-downloaded the whole area (megabytes, and a bbox
+      // query upstream) on every login, every reconnect and every manual sync, for
+      // data that had not changed. The two fields below keep being reset on purpose,
+      // exactly as before.
+      const previous = await db.syncMeta.get(tripId)
+      await upsertSyncMeta({
+        ...previous,
+        tripId,
+        lastSyncedAt: Date.now(),
+        status: 'idle',
+        tilesBbox: null,
+        filesCachedCount: 0,
+      }, db)
+    },
   })
+  if (result.disposition === 'retained') return false
+  if (result.disposition === 'uncached') throw new Error('Trip cache could not be refreshed')
+
+  // Last, and never fatal. Driving settings belong to an optional addon: the
+  // route answers 404 when it is off, and the repo's own offline fallback throws
+  // a bare Error when there is no cached row yet, which is exactly the state a
+  // first sync is in. Ahead of the writes and rethrowing anything but a 404, it
+  // threw the whole downloaded bundle away for that trip while the run still
+  // reported it stored, so Settings said "N trips ready" over an empty database.
+  // Asked only while the addon is on, like the tours below: with it off, every
+  // trip of a dashboard load spent a request on a 404.
+  if (useAddonStore.getState().isEnabled('roadtrip')) {
+    await roadtripPreferencesRepo.read(tripId, db).catch(() => { /* optional cache */ })
+  }
+
+  // Tours, the same way: optional, and never fatal. Without them every Tour
+  // reads as a plain place offline. Asked only while the addon is on, so a
+  // sync of many trips does not spend a refused request on each.
+  if (useAddonStore.getState().isEnabled('tours')) {
+    try {
+      await cacheTripTours(tripId, session)
+    } catch (err) {
+      console.warn(`[sync] tours for trip ${tripId} not cached:`, err)
+    }
+  }
+  return true
+}
+
+/**
+ * A trip's tours and, for its city walks, the stops checked off on their days
+ * (CW-03), so a walk still shows how far it got offline. A walk whose stops
+ * this device never read, one planned on another device, has them read here
+ * too, each walk on its own: one that cannot be read leaves the others alone,
+ * and offline its card then lists no stops to check off.
+ */
+async function cacheTripTours(tripId: number, session: CacheSession): Promise<void> {
+  session.assertCurrent()
+  const db = session.db
+  const { tours } = await toursApi.list(tripId)
+  await replaceTripTours(tripId, tours, db)
+  session.assertCurrent()
+  const walks = tours.filter(tour => tour.tour_type === 'walk')
+  await replaceTripVisits(tripId, walks.length > 0 ? (await tourVisitsApi.list(tripId)).visits : [], db)
+  const cached = await db.tours.bulkGet(walks.map(walk => walk.place_id))
+  const unread = walks.filter((_walk, index) => !cached[index]?.waypoints?.length)
+  session.assertCurrent()
+  await Promise.allSettled(unread.map(walk => tourRepo.detail(tripId, walk.place_id, undefined, db)))
 }
 
 /** Cache non-photo file blobs for a trip. Fire-and-forget safe. */
-async function cacheFilesForTrip(files: TripFile[]): Promise<void> {
+async function cacheFilesForTrip(tripId: number, files: TripFile[], session: CacheSession): Promise<void> {
+  const db = session.db
   const nonPhotos = files.filter(f => f.url && !isPhoto(f) && !isVideo(f))
-  let cached = 0
+  // `present` is what syncMeta.filesCachedCount reports (files available
+  // offline afterwards); `downloaded` only counts what this run actually wrote.
+  let present = 0
+  let downloaded = 0
 
   for (const file of nonPhotos) {
+    // This run belongs to one connection/epoch, including a rapid same-account return.
+    if (!session.current()) return
     // Skip if already cached
-    const existing = await offlineDb.blobCache.get(file.url!)
-    if (existing) { cached++; continue }
+    const existing = await db.blobCache.get(file.url!)
+    if (!session.current()) return
+    if (existing) { present++; continue }
 
     try {
       const resp = await fetch(file.url!, { credentials: 'include' })
+      if (!session.current()) return
       if (!resp.ok) continue
       const blob = await resp.blob()
-      await offlineDb.blobCache.put({ url: file.url!, tripId: file.trip_id, blob, bytes: blob.size, mime: file.mime_type, cachedAt: Date.now() })
-      cached++
+      await db.blobCache.put({ url: file.url!, tripId: file.trip_id, blob, bytes: blob.size, mime: file.mime_type, cachedAt: Date.now() })
+      present++
+      downloaded++
     } catch {
+      if (!session.current()) return
       // Network failure — skip this file, will retry next sync
     }
   }
 
   // Keep the blob cache within its size/count budget after adding new files.
-  if (cached > 0) await enforceBlobBudget().catch(() => {})
+  if (downloaded > 0) await enforceBlobBudget(undefined, undefined, db).catch(() => {})
 
-  // Update filesCachedCount in syncMeta
-  const tripId = files[0]?.trip_id
-  if (tripId) {
-    const meta = await offlineDb.syncMeta.get(tripId)
-    if (meta) await upsertSyncMeta({ ...meta, filesCachedCount: cached })
-  }
+  const meta = await db.syncMeta.get(tripId)
+  if (meta) await upsertSyncMeta({ ...meta, filesCachedCount: present }, db)
 }
 
 // ── Public API ────────────────────────────────────────────────────────────────
@@ -152,26 +255,87 @@ export interface PrepareProgress {
   label?: string
 }
 
-let _syncing = false
+let _syncing: CacheSession | null = null
+
+/** Expected cancellation never reports a completed download in the new session. */
+function stoppedRun(session: CacheSession, error: unknown): SyncOutcome {
+  if (!session.current() || error instanceof QueueSessionChanged) return { status: 'skipped', reason: 'signed-out' }
+  throw error
+}
+
+/** The user's archived trips, or null when the list could not be read. */
+function archivedTrips(): Promise<Trip[] | null> {
+  return (tripsApi.list({ archived: 1 }) as Promise<{ trips: Trip[] }>)
+    .then(r => r.trips)
+    .catch(() => null)
+}
 
 /**
  * Decide which trips to cache and which to drop, honouring both the date rule
  * and the user's per-trip offline choices (#1135 ask 2). Returns the trips to
  * sync; clears Dexie for stale or user-disabled trips as a side effect.
  */
-async function reconcileTrips(trips: Trip[]): Promise<Trip[]> {
-  const stale = trips.filter(isStale)
+async function reconcileTrips(trips: Trip[], archived: Trip[] | null, session: CacheSession): Promise<Trip[]> {
+  session.assertCurrent()
+  const db = session.db
+  // A cached trip the server lists neither as active nor as archived was
+  // deleted, or this user was removed from it. Its data has no business staying
+  // on the device. The plain list leaves archived trips out, so without the
+  // archived list every archived trip would read as gone; when that list could
+  // not be read, nothing is treated as gone this round.
+  const cached = await db.trips.toArray()
+  if (archived) {
+    const listed = new Set([...trips, ...archived].map(t => t.id))
+    const gone = cached.filter(t => t.id > 0 && !listed.has(t.id))
+    await Promise.all(gone.map(t => evictCanonical(session, t.id, () => clearTripData(t.id, db)).catch(console.error)))
+  }
+
+  // An archived trip on the device is kept but never synced again, so the date
+  // rule and the user's switch are the only things that ever take it off.
+  const cachedIds = new Set(cached.map(t => t.id))
+  const known = [...trips, ...(archived ?? []).filter(t => cachedIds.has(t.id))]
+  const stale = known.filter(isStale)
   // Trips the user turned off explicitly are evicted regardless of date.
-  const disabled = trips.filter(t => !isTripOfflineEnabled(t.id))
-  await Promise.all([...stale, ...disabled].map(t => clearTripData(t.id).catch(console.error)))
+  const disabled = known.filter(t => !isTripOfflineEnabled(t.id))
+  await Promise.all([...stale, ...disabled].map(t => evictCanonical(session, t.id, () => clearTripData(t.id, db)).catch(console.error)))
   return trips.filter(t => shouldCache(t) && isTripOfflineEnabled(t.id))
 }
 
-function currentPrefetchTemplate(): string | undefined {
-  if (isSupabaseDataPlane()) {
-    return prefetchTemplateFor(renderFromEffective(useFamilyMapStore.getState().settings))
+/**
+ * Why a sync did nothing. The settings screen shows these: a run that never
+ * started used to be indistinguishable from a run that stored everything, so
+ * "Download for offline use" reported success while the cache stayed at zero
+ * and the user had no way to tell (#2228).
+ */
+export type SyncOutcome =
+  | { status: 'done'; trips: number }
+  | { status: 'skipped'; reason: 'busy' | 'offline' | 'signed-out' | 'local-changes' | 'cache-error' | 'planner-scope' }
+
+type TripRefresh = 'updated' | 'retained' | 'failed'
+async function syncTripResult(tripId: number, session: CacheSession): Promise<TripRefresh> {
+  try { return await syncTrip(tripId, session) ? 'updated' : 'retained' }
+  catch (err) {
+    session.assertCurrent()
+    console.error(`[tripSync] failed for trip ${tripId}:`, err)
+    return 'failed'
   }
-  return useSettingsStore.getState().settings.map_tile_url || undefined
+}
+
+function syncResult(trips: number, held: boolean, failed: boolean): SyncOutcome {
+  if (failed) return { status: 'skipped', reason: 'cache-error' }
+  return held ? { status: 'skipped', reason: 'local-changes' } : { status: 'done', trips }
+}
+
+function skipReason(): SyncOutcome | null {
+  if (_syncing?.current()) return { status: 'skipped', reason: 'busy' }
+  // isEffectivelyOffline, not navigator.onLine: work-offline is a switch the user
+  // holds, and it survives a logout. A run started under it downloads over the
+  // real connection while every repo read answers from a cache that logging out
+  // just deleted, which is a sync that reports trips it did not store.
+  if (isEffectivelyOffline()) return { status: 'skipped', reason: 'offline' }
+  if (!isAuthed()) return { status: 'skipped', reason: 'signed-out' }
+  if (currentPlannerReadPort()) return { status: 'skipped', reason: 'planner-scope' }
+  return null
 }
 
 export const tripSyncManager = {
@@ -180,104 +344,159 @@ export const tripSyncManager = {
    * Evicts stale and user-disabled trips. Caches file blobs + map tiles in the
    * background. No-ops when offline.
    */
-  async syncAll(): Promise<void> {
-    if (_syncing || !navigator.onLine || !isAuthed()) return
-    _syncing = true
+  async syncAll(): Promise<SyncOutcome> {
+    const skipped = skipReason()
+    if (skipped) return skipped
+    const session = captureQueueSession(), db = session.db
+    _syncing = session
     try {
-      const { trips } = await tripsApi.list() as { trips: Trip[] }
-      const toSync = await reconcileTrips(trips)
+      session.assertCurrent()
+      const [{ trips }, archived] = await Promise.all([tripsApi.list() as Promise<{ trips: Trip[] }>, archivedTrips()])
+      const toSync = await reconcileTrips(trips, archived, session)
 
+      const refreshed: Trip[] = []
+      const results: TripRefresh[] = []
       for (const trip of toSync) {
-        try {
-          await syncTrip(trip.id)
-        } catch (err) {
-          console.error(`[tripSync] failed for trip ${trip.id}:`, err)
-        }
+        // The captured account and epoch must still own this run.
+        if (!session.current()) return { status: 'skipped', reason: 'signed-out' }
+        const result = await syncTripResult(trip.id, session)
+        results.push(result)
+        if (result === 'updated') refreshed.push(trip)
       }
 
-      // Cache global user data (tags + categories) — fire-and-forget
-      tagsApi.list().then(d => upsertTags(d.tags)).catch(() => {})
-      categoriesApi.list().then(d => upsertCategories(d.categories)).catch(() => {})
+      session.assertCurrent()
+      // Cache global user data (tags + categories) — fire-and-forget, so the
+      // captured session must still be current when each response lands.
+      tagsApi.list().then(d => { session.assertCurrent(); return upsertTags(d.tags, db) }).catch(() => {})
+      categoriesApi.list().then(d => { session.assertCurrent(); return upsertCategories(d.categories, db) }).catch(() => {})
 
       // Cache file blobs + map tiles in background (don't block syncAll)
       const cacheTiles = getOfflinePrefs().cacheTiles
-      const tileUrl = currentPrefetchTemplate()
-      for (const trip of toSync) {
-        const files = await offlineDb.tripFiles.where('trip_id').equals(trip.id).toArray()
-        cacheFilesForTrip(files).catch(console.error)
-
-        if (cacheTiles) {
-          const places = await offlineDb.places.where('trip_id').equals(trip.id).toArray()
-          prefetchTilesForTrip(trip.id, places, tileUrl).catch(console.error)
-        }
+      const tileUrl = useSettingsStore.getState().settings.map_tile_url || undefined
+      const cartoKey = useSettingsStore.getState().settings.carto_api_key || undefined
+      for (const trip of refreshed) {
+        if (!session.current()) return { status: 'skipped', reason: 'signed-out' }
+        const files = await db.tripFiles.where('trip_id').equals(trip.id).toArray()
+        cacheFilesForTrip(trip.id, files, session).catch(console.error)
       }
+
+      // Map tiles last, and only once the browser goes idle. syncAll runs right
+      // after login, where the app is still mounting the first screen — starting
+      // a bulk tile download into that leaves the UI waiting behind our own
+      // background traffic.
+      // The place cache is not tied to the tile setting. That switch is about
+      // map tiles — "off keeps the cache to trip data + documents only" — and it
+      // is turned off for space, tens of megabytes of them. A trip's places are
+      // about a megabyte, and hanging them off that switch meant somebody who
+      // turned it off got an empty offline search with no explanation, while
+      // "prepare for offline" still reported success having stored no place at
+      // all.
+      whenIdle(async () => {
+        for (const trip of refreshed) {
+          if (!session.current() || !navigator.onLine) return
+          const places = await db.places.where('trip_id').equals(trip.id).toArray()
+          // Tiles first when they are wanted: they are the bigger win, and the
+          // two should not compete for the connection.
+          if (cacheTiles) {
+            await prefetchTilesForTrip(trip.id, places, tileUrl, undefined, { cartoKey, session }).catch(console.error)
+          }
+          await prefetchPlacesForTrip(trip.id, places, false, session).catch(console.error)
+        }
+      })
+      session.assertCurrent()
+      return syncResult(refreshed.length, results.includes('retained'), results.includes('failed'))
+    } catch (error) {
+      return stoppedRun(session, error)
     } finally {
-      _syncing = false
+      if (_syncing === session) _syncing = null
     }
   },
 
   /**
    * "Prepare for offline" (#1135 ask 1): a fully-awaited sync the user runs while
    * still online so everything they need is guaranteed on-device before they go
-   * offline. Unlike syncAll, this AWAITS file-blob and map-tile downloads and
-   * reports progress, so the UI can show a real completion state instead of
-   * resolving the moment the requests are merely dispatched.
+   * offline. Unlike syncAll it awaits the file-blob and map-tile downloads up
+   * front instead of deferring them to idle time, reports progress, and forces
+   * the tile prefetch to run even for a bbox we believe is already cached.
    *
-   * Returns the number of trips prepared.
+   * Returns how many trips were prepared, or why the run never started.
    */
-  async prepareForOffline(onProgress?: (p: PrepareProgress) => void): Promise<number> {
-    if (_syncing || !navigator.onLine || !isAuthed()) return 0
-    _syncing = true
+  async prepareForOffline(onProgress?: (p: PrepareProgress) => void): Promise<SyncOutcome> {
+    const skipped = skipReason()
+    if (skipped) return skipped
+    const session = captureQueueSession(), db = session.db
+    _syncing = session
     try {
-      const { trips } = await tripsApi.list() as { trips: Trip[] }
-      const toSync = await reconcileTrips(trips)
+      session.assertCurrent()
+      const [{ trips }, archived] = await Promise.all([tripsApi.list() as Promise<{ trips: Trip[] }>, archivedTrips()])
+      const toSync = await reconcileTrips(trips, archived, session)
       const total = toSync.length
 
       // 1) Trip bundles (structured data).
       let i = 0
+      const refreshed: Trip[] = []
+      const results: TripRefresh[] = []
       for (const trip of toSync) {
+        if (!session.current()) return { status: 'skipped', reason: 'signed-out' }
         onProgress?.({ phase: 'trips', current: ++i, total, label: trip.title })
-        try {
-          await syncTrip(trip.id)
-        } catch (err) {
-          console.error(`[tripSync] prepare failed for trip ${trip.id}:`, err)
-        }
+        const result = await syncTripResult(trip.id, session)
+        results.push(result)
+        if (result === 'updated') refreshed.push(trip)
       }
 
+      session.assertCurrent()
       // Global user data (tags + categories) — awaited here.
       await Promise.all([
-        tagsApi.list().then(d => upsertTags(d.tags)).catch(() => {}),
-        categoriesApi.list().then(d => upsertCategories(d.categories)).catch(() => {}),
+        tagsApi.list().then(d => { session.assertCurrent(); return upsertTags(d.tags, db) }).catch(() => {}),
+        categoriesApi.list().then(d => { session.assertCurrent(); return upsertCategories(d.categories, db) }).catch(() => {}),
       ])
 
       // 2) File blobs — awaited so "prepared" really means downloaded.
       i = 0
-      for (const trip of toSync) {
+      for (const trip of refreshed) {
+        if (!session.current()) return { status: 'skipped', reason: 'signed-out' }
         onProgress?.({ phase: 'files', current: ++i, total, label: trip.title })
-        const files = await offlineDb.tripFiles.where('trip_id').equals(trip.id).toArray()
-        await cacheFilesForTrip(files).catch(console.error)
+        const files = await db.tripFiles.where('trip_id').equals(trip.id).toArray()
+        await cacheFilesForTrip(trip.id, files, session).catch(console.error)
       }
 
-      // 3) Map tiles — awaited, and only when the user opted to store them.
-      if (getOfflinePrefs().cacheTiles) {
-        const tileUrl = currentPrefetchTemplate()
+      // 3) Map tiles — awaited, and only when the user opted to store them. The
+      // places go with every run: "prepared" has to mean the offline search
+      // works, and the tile switch is about tens of megabytes of imagery, not
+      // about the megabyte a trip's places cost.
+      {
+        const wantTiles = getOfflinePrefs().cacheTiles
+        const tileUrl = useSettingsStore.getState().settings.map_tile_url || undefined
+        const cartoKey = useSettingsStore.getState().settings.carto_api_key || undefined
         i = 0
-        for (const trip of toSync) {
-          onProgress?.({ phase: 'tiles', current: ++i, total, label: trip.title })
-          const places = await offlineDb.places.where('trip_id').equals(trip.id).toArray()
-          await prefetchTilesForTrip(trip.id, places, tileUrl, true).catch(console.error)
+        for (const trip of refreshed) {
+          if (!session.current()) return { status: 'skipped', reason: 'signed-out' }
+          // Reported only when there is a tile phase to report. The place
+          // prefetch rides along quietly, the way it always did — it is a
+          // megabyte, not the tens the progress bar exists for.
+          if (wantTiles) onProgress?.({ phase: 'tiles', current: ++i, total, label: trip.title })
+          const places = await db.places.where('trip_id').equals(trip.id).toArray()
+          if (wantTiles) {
+            await prefetchTilesForTrip(trip.id, places, tileUrl, true, { cartoKey, session }).catch(console.error)
+          }
+          await prefetchPlacesForTrip(trip.id, places, true, session).catch(console.error)
         }
       }
 
+      session.assertCurrent()
+      const outcome = syncResult(refreshed.length, results.includes('retained'), results.includes('failed'))
+      if (outcome.status === 'skipped') return outcome
       onProgress?.({ phase: 'done', current: total, total })
-      return total
+      return { status: 'done', trips: total }
+    } catch (error) {
+      return stoppedRun(session, error)
     } finally {
-      _syncing = false
+      if (_syncing === session) _syncing = null
     }
   },
 
   /** Reset syncing flag — useful in tests. */
   _resetSyncing(): void {
-    _syncing = false
+    _syncing = null
   },
 }

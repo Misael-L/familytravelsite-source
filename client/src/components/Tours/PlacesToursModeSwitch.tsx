@@ -1,11 +1,9 @@
-// Presentation copied from TREK d4da05b. Family controllers retain data and focus ownership.
 import React from 'react'
 import { MapPin, Mountain } from 'lucide-react'
 import { useTranslation } from '../../i18n/TranslationContext'
 import { NEUTRAL_TINT, fs } from '../shared/DialogShell'
 
 interface PlacesToursModeSwitchProps {
-  unavailableReason?: string
   active: boolean
   onChange: (tours: boolean) => void
 }
@@ -16,7 +14,7 @@ interface PlacesToursModeSwitchProps {
  * (Days <-> Roadtrip), using the same placement and addon gating convention.
  * Only rendered while the tours addon is on.
  */
-export default function PlacesToursModeSwitch({ active, onChange, unavailableReason }: PlacesToursModeSwitchProps): React.ReactElement {
+export default function PlacesToursModeSwitch({ active, onChange }: PlacesToursModeSwitchProps): React.ReactElement {
   const { t } = useTranslation()
   const options: [boolean, string, typeof MapPin][] = [
     [false, t('tours.mode.places'), MapPin],
@@ -33,11 +31,9 @@ export default function PlacesToursModeSwitch({ active, onChange, unavailableRea
               type="button"
               role="tab"
               aria-selected={selected}
-            disabled={value && !!unavailableReason}
-            title={value ? unavailableReason : undefined}
               onClick={() => onChange(value)}
               style={fs(12.5, 'body')}
-              className={`flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-[8px] px-3 py-1.5 font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
+              className={`flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-[8px] px-3 py-1.5 font-medium transition-colors ${
                 selected ? 'bg-surface-card text-content shadow-sm' : 'text-content-muted hover:text-content'
               }`}
             >

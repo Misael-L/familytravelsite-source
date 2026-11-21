@@ -27,15 +27,8 @@ afterEach(() => {
 })
 
 describe('assertRelativeUrl (URL guard)', () => {
-  it('fetches absolute https URLs without sending cookies', async () => {
-    const fetchMock = makeFetchMock(200)
-    vi.stubGlobal('fetch', fetchMock)
-    vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {})
-    await downloadFile('https://files.example.invalid/storage/v1/object/sign/x', 'a.pdf')
-    expect(fetchMock).toHaveBeenCalledWith(
-      'https://files.example.invalid/storage/v1/object/sign/x',
-      { credentials: 'omit' },
-    )
+  it('rejects absolute http URLs', async () => {
+    await expect(downloadFile('https://evil.com/x')).rejects.toThrow('Refusing to fetch non-relative URL')
   })
   it('rejects protocol-relative URLs', async () => {
     await expect(downloadFile('//evil.com/x')).rejects.toThrow('Refusing to fetch non-relative URL')

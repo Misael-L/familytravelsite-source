@@ -5,12 +5,19 @@
  * public token/userinfo guards, the MCP 404/403 gates, and the cookie-only auth
  * on the management endpoints (a Bearer must NOT satisfy them).
  */
-import { describe, it, expect, beforeAll, afterAll, beforeEach, vi } from 'vitest';
-import request from 'supertest';
+import { AddonsService } from '../../src/nest/addons/addons.service';
+import { TrekExceptionFilter } from '../../src/nest/common/trek-exception.filter';
+import { OauthModule } from '../../src/nest/oauth/oauth.module';
+import { OauthService } from '../../src/nest/oauth/oauth.service';
+import { createTestMikroOrmModule } from '../helpers/test-orm';
+import { TestUnitOfWorkModule } from '../helpers/test-uow';
+import { seedUser, sessionCookie, signSession } from './harness';
+import { Test } from '@nestjs/testing';
+
 import cookieParser from 'cookie-parser';
 import type { Server } from 'http';
-import { Test } from '@nestjs/testing';
-import { seedUser, sessionCookie, signSession } from './harness';
+import request from 'supertest';
+import { describe, it, expect, beforeAll, afterAll, beforeEach, vi } from 'vitest';
 
 const { db } = vi.hoisted(() => {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -19,36 +26,69 @@ const { db } = vi.hoisted(() => {
   tmp.exec('PRAGMA journal_mode = WAL');
   tmp.exec(`CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL,
     email TEXT NOT NULL UNIQUE, role TEXT NOT NULL DEFAULT 'user', password_version INTEGER NOT NULL DEFAULT 0);`);
+  // AuditService now runs its real INSERT (DI-injected, no mock) — slim
+  // audit_log mirror (no FKs), same shape as plugin-runtime.test.ts.
+  tmp.exec(`CREATE TABLE audit_log (
+    id INTEGER PRIMARY KEY AUTOINCREMENT, created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    user_id INTEGER, action TEXT NOT NULL, resource TEXT, details TEXT, ip TEXT);`);
   return { db: tmp };
 });
 
 vi.mock('../../src/db/database', () => ({ db, closeDb: () => {}, reinitialize: () => {} }));
-vi.mock('../../src/services/auditLog', () => ({ writeAudit: vi.fn(), getClientIp: () => '1.2.3.4', logWarn: vi.fn() }));
-vi.mock('../../src/services/notifications', () => ({ getMcpSafeUrl: () => 'https://app' }));
+// The audit domain is DI-native now: writeAudit runs for real against the temp
+// db's audit_log table; only the file logger is silenced.
+vi.mock('../../src/nest/audit/audit-log.logger', () => ({
+  LOG_LEVEL: 'error',
+  logInfo: vi.fn(),
+  logDebug: vi.fn(),
+  logError: vi.fn(),
+  logWarn: vi.fn(),
+}));
+vi.mock('../../src/app-config', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../src/app-config')>();
+  return { ...actual, getMcpSafeUrl: () => 'https://app' };
+});
 
 const { isAddonEnabled } = vi.hoisted(() => ({ isAddonEnabled: vi.fn(() => true) }));
-vi.mock('../../src/services/adminService', () => ({ isAddonEnabled }));
 
+// Stubbed at the provider, not the module path: the domain folded into
+// OauthService, so there is no legacy module left to vi.mock. Same six cases,
+// same assertions — these pin the guard/gate layer, not the OAuth logic.
 const { oauthSvc } = vi.hoisted(() => ({
   oauthSvc: {
-    validateAuthorizeRequest: vi.fn(), createAuthCode: vi.fn(), consumeAuthCode: vi.fn(), saveConsent: vi.fn(),
-    issueTokens: vi.fn(), issueClientCredentialsToken: vi.fn(), refreshTokens: vi.fn(), revokeToken: vi.fn(),
-    verifyPKCE: vi.fn(), authenticateClient: vi.fn(), listOAuthClients: vi.fn(), createOAuthClient: vi.fn(),
-    deleteOAuthClient: vi.fn(), rotateOAuthClientSecret: vi.fn(), listOAuthSessions: vi.fn(), revokeSession: vi.fn(),
+    validateAuthorizeRequest: vi.fn(),
+    createAuthCode: vi.fn(),
+    consumeAuthCode: vi.fn(),
+    saveConsent: vi.fn(),
+    issueTokens: vi.fn(),
+    issueClientCredentialsToken: vi.fn(),
+    refreshTokens: vi.fn(),
+    revokeToken: vi.fn(),
+    verifyPKCE: vi.fn(),
+    authenticateClient: vi.fn(),
+    listOAuthClients: vi.fn(),
+    createOAuthClient: vi.fn(),
+    deleteOAuthClient: vi.fn(),
+    rotateOAuthClientSecret: vi.fn(),
+    listOAuthSessions: vi.fn(),
+    revokeSession: vi.fn(),
     getUserByAccessToken: vi.fn(),
   },
 }));
-vi.mock('../../src/services/oauthService', () => oauthSvc);
-
-import { OauthModule } from '../../src/nest/oauth/oauth.module';
-import { TrekExceptionFilter } from '../../src/nest/common/trek-exception.filter';
 
 describe('OAuth e2e (real guards + temp SQLite)', () => {
   let server: Server;
   let app: Awaited<ReturnType<typeof build>>;
 
   async function build() {
-    const moduleRef = await Test.createTestingModule({ imports: [OauthModule] }).compile();
+    const moduleRef = await Test.createTestingModule({
+      imports: [await TestUnitOfWorkModule.forRoot(db), await createTestMikroOrmModule(db), OauthModule],
+    })
+      .overrideProvider(AddonsService)
+      .useValue({ isAddonEnabled })
+      .overrideProvider(OauthService)
+      .useValue({ ...oauthSvc, mcpEnabled: () => isAddonEnabled(), mcpSafeUrl: () => 'https://mcp.test' })
+      .compile();
     const nest = moduleRef.createNestApplication();
     nest.use(cookieParser());
     nest.useGlobalFilters(new TrekExceptionFilter());
@@ -64,7 +104,9 @@ describe('OAuth e2e (real guards + temp SQLite)', () => {
     oauthSvc.listOAuthClients.mockReturnValue([{ id: 'c1' }]);
   });
 
-  beforeEach(() => { isAddonEnabled.mockReturnValue(true); });
+  beforeEach(() => {
+    isAddonEnabled.mockReturnValue(true);
+  });
 
   afterAll(async () => {
     await app.close();
@@ -95,18 +137,26 @@ describe('OAuth e2e (real guards + temp SQLite)', () => {
   });
 
   it('GET /api/oauth/clients works with a Bearer (authenticate) session', async () => {
-    const res = await request(server).get('/api/oauth/clients').set('Authorization', `Bearer ${signSession(1)}`);
+    const res = await request(server)
+      .get('/api/oauth/clients')
+      .set('Authorization', `Bearer ${signSession(1)}`);
     expect(res.status).toBe(200);
     expect(res.body).toEqual({ clients: [{ id: 'c1' }] });
   });
 
   it('POST /api/oauth/clients requires a COOKIE session (a Bearer is rejected)', async () => {
-    const bearer = await request(server).post('/api/oauth/clients').set('Authorization', `Bearer ${signSession(1)}`).send({ name: 'CLI', allowed_scopes: ['a'] });
+    const bearer = await request(server)
+      .post('/api/oauth/clients')
+      .set('Authorization', `Bearer ${signSession(1)}`)
+      .send({ name: 'CLI', allowed_scopes: ['a'] });
     expect(bearer.status).toBe(401);
     expect(bearer.body).toEqual({ error: 'Cookie session required for this endpoint', code: 'COOKIE_AUTH_REQUIRED' });
 
     oauthSvc.createOAuthClient.mockReturnValue({ client_id: 'c1', client_secret: 's' });
-    const cookie = await request(server).post('/api/oauth/clients').set('Cookie', sessionCookie(1)).send({ name: 'CLI', allowed_scopes: ['a'] });
+    const cookie = await request(server)
+      .post('/api/oauth/clients')
+      .set('Cookie', sessionCookie(1))
+      .send({ name: 'CLI', allowed_scopes: ['a'] });
     expect(cookie.status).toBe(201);
     expect(cookie.body).toEqual({ client_id: 'c1', client_secret: 's' });
   });

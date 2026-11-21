@@ -8,27 +8,15 @@ import { useInAppNotificationStore } from '../../store/inAppNotificationStore.ts
  * the previous in-component logic.
  */
 export function useInAppNotifications() {
-  const { notifications, unreadCount, total, isLoading, hasMore, fetchNotifications, markAllRead, deleteAll, inboxStale, setInboxPageActive } = useInAppNotificationStore()
+  const { notifications, unreadCount, total, isLoading, hasMore, fetchNotifications, markAllRead, deleteAll } = useInAppNotificationStore()
   const [unreadOnly, setUnreadOnly] = useState(false)
+  const [confirmingDeleteAll, setConfirmingDeleteAll] = useState(false)
   const loaderRef = useRef<HTMLDivElement>(null)
 
+  // First load and every filter change: start the list over, the server filters it.
   useEffect(() => {
-    setInboxPageActive(true)
-    return () => setInboxPageActive(false)
-  }, [setInboxPageActive])
-
-  useEffect(() => {
-    fetchNotifications(true)
-  }, [])
-
-  // Reload when filter changes
-  useEffect(() => {
-    fetchNotifications(true)
+    fetchNotifications(true, unreadOnly)
   }, [unreadOnly])
-
-  useEffect(() => {
-    if (inboxStale && !isLoading) void fetchNotifications(true)
-  }, [inboxStale, isLoading, fetchNotifications])
 
   // Infinite scroll
   useEffect(() => {
@@ -42,11 +30,25 @@ export function useInAppNotifications() {
     return () => observer.disconnect()
   }, [hasMore, isLoading])
 
+  // Rows marked read while the Unread filter is on stay out of sight at once, before any reload.
   const displayed = unreadOnly ? notifications.filter(n => !n.is_read) : notifications
+  // The server's total follows the filter, so with Unread on it counts the unread ones.
+  const shownTotal = unreadOnly ? unreadCount : total
+
+  const confirmDeleteAll = async () => {
+    setConfirmingDeleteAll(false)
+    await deleteAll()
+  }
 
   return {
-    notifications, unreadCount, total, isLoading, hasMore,
+    notifications, unreadCount, total: shownTotal, isLoading, hasMore,
     unreadOnly, setUnreadOnly, loaderRef, displayed,
-    markAllRead, deleteAll,
+    // Pull-to-refresh on mobile: the first page again, with the current filter.
+    refresh: () => fetchNotifications(true, unreadOnly),
+    markAllRead,
+    confirmingDeleteAll,
+    requestDeleteAll: () => setConfirmingDeleteAll(true),
+    cancelDeleteAll: () => setConfirmingDeleteAll(false),
+    confirmDeleteAll,
   }
 }

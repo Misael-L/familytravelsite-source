@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback } from 'react'
-import ReactDOM from 'react-dom'
+import { createPortal } from 'react-dom'
 import { Check, X } from 'lucide-react'
 import { useTranslation } from '../../i18n'
 
@@ -8,12 +8,9 @@ interface CopyTripDialogProps {
   tripTitle: string
   onClose: () => void
   onConfirm: () => void
-  /** Defaults to TREK Nest magazine lists. Pass Family keys on the supabase plane. */
-  willCopyKeys?: string[]
-  wontCopyKeys?: string[]
 }
 
-const TREK_WILL_COPY_KEYS = [
+const WILL_COPY_KEYS = [
   'dashboard.confirm.copy.will1',
   'dashboard.confirm.copy.will2',
   'dashboard.confirm.copy.will3',
@@ -22,34 +19,14 @@ const TREK_WILL_COPY_KEYS = [
   'dashboard.confirm.copy.will6',
 ]
 
-const TREK_WONT_COPY_KEYS = [
+const WONT_COPY_KEYS = [
   'dashboard.confirm.copy.wont1',
   'dashboard.confirm.copy.wont2',
   'dashboard.confirm.copy.wont3',
   'dashboard.confirm.copy.wont4',
 ]
 
-export const FAMILY_COPY_WILL_KEYS = [
-  'dashboard.confirm.copy.family.will1',
-  'dashboard.confirm.copy.family.will2',
-  'dashboard.confirm.copy.family.will3',
-  'dashboard.confirm.copy.family.will4',
-]
-
-export const FAMILY_COPY_WONT_KEYS = [
-  'dashboard.confirm.copy.family.wont1',
-  'dashboard.confirm.copy.family.wont2',
-  'dashboard.confirm.copy.family.wont3',
-]
-
-export default function CopyTripDialog({
-  isOpen,
-  tripTitle,
-  onClose,
-  onConfirm,
-  willCopyKeys = TREK_WILL_COPY_KEYS,
-  wontCopyKeys = TREK_WONT_COPY_KEYS,
-}: CopyTripDialogProps) {
+export default function CopyTripDialog({ isOpen, tripTitle, onClose, onConfirm }: CopyTripDialogProps) {
   const { t } = useTranslation()
 
   const handleEsc = useCallback((e: KeyboardEvent) => {
@@ -63,13 +40,21 @@ export default function CopyTripDialog({
 
   if (!isOpen) return null
 
-  return ReactDOM.createPortal(
+  return createPortal(
     <div
       className="fixed inset-0 z-[10000] flex items-center justify-center px-4 trek-backdrop-enter bg-[rgba(15,23,42,0.5)]"
       style={{ paddingBottom: 'var(--bottom-nav-h)' }}
+      role="button"
+      tabIndex={0}
+      aria-label={t('common.close')}
       onClick={onClose}
+      onKeyDown={e => {
+        if (e.target !== e.currentTarget) return
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClose() }
+      }}
     >
       <div
+        role="presentation"
         className="trek-modal-enter rounded-2xl shadow-2xl w-full max-w-md p-6 bg-surface-card"
         onClick={e => e.stopPropagation()}
       >
@@ -86,7 +71,7 @@ export default function CopyTripDialog({
               {t('dashboard.confirm.copy.willCopy')}
             </p>
             <ul className="flex flex-col gap-1">
-              {willCopyKeys.map(key => (
+              {WILL_COPY_KEYS.map(key => (
                 <li key={key} className="flex items-center gap-2 text-sm text-content-secondary">
                   <Check size={13} className="flex-shrink-0 text-[#16a34a]" />
                   {t(key)}
@@ -100,7 +85,7 @@ export default function CopyTripDialog({
               {t('dashboard.confirm.copy.wontCopy')}
             </p>
             <ul className="flex flex-col gap-1">
-              {wontCopyKeys.map(key => (
+              {WONT_COPY_KEYS.map(key => (
                 <li key={key} className="flex items-center gap-2 text-sm text-content-secondary">
                   <X size={13} className="flex-shrink-0 text-content-muted" />
                   {t(key)}
@@ -111,13 +96,13 @@ export default function CopyTripDialog({
         </div>
 
         <div className="flex justify-end gap-3 mt-5">
-          <button
+          <button type="button"
             onClick={onClose}
             className="px-4 py-2 text-sm font-medium rounded-lg transition-colors text-content-secondary border border-edge-secondary"
           >
             {t('common.cancel')}
           </button>
-          <button
+          <button type="button"
             onClick={() => { onConfirm(); onClose() }}
             className="px-4 py-2 text-sm font-medium rounded-lg transition-opacity hover:opacity-90 bg-content text-surface-card"
           >

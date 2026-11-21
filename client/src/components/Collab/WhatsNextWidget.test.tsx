@@ -1,30 +1,40 @@
 import { render, screen } from '../../../tests/helpers/render'
+import { http, HttpResponse } from 'msw'
+import { server } from '../../../tests/helpers/msw/server'
+import { buildTrip } from '../../../tests/helpers/factories'
 import { resetAllStores, seedStore } from '../../../tests/helpers/store'
 import { useTripStore } from '../../store/tripStore'
 import { useSettingsStore } from '../../store/settingsStore'
 import WhatsNextWidget from './WhatsNextWidget'
-import { afterEach, beforeEach, describe, it, expect } from 'vitest'
+import { afterEach, beforeEach, describe, it, expect, vi } from 'vitest'
 
-// Dynamic date helpers
-const today = new Date().toISOString().split('T')[0]
+// Dynamic date helpers, in local calendar dates like the widget itself uses
+function localDate(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
+const today = localDate(new Date())
 
 function getFutureDate(daysAhead: number): string {
   const d = new Date()
   d.setDate(d.getDate() + daysAhead)
-  return d.toISOString().split('T')[0]
+  return localDate(d)
 }
 
 function getPastDate(daysBack: number): string {
   const d = new Date()
   d.setDate(d.getDate() - daysBack)
-  return d.toISOString().split('T')[0]
+  return localDate(d)
 }
 
 const tomorrow = getFutureDate(1)
 const yesterday = getPastDate(1)
 
-function makeAssignment(id: number, placeOverrides: Record<string, unknown> = {}, participants: unknown[] = []) {
-  return {
+/** One assignment as the trip store keeps it; the server sends nulls where the generated type says optional. */
+type StoreAssignment = NonNullable<ReturnType<typeof useTripStore.getState>['assignments'][string]>[number]
+
+function makeAssignment(id: number, placeOverrides: Record<string, unknown> = {}, participants: unknown[] = []): StoreAssignment {
+  const assignment = {
     id,
     day_id: 1,
     place_id: id,
@@ -53,6 +63,7 @@ function makeAssignment(id: number, placeOverrides: Record<string, unknown> = {}
     },
     participants,
   }
+  return assignment as unknown as StoreAssignment
 }
 
 describe('WhatsNextWidget', () => {
@@ -163,6 +174,20 @@ describe('WhatsNextWidget', () => {
     expect(screen.getByText('TBD')).toBeInTheDocument()
   })
 
+  it('FE-COMP-WHATSNEXT-018: a hotel without a time of its own shows the check-in of the stay it begins', async () => {
+    server.use(http.get('/api/trips/1/accommodations', () => HttpResponse.json({
+      accommodations: [{ id: 7, trip_id: 1, place_id: 40, start_day_id: 1, end_day_id: 2, check_in: '15:00', check_out: '11:00' }],
+    })))
+    seedStore(useTripStore, {
+      trip: buildTrip({ id: 1 }),
+      days: [{ id: 1, trip_id: 1, date: tomorrow, title: null, day_number: 0, assignments: [], notes_items: [], notes: null }],
+      assignments: { '1': [makeAssignment(40, { name: 'Hotel Kea', place_time: null })] },
+    })
+    render(<WhatsNextWidget />)
+    expect(await screen.findByText('15:00')).toBeInTheDocument()
+    expect(screen.queryByText('TBD')).not.toBeInTheDocument()
+  })
+
   it('FE-COMP-WHATSNEXT-009: renders address when provided', () => {
     seedStore(useTripStore, {
       days: [{ id: 1, trip_id: 1, date: tomorrow, title: null, day_number: 0, assignments: [], notes_items: [], notes: null }],
@@ -256,6 +281,54 @@ describe('WhatsNextWidget', () => {
     expect(tomorrowHeaders).toHaveLength(1)
     expect(screen.getByText('Breakfast')).toBeInTheDocument()
     expect(screen.getByText('Lunch')).toBeInTheDocument()
+  })
+
+  it('FE-COMP-WHATSNEXT-016: keeps remaining events for the local day west of UTC after the UTC date rolls over', () => {
+    const prevTz = process.env.TZ
+    process.env.TZ = 'America/New_York'
+    vi.useFakeTimers({ shouldAdvanceTime: true })
+    try {
+      // 20:00 in New York, already the next calendar day in UTC
+      vi.setSystemTime(new Date('2026-08-24T00:00:00Z'))
+      seedStore(useTripStore, {
+        days: [{ id: 1, trip_id: 1, date: '2026-08-23', title: null, day_number: 0, assignments: [], notes_items: [], notes: null }],
+        assignments: {
+          '1': [makeAssignment(80, { name: 'Late Show', place_time: '21:00' })],
+        },
+      })
+      render(<WhatsNextWidget />)
+      expect(screen.getByText('Late Show')).toBeInTheDocument()
+      expect(screen.getByText(/today/i)).toBeInTheDocument()
+    } finally {
+      vi.useRealTimers()
+      if (prevTz === undefined) delete process.env.TZ
+      else process.env.TZ = prevTz
+    }
+  })
+
+  it('FE-COMP-WHATSNEXT-017: a stop that started but has not ended yet is still listed', () => {
+    const prevTz = process.env.TZ
+    process.env.TZ = 'UTC'
+    vi.useFakeTimers({ shouldAdvanceTime: true })
+    try {
+      vi.setSystemTime(new Date('2026-08-23T20:00:00Z'))
+      seedStore(useTripStore, {
+        days: [{ id: 1, trip_id: 1, date: '2026-08-23', title: null, day_number: 0, assignments: [], notes_items: [], notes: null }],
+        assignments: {
+          '1': [
+            makeAssignment(81, { name: 'Running Concert', place_time: '19:00', end_time: '21:30' }),
+            makeAssignment(82, { name: 'Finished Dinner', place_time: '17:00', end_time: '18:30' }),
+          ],
+        },
+      })
+      render(<WhatsNextWidget />)
+      expect(screen.getByText('Running Concert')).toBeInTheDocument()
+      expect(screen.queryByText('Finished Dinner')).toBeNull()
+    } finally {
+      vi.useRealTimers()
+      if (prevTz === undefined) delete process.env.TZ
+      else process.env.TZ = prevTz
+    }
   })
 
   it('FE-COMP-WHATSNEXT-015: today past-time event is excluded', () => {

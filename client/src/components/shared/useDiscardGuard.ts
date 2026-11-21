@@ -1,40 +1,42 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
-function freeze(value: unknown): string {
-  try { return JSON.stringify(value) ?? 'null' } catch { return 'null' }
+const snapshot = (value: unknown): string | null => {
+  try { return JSON.stringify(value) ?? null } catch { return null }
 }
 
 /**
- * Compares the editor's current snapshot with a baseline the editor sets for
- * this opening. The baseline is never taken from the first key or pointer, so
- * an edit cannot become the original value.
+ * The unsaved-changes question (#2253) for a dialog or a sheet. `guard` is the
+ * editor's state, JSON-serialisable; undefined turns the question off. The
+ * state at the first key or pointer press (`markStart`) is the starting point,
+ * so whatever the editor loaded on open does not count as a change. The ways
+ * out a hand takes by accident go through `requestClose`, which asks before
+ * throwing away a state that differs from that starting point.
  */
-export function useDiscardGuard(snapshot: unknown, onClose: () => void) {
+export function useDiscardGuard(guard: unknown, onClose: () => void) {
   const baseline = useRef<string | null>(null)
-  const snapshotRef = useRef(snapshot)
-  snapshotRef.current = snapshot
-  const onCloseRef = useRef(onClose)
-  onCloseRef.current = onClose
+  const guardRef = useRef(guard)
+  useEffect(() => { guardRef.current = guard })
   const [asking, setAsking] = useState(false)
 
-  const reset = useCallback((next: unknown) => {
-    baseline.current = freeze(next)
-    setAsking(false)
+  const markStart = useCallback(() => {
+    if (guardRef.current !== undefined && baseline.current === null) baseline.current = snapshot(guardRef.current)
   }, [])
+
+  /** Whether a way out right now would stop to ask rather than close. */
+  const wouldAsk = useCallback(
+    () => guardRef.current !== undefined && baseline.current !== null && snapshot(guardRef.current) !== baseline.current,
+    [],
+  )
 
   const requestClose = useCallback(() => {
-    if (baseline.current !== null && freeze(snapshotRef.current) !== baseline.current) setAsking(true)
-    else onCloseRef.current()
-  }, [])
-
-  const ask = useCallback(() => setAsking(true), [])
+    if (wouldAsk()) setAsking(true)
+    else onClose()
+  }, [onClose, wouldAsk])
 
   const keepEditing = useCallback(() => setAsking(false), [])
+  const discard = useCallback(() => { setAsking(false); onClose() }, [onClose])
+  /** Forget the starting point, for a surface that stays mounted between openings. */
+  const reset = useCallback(() => { baseline.current = null; setAsking(false) }, [])
 
-  const discard = useCallback(() => {
-    setAsking(false)
-    onCloseRef.current()
-  }, [])
-
-  return { asking, requestClose, ask, keepEditing, discard, reset }
+  return { asking, markStart, requestClose, wouldAsk, keepEditing, discard, reset }
 }

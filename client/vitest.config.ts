@@ -1,18 +1,15 @@
-import path from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
+import { rtlTextAlias, plyrSpriteAlias } from './rtlTextAlias.js';
+import { readFileSync } from 'node:fs';
 
-const rootDir = path.dirname(fileURLToPath(import.meta.url))
+const UI_VERSION = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8')).version;
 
 export default defineConfig({
+  define: { __TREK_UI_VERSION__: JSON.stringify(UI_VERSION) },
   plugins: [react()],
-  resolve: {
-    alias: {
-      'virtual:pwa-register/react': path.join(rootDir, 'tests/mocks/virtual-pwa-register-react.ts'),
-    },
-  },
   test: {
+    alias: [rtlTextAlias, plyrSpriteAlias],
     root: '.',
     globals: true,
     environment: './tests/environment/jsdom-native-abort.ts',
@@ -24,14 +21,32 @@ export default defineConfig({
     testTimeout: 15000,
     hookTimeout: 15000,
     pool: 'forks',
-    silent: false,
-    reporters: ['verbose'],
+    // Console output is kept for failing tests and dropped for passing ones: a
+    // green run used to print ~30k lines of MSW and act() warnings. `default`
+    // prints one line per file and the full detail only for failures; on CI the
+    // github-actions reporter adds inline annotations on the PR.
+    silent: 'passed-only',
+    reporters: process.env.CI ? ['default', 'github-actions'] : ['default'],
     coverage: {
       provider: 'v8',
       reporter: ['lcov', 'text'],
       reportsDirectory: './coverage',
       include: ['src/**/*.{ts,tsx}'],
-      exclude: ['src/main.tsx', 'src/vite-env.d.ts'],
+      // All .d.ts, not just vite-env: declaration files carry no executable
+      // code, and their lcov entries can't resolve on the Sonar side (its
+      // **/*.d.ts exclusion removes them from analysis), which surfaced as
+      // "Could not resolve 2 file paths" warnings in every scan.
+      exclude: ['src/main.tsx', 'src/**/*.d.ts'],
+      // Without these the Client Tests job produced a report, uploaded it and
+      // passed no matter what the number was — which is how coverage drifted
+      // down to ~48% unnoticed. 85 across the board is the floor we do not want
+      // to fall through, not a target: the suite currently sits well above it.
+      thresholds: {
+        statements: 85,
+        branches: 85,
+        functions: 85,
+        lines: 85,
+      },
     },
     css: false,
   },

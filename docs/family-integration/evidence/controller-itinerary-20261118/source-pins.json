@@ -1,0 +1,23 @@
+{
+  "incoming": "e4f5edacf2894d147835c2f86ee2b15f6baf48b5",
+  "implementation": "6ee12615de0dc3c21a0c360ab0c492c5797524c0",
+  "build_source": "5d5886a0cea6715f38dcfd1431e17ad99246bd93",
+  "original_controller_sha256": "6b690f1e93c32374a31b033e765f956172982379fe51e37ab38c1ea28add6573",
+  "candidate_controller_sha256": "da67d49ab3651f2e4286b4c67e7dc66554678102fbbf197669a850bc3ab50be5",
+  "companion_sha256": "63b073a7e92f4de19961da09f94fb60d373dc2290fc73d261ba50eaa913e4f6c",
+  "new_test_and_fixture_sha256": {
+    "controllerItineraryActions.test.ts": "adb50aee85a4f7b6fbab5ebf9386b9626e2e8e7251922269b2c5f26c5f2140ac",
+    "controllerItineraryFixture.ts": "022f34706ee23d5ed28f238bdc6e201f0930f8b15e51f5ec21cae196cd170e7d"
+  },
+  "unchanged_existing_test_files": {
+    "src/integrations/family/FamilyTripBoundary.test.tsx": "bc2f67e4c3d07592683bf264ba808f860aebc84d38f93951f932d6153bb76e46",
+    "src/integrations/family/FamilyPlannerBoundary.test.tsx": "fd59684f443f513d2fc24773ff29f90a4f1eb2a5b72fc4f8d6e608fe8554bec7",
+    "src/integrations/family/FamilyGenericMapBridge.test.tsx": "5ea04b5d8d23f7ac24655d091063bb19581f3c2adfda376f8be63be2ba88c722",
+    "src/integrations/family/FamilyExploreHost.test.tsx": "af64ec4a88e16f0fcdf371237729bc914b712bf1ca6ba165bbfd161d8ff40ea4",
+    "src/integrations/family/legacy/components/Planner/family/familyDayTimeline.test.ts": "eea187bcbccd4c02bd020a7befd65a0b972a137b742021cbdf87cff4c1f15dfb"
+  },
+  "node_runtime": "v24.22.2",
+  "private_prototype_build_coverage_and_declaration_hashes": "/private/tmp/trek-core-controller-actions-source-20261118",
+  "prototype_legacy_unignore_observation_did_not_edit_configuration": true,
+  "no_live_database_provider_browser_requests": true
+}

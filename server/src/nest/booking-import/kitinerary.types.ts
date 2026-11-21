@@ -3,8 +3,8 @@
 /** KDE's custom date/time wrapper — used when timezone info is present */
 export interface KiDateTime {
   '@type': 'QDateTime';
-  '@value': string;    // ISO 8601 local time (KDE serializes as @value)
-  timezone?: string;   // IANA timezone id
+  '@value': string; // ISO 8601 local time (KDE serializes as @value)
+  timezone?: string; // IANA timezone id
 }
 
 export type KiDateTimeish = string | KiDateTime | null | undefined;
@@ -127,6 +127,11 @@ export interface KiEvent {
 /** A single output node from kitinerary-extractor's JSON array */
 export interface KiReservation {
   '@type': string;
+  /**
+   * TREK's own marker, not schema.org: the extractor could not read a type and
+   * fell back to the lodging shape so the item would survive mapping (#2076).
+   */
+  trekTypeGuessed?: boolean;
   reservationNumber?: string;
   checkinTime?: KiDateTimeish;
   checkoutTime?: KiDateTimeish;
@@ -182,6 +187,8 @@ export interface ParsedAccommodation {
  */
 export interface ParsedBookingItem {
   type: string;
+  /** The type was filled in, not read from the document (#2076). */
+  type_guessed?: boolean;
   title: string;
   reservation_time?: string | null;
   reservation_end_time?: string | null;

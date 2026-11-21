@@ -2,20 +2,19 @@ import React, { useEffect, useMemo, useRef } from 'react'
 import { Check, MapPin } from 'lucide-react'
 import type { CollectionPlace, CollectionStatus, CollectionLabel } from '@trek/shared'
 import type { TranslationFn } from '../../types'
-import type { CollectionEntityId } from '../../pages/collections/collectionsModel'
 import PlaceAvatar from '../shared/PlaceAvatar'
-import { getCategoryIcon } from '../shared/categoryIcons'
 import StatusBadge from './StatusBadge'
+import CollectionPlaceTags from './CollectionPlaceTags'
 
 interface CollectionListProps {
   places: CollectionPlace[]
   labels: CollectionLabel[]
-  selectedPlaceId: CollectionEntityId | null
+  selectedPlaceId: number | null
   selectMode: boolean
-  selectedIds: CollectionEntityId[]
-  onOpenPlace: (id: CollectionEntityId) => void
-  onStatusChange?: (placeId: CollectionEntityId, status: CollectionStatus) => void
-  onToggleSelect: (id: CollectionEntityId) => void
+  selectedIds: number[]
+  onOpenPlace: (id: number) => void
+  onStatusChange?: (placeId: number, status: CollectionStatus) => void
+  onToggleSelect: (id: number) => void
   t: TranslationFn
 }
 
@@ -45,10 +44,14 @@ export default function CollectionList({
             key={place.id}
             ref={active ? selectedRef : undefined}
             role="button"
+            // Opt out of the global :active press-scale: shrinking the row-wide button
+            // slides the status badge out from under the pointer mid-click, so the click
+            // retargets onto the row and opens the place instead of cycling (#2158).
+            data-no-press
             tabIndex={0}
             onClick={() => (selectMode ? onToggleSelect(place.id) : onOpenPlace(place.id))}
             onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); if (selectMode) onToggleSelect(place.id); else onOpenPlace(place.id) } }}
-            className={`col-lrow${active || selected ? ' sel' : ''}`}
+            className={`col-lrow col-lrow-place${active || selected ? ' sel' : ''}`}
           >
             {selectMode ? (
               <span className={`col-lcheck${selected ? ' on' : ''}`}>{selected && <Check size={14} strokeWidth={3} />}</span>
@@ -64,24 +67,8 @@ export default function CollectionList({
                 </div>
               )}
             </div>
-            <div className="col-lrow-end">
-              {placeLabels.slice(0, 2).map(l => (
-                <span key={l.id} className="col-lrow-label" style={{ ['--label' as string]: l.color || 'var(--accent)' }} title={l.name}>
-                  <span className="col-labelchip-dot" /> {l.name}
-                </span>
-              ))}
-              {placeLabels.length > 2 && <span className="col-lrow-label more" title={placeLabels.map(l => l.name).join(', ')}>+{placeLabels.length - 2}</span>}
-              {place.category?.name && (() => {
-                const CatIcon = getCategoryIcon(place.category.icon ?? undefined)
-                return (
-                  <>
-                    <span className="col-lrow-cat" style={{ ['--cat' as string]: place.category.color || '#6366f1' }}>
-                      <CatIcon size={11} /> {place.category.name}
-                    </span>
-                    <span className="col-lrow-div" aria-hidden />
-                  </>
-                )
-              })()}
+            <CollectionPlaceTags place={place} labels={placeLabels} />
+            <div className="col-lrow-status">
               <StatusBadge status={place.status} onChange={selectMode || !onStatusChange ? undefined : next => onStatusChange(place.id, next)} t={t} />
             </div>
           </div>

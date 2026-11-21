@@ -6,46 +6,52 @@
  */
 
 import type { Trip } from '../../types'
-import type { FamilyDashboardTrip } from './familyDashboardModel'
-import { isReadyCatalogVariantUrl, resolveCatalogImageUrl } from '../../data/supabase/catalogExploreMedia'
-import { localIsoDate } from '../../utils/localIsoDate'
+import { localIsoDate } from '../../utils/localDate'
+import { sortTripsByRelevance } from '../../utils/heroTrip'
 
-/**
- * Hub trip view — Nest Trip (numeric id) or Family Travel UUID trip.
- * UI should treat `id` as string | number for keys and routes.
- */
-export type DashboardTrip = Trip | FamilyDashboardTrip
+// The dashboard works with the canonical Trip shape returned by the list/get
+// endpoints (it already carries the computed day_count/place_count/is_owner/
+// owner_username/shared_count fields). Kept as a named alias so the existing
+// imports stay stable.
+export type DashboardTrip = Trip
 
-export function isFamilyDashboardTrip(trip: DashboardTrip): trip is FamilyDashboardTrip {
-  return typeof trip.id === 'string'
-}
-
-export interface Member {
-  id: string | number
-  username: string
-  avatar_url?: string | null
-  color?: string | null
-}
+export interface Member { id: number; username: string; avatar_url?: string | null }
 export interface Place {
-  id: string | number
-  name: string
-  image_url: string | null
-  lat: number | null
-  lng: number | null
-  google_place_id: string | null
-  osm_id: string | null
-  category_color?: string | null
-  category_icon?: string | null
+  id: number; name: string; image_url: string | null; lat: number | null; lng: number | null
+  google_place_id: string | null; osm_id: string | null
+  category_color?: string | null; category_icon?: string | null
 }
 export interface HeroBundle { members: Member[]; places: Place[] }
 export interface TravelStats { totalTrips?: number; totalDays?: number; totalPlaces?: number; totalDistanceKm?: number; countries?: string[] }
 export interface UpcomingReservation {
-  id: number; trip_id: number; title: string; type: string
+  /** Unique per `type`, not on its own: a stay's two moments carry the
+   *  accommodation id, which can collide with a reservation id. */
+  id: number; trip_id: number; title: string
+  /** A reservation type, or 'checkin' / 'checkout' for a stay's two moments. */
+  type: string
+  status?: string | null
   reservation_time?: string | null; day_date?: string | null
   location?: string | null; place_name?: string | null; trip_title?: string | null
 }
 
+/** Stable list key — see the note on `id`. */
+export function upcomingKey(r: UpcomingReservation): string {
+  return `${r.type}:${r.id}`
+}
+
+/** The label a stay's moment carries in place of a location. */
+export const MOMENT_LABEL: Record<string, string> = { checkin: 'day.checkIn', checkout: 'day.checkOut' }
+
 export const MS_PER_DAY = 86400000
+
+/**
+ * Today as a local-calendar 'YYYY-MM-DD' — see utils/localDate for why this
+ * must never come from toISOString(). Trip dates are wall-clock dates
+ * (daysUntil below parses them as local midnight).
+ */
+export function localIsoToday(): string {
+  return localIsoDate()
+}
 
 export function daysUntil(dateStr: string | null | undefined): number | null {
   if (!dateStr) return null
@@ -54,8 +60,20 @@ export function daysUntil(dateStr: string | null | undefined): number | null {
   return Math.round((d.getTime() - today.getTime()) / MS_PER_DAY)
 }
 
+// Localized date for the cards. The year is included only when it isn't the
+// current year, and order/punctuation follow the locale (EN "Sep 10, 2026",
+// DE "10. Sep 2026", vs a plain "Sep 10" this year), never a hard-coded layout.
+export function fullDate(dateStr: string | null | undefined, locale: string): string | null {
+  if (!dateStr) return null
+  const date = new Date(dateStr + 'T00:00:00Z')
+  if (Number.isNaN(date.getTime())) return null
+  const opts: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'short', timeZone: 'UTC' }
+  if (date.getUTCFullYear() !== new Date().getUTCFullYear()) opts.year = 'numeric'
+  return date.toLocaleDateString(locale, opts)
+}
+
 export function getTripStatus(trip: DashboardTrip): 'ongoing' | 'today' | 'tomorrow' | 'future' | 'past' | null {
-  const today = localIsoDate()
+  const today = localIsoToday()
   if (trip.start_date && trip.end_date && trip.start_date <= today && trip.end_date >= today) return 'ongoing'
   const until = daysUntil(trip.start_date)
   if (until === null) return null
@@ -66,41 +84,5 @@ export function getTripStatus(trip: DashboardTrip): 'ongoing' | 'today' | 'tomor
 }
 
 export function sortTrips(trips: DashboardTrip[]): DashboardTrip[] {
-  const today = localIsoDate()
-  const rank = (t: DashboardTrip) => {
-    if (t.start_date && t.end_date && t.start_date <= today && t.end_date >= today) return 0
-    if (t.start_date && t.start_date >= today) return 1
-    return 2
-  }
-  return [...trips].sort((a, b) => {
-    const ra = rank(a), rb = rank(b)
-    if (ra !== rb) return ra - rb
-    const ad = a.start_date || '', bd = b.start_date || ''
-    if (ra <= 1) return ad.localeCompare(bd)
-    return bd.localeCompare(ad)
-  })
-}
-
-/** Spotlight boarding pass from the same hub batch — no Nest bundle, no second round-trip. */
-export function familyTripToHeroBundle(trip: FamilyDashboardTrip): HeroBundle {
-  const members: Member[] = (trip.hub_members ?? []).map((m) => ({
-    id: m.personId,
-    username: m.displayName,
-    avatar_url: m.avatarUrl,
-    color: m.color,
-  }))
-  const places: Place[] = (trip.hub_places ?? []).map((p) => ({
-    id: p.id,
-    name: p.name,
-    image_url: resolveCatalogImageUrl({
-      canonicalUrl: p.imageUrl,
-      role: 'thumb',
-      thumbUrl: p.imageUrl && isReadyCatalogVariantUrl(p.imageUrl) ? p.imageUrl : null,
-    }),
-    lat: p.lat,
-    lng: p.lng,
-    google_place_id: null,
-    osm_id: null,
-  }))
-  return { members, places }
+  return sortTripsByRelevance(trips, localIsoToday())
 }

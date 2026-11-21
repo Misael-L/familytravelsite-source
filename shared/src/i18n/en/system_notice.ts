@@ -50,6 +50,41 @@ const system_notice: TranslationStrings = {
   'system_notice.thank_you_support.highlight_community': 'Built together with the community',
   'system_notice.thank_you_support.cta_bmc': 'Buy Me a Coffee',
   'system_notice.thank_you_support.cta_kofi': 'Support on Ko-fi',
+  // The release modal. One stable set of keys: each big release swaps the copy in place.
+  'system_notice.release_notes.eyebrow': 'Update installed',
+  'system_notice.release_notes.headline': 'The right place, first.',
+  'system_notice.release_notes.intro':
+    "Place search, address search and routing now run on TREK's own servers, sponsored by dataforest cloud, and every TREK can share what it knows about places with all the others.",
+  'system_notice.release_notes.features_label': 'The headliners',
+  'system_notice.release_notes.features_aside': 'Far from everything',
+  'system_notice.release_notes.feature_search_title': 'Place search that gets it right',
+  'system_notice.release_notes.feature_search_body':
+    'Cities, islands, landmarks and airports by their code come first, cafés come from around you, and suggestions appear while you type.',
+  'system_notice.release_notes.feature_share_title': 'Place details, shared',
+  'system_notice.release_notes.feature_share_body':
+    'Share websites, opening hours and photos with every TREK, field by field, and your saved places pick up what others added.',
+  'system_notice.release_notes.feature_routing_title': 'Faster routing',
+  'system_notice.release_notes.feature_routing_body':
+    'A whole day routes in one go with up to twenty stops, one slow route no longer holds up the rest, and transit asks a second provider when the first finds nothing.',
+  'system_notice.release_notes.footnote': 'Plus a long list of smaller changes across the rest of TREK.',
+  'system_notice.release_notes.notes_label': 'Release notes',
+  'system_notice.release_notes.note_eyebrow': 'A note from the maintainer',
+  'system_notice.release_notes.note_title': 'You are the reason I keep building TREK.',
+  'system_notice.release_notes.note_body':
+    'TREK began as a small tool for my own trips, written after work because I wanted a better way to plan them. It never really stopped growing. Almost everything you use was built late at night, on weekends, on trains, next to a full-time job, and there were plenty of evenings I quietly wondered whether anyone out there would ever open it.',
+  'system_notice.release_notes.promise_label': 'The promise',
+  'system_notice.release_notes.promise_lead': 'TREK stays free, forever.',
+  'system_notice.release_notes.promise_text':
+    'Every feature, every update, for everyone. No paid tiers, no subscriptions, no catch.',
+  'system_notice.release_notes.note_body_after':
+    'Then you did. Within a few months there were thousands of you: stars, bug reports, translations into languages I do not speak, pull requests from people I have never met. I still check the repository first thing every morning, and it still does not quite feel real.',
+  'system_notice.release_notes.note_closing': 'Thank you for being here, from Maurice.',
+  'system_notice.release_notes.support_label': 'Staying independent',
+  'system_notice.release_notes.support_lead': 'Without Google and co.',
+  'system_notice.release_notes.support_text':
+    "Place search, address search and routing run on TREK's own servers, sponsored by dataforest cloud today. I fight for that every day, and keeping it that way takes your support.",
+  'system_notice.release_notes.cta_bmc': 'Buy me a coffee',
+  'system_notice.release_notes.cta_kofi': 'Support on Ko-fi',
   'system_notice.pager.prev': 'Previous notice',
   'system_notice.pager.next': 'Next notice',
   'system_notice.pager.counter': '{current} / {total}',

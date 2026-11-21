@@ -1,6 +1,7 @@
 import type { TranslationStrings } from '../types';
 
 const todo: TranslationStrings = {
+  'todo.emptyFiltered': 'Tidak ada tugas yang cocok dengan filter ini',
   'todo.subtab.packing': 'Daftar Perlengkapan',
   'todo.subtab.todo': 'Tugas',
   'todo.completed': 'selesai',
@@ -10,6 +11,7 @@ const todo: TranslationStrings = {
   'todo.uncategorized': 'Tanpa daftar',
   'todo.namePlaceholder': 'Nama tugas',
   'todo.descriptionPlaceholder': 'Deskripsi (opsional)',
+  'todo.editDescription': 'Klik untuk mengedit, tautan langsung terbuka',
   'todo.unassigned': 'Belum ditugaskan',
   'todo.noCategory': 'Tanpa daftar',
   'todo.hasDescription': 'Ada deskripsi',

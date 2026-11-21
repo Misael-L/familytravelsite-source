@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState, type ButtonHTMLAttributes, type ClipboardEvent, type CSSProperties, type FormEvent, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react'
+import { useCallback, useEffect, useRef, useState, type ButtonHTMLAttributes, type ClipboardEvent, type CSSProperties, type FormEvent, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { Trash2, X } from 'lucide-react'
 import { useTranslation } from '../../i18n'
 import { lockBodyScroll } from '../../utils/bodyScrollLock'
 import { Tooltip } from './Tooltip'
 import { focusDialog, trapTab } from './dialogFocus'
-import { useDiscardGuard } from './useTrekDiscardGuard'
+import { useDiscardGuard } from './useDiscardGuard'
 
 /** A font size that follows the user's text size setting for its tier. */
 export const fs = (px: number, tier: 'caption' | 'body' | 'subtitle' | 'title' = 'caption'): CSSProperties => ({ fontSize: `calc(${px}px * var(--fs-scale-${tier}, 1))` })
@@ -63,6 +63,8 @@ export function DialogShell({ open = true, ...frame }: DialogShellProps) {
 function DialogFrame({ onClose, labelledBy, width = 'detail', align = 'center', blocked = false, header, footer, onSubmit, children, bodyClassName, onPaste, discardGuard }: Omit<DialogShellProps, 'open'>) {
   const { t } = useTranslation()
   const panelRef = useRef<HTMLDivElement>(null)
+  const discardRef = useRef<HTMLDivElement>(null)
+  const focusedBeforeDiscard = useRef<Element | null>(null)
   const pressedOn = useRef<EventTarget | null>(null)
   // Read while rendering, before a field inside can take the focus with autoFocus.
   const [focusedBefore] = useState(() => document.activeElement)
@@ -70,20 +72,31 @@ function DialogFrame({ onClose, labelledBy, width = 'detail', align = 'center', 
   // ways out a hand can take by accident; both go through requestClose.
   const { asking, markStart, requestClose, keepEditing, discard } = useDiscardGuard(discardGuard, onClose)
   const held = blocked || asking
+  const askOrClose = useCallback(() => {
+    focusedBeforeDiscard.current = document.activeElement
+    requestClose()
+  }, [requestClose])
+  const resumeEditing = useCallback(() => {
+    keepEditing()
+    const panel = panelRef.current
+    const previous = focusedBeforeDiscard.current
+    if (previous instanceof HTMLElement && panel?.contains(previous)) previous.focus({ preventScroll: true })
+    else panel?.focus({ preventScroll: true })
+  }, [keepEditing])
 
   useEffect(() => {
     if (held) return
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape' && !e.defaultPrevented) requestClose() }
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape' && !e.defaultPrevented) askOrClose() }
     document.addEventListener('keydown', onKey)
     return () => document.removeEventListener('keydown', onKey)
-  }, [held, requestClose])
+  }, [held, askOrClose])
 
   useEffect(() => {
     if (!asking) return
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') { e.preventDefault(); keepEditing() } }
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') { e.preventDefault(); resumeEditing() } }
     document.addEventListener('keydown', onKey)
     return () => document.removeEventListener('keydown', onKey)
-  }, [asking, keepEditing])
+  }, [asking, resumeEditing])
 
   // The page stays put behind the dialog, the focus moves into it (the first text
   // field on a desktop, #1302), and whatever opened it gets the focus back.
@@ -112,8 +125,9 @@ function DialogFrame({ onClose, labelledBy, width = 'detail', align = 'center', 
       // Only a press that starts and ends on the backdrop closes: a selection
       // dragged out of a field must not throw the dialog away.
       onMouseDown={e => { pressedOn.current = e.target }}
+      onMouseUp={e => { if (e.target !== e.currentTarget) pressedOn.current = null }}
       onClick={e => {
-        if (!held && e.target === e.currentTarget && pressedOn.current === e.currentTarget) requestClose()
+        if (!held && e.target === e.currentTarget && pressedOn.current === e.currentTarget) askOrClose()
         pressedOn.current = null
       }}
     >
@@ -127,7 +141,10 @@ function DialogFrame({ onClose, labelledBy, width = 'detail', align = 'center', 
         onPaste={onPaste}
         onKeyDownCapture={markStart}
         onPointerDownCapture={markStart}
-        onKeyDown={e => { if (panelRef.current) trapTab(e, panelRef.current) }}
+        onKeyDown={e => {
+          const scope = discardRef.current ?? panelRef.current
+          if (scope) trapTab(e, scope)
+        }}
         className={`trek-modal-enter relative flex max-h-full w-full ${PANEL_WIDTH[width]} flex-col overflow-hidden rounded-[22px] bg-surface-card shadow-2xl outline-none`}
       >
         {header}
@@ -135,11 +152,11 @@ function DialogFrame({ onClose, labelledBy, width = 'detail', align = 'center', 
         {footer}
         {asking && (
           <div className="trek-backdrop-enter absolute inset-0 z-10 grid place-items-center p-6 backdrop-blur-[2px]" style={{ background: 'color-mix(in srgb, var(--bg-card) 72%, transparent)' }}>
-            <div role="alertdialog" aria-labelledby={`${labelledBy}-discard`} className="trek-modal-enter w-full max-w-[340px] rounded-[18px] border border-edge-faint bg-surface-card p-5 shadow-xl">
+            <div ref={discardRef} role="alertdialog" aria-labelledby={`${labelledBy}-discard`} className="trek-modal-enter w-full max-w-[340px] rounded-[18px] border border-edge-faint bg-surface-card p-5 shadow-xl">
               <div id={`${labelledBy}-discard`} className="font-semibold text-content" style={fs(15, 'subtitle')}>{t('common.unsavedTitle')}</div>
               <p className="m-0 mt-1.5 text-content-muted" style={fs(12.5, 'body')}>{t('common.unsavedMessage')}</p>
               <div className="mt-4 flex justify-end gap-2">
-                <DialogButton autoFocus onClick={keepEditing}>{t('common.keepEditing')}</DialogButton>
+                <DialogButton autoFocus onClick={resumeEditing}>{t('common.keepEditing')}</DialogButton>
                 <button type="button" onClick={discard} className={DISCARD_BUTTON} style={fs(13, 'body')}>
                   {t('common.discard')}
                 </button>

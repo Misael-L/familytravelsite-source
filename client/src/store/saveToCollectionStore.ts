@@ -1,5 +1,4 @@
 import { create } from 'zustand'
-import type { FamilyListCatalogKind } from '../data/supabase/familyLists'
 
 /**
  * The raw place payload handed to the "Save to Collection" picker. Carries the
@@ -9,6 +8,9 @@ import type { FamilyListCatalogKind } from '../data/supabase/familyLists'
  * pool place, a day-assignment place or a manually entered one.
  */
 export interface SaveToCollectionTarget {
+  /** Family canonical identity only; never a fuzzy/provider match. */
+  family_identity?: unknown
+  family_assert_current?:()=>void
   name: string
   source_trip_id?: number | null
   source_place_id?: number | null
@@ -26,26 +28,41 @@ export interface SaveToCollectionTarget {
   osm_id?: string | null
   website?: string | null
   phone?: string | null
-  /** Family Catalog target (Explore Add to list). Nest google/OSM fields stay unchanged. */
-  catalog_kind?: FamilyListCatalogKind
-  catalog_entity_id?: string
+}
+
+/**
+ * A saved tour of a trip to keep in a collection. It goes through the tour's
+ * own keep dialog, which copies the tour with its route, never through the
+ * place picker, which would keep a bare point.
+ */
+export interface SaveTourToCollectionTarget {
+  tripId: number | string
+  placeId: number
+  name: string
 }
 
 interface SaveToCollectionState {
   /** The place currently shown in the picker, or null when it is closed. */
   target: SaveToCollectionTarget | null
+  /** The tour currently shown in the keep dialog, or null when it is closed. */
+  tour: SaveTourToCollectionTarget | null
   /** Bumped after every add/remove so other surfaces (the inspector bookmark
    *  indicator) can re-check membership without prop threading. */
   version: number
   open: (target: SaveToCollectionTarget) => void
   close: () => void
+  openTour: (tour: SaveTourToCollectionTarget) => void
+  closeTour: () => void
   bumpVersion: () => void
 }
 
 export const useSaveToCollectionStore = create<SaveToCollectionState>((set, get) => ({
   target: null,
+  tour: null,
   version: 0,
   open: (target) => set({ target }),
   close: () => set({ target: null }),
+  openTour: (tour) => set({ tour }),
+  closeTour: () => set({ tour: null }),
   bumpVersion: () => set({ version: get().version + 1 }),
 }))

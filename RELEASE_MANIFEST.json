@@ -1,13 +1,30 @@
 {
-  "privateProductionCommit": "1bf654b84042208e1be6c351402b6d713f4d4537",
-  "privateCommitSubject": "feat(catalog): read ready image variants on member web",
-  "publicSourceTag": "source-20261031-1bf654b",
+  "privateSourceCommit": "6ef85890f9f4c5a22b800be7f8f337b17d6af3a3",
+  "privateProductionCommit": "6ef85890f9f4c5a22b800be7f8f337b17d6af3a3",
+  "privateCommitSubject": "Enable original-origin draft recovery in the fallback build",
+  "publicSourceTag": "source-20261121-6ef8589",
   "publicSourceRemote": "https://github.com/Misael-L/familytravelsite-source.git",
   "workersBuildUuid": null,
-  "workersVersionId": "a5814c29-fe0c-446c-bd89-146e549a4be4",
-  "node": "22",
+  "workersVersionId": "261996c5-1d62-4835-a474-36cdd6d80f2d",
+  "node": "24",
   "buildCommand": "npm run build:web",
   "origin": "https://familytravelsite.lmisael0721.workers.dev",
   "license": "AGPL-3.0-only",
-  "createdAtUtc": "2026-10-31T17:16:23Z"
+  "createdAtUtc": "2026-11-21T23:33:58.281233+00:00",
+  "deploymentBinding": "caller-supplied-version",
+  "sanitization": {
+    "policy": "family.private-operational-plan.v1",
+    "privateCommit": "6ef85890f9f4c5a22b800be7f8f337b17d6af3a3",
+    "trackedFiles": 18629,
+    "sourceFilesRetained": 18628,
+    "allRetainedBytesAndModesMatchGit": true,
+    "omissions": [
+      {
+        "path": ".cursor/plans/existing-family-backend-integration.plan.md",
+        "sha256": "c4677c13b949e3f714fe3f07f58f10c0a54af72a23537d7bb43e356240512449",
+        "bytes": 12372,
+        "reason": "Private operational plan; not required to build or run the application"
+      }
+    ]
+  }
 }

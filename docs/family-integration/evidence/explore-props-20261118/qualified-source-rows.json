@@ -1,0 +1,42 @@
+{
+  "changed_or_added_paths": [
+    "client/src/integrations/family/legacy/components/Explore/ExploreEntityDetailPanel.tsx",
+    "client/src/integrations/family/legacy/components/Explore/ExploreEntityDetailPanel.types.ts"
+  ],
+  "previous_rows": [
+    {
+      "path": "client/src/integrations/family/legacy/components/Explore/ExploreEntityDetailPanel.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "f180883c8b1afcefa82aee0d9ad1624f09c7334b",
+        "bytes": 34742
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/components/Explore/ExploreEntityDetailPanel.tsx"
+    }
+  ],
+  "current_rows": [
+    {
+      "path": "client/src/integrations/family/legacy/components/Explore/ExploreEntityDetailPanel.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "4793bd3757f8efe0948c8f7a8ffea83e0ffb7d3c",
+        "bytes": 34354
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/components/Explore/ExploreEntityDetailPanel.tsx"
+    },
+    {
+      "path": "client/src/integrations/family/legacy/components/Explore/ExploreEntityDetailPanel.types.ts",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "2a20faa001751abf7189d170134097966f84842e",
+        "bytes": 766
+      },
+      "purpose": "Existing retained catalog-detail public props contract separated into a type-only module; original export and effective types preserved. No runtime imports or feature admission."
+    }
+  ],
+  "qualified_commit": "aa0d24314deb7b3425eaf48865df1ad4e6948b38",
+  "scope": "Only the actual changed component addition row and actual new type-module row; unchanged source qualification rules."
+}

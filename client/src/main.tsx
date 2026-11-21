@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { BrowserRouter } from 'react-router-dom'
+import { BrowserRouter } from 'react-router'
 import App from './App'
 // Self-hosted Poppins (bundled, same-origin) so the app font can't be blocked by
 // ad/tracker blockers the way the Google Fonts CDN can.
@@ -9,6 +9,11 @@ import '@fontsource/poppins/400.css'
 import '@fontsource/poppins/500.css'
 import '@fontsource/poppins/600.css'
 import '@fontsource/poppins/700.css'
+// MuseoModerno for the login wordmark — same reasoning, it used to come from the
+// Google Fonts CDN via a render-blocking <link> in index.html.
+import '@fontsource/museomoderno/400.css'
+import '@fontsource/museomoderno/700.css'
+import '@fontsource/museomoderno/800.css'
 // Geist Sans (self-hosted too) — used only for secondary "subtext" via --font-subtext.
 import '@fontsource/geist-sans/400.css'
 import '@fontsource/geist-sans/500.css'
@@ -20,6 +25,14 @@ import '@fontsource/geist-sans/600.css'
 // several .leaflet-* styles.
 import 'leaflet/dist/leaflet.css'
 import './index.css'
+import './native/nativeApp.css'
+import './styles/rtl.css'
+import './styles/ferratas.css'
+import './styles/paddle.css'
+import './styles/walkRoute.css'
+import './styles/bike.css'
+import './styles/horse.css'
+import './styles/hike.css'
 // Native HTML5 drag-and-drop never fires on touch input, so the planner's place /
 // day reordering was dead on Android and iOS. The `drag-drop-touch` polyfill synthesises
 // the standard drag events from touch gestures over draggable elements (#1265). It is
@@ -27,24 +40,42 @@ import './index.css'
 // the polyfill's synthetic click/dblclick otherwise turned quick one-finger map pans into
 // double-tap zooms (#1440). See utils/touchDragPolyfill.ts.
 import { maybeInstallTouchDragPolyfill } from './utils/touchDragPolyfill'
-import { startConnectivityProbe, stopConnectivityProbe } from './sync/connectivity'
+import { startConnectivityProbe } from './sync/connectivity'
+import { startNativeApp } from './native/nativeApp'
 import { requestPersistentStorage } from './sync/persistentStorage'
-import AppErrorBoundary from './components/Layout/AppErrorBoundary'
+import { isIosDevice } from './utils/iosDevice'
+import ErrorBoundary, { RootErrorFallback } from './components/shared/ErrorBoundary'
+import { installGlobalErrorHandlers } from './utils/globalErrorHandlers'
+import { schedulePrecacheRepair } from './utils/serviceWorkerShell'
+import { installFamilyFrontend } from './integrations/family/bootstrap'
+import { FamilyNavigationBoundary } from './integrations/family/navigation'
+import { familyFrontend } from './integrations/family/repository'
 
-void Promise.resolve(maybeInstallTouchDragPolyfill()).catch(() => {})
+void maybeInstallTouchDragPolyfill()
+installFamilyFrontend()
 startConnectivityProbe()
-if (import.meta.hot) {
-  import.meta.hot.dispose(() => stopConnectivityProbe())
-}
+// Inside the iOS/Android app: splash, back button, status bar, offline start (iOS).
+startNativeApp()
 // Keep offline data (map tiles, file blobs, IndexedDB) exempt from eviction.
-requestPersistentStorage()
+void requestPersistentStorage()
+// A tile cache past the iOS budget slows every cold start of the home screen app (#3008).
+// Loaded on iOS only, so the prefetcher stays out of everyone's first chunk.
+if (isIosDevice()) void import('./sync/tilePrefetcher').then((m) => m.scheduleTileCacheTrim())
+// Event handlers and async code never reach a boundary; this is where they land.
+installGlobalErrorHandlers()
+// A page the precache keeps under a stylesheet's or a script's name would be
+// handed on to every later release (#2524).
+schedulePrecacheRepair()
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <AppErrorBoundary>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </AppErrorBoundary>
+    <BrowserRouter>
+      {/* Outermost net: catches App itself and TranslationProvider, which every
+          boundary further in sits below. Its fallback is untranslated on purpose
+          — if the provider is the thing that broke, t() would echo raw keys. */}
+      <ErrorBoundary boundaryId="root" level="root" fallback={s => <RootErrorFallback {...s} />}>
+        <FamilyNavigationBoundary repository={familyFrontend}><App /></FamilyNavigationBoundary>
+      </ErrorBoundary>
+    </BrowserRouter>
   </React.StrictMode>,
 )

@@ -1,7 +1,14 @@
+import type { KeyboardEvent as ReactKeyboardEvent } from 'react'
+import { isPhoneViewport } from '../../mobile/useIsPhone'
+
 /**
- * Keyboard focus for the booking-editor pilot. The first Tab lands in the active
- * surface, Tab wraps inside it, and a fine pointer focuses the first text field.
- * Comboboxes and fields that open a list on focus are skipped.
+ * Keyboard focus for the app's dialogs (#1302): the first Tab lands in the dialog
+ * instead of running through the page behind it, Tab wraps around inside it, and
+ * on a desktop the first text field is ready to type into.
+ *
+ * Fields that open a list as soon as they get the focus (an address or airport
+ * search) carry role="combobox" and are skipped, so a dialog never opens with a
+ * dropdown already hanging off it. A field can opt out with data-no-autofocus.
  */
 const TEXT_FIELD = [
   'input:not([type]),input[type="text"],input[type="search"],input[type="email"],input[type="url"],input[type="tel"],input[type="number"],input[type="password"]',
@@ -13,28 +20,13 @@ const TABBABLE = [
   '[tabindex]', '[contenteditable="true"]',
 ].join(',')
 
-export type TabLikeEvent = {
-  key: string
-  shiftKey: boolean
-  altKey: boolean
-  ctrlKey: boolean
-  metaKey: boolean
-  defaultPrevented: boolean
-  target: EventTarget | null
-  preventDefault(): void
-}
-
 function usable(el: HTMLElement): boolean {
   if ((el as HTMLInputElement).disabled) return false
   if (el.closest('[hidden],[aria-hidden="true"],[inert]')) return false
   return el.getAttribute('tabindex') !== '-1'
 }
 
-export function tabbableItems(panel: HTMLElement): HTMLElement[] {
-  return Array.from(panel.querySelectorAll<HTMLElement>(TABBABLE)).filter(usable)
-}
-
-/** The first field a user would type into, or null when the surface has none. */
+/** The first field a user would type into, or null when the dialog has none. */
 export function firstTextField(panel: HTMLElement): HTMLElement | null {
   for (const el of panel.querySelectorAll<HTMLElement>(TEXT_FIELD)) {
     if (!usable(el)) continue
@@ -45,16 +37,16 @@ export function firstTextField(panel: HTMLElement): HTMLElement | null {
   return null
 }
 
+/** Only with a mouse or trackpad: on a phone a focused field would throw the keyboard up. */
 function typingDevice(): boolean {
   if (typeof window.matchMedia !== 'function') return false
-  if (!window.matchMedia('(pointer: fine)').matches) return false
-  return window.innerWidth >= 768
+  return window.matchMedia('(pointer: fine)').matches && !isPhoneViewport()
 }
 
 /**
- * Moves focus into a dialog that just opened. A fine pointer lands in the first
- * text field. A coarse pointer or a narrow window lands on the panel so a phone
- * keyboard does not open by itself.
+ * Puts the focus into a dialog that just opened, unless something inside already
+ * took it (a field with autoFocus, a dialog's own choice). The panel itself is
+ * the fallback, so the next Tab starts inside the dialog either way.
  */
 export function focusDialog(panel: HTMLElement): void {
   if (panel.contains(document.activeElement)) return
@@ -62,38 +54,29 @@ export function focusDialog(panel: HTMLElement): void {
   ;(field ?? panel).focus({ preventScroll: true })
 }
 
-/** Keeps Tab inside `panel`. A key whose target is outside the panel is left alone. */
-export function trapTab(event: TabLikeEvent, panel: HTMLElement): void {
-  if (event.key !== 'Tab' || event.altKey || event.ctrlKey || event.metaKey) return
-  const target = event.target as Node | null
-  if (!target || (target !== panel && !panel.contains(target))) return
-  const items = tabbableItems(panel)
+/**
+ * Keeps Tab inside the dialog: past the last control it wraps to the first, and
+ * Shift+Tab from the first (or from the panel) to the last. A key pressed in a
+ * picker list the dialog opened in a portal on the body is left alone, because
+ * that list is not inside the panel and handles its own keys.
+ */
+export function trapTab(e: ReactKeyboardEvent<HTMLElement>, panel: HTMLElement): void {
+  if (e.key !== 'Tab' || e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey) return
+  const target = e.target as Node
+  if (target !== panel && !panel.contains(target)) return
+  const items = Array.from(panel.querySelectorAll<HTMLElement>(TABBABLE)).filter(usable)
   if (items.length === 0) {
-    event.preventDefault()
+    e.preventDefault()
     panel.focus({ preventScroll: true })
     return
   }
   const first = items[0]
   const last = items[items.length - 1]
-  if (event.shiftKey && (target === first || target === panel)) {
-    event.preventDefault()
+  if (e.shiftKey && (target === first || target === panel)) {
+    e.preventDefault()
     last.focus()
-  } else if (!event.shiftKey && target === last) {
-    event.preventDefault()
+  } else if (!e.shiftKey && target === last) {
+    e.preventDefault()
     first.focus()
   }
-}
-
-/** Wraps Tab inside `panel`, and pulls focus back in when it has fallen outside. */
-export function containTab(event: TabLikeEvent, panel: HTMLElement): void {
-  if (event.key !== 'Tab' || event.altKey || event.ctrlKey || event.metaKey) return
-  const target = event.target as Node | null
-  if (!target || (target !== panel && !panel.contains(target))) {
-    event.preventDefault()
-    const items = tabbableItems(panel)
-    const dest = event.shiftKey ? (items[items.length - 1] ?? panel) : (items[0] ?? panel)
-    dest.focus()
-    return
-  }
-  trapTab(event, panel)
 }

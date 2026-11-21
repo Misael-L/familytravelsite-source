@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { screen, waitFor } from '@testing-library/react'
+import { act, screen, waitFor } from '@testing-library/react'
 import { render } from '../../../tests/helpers/render'
 import OfflineBanner from './OfflineBanner'
 
@@ -20,6 +20,7 @@ const conflictCount = mutationQueue.conflictCount as ReturnType<typeof vi.fn>
 
 afterEach(() => {
   vi.clearAllMocks()
+  vi.useRealTimers()
   _resetNetworkMode()
   Object.defineProperty(navigator, 'onLine', { value: true, writable: true, configurable: true })
 })
@@ -55,4 +56,35 @@ describe('OfflineBanner (B3 surface)', () => {
     await waitFor(() => expect(failedCount).toHaveBeenCalled())
     expect(container.querySelector('[role="status"]')).toBeNull()
   })
+
+  it('contains an unavailable-storage read and retries without reporting an empty queue', async () => {
+    vi.useFakeTimers()
+    pendingCount.mockRejectedValue(new Error('Database closed'))
+    failedCount.mockResolvedValue(0)
+    conflictCount.mockResolvedValue(0)
+    const { container } = render(<OfflineBanner />)
+    await act(async () => {})
+    expect(container.querySelector('[role="status"]')).toBeNull()
+    pendingCount.mockResolvedValue(0)
+    failedCount.mockResolvedValue(2)
+    await act(async () => { await vi.advanceTimersByTimeAsync(3000) })
+    expect(screen.getByText(/failed to sync: 2/i)).toBeInTheDocument()
+  })
+
+  it('retains the last observed counts during storage failure until a successful retry', async () => {
+    vi.useFakeTimers()
+    pendingCount.mockResolvedValue(0)
+    failedCount.mockResolvedValue(2)
+    conflictCount.mockResolvedValue(0)
+    const { container } = render(<OfflineBanner />)
+    await act(async () => {})
+    expect(screen.getByText(/failed to sync: 2/i)).toBeInTheDocument()
+    failedCount.mockRejectedValue(new Error('Database closed'))
+    await act(async () => { await vi.advanceTimersByTimeAsync(3000) })
+    expect(screen.getByText(/failed to sync: 2/i)).toBeInTheDocument()
+    failedCount.mockResolvedValue(0)
+    await act(async () => { await vi.advanceTimersByTimeAsync(3000) })
+    expect(container.querySelector('[role="status"]')).toBeNull()
+  })
+
 })

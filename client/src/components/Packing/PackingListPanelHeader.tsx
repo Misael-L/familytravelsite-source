@@ -1,11 +1,13 @@
 import {
-  X, Check, CheckCheck, Luggage, Package, FolderPlus, Upload,
+  CheckCheck, Luggage, Package, FolderPlus, Download, Trash2, ListPlus, BookmarkPlus,
 } from 'lucide-react'
 import type { PackingState } from './usePackingListPanel'
+import NameDialog from '../shared/NameDialog'
+import { PackingTemplateOption } from './PackingTemplateOption'
 
 export function PackingHeader(S: PackingState) {
   const {
-    inlineHeader, t, items, abgehakt, fortschritt, canEdit, isAdmin,
+    inlineHeader, t, items, abgehakt, fortschritt, viewTotal, canCreateCategory, canEditGroups, canClearCompleted, isAdmin,
     showSaveTemplate, saveTemplateName, setSaveTemplateName, handleSaveAsTemplate, setShowSaveTemplate,
     setShowImportModal, handleClearChecked, availableTemplates, templateDropdownRef,
     showTemplateDropdown, setShowTemplateDropdown, applyingTemplate, handleApplyTemplate,
@@ -20,37 +22,23 @@ export function PackingHeader(S: PackingState) {
             <h2 style={{ margin: 0, fontSize: 'calc(18px * var(--fs-scale-subtitle, 1))', fontWeight: 700, color: 'var(--text-primary)' }}>{t('packing.title')}</h2>
             {items.length > 0 && (
               <p style={{ margin: '2px 0 0', fontSize: 'calc(12.5px * var(--fs-scale-body, 1))', color: 'var(--text-faint)' }}>
-                {t('packing.progress', { packed: abgehakt, total: items.length, percent: fortschritt })}
+                {t('packing.progress', { packed: abgehakt, total: viewTotal, percent: fortschritt })}
               </p>
             )}
           </div>
         ) : <span />}
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-          {canEdit && isAdmin && items.length > 0 && showSaveTemplate && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-              <input
-                type="text" autoFocus
-                value={saveTemplateName}
-                onChange={e => setSaveTemplateName(e.target.value)}
-                onKeyDown={e => { if (e.key === 'Enter') handleSaveAsTemplate(); if (e.key === 'Escape') { setShowSaveTemplate(false); setSaveTemplateName('') } }}
-                placeholder={t('packing.templateName')}
-                style={{ fontSize: 'calc(12px * var(--fs-scale-body, 1))', padding: '5px 10px', borderRadius: 99, border: '1px solid var(--border-primary)', outline: 'none', fontFamily: 'inherit', width: 140, background: 'var(--bg-card)', color: 'var(--text-primary)' }}
-              />
-              <button onClick={handleSaveAsTemplate} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 2, color: '#10b981' }}><Check size={14} /></button>
-              <button onClick={() => { setShowSaveTemplate(false); setSaveTemplateName('') }} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 2, color: 'var(--text-faint)' }}><X size={14} /></button>
-            </div>
-          )}
-          {inlineHeader && canEdit && (
-            <button onClick={() => setShowImportModal(true)} style={{
+          {inlineHeader && canEditGroups && (
+            <button type="button" onClick={() => setShowImportModal(true)} style={{
               display: 'flex', alignItems: 'center', gap: 5, padding: '5px 11px', borderRadius: 99,
               border: '1px solid var(--border-primary)', fontSize: 'calc(12px * var(--fs-scale-body, 1))', fontWeight: 500, cursor: 'pointer',
               fontFamily: 'inherit', background: 'var(--bg-card)', color: 'var(--text-muted)',
             }}>
-              <Upload size={12} /> <span className="hidden sm:inline">{t('packing.import')}</span>
+              <Download size={12} /> <span className="hidden sm:inline">{t('packing.import')}</span>
             </button>
           )}
-          {inlineHeader && canEdit && abgehakt > 0 && (
-            <button onClick={handleClearChecked} style={{
+          {inlineHeader && canClearCompleted && abgehakt > 0 && (
+            <button type="button" onClick={handleClearChecked} style={{
               fontSize: 'calc(11.5px * var(--fs-scale-caption, 1))', padding: '5px 10px', borderRadius: 99, border: '1px solid rgba(239,68,68,0.3)',
               background: 'rgba(239,68,68,0.1)', color: '#ef4444', cursor: 'pointer', fontFamily: 'inherit',
             }}>
@@ -58,9 +46,9 @@ export function PackingHeader(S: PackingState) {
               <span className="sm:hidden">{t('packing.clearCheckedShort', { count: abgehakt })}</span>
             </button>
           )}
-          {inlineHeader && canEdit && availableTemplates.length > 0 && (
+          {inlineHeader && canEditGroups && availableTemplates.length > 0 && (
             <div ref={templateDropdownRef} style={{ position: 'relative' }}>
-              <button onClick={() => setShowTemplateDropdown(v => !v)} disabled={applyingTemplate} style={{
+              <button type="button" onClick={() => setShowTemplateDropdown(v => !v)} disabled={applyingTemplate} style={{
                 display: 'flex', alignItems: 'center', gap: 5, padding: '5px 11px', borderRadius: 99,
                 border: '1px solid', fontSize: 'calc(12px * var(--fs-scale-body, 1))', fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit',
                 background: showTemplateDropdown ? 'var(--text-primary)' : 'var(--bg-card)',
@@ -71,34 +59,26 @@ export function PackingHeader(S: PackingState) {
               </button>
               {showTemplateDropdown && (
                 <div style={{
-                  position: 'absolute', right: 0, top: '100%', marginTop: 6, zIndex: 50,
+                  position: 'absolute', insetInlineEnd: 0, top: '100%', marginTop: 6, zIndex: 50,
                   background: 'var(--bg-card)', border: '1px solid var(--border-primary)', borderRadius: 10,
                   boxShadow: '0 4px 16px rgba(0,0,0,0.12)', padding: 4, minWidth: 200,
                 }}>
                   {availableTemplates.map(tmpl => (
-                    <button key={tmpl.id} onClick={() => handleApplyTemplate(tmpl.id)}
-                      style={{
-                        display: 'flex', alignItems: 'center', gap: 8, width: '100%',
-                        padding: '8px 12px', borderRadius: 8, border: 'none', cursor: 'pointer',
-                        background: 'transparent', fontFamily: 'inherit', fontSize: 'calc(12px * var(--fs-scale-body, 1))', color: 'var(--text-primary)',
-                        transition: 'background 0.1s',
-                      }}
-                      onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-tertiary)'}
-                      onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                    >
-                      <Package size={13} className="text-content-faint" />
-                      <div style={{ flex: 1, textAlign: 'left' }}>
-                        <div style={{ fontWeight: 600 }}>{tmpl.name}</div>
-                        <div style={{ fontSize: 'calc(10px * var(--fs-scale-caption, 1))', color: 'var(--text-faint)' }}>{tmpl.item_count} {t('admin.packingTemplates.items')}</div>
-                      </div>
-                    </button>
+                    <PackingTemplateOption
+                      key={tmpl.id}
+                      name={tmpl.name}
+                      itemCount={tmpl.item_count}
+                      onClick={() => handleApplyTemplate(tmpl.id)}
+                      t={t}
+                      fade
+                    />
                   ))}
                 </div>
               )}
             </div>
           )}
-          {inlineHeader && canEdit && isAdmin && items.length > 0 && !showSaveTemplate && (
-            <button onClick={() => setShowSaveTemplate(true)} style={{
+          {inlineHeader && canEditGroups && isAdmin && items.length > 0 && !showSaveTemplate && (
+            <button type="button" onClick={() => setShowSaveTemplate(true)} style={{
               display: 'flex', alignItems: 'center', gap: 5, padding: '5px 11px', borderRadius: 99,
               border: '1px solid var(--border-primary)', fontSize: 'calc(12px * var(--fs-scale-body, 1))', fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit',
               background: 'var(--bg-card)', color: 'var(--text-muted)',
@@ -107,7 +87,7 @@ export function PackingHeader(S: PackingState) {
             </button>
           )}
           {bagTrackingEnabled && (
-            <button onClick={() => setShowBagModal(true)} className="xl:!hidden"
+            <button type="button" onClick={() => setShowBagModal(true)} className="xl:!hidden"
               style={{
                 display: 'flex', alignItems: 'center', gap: 5, padding: '5px 11px', borderRadius: 99,
                 border: '1px solid', fontSize: 'calc(12px * var(--fs-scale-body, 1))', fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit',
@@ -122,8 +102,9 @@ export function PackingHeader(S: PackingState) {
       </div>
 
         {items.length > 0 && (
-        <div className="hidden sm:block" style={{ marginTop: 14, marginBottom: 14 }}>
-          <div className="flex items-center" style={{ gap: 14 }}>
+        // The phone's progress card: count and share on the left, the bar filling the rest.
+        <div className="hidden sm:block" style={{ marginTop: 14, marginBottom: 2, padding: '14px 18px', borderRadius: 16, background: 'var(--bg-card)', border: '1px solid var(--border-secondary)' }}>
+          <div className="flex items-center" style={{ gap: 16 }}>
             {fortschritt === 100 ? (
               <div style={{
                 display: 'flex', alignItems: 'center', gap: 8,
@@ -143,7 +124,7 @@ export function PackingHeader(S: PackingState) {
                   }}>{abgehakt}</span>
                   <span style={{
                     fontSize: 'calc(14px * var(--fs-scale-body, 1))', fontWeight: 500, color: 'var(--text-faint)',
-                    fontVariantNumeric: 'tabular-nums', lineHeight: 1, marginLeft: 1,
+                    fontVariantNumeric: 'tabular-nums', lineHeight: 1, marginInlineStart: 1,
                   }}>/{items.length}</span>
                 </div>
                 <span style={{
@@ -158,7 +139,7 @@ export function PackingHeader(S: PackingState) {
 
             <div style={{
               flex: 1,
-              height: 8,
+              height: 7,
               background: 'var(--bg-tertiary)',
               borderRadius: 99,
               overflow: 'hidden',
@@ -184,36 +165,55 @@ export function PackingHeader(S: PackingState) {
                 }} />
               </div>
             </div>
+
+            {/* Under the Lists bar the clean-up sits with the count it clears. */}
+            {!inlineHeader && canClearCompleted && abgehakt > 0 && (
+              <button type="button" onClick={handleClearChecked} style={{
+                display: 'inline-flex', alignItems: 'center', gap: 5, flexShrink: 0, padding: '5px 11px', borderRadius: 99,
+                border: 'none', background: 'rgba(239,68,68,0.1)', color: '#ef4444', cursor: 'pointer', fontFamily: 'inherit',
+                fontSize: 'calc(12px * var(--fs-scale-body, 1))', fontWeight: 600,
+              }}>
+                <Trash2 size={13} strokeWidth={2.2} />
+                {t('packing.clearChecked', { count: abgehakt })}
+              </button>
+            )}
           </div>
         </div>
       )}
 
-      {canEdit && (addingCategory ? (
-        <div style={{ display: 'flex', gap: 6 }}>
-          <input
-            autoFocus
-            type="text" value={newCatName} onChange={e => setNewCatName(e.target.value)}
-            onKeyDown={e => { if (e.key === 'Enter') handleAddNewCategory(); if (e.key === 'Escape') { setAddingCategory(false); setNewCatName('') } }}
-            placeholder={t('packing.newCategoryPlaceholder')}
-            style={{ flex: 1, padding: '8px 12px', borderRadius: 10, border: '1px solid var(--border-primary)', fontSize: 'calc(13.5px * var(--fs-scale-body, 1))', fontFamily: 'inherit', outline: 'none', color: 'var(--text-primary)' }}
-          />
-          <button onClick={handleAddNewCategory} disabled={!newCatName.trim()}
-            style={{ padding: '8px 12px', borderRadius: 10, border: 'none', background: newCatName.trim() ? 'var(--text-primary)' : 'var(--border-primary)', color: 'var(--bg-primary)', cursor: newCatName.trim() ? 'pointer' : 'default', display: 'flex', alignItems: 'center' }}>
-            <Check size={16} />
-          </button>
-          <button onClick={() => { setAddingCategory(false); setNewCatName('') }}
-            style={{ padding: '8px 12px', borderRadius: 10, border: '1px solid var(--border-primary)', background: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', color: 'var(--text-faint)' }}>
-            <X size={16} />
-          </button>
-        </div>
-      ) : (
-        <button onClick={() => setAddingCategory(true)}
-          style={{ display: 'flex', alignItems: 'center', gap: 6, width: '100%', padding: '9px 14px', borderRadius: 10, border: '1px dashed var(--border-primary)', background: 'none', cursor: 'pointer', fontSize: 'calc(13px * var(--fs-scale-body, 1))', color: 'var(--text-faint)', fontFamily: 'inherit', transition: 'all 0.15s' }}
+      {canCreateCategory && inlineHeader && (
+        <button type="button" onClick={() => setAddingCategory(true)}
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, width: '100%', padding: '10px 14px', borderRadius: 99, border: '1.5px dashed var(--border-primary)', background: 'none', cursor: 'pointer', fontSize: 'calc(12.5px * var(--fs-scale-body, 1))', fontWeight: 600, color: 'var(--text-faint)', fontFamily: 'inherit', transition: 'all 0.15s' }}
           onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--text-muted)'; e.currentTarget.style.color = 'var(--text-secondary)' }}
           onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border-primary)'; e.currentTarget.style.color = 'var(--text-faint)' }}>
           <FolderPlus size={14} /> {t('packing.addCategory')}
         </button>
-      ))}
+      )}
+
+      {/* Naming a new list or a template happens in a dialog of its own, not in a
+          field pushed into the page. */}
+      <NameDialog
+        open={canCreateCategory && addingCategory}
+        title={t('packing.addCategory')}
+        icon={ListPlus}
+        placeholder={t('packing.newCategoryPlaceholder')}
+        confirmLabel={t('common.add')}
+        value={newCatName}
+        onChange={setNewCatName}
+        onConfirm={handleAddNewCategory}
+        onClose={() => { setAddingCategory(false); setNewCatName('') }}
+      />
+      <NameDialog
+        open={canEditGroups && isAdmin && items.length > 0 && showSaveTemplate}
+        title={t('packing.saveAsTemplate')}
+        icon={BookmarkPlus}
+        placeholder={t('packing.templateName')}
+        confirmLabel={t('common.save')}
+        value={saveTemplateName}
+        onChange={setSaveTemplateName}
+        onConfirm={handleSaveAsTemplate}
+        onClose={() => { setShowSaveTemplate(false); setSaveTemplateName('') }}
+      />
     </div>
   )
 }

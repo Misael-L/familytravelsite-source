@@ -1,6 +1,7 @@
 import type { TranslationStrings } from '../types';
 
 const todo: TranslationStrings = {
+  'todo.emptyFiltered': 'Inga uppgifter matchar det här filtret',
   'todo.subtab.packing': 'Packlista',
   'todo.subtab.todo': 'Att göra',
   'todo.completed': 'slutförd',
@@ -10,6 +11,7 @@ const todo: TranslationStrings = {
   'todo.uncategorized': 'Ingen lista',
   'todo.namePlaceholder': 'Uppgiftsnamn',
   'todo.descriptionPlaceholder': 'Beskrivning (valfritt)',
+  'todo.editDescription': 'Klicka för att redigera, länkar öppnas direkt',
   'todo.unassigned': 'Ej tilldelad',
   'todo.noCategory': 'Ingen lista',
   'todo.hasDescription': 'Har beskrivning',

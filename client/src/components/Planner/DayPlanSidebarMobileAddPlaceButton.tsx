@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Plus, X, MapPin } from 'lucide-react'
 import { useTranslation } from '../../i18n'
 import type { Place, AssignmentsMap } from '../../types'
+import { placeMatchesSearch } from '../../utils/placeSearch'
 
 export function MobileAddPlaceButton({ dayId, places, assignments, onAssign, onAddNew }: {
   dayId: number
@@ -17,14 +18,12 @@ export function MobileAddPlaceButton({ dayId, places, assignments, onAssign, onA
   // Find places not assigned to this day
   const assignedToDay = new Set((assignments[String(dayId)] || []).map(a => a.place_id))
   const available = places.filter(p => !assignedToDay.has(p.id))
-  const filtered = search.trim()
-    ? available.filter(p => p.name.toLowerCase().includes(search.toLowerCase()))
-    : available
+  const filtered = available.filter(p => placeMatchesSearch(p, search))
 
   return (
     <div className="md:hidden" style={{ padding: '8px 12px 12px' }}>
       {!open ? (
-        <button
+        <button type="button"
           onClick={e => { e.stopPropagation(); setOpen(true) }}
           style={{
             width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
@@ -47,7 +46,7 @@ export function MobileAddPlaceButton({ dayId, places, assignments, onAssign, onA
               placeholder={t('dayplan.mobile.searchPlaces')}
               style={{ flex: 1, border: 'none', outline: 'none', background: 'transparent', fontSize: 'calc(13px * var(--fs-scale-body, 1))', fontFamily: 'inherit', color: 'var(--text-primary)' }}
             />
-            <button onClick={() => { setOpen(false); setSearch('') }} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 2, color: 'var(--text-faint)' }}>
+            <button type="button" onClick={() => { setOpen(false); setSearch('') }} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 2, color: 'var(--text-faint)' }}>
               <X size={14} />
             </button>
           </div>
@@ -58,7 +57,7 @@ export function MobileAddPlaceButton({ dayId, places, assignments, onAssign, onA
               </div>
             )}
             {filtered.slice(0, 20).map(p => (
-              <button
+              <button type="button"
                 key={p.id}
                 onClick={() => {
                   onAssign?.(p.id, dayId)
@@ -68,7 +67,7 @@ export function MobileAddPlaceButton({ dayId, places, assignments, onAssign, onA
                 style={{
                   width: '100%', display: 'flex', alignItems: 'center', gap: 8,
                   padding: '10px 12px', border: 'none', background: 'transparent',
-                  cursor: 'pointer', fontFamily: 'inherit', textAlign: 'left',
+                  cursor: 'pointer', fontFamily: 'inherit', textAlign: 'start',
                 }}
               >
                 <MapPin size={13} style={{ color: 'var(--text-faint)', flexShrink: 0 }} />
@@ -77,7 +76,7 @@ export function MobileAddPlaceButton({ dayId, places, assignments, onAssign, onA
             ))}
           </div>
           {onAddNew && (
-            <button
+            <button type="button"
               onClick={() => { onAddNew(); setOpen(false); setSearch('') }}
               style={{
                 width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,

@@ -39,10 +39,7 @@ export function usePluginViewContributions(view: ViewName, tripId: string | numb
       .catch(() => { if (!cancelled) setByEntity(new Map()) })
     return () => { cancelled = true }
   }, [view, tripId])
-  return useCallback((entityId: string | number): ViewContribution[] => {
-    if (typeof entityId !== 'number') return EMPTY
-    return byEntity.get(entityId) ?? EMPTY
-  }, [byEntity])
+  return useCallback((entityId: number): ViewContribution[] => byEntity.get(entityId) ?? EMPTY, [byEntity])
 }
 
 const TONE_CLASS: Record<Column['tone'], string> = {
@@ -62,8 +59,8 @@ export function PluginColumns({ items }: { items: ViewContribution[] }) {
         <div key={c.pluginId + c.id} className="flex items-baseline justify-between gap-2 text-xs">
           <span className="text-content-secondary font-medium shrink-0">{c.label}</span>
           {c.url
-            ? <a href={c.url} target="_blank" rel="noreferrer noopener" className="text-accent truncate text-right" onClick={(e) => e.stopPropagation()}>{c.value ?? '↗'}</a>
-            : <span className={`${TONE_CLASS[c.tone] ?? TONE_CLASS.default} text-right truncate`}>{c.value}</span>}
+            ? <a href={c.url} target="_blank" rel="noreferrer noopener" className="text-accent truncate text-end" onClick={(e) => e.stopPropagation()}>{c.value ?? '↗'}</a>
+            : <span className={`${TONE_CLASS[c.tone] ?? TONE_CLASS.default} text-end truncate`}>{c.value}</span>}
         </div>
       ))}
     </div>
@@ -101,24 +98,23 @@ export function PluginActions({ items, tripId, className }: { items: ViewContrib
   return (
     <>
       {actions.map((a) => (
-        <button
+        <button type="button"
           key={a.pluginId + a.id}
           onClick={(e) => run(a, e)}
-          title={a.label}
           className={className ?? 'px-2 h-7 inline-flex items-center rounded-lg border border-edge bg-surface-card text-xs text-content-muted hover:text-content hover:border-content-faint transition-colors'}
         >
           {a.label}
         </button>
       ))}
       {frame && (
-        <div className="fixed inset-0 z-[4000] flex items-center justify-center bg-black/50 p-4" onClick={() => setFrame(null)}>
-          <div className="bg-surface-card rounded-xl shadow-xl w-full max-w-lg h-[70vh] flex flex-col overflow-hidden" onClick={(e) => e.stopPropagation()}>
+        <div role="presentation" className="fixed inset-0 z-[4000] flex items-center justify-center bg-black/50 p-4" onClick={() => setFrame(null)}>
+          <div role="presentation" className="bg-surface-card rounded-xl shadow-xl w-full max-w-lg h-[70vh] flex flex-col overflow-hidden" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between px-4 py-2.5 border-b border-edge shrink-0">
               <span className="text-sm font-medium text-content truncate">{frame.label}</span>
-              <button onClick={() => setFrame(null)} className="text-content-muted hover:text-content"><X size={16} /></button>
+              <button type="button" onClick={() => setFrame(null)} className="text-content-muted hover:text-content"><X size={16} /></button>
             </div>
             <div className="flex-1 min-h-0">
-              <PluginFrame pluginId={frame.pluginId} tripId={tripId != null ? String(tripId) : null} title={frame.label} fill />
+              <PluginFrame pluginId={frame.pluginId} tripId={tripId != null ? String(tripId) : null} title={frame.label} fill surface="action-frame" />
             </div>
           </div>
         </div>

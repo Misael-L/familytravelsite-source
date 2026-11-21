@@ -1,6 +1,9 @@
+import { isFamilyFrontendActive } from '../integrations/family/runtime'
+import { useFamilyUiPermissions, familyCanDo } from '../integrations/family/uiPermissions'
 import { create } from 'zustand'
 import { useAuthStore } from './authStore'
 
+const nativePermissionKey = (key: string) => key === 'todo_edit' ? 'packing_edit' : key
 export type PermissionLevel = 'admin' | 'trip_owner' | 'trip_member' | 'everybody'
 
 /** Minimal trip shape used by permission checks — accepts both Trip and DashboardTrip */
@@ -21,6 +24,8 @@ export const usePermissionsStore = create<PermissionsState>((set) => ({
  * Usage: const can = useCanDo(); can('trip_create') or can('file_upload', trip)
  */
 export function useCanDo() {
+  // Re-render chrome on permission changes; retained native callbacks read the live controller below.
+  useFamilyUiPermissions(s => s.controller)
   const perms = usePermissionsStore((s: PermissionsState) => s.permissions)
   const user = useAuthStore((s) => s.user)
 
@@ -28,10 +33,11 @@ export function useCanDo() {
     actionKey: string,
     trip?: TripOwnerContext | null,
   ): boolean {
+    if (isFamilyFrontendActive()) return familyCanDo(actionKey, useFamilyUiPermissions.getState().controller)
     if (!user) return false
     if (user.role === 'admin') return true
 
-    const level = perms[actionKey]
+    const level = perms[nativePermissionKey(actionKey)]
     if (!level) return true // not configured = allow
 
     // Support both Trip (owner_id) and DashboardTrip/server response (user_id)

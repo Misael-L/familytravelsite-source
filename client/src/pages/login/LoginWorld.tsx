@@ -59,8 +59,10 @@ export default function LoginWorld({ variant = 'ambient' }: LoginWorldProps): Re
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
+    const drawingCanvas = canvas;
+    const drawingContext = ctx;
 
-    const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false;
+    const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
     const dots = worldDots();
 
     let raf = 0;
@@ -106,13 +108,13 @@ export default function LoginWorld({ variant = 'ambient' }: LoginWorldProps): Re
     }
 
     function resize() {
-      const rect = canvas!.getBoundingClientRect();
+      const rect = drawingCanvas.getBoundingClientRect();
       dpr = Math.min(window.devicePixelRatio || 1, 2);
       width = rect.width;
       height = rect.height;
-      canvas!.width = Math.max(1, Math.floor(width * dpr));
-      canvas!.height = Math.max(1, Math.floor(height * dpr));
-      ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
+      drawingCanvas.width = Math.max(1, Math.floor(width * dpr));
+      drawingCanvas.height = Math.max(1, Math.floor(height * dpr));
+      drawingContext.setTransform(dpr, 0, 0, dpr, 0, 0);
       buildMap();
     }
 
@@ -172,14 +174,14 @@ export default function LoginWorld({ variant = 'ambient' }: LoginWorldProps): Re
     }
 
     function cityGlow(x: number, y: number, alpha: number, radius: number) {
-      const g = ctx!.createRadialGradient(x, y, 0, x, y, radius);
+      const g = drawingContext.createRadialGradient(x, y, 0, x, y, radius);
       g.addColorStop(0, `rgba(199, 210, 254, ${alpha})`);
       g.addColorStop(0.35, `rgba(129, 140, 248, ${alpha * 0.5})`);
       g.addColorStop(1, 'rgba(99, 102, 241, 0)');
-      ctx!.fillStyle = g;
-      ctx!.beginPath();
-      ctx!.arc(x, y, radius, 0, Math.PI * 2);
-      ctx!.fill();
+      drawingContext.fillStyle = g;
+      drawingContext.beginPath();
+      drawingContext.arc(x, y, radius, 0, Math.PI * 2);
+      drawingContext.fill();
     }
 
     let last = 0;
@@ -189,8 +191,8 @@ export default function LoginWorld({ variant = 'ambient' }: LoginWorldProps): Re
       const dt = last ? Math.min(now - last, 48) : 16;
       last = now;
 
-      ctx!.clearRect(0, 0, width, height);
-      if (mapLayer) ctx!.drawImage(mapLayer, 0, 0, width, height);
+      drawingContext.clearRect(0, 0, width, height);
+      if (mapLayer) drawingContext.drawImage(mapLayer, 0, 0, width, height);
 
       if (!takeoff) {
         spawnTimer -= dt;
@@ -221,16 +223,16 @@ export default function LoginWorld({ variant = 'ambient' }: LoginWorldProps): Re
         }
 
         // The drawn portion, with the leading edge brightest.
-        ctx!.strokeStyle = `rgba(129, 140, 248, ${0.5 * fade})`;
-        ctx!.lineWidth = 1.4;
-        ctx!.beginPath();
+        drawingContext.strokeStyle = `rgba(129, 140, 248, ${0.5 * fade})`;
+        drawingContext.lineWidth = 1.4;
+        drawingContext.beginPath();
         const segs = Math.max(2, Math.round(34 * a.t));
         for (let s = 0; s <= segs; s++) {
           const pt = pointOn(p1, cx, cy, p2, (a.t * s) / segs);
-          if (s === 0) ctx!.moveTo(pt.x, pt.y);
-          else ctx!.lineTo(pt.x, pt.y);
+          if (s === 0) drawingContext.moveTo(pt.x, pt.y);
+          else drawingContext.lineTo(pt.x, pt.y);
         }
-        ctx!.stroke();
+        drawingContext.stroke();
 
         // Origin lights the moment the route leaves it, destination on arrival.
         cityGlow(p1.x, p1.y, 0.55 * fade, Math.max(9, cell * 2.6));
@@ -240,10 +242,10 @@ export default function LoginWorld({ variant = 'ambient' }: LoginWorldProps): Re
         if (a.t < 1) {
           const head = pointOn(p1, cx, cy, p2, a.t);
           cityGlow(head.x, head.y, 0.75, Math.max(7, cell * 2));
-          ctx!.fillStyle = 'rgba(224, 242, 254, 0.95)';
-          ctx!.beginPath();
-          ctx!.arc(head.x, head.y, 1.8, 0, Math.PI * 2);
-          ctx!.fill();
+          drawingContext.fillStyle = 'rgba(224, 242, 254, 0.95)';
+          drawingContext.beginPath();
+          drawingContext.arc(head.x, head.y, 1.8, 0, Math.PI * 2);
+          drawingContext.fill();
         }
       }
 

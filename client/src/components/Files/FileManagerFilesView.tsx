@@ -1,26 +1,22 @@
 import { Fragment } from 'react'
-import { Upload, FileText, Star } from 'lucide-react'
+import { Upload, Star } from 'lucide-react'
 import type { FileManagerState } from './useFileManager'
 import { FileRow } from './FileManagerRow'
 import { usePluginViewContributions, PluginCardFooter } from '../Plugins/PluginContributions'
+import EmptyState from '../shared/EmptyState'
 
 export function FilesView(S: FileManagerState) {
   const {
     can, trip, getRootProps, getInputProps, isDragActive, uploading, t, allowedFileTypes,
-    files, filterType, setFilterType, filteredFiles, enablePlugins, tripId,
+    files, filterType, setFilterType, filteredFiles,
   } = S
-  const contribFor = usePluginViewContributions('files', enablePlugins ? tripId : null)
+  const contribFor = usePluginViewContributions('files', S.tripId)
   return (
     <>
       {/* Upload zone */}
       {can('file_upload', trip) && <div
         {...getRootProps()}
-        style={{
-          margin: '16px 28px 0', border: '2px dashed', borderRadius: 14, padding: '20px 16px',
-          textAlign: 'center', cursor: 'pointer', transition: 'all 0.15s',
-          borderColor: isDragActive ? 'var(--text-secondary)' : 'var(--border-primary)',
-          background: isDragActive ? 'var(--bg-secondary)' : 'var(--bg-card)',
-        }}
+        className={`mx-7 mt-4 cursor-pointer rounded-2xl border-2 border-dashed px-4 py-5 text-center transition-colors max-md:mx-4 ${isDragActive ? 'border-content-muted bg-surface-tertiary' : 'border-edge bg-surface-secondary hover:border-content-faint'}`}
       >
         <input {...getInputProps()} />
         <Upload size={24} style={{ margin: '0 auto 8px', color: isDragActive ? 'var(--text-secondary)' : 'var(--text-faint)', display: 'block' }} />
@@ -34,8 +30,9 @@ export function FilesView(S: FileManagerState) {
             <p style={{ fontSize: 'calc(13px * var(--fs-scale-body, 1))', color: 'var(--text-secondary)', fontWeight: 500, margin: 0 }}>{t('files.dropzone')}</p>
             <p style={{ fontSize: 'calc(11.5px * var(--fs-scale-caption, 1))', color: 'var(--text-faint)', marginTop: 3 }}>{t('files.dropzoneHint')}</p>
             <p style={{ fontSize: 'calc(10px * var(--fs-scale-caption, 1))', color: 'var(--text-faint)', marginTop: 6, opacity: 0.7 }}>
-              {(allowedFileTypes || 'jpg,jpeg,png,gif,webp,heic,pdf,doc,docx,xls,xlsx,txt,csv').toUpperCase().split(',').join(', ')} · Max 50 MB
+              {(allowedFileTypes || 'jpg,jpeg,png,gif,webp,heic,pdf,doc,docx,xls,xlsx,txt,csv').toUpperCase().split(',').join(', ')}
             </p>
+            <span className="mt-1.5 inline-block rounded-full bg-surface-card px-2 py-[2px] font-geist font-semibold text-content-faint" style={{ fontSize: 'calc(10px * var(--fs-scale-caption, 1))' }}>{t('files.maxSize', { count: S.maxUploadMb })}</span>
           </>
         )}
       </div>}
@@ -50,7 +47,7 @@ export function FilesView(S: FileManagerState) {
           { id: 'doc', label: t('files.filterDocs') },
           ...(files.some(f => f.note_id) ? [{ id: 'collab', label: t('files.filterCollab') || 'Collab' }] : []),
         ].map(tab => (
-          <button key={tab.id} onClick={() => setFilterType(tab.id)} style={{
+          <button type="button" key={tab.id} onClick={() => setFilterType(tab.id)} style={{
             padding: '4px 12px', borderRadius: 99, border: 'none', cursor: 'pointer', fontSize: 'calc(12px * var(--fs-scale-body, 1))',
             fontFamily: 'inherit', transition: 'all 0.12s',
             background: filterType === tab.id ? 'var(--accent)' : 'transparent',
@@ -58,29 +55,23 @@ export function FilesView(S: FileManagerState) {
             fontWeight: filterType === tab.id ? 600 : 400,
           }}>{tab.icon ? <tab.icon size={13} fill={filterType === tab.id ? '#facc15' : 'none'} color={filterType === tab.id ? '#facc15' : 'currentColor'} /> : tab.label}</button>
         ))}
-        <span style={{ marginLeft: 'auto', fontSize: 'calc(11.5px * var(--fs-scale-caption, 1))', color: 'var(--text-faint)', alignSelf: 'center' }}>
-          {filteredFiles.length === 1 ? t('files.countSingular') : t('files.count', { count: filteredFiles.length })}
+        <span style={{ marginInlineStart: 'auto', fontSize: 'calc(11.5px * var(--fs-scale-caption, 1))', color: 'var(--text-faint)', alignSelf: 'center' }}>
+          {t('files.count', { count: filteredFiles.length })}
         </span>
       </div>
 
       {/* File list */}
       <div style={{ flex: 1, overflowY: 'auto', padding: '12px 28px 16px' }} className="max-md:!px-4">
         {filteredFiles.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--text-faint)' }}>
-            <FileText size={40} style={{ color: 'var(--text-faint)', display: 'block', margin: '0 auto 12px' }} />
-            <p style={{ fontSize: 'calc(14px * var(--fs-scale-body, 1))', fontWeight: 600, color: 'var(--text-secondary)', margin: '0 0 4px' }}>{t('files.empty')}</p>
-            <p style={{ fontSize: 'calc(13px * var(--fs-scale-body, 1))', color: 'var(--text-faint)', margin: 0 }}>{t('files.emptyHint')}</p>
-          </div>
+          <EmptyState scene="files" title={t('files.empty')} />
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {filteredFiles.map(file => {
-              const contributions = typeof file.id === 'number' ? contribFor(file.id) : []
+              const contributions = contribFor(file.id)
               return (
                 <Fragment key={file.id}>
                   <FileRow {...S} file={file} />
-                  {enablePlugins && typeof S.tripId === 'number' && contributions.length > 0 && (
-                    <div style={{ padding: '0 4px' }}><PluginCardFooter items={contributions} tripId={S.tripId} /></div>
-                  )}
+                  {contributions.length > 0 && <div style={{ padding: '0 4px' }}><PluginCardFooter items={contributions} tripId={S.tripId} /></div>}
                 </Fragment>
               )
             })}

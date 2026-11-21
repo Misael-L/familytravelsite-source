@@ -5,23 +5,6 @@ const login: TranslationStrings = {
   'login.tagline': 'Els teus viatges.\nEl teu pla.',
   'login.description':
     'Planifica viatges en col·laboració amb mapes interactius, pressupostos i sincronització en temps real.',
-  'login.features.maps': 'Mapes interactius',
-  'login.features.mapsDesc': 'Google Places, rutes i agrupació',
-  'login.features.realtime': 'Sincronització en temps real',
-  'login.features.realtimeDesc': 'Planifiqueu junts mitjançant WebSocket',
-  'login.features.budget': 'Control de pressupost',
-  'login.features.budgetDesc': 'Categories, gràfics i costos per persona',
-  'login.features.collab': 'Col·laboració',
-  'login.features.collabDesc': 'Multiusuari amb viatges compartits',
-  'login.features.packing': "Llistes d'equipatge",
-  'login.features.packingDesc': 'Categories, progrés i suggeriments',
-  'login.features.bookings': 'Reserves',
-  'login.features.bookingsDesc': 'Vols, hotels, restaurants i més',
-  'login.features.files': 'Documents',
-  'login.features.filesDesc': 'Puja i gestiona documents',
-  'login.features.routes': 'Rutes intel·ligents',
-  'login.features.routesDesc': 'Optimització automàtica i exportació a Google Maps',
-  'login.selfHosted': 'Autoallotjat · Codi obert · Les teves dades segueixen sent teves',
   'login.title': 'Inicia la sessió',
   'login.subtitle': 'Benvingut de nou',
   'login.signingIn': 'Iniciant la sessió…',
@@ -43,6 +26,7 @@ const login: TranslationStrings = {
   'login.mfaTitle': 'Autenticació de dos factors',
   'login.mfaSubtitle': "Introdueix el codi de 6 dígits de la teva app d'autenticació.",
   'login.mfaCodeLabel': 'Codi de verificació',
+  'login.mfaPlaceholder': '000000 o XXXX-XXXX',
   'login.mfaCodeRequired': "Introdueix el codi de la teva app d'autenticació.",
   'login.mfaHint': 'Obre Google Authenticator, Authy o una altra app TOTP.',
   'login.mfaBack': "← Torna a l'inici de sessió",
@@ -78,12 +62,18 @@ const login: TranslationStrings = {
   'login.resetPasswordFailed': "Restabliment fallit. L'enllaç pot haver caducat.",
   'login.oidc.tokenFailed': "L'autenticació ha fallat.",
   'login.oidc.invalidState': 'Sessió no vàlida. Torna-ho a provar.',
+  'login.oidc.emailNotVerified':
+    "El teu proveïdor d'inici de sessió no ha confirmat aquesta adreça de correu, així que no es pot vincular a un compte existent.",
+  'login.oidc.emailLinkBlocked':
+    "Aquest inici de sessió no s'ha pogut vincular al compte existent amb aquest correu. Demana a l'administrador que confirmi l'adreça.",
   'login.demoFailed': "Ha fallat l'accés a la demo",
   'login.oidcSignIn': 'Entra amb {name}',
   'login.demoHint': 'Prova la demo: no cal que et registris',
   'login.oidcOnly':
     "L'autenticació per contrasenya està desactivada. Si us plau, inicia la sessió amb el teu proveïdor SSO.",
   'login.oidcLoggedOut': 'Has tancat la sessió. Torna a iniciar-la amb el teu proveïdor SSO.',
+  'login.oidcRedirecting': 'Redirigint a {name}…',
+  'login.oidcRedirectSlow': 'Encara aquí? Continua a {name}',
   'login.passkey.signIn': 'Inicia la sessió amb una passkey',
   'login.passkey.failed': 'Error en iniciar la sessió amb la passkey. Torna-ho a provar.',
 
@@ -92,6 +82,5 @@ const login: TranslationStrings = {
   'login.insecureCookie.body':
     'T\'estàs connectant mitjançant HTTP ordinari, de manera que el teu navegador rebutja la galeta de sessió segura de TREK — la següent petició fallarà amb "Access token required". Solució: utilitza HTTPS, o per a entorns locals (home-lab) defineix COOKIE_SECURE=false.',
   'login.insecureCookie.link': 'Obre la guia de resolució de problemes',
-  'login.sourceCode': 'Source code (AGPL-3.0)',
 };
 export default login;

@@ -1,21 +1,86 @@
-import { useState, useMemo, useEffect, useRef } from 'react'
+import { currentPlannerTaskPort, taskOriginArgs } from '../../repo/plannerTaskPort'
+import { useState, useMemo, useEffect, useEffectEvent, useRef } from 'react'
 import { useTripStore } from '../../store/tripStore'
 import { useCanDo } from '../../store/permissionsStore'
 import { useToast } from '../shared/Toast'
 import { useTranslation } from '../../i18n'
+import apiClient from '../../api/client'
 import { formatDate as fmtDate } from '../../utils/formatters'
 import type { TodoItem } from '../../types'
-import type { FilterType, Member } from './todoListModel'
-import { nestTodoListOps, type TodoEntityId, type TodoListOps } from './todoListOps'
+import { localToday } from '../Planner/today'
+import {
+  compareTodoDue, compareTodoPriority, filterTodoItems, filterTodoItemsByCategory, isTodoSmartFilter, sortTodoRows,
+  todoCategories, todoCategoryOpenCount, todoCounts, type FilterType, type Member, type TodoSmartFilter,
+} from './todoListModel'
+import { useIsPhone } from '../../mobile/useIsPhone'
 
-export type TodoListPanelProps = {
-  tripId: TodoEntityId
-  items: TodoItem[]
-  addItemSignal?: number
-  ops?: TodoListOps
-  canMutate?: boolean
-  currentUserId?: TodoEntityId | null
-  enablePlugins?: boolean
+/**
+ * The bucket the list shows: one of the four built-ins, addressed by id, or a
+ * category, addressed by name, so a category a user called "all" or "done"
+ * can have its own bucket instead of the built-in one.
+ */
+export type TodoActiveFilter = { kind: 'smart'; id: TodoSmartFilter } | { kind: 'category'; name: string }
+
+type TodoSort = 'priority' | 'due' | null
+
+export interface TodoViewOptions {
+  /**
+   * The phone's row order: done tasks sink to the end and open overdue ones
+   * float to the top, the sort toggle only breaks ties. The desktop list keeps
+   * the filtered order and sorts it by the toggle alone.
+   */
+  rankByStatus?: boolean
+  /**
+   * Read "today" once when the view mounts, as the phone tab does. The desktop
+   * list reads it on every render, so its overdue cut-off moves at midnight.
+   */
+  pinToday?: boolean
+}
+
+/**
+ * The to-do view state both views share: the active bucket, the sort toggle,
+ * "today" and what is derived from them (categories, rows, counts). The
+ * desktop panel gets it through useTodoList, the phone tab calls it with its
+ * own options.
+ */
+export function useTodoView(items: TodoItem[], currentUserId: number | null, options: TodoViewOptions = {}) {
+  const { rankByStatus = false, pinToday = false } = options
+  const [active, setActive] = useState<TodoActiveFilter>({ kind: 'smart', id: 'all' })
+  const [sortBy, setSortBy] = useState<TodoSort>(null)
+
+  // due_date is a bare calendar date, so "today" has to be the user's calendar
+  // day: toISOString() hands over the UTC one and shifts the overdue cut-off.
+  const [mountDay] = useState(() => localToday())
+  const today = pinToday ? mountDay : localToday()
+
+  const categories = useMemo(() => todoCategories(items), [items])
+
+  const rows = useMemo(() => {
+    const result = active.kind === 'category'
+      ? filterTodoItemsByCategory(items, active.name)
+      : filterTodoItems(items, active.id, currentUserId, today)
+    if (rankByStatus) return sortTodoRows(result, sortBy, today)
+    if (sortBy === 'priority') return [...result].sort(compareTodoPriority)
+    // Ties keep the manual order, the stable sort leaves them untouched (#2205).
+    if (sortBy === 'due') return [...result].sort(compareTodoDue)
+    return result
+  }, [items, active, currentUserId, today, sortBy, rankByStatus])
+
+  const counts = todoCounts(items, currentUserId, today)
+
+  // The desktop sidebar addresses every bucket by one string, so a category
+  // that shares a built-in's id lands on the built-in, as it always has there.
+  const filter: FilterType = active.kind === 'smart' ? active.id : active.name
+  const setFilter = (f: FilterType) =>
+    setActive(isTodoSmartFilter(f) ? { kind: 'smart', id: f } : { kind: 'category', name: f })
+
+  // A second press on the active sort goes back to the manual order.
+  const toggleSort = (key: 'priority' | 'due') => setSortBy(v => (v === key ? null : key))
+
+  // Open (non-done) count of a category
+  const catCount = (cat: string) => todoCategoryOpenCount(items, cat)
+
+  return { active, setActive, filter, setFilter, sortBy, toggleSort, today, categories, rows, counts, catCount }
 }
 
 /**
@@ -24,135 +89,77 @@ export type TodoListPanelProps = {
  * TodoListPanel stays a layout component that renders the sidebar, the rows
  * (TodoRow) and the detail/new panes from this state.
  */
-export function useTodoList({
-  tripId,
-  items,
-  addItemSignal = 0,
-  ops = nestTodoListOps,
-  canMutate,
-  currentUserId: currentUserIdProp,
-  enablePlugins = true,
-}: TodoListPanelProps) {
+export function useTodoList(tripId: number, items: TodoItem[], addItemSignal: number, onAddItemHandled?: (signal: number) => void) {
+  const { addTodoItem, updateTodoItem, deleteTodoItem, toggleTodoItem, reorderTodoItems } = useTripStore()
   const trip = useTripStore((s) => s.trip)
-  const nestCan = useCanDo()
-  const canEdit = canMutate !== undefined ? canMutate : nestCan('packing_edit', trip)
+  const can = useCanDo()
+  const canEdit = can('todo_edit', trip)
+  const taskWriter = currentPlannerTaskPort()
   const toast = useToast()
   const { t, locale } = useTranslation()
   const formatDate = (d: string) => fmtDate(d, locale) || d
-  const hof = 'trip.explore.add.hofOnly'
-  const guardWrite = () => {
-    if (canMutate === false) {
-      toast.error(t(hof))
-      return false
-    }
-    return true
-  }
 
-  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768)
-  useEffect(() => {
-    const mq = window.matchMedia('(max-width: 767px)')
-    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches)
-    mq.addEventListener('change', handler)
-    return () => mq.removeEventListener('change', handler)
-  }, [])
+  const isMobile = useIsPhone()
 
-  const [filter, setFilter] = useState<FilterType>('all')
-  const [selectedId, setSelectedId] = useState<TodoEntityId | null>(null)
+  const [selectedId, setSelectedId] = useState<number | null>(null)
   const [isAddingNew, setIsAddingNew] = useState(false)
-  const lastHandledAddSignal = useRef(addItemSignal)
+  // A parent-owned request may predate this lazy panel's first render. The
+  // acknowledgement retires it so a later tab remount cannot replay it.
+  const lastHandledAddSignal = useRef(onAddItemHandled ? 0 : addItemSignal)
 
+  const consumeAddRequest = useEffectEvent((signal: number) => {
+    setSelectedId(null)
+    if (!onAddItemHandled || canEdit) setIsAddingNew(true)
+    onAddItemHandled?.(signal)
+  })
   useEffect(() => {
     if (addItemSignal !== lastHandledAddSignal.current && addItemSignal > 0) {
-      setSelectedId(null)
-      setIsAddingNew(true)
+      consumeAddRequest(addItemSignal)
     }
     lastHandledAddSignal.current = addItemSignal
   }, [addItemSignal])
-  const [sortByPrio, setSortByPrio] = useState(false)
   const [addingCategory, setAddingCategory] = useState(false)
   const [newCategoryName, setNewCategoryName] = useState('')
   const [members, setMembers] = useState<Member[]>([])
-  const [loadedUserId, setLoadedUserId] = useState<TodoEntityId | null>(null)
+  const [currentUserId, setCurrentUserId] = useState<number | null>(null)
 
   useEffect(() => {
-    ops.loadMembers(tripId).then(r => {
-      setMembers(r.members)
-      setLoadedUserId(r.currentUserId)
+    let current = true
+    apiClient.get(`/trips/${tripId}/members`).then(r => {
+      if (!current) return
+      const owner = r.data?.owner
+      const mems = r.data?.members || []
+      const all = owner ? [owner, ...mems] : mems
+      setMembers(all)
+      setCurrentUserId(r.data?.current_user_id || null)
     }).catch(() => {})
-  }, [tripId, ops])
+    return () => { current = false }
+  }, [tripId])
 
-  const currentUserId = currentUserIdProp !== undefined ? currentUserIdProp : loadedUserId
-
-  const categories = useMemo(() => {
-    const cats = new Set<string>()
-    items.forEach(i => { if (i.category) cats.add(i.category) })
-    return Array.from(cats).sort()
-  }, [items])
-
-  const today = new Date().toISOString().split('T')[0]
-
-  const filtered = useMemo(() => {
-    let result: TodoItem[]
-    if (filter === 'all') result = items.filter(i => !i.checked)
-    else if (filter === 'done') result = items.filter(i => !!i.checked)
-    else if (filter === 'my') result = items.filter(i => !i.checked && i.assigned_user_id === currentUserId)
-    else if (filter === 'overdue') result = items.filter(i => !i.checked && i.due_date && i.due_date < today)
-    else result = items.filter(i => i.category === filter)
-    if (sortByPrio) result = [...result].sort((a, b) => {
-      const ap = a.priority || 99
-      const bp = b.priority || 99
-      return ap - bp
-    })
-    return result
-  }, [items, filter, currentUserId, today, sortByPrio])
+  const { filter, setFilter, sortBy, toggleSort, today, categories, rows: filtered, counts, catCount } = useTodoView(items, currentUserId)
+  const sortByPrio = sortBy === 'priority'
+  const sortByDue = sortBy === 'due'
 
   const selectedItem = items.find(i => i.id === selectedId) || null
-  const totalCount = items.length
-  const doneCount = items.filter(i => !!i.checked).length
-  const overdueCount = items.filter(i => !i.checked && i.due_date && i.due_date < today).length
-  const myCount = currentUserId ? items.filter(i => !i.checked && i.assigned_user_id === currentUserId).length : 0
+  const { total: totalCount, done: doneCount, overdue: overdueCount, my: myCount } = counts
 
   const addCategory = () => {
     const name = newCategoryName.trim()
     if (!name || categories.includes(name)) { setAddingCategory(false); setNewCategoryName(''); return }
-    if (!guardWrite()) return
-    ops.addItem(tripId, { name: t('todo.newItem'), category: name })
+    addTodoItem(tripId, { name: t('todo.newItem'), category: name }, ...taskOriginArgs(taskWriter?.bind(null, tripId)))
       .then(() => { setAddingCategory(false); setNewCategoryName(''); setFilter(name) })
       .catch(err => toast.error(err instanceof Error ? err.message : t('common.error')))
-  }
-
-  const catCount = (cat: string) => items.filter(i => i.category === cat && !i.checked).length
-
-  const toggleTodoItem = (tid: TodoEntityId, id: TodoEntityId, checked: boolean) => {
-    if (!guardWrite()) return Promise.resolve()
-    return ops.toggleItem(tid, id, checked)
-  }
-  const reorderTodoItems = (tid: TodoEntityId, orderedIds: TodoEntityId[]) => {
-    if (!guardWrite()) return Promise.resolve()
-    return ops.reorderItems(tid, orderedIds)
-  }
-  const updateTodoItem = (tid: TodoEntityId, id: TodoEntityId, data: Parameters<typeof ops.updateItem>[2]) => {
-    if (!guardWrite()) return Promise.resolve()
-    return ops.updateItem(tid, id, data)
-  }
-  const deleteTodoItem = (tid: TodoEntityId, id: TodoEntityId) => {
-    if (!guardWrite()) return Promise.resolve()
-    return ops.deleteItem(tid, id)
-  }
-  const addTodoItem = (tid: TodoEntityId, data: Parameters<typeof ops.addItem>[1]) => {
-    if (!guardWrite()) return Promise.reject(new Error(t(hof)))
-    return ops.addItem(tid, data)
   }
 
   return {
     canEdit, t, formatDate, toggleTodoItem, reorderTodoItems,
     isMobile, filter, setFilter, selectedId, setSelectedId,
-    isAddingNew, setIsAddingNew, sortByPrio, setSortByPrio,
+    isAddingNew: isAddingNew && canEdit, setIsAddingNew, sortByPrio, sortByDue, toggleSort,
     addingCategory, setAddingCategory, newCategoryName, setNewCategoryName,
     members, categories, today, filtered, selectedItem,
     totalCount, doneCount, overdueCount, myCount,
     addCategory, catCount,
-    updateTodoItem, deleteTodoItem, addTodoItem,
-    enablePlugins, canMutate, ops,
+    // exposed for completeness (DetailPane/NewTaskPane already get their own)
+    updateTodoItem, deleteTodoItem,
   }
 }

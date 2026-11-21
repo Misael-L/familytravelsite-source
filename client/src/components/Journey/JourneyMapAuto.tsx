@@ -1,39 +1,75 @@
-import { forwardRef, lazy, Suspense, useImperativeHandle, useRef } from 'react'
-import { isSupabaseDataPlane } from '../../data/supabase/auth'
+import { Suspense, useImperativeHandle, useRef, type Ref } from 'react'
 import { useSettingsStore } from '../../store/settingsStore'
-import JourneyMap, { type JourneyMapHandle, type JourneyMapViewProps } from './JourneyMap'
+import JourneyMap, { type JourneyMapHandle } from './JourneyMap'
+import ErrorBoundary from '../shared/ErrorBoundary'
 import type { JourneyMapGLHandle } from './JourneyMapGL'
-import { useEffectiveMapConfig } from '../Map/useEffectiveMapConfig'
 
-const JourneyMapGL = lazy(() => import('./JourneyMapGL'))
+import { JourneyMapGLMapbox, JourneyMapGLMaplibre } from '../Map/glLazy'
+import { useGlRenderer } from '../Map/glSupport'
+import type { JourneyTrack } from '@trek/shared'
+import type { MapPhoto } from './journeyPhotoLayer'
+import type { JourneyMapLayerVisibility } from './journeyMapLayers'
+import type { JourneyMapMark } from './journeyMapMarks'
 
+// Unified handle — both providers expose the same three methods.
 export type JourneyMapAutoHandle = JourneyMapHandle
 
-interface Props extends JourneyMapViewProps {
-  publicMap?: boolean
+interface MapEntry {
+  id: string
+  lat: number
+  lng: number
+  title?: string | null
+  location_name?: string | null
+  mood?: string | null
+  entry_date: string
+  dayColor?: string
+  /** Null leaves the pin unnumbered: a draft the share link does not count. */
+  dayLabel?: number | null
 }
 
-const JourneyMapAuto = forwardRef<JourneyMapAutoHandle, Props>(function JourneyMapAuto(props, ref) {
-  const { publicMap, tileUrl: _tileUrl, tileAttribution: _tileAttribution, ...mapProps } = props
-  const map = useEffectiveMapConfig({ public: publicMap === true })
-  const nestProvider = useSettingsStore(s => s.settings.map_provider)
-  const nestToken = useSettingsStore(s => s.settings.mapbox_access_token)
-  const supabasePlane = isSupabaseDataPlane()
+interface Props {
+  ref?: Ref<JourneyMapAutoHandle>
+  checkins: unknown[]
+  entries: MapEntry[]
+  trail?: { lat: number; lng: number }[]
+  tracks?: JourneyTrack[]
+  height?: number
+  dark?: boolean
+  activeMarkerId?: string | null
+  onMarkerClick?: (id: string, type?: string) => void
+  fullScreen?: boolean
+  paddingBottom?: number
+  /**
+   * How much of the map's leading edge a bar laid over it covers (the touch
+   * shell's rail), in px: framing keeps the journey clear of it. Read when the
+   * map frames, so a change alone does not rebuild the map.
+   */
+  paddingStart?: number
+  /** Open the entry a marker card names when the card is tapped, both renderers. */
+  onMarkerCardClick?: (entryId: string) => void
+  /** Open an entry's photos from the marker card's thumbnail strip. GL renderer only. */
+  onMarkerPhotoClick?: (entryId: string, photoIndex: number) => void
+  /** Geotagged photos as thumbnails on the map, both renderers (#2453). */
+  photos?: MapPhoto[]
+  onPhotoClick?: (photoIds: string[]) => void
+  /** JRN-04: the layers the reader shows, and the plan and stay marks, both renderers. */
+  layerVisibility?: JourneyMapLayerVisibility
+  marks?: JourneyMapMark[]
+  onMarksPick?: (marks: JourneyMapMark[]) => void
+  plannedEntryIds?: ReadonlySet<string>
+}
+
+function JourneyMapAuto({ ref, ...props }: Props) {
+  const provider = useSettingsStore(s => s.settings.map_provider)
+  const token = useSettingsStore(s => s.settings.mapbox_access_token)
   const leafletRef = useRef<JourneyMapHandle>(null)
   const glRef = useRef<JourneyMapGLHandle>(null)
 
-  const glProvider = publicMap
-    ? null
-    : map.engine === 'maplibre-gl'
-      ? 'maplibre-gl'
-      : map.engine === 'mapbox-gl' && map.mapboxToken
-        ? 'mapbox-gl'
-        : (!supabasePlane && nestProvider === 'maplibre-gl')
-          ? 'maplibre-gl'
-          : (!supabasePlane && nestProvider === 'mapbox-gl' && nestToken)
-            ? 'mapbox-gl'
-            : null
-  const useGL = !!glProvider
+  // Fall back to Leaflet when the user selected Mapbox GL but hasn't supplied a
+  // token yet (MapLibre/OpenFreeMap is tokenless), or when the browser has no WebGL2.
+  const glRenderer = useGlRenderer(provider, token)
+  const useGL = glRenderer !== null
+  const glProvider = glRenderer ?? 'mapbox-gl'
 
   useImperativeHandle(ref, () => ({
     highlightMarker: (id) => (useGL ? glRef.current : leafletRef.current)?.highlightMarker(id),
@@ -41,43 +77,23 @@ const JourneyMapAuto = forwardRef<JourneyMapAutoHandle, Props>(function JourneyM
     invalidateSize: () => (useGL ? glRef.current : leafletRef.current)?.invalidateSize(),
   }), [useGL])
 
-  if (useGL && glProvider) {
+  // One chunk per engine — see MapViewAuto.
+  const JourneyMapGL = glProvider === 'maplibre-gl' ? JourneyMapGLMaplibre : JourneyMapGLMapbox
+  if (useGL) {
     return (
-      <Suspense fallback={null}>
-        <JourneyMapGL
-          ref={glRef}
-          checkins={mapProps.checkins}
-          entries={mapProps.entries}
-          trail={mapProps.trail}
-          height={mapProps.height}
-          dark={mapProps.dark}
-          activeMarkerId={mapProps.activeMarkerId}
-          onMarkerClick={mapProps.onMarkerClick}
-          fullScreen={mapProps.fullScreen}
-          paddingBottom={mapProps.paddingBottom}
-          glProvider={glProvider}
-          resolvedToken={map.mapboxToken || nestToken || ''}
-          resolvedStyle={map.styleUrl}
-        />
-      </Suspense>
+      // See MapViewAuto: the boundary has to sit outside the Suspense to catch a
+      // chunk that never arrives.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      <ErrorBoundary boundaryId="journey-map:gl" resetKeys={[glProvider]} fallback={<JourneyMap ref={leafletRef} {...(props as any)} />}>
+        <Suspense fallback={null}>
+          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+          <JourneyMapGL ref={glRef} {...(props as any)} glProvider={glProvider} />
+        </Suspense>
+      </ErrorBoundary>
     )
   }
-  return (
-    <JourneyMap
-      ref={leafletRef}
-      checkins={mapProps.checkins}
-      entries={mapProps.entries}
-      trail={mapProps.trail}
-      height={mapProps.height}
-      dark={mapProps.dark}
-      activeMarkerId={mapProps.activeMarkerId}
-      onMarkerClick={mapProps.onMarkerClick}
-      fullScreen={mapProps.fullScreen}
-      paddingBottom={mapProps.paddingBottom}
-      tileUrl={map.rasterUrl}
-      tileAttribution={map.attribution}
-    />
-  )
-})
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return <JourneyMap ref={leafletRef} {...(props as any)} />
+}
 
 export default JourneyMapAuto

@@ -1,192 +1,343 @@
-import React from 'react'
-import { render, screen, waitFor } from '../../../tests/helpers/render'
-import userEvent from '@testing-library/user-event'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { ToastContainer } from '../shared/Toast'
-import { useAuthStore } from '../../store/authStore'
-import { useSaveToCollectionStore } from '../../store/saveToCollectionStore'
-import { seedStore, resetAllStores } from '../../../tests/helpers/store'
-import { buildUser } from '../../../tests/helpers/factories'
-import { collectionsApi } from '../../api/collections'
-import { useAddonStore } from '../../store/addonStore'
-import {
-  addFamilyListItem,
-  listFamilyListMembership,
-  listFamilyLists,
-  removeFamilyListItem,
-  type FamilyListRow,
-} from '../../data/supabase/familyLists'
+// FE-COMP-SAVETOCOL-001 to FE-COMP-SAVETOCOL-020
+import React from 'react';
+import { afterEach, beforeEach } from 'vitest';
+import { render, screen, fireEvent, waitFor, within } from '../../../tests/helpers/render';
+import type { Collection, CollectionListResponse, CollectionMembership, CollectionSaveResult } from '@trek/shared';
+import { collectionsApi } from '../../api/collections';
+import { useSaveToCollectionStore } from '../../store/saveToCollectionStore';
+import type { SaveToCollectionTarget } from '../../store/saveToCollectionStore';
+import SaveToCollectionModal from './SaveToCollectionModal';
 
-vi.mock('../../api/collections', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../../api/collections')>()
-  return {
-    ...actual,
-    collectionsApi: {
-      list: vi.fn(),
-      membership: vi.fn(),
-      savePlace: vi.fn(),
-      deletePlace: vi.fn(),
-    },
-  }
-})
+const mockNavigate = vi.fn();
+vi.mock('react-router', async () => {
+  const actual = await vi.importActual('react-router');
+  return { ...actual, useNavigate: () => mockNavigate };
+});
 
-vi.mock('../../data/supabase/familyLists', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../../data/supabase/familyLists')>()
-  return {
-    ...actual,
-    listFamilyLists: vi.fn(),
-    listFamilyListMembership: vi.fn(),
-    addFamilyListItem: vi.fn(),
-    removeFamilyListItem: vi.fn(),
-  }
-})
-
-import SaveToCollectionModal from './SaveToCollectionModal'
-
-const familyRow: FamilyListRow = {
-  id: 'list-1',
-  family_id: 'fam-1',
-  name: 'Eats',
-  description: null,
-  color: '#6366f1',
-  visibility: 'private',
-  sort_order: 0,
-  owner_person_id: 'p1',
-  archived_at: null,
-  created_at: null,
-  updated_at: null,
+function list(over: Partial<Collection>): Collection {
+  return { id: 1, owner_id: 7, name: 'List', color: null, place_count: 0, ...over } as Collection;
 }
 
-function renderModal() {
-  return render(
-    <>
-      <ToastContainer />
-      <SaveToCollectionModal />
-    </>,
-  )
+const FAVORITES = list({ id: 1, name: 'Favorites', color: '#ef4444', place_count: 4 });
+const WISHLIST = list({ id: 2, name: 'Wishlist' });
+const SHARED = list({ id: 3, name: 'Team ideas', is_owner: false });
+
+const listResponse = (collections: Collection[]): CollectionListResponse => ({ collections, incomingInvites: [] });
+const EMPTY_MEMBERSHIP: CollectionMembership = { saved: false, lists: [] };
+
+const TARGET: SaveToCollectionTarget = {
+  name: 'Colosseum',
+  source_trip_id: 5,
+  source_place_id: 42,
+  description: 'Ancient arena',
+  lat: 41.89,
+  lng: 12.49,
+  address: 'Rome',
+  category_id: 3,
+  price: 16,
+  currency: 'EUR',
+  notes: 'Book ahead',
+  image_url: '/uploads/places/colosseum.jpg',
+  google_place_id: 'gp-1',
+  google_ftid: 'ft-1',
+  osm_id: 'osm-1',
+  website: 'https://colosseo.example',
+  phone: '+39',
+};
+
+let addToast: ReturnType<typeof vi.fn>;
+
+function openFor(target: SaveToCollectionTarget = TARGET) {
+  useSaveToCollectionStore.setState({ target, version: 0 });
 }
+
+beforeEach(() => {
+  addToast = vi.fn();
+  window.__addToast = addToast as unknown as typeof window.__addToast;
+  mockNavigate.mockClear();
+  useSaveToCollectionStore.setState({ target: null, version: 0 });
+  vi.spyOn(collectionsApi, 'list').mockResolvedValue(listResponse([FAVORITES, WISHLIST]));
+  vi.spyOn(collectionsApi, 'membership').mockResolvedValue(EMPTY_MEMBERSHIP);
+});
+
+afterEach(() => {
+  vi.restoreAllMocks();
+  useSaveToCollectionStore.setState({ target: null, version: 0 });
+  delete window.__addToast;
+});
 
 describe('SaveToCollectionModal', () => {
-  beforeEach(() => {
-    resetAllStores()
-    vi.clearAllMocks()
-    useSaveToCollectionStore.setState({ target: null, version: 0 })
-    vi.stubEnv('VITE_DATA_PLANE', 'supabase')
-    seedStore(useAuthStore, {
-      isAuthenticated: true,
-      user: buildUser(),
-      familyId: 'fam-1',
-      personId: 'p1',
-    })
-    vi.mocked(listFamilyLists).mockResolvedValue([familyRow])
-    vi.mocked(listFamilyListMembership).mockResolvedValue([])
-    vi.mocked(addFamilyListItem).mockResolvedValue('item-9')
-    vi.mocked(removeFamilyListItem).mockResolvedValue(undefined)
-    vi.mocked(collectionsApi.list).mockResolvedValue({ collections: [], incomingInvites: [] })
-    vi.mocked(collectionsApi.membership).mockResolvedValue({ saved: false, lists: [] })
-  })
+  it('FE-COMP-SAVETOCOL-001: renders nothing and calls no api while no target is set', () => {
+    render(<SaveToCollectionModal />);
+    expect(screen.queryByRole('heading', { name: 'Save to list' })).not.toBeInTheDocument();
+    expect(collectionsApi.list).not.toHaveBeenCalled();
+  });
 
-  it('Family catalog toggle uses list RPCs and does not call collectionsApi', async () => {
-    const user = userEvent.setup()
-    useSaveToCollectionStore.getState().open({
-      name: 'Gubbio',
-      catalog_kind: 'place',
-      catalog_entity_id: 'pl-1',
-    })
-    renderModal()
-    await screen.findByRole('button', { name: /eats/i })
-    await user.click(screen.getByRole('button', { name: /eats/i }))
-    await waitFor(() => {
-      expect(addFamilyListItem).toHaveBeenCalledWith({
-        listId: 'list-1',
-        kind: 'place',
-        entityId: 'pl-1',
-        status: 'idea',
-      })
-    })
-    expect(collectionsApi.list).not.toHaveBeenCalled()
-    expect(collectionsApi.membership).not.toHaveBeenCalled()
-    expect(collectionsApi.savePlace).not.toHaveBeenCalled()
-    expect(collectionsApi.deletePlace).not.toHaveBeenCalled()
-    expect(await screen.findByText(/added to eats/i)).toBeInTheDocument()
-  })
+  it('FE-COMP-SAVETOCOL-002: shows the target name plus every list once loaded', async () => {
+    openFor();
+    render(<SaveToCollectionModal />);
+    expect(await screen.findByText('Favorites')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Save to list' })).toBeInTheDocument();
+    expect(screen.getByText('Colosseum')).toBeInTheDocument();
+    expect(screen.getByText('Wishlist')).toBeInTheDocument();
+  });
 
-  it('Family catalog toggle off removes the list item', async () => {
-    const user = userEvent.setup()
-    vi.mocked(listFamilyListMembership).mockResolvedValue([
-      { listId: 'list-1', itemId: 'item-1' },
-    ])
-    useSaveToCollectionStore.getState().open({
-      name: 'Gubbio',
-      catalog_kind: 'place',
-      catalog_entity_id: 'pl-1',
-    })
-    renderModal()
-    await screen.findByRole('button', { name: /eats/i })
-    await user.click(screen.getByRole('button', { name: /eats/i }))
-    await waitFor(() => {
-      expect(removeFamilyListItem).toHaveBeenCalledWith('item-1')
-    })
-    expect(addFamilyListItem).not.toHaveBeenCalled()
-    expect(collectionsApi.deletePlace).not.toHaveBeenCalled()
-  })
+  it('FE-COMP-SAVETOCOL-003: queries membership with the maps identity of the target', async () => {
+    openFor();
+    render(<SaveToCollectionModal />);
+    await screen.findByText('Favorites');
+    expect(collectionsApi.membership).toHaveBeenCalledWith({
+      google_place_id: 'gp-1',
+      google_ftid: 'ft-1',
+      name: 'Colosseum',
+      lat: 41.89,
+      lng: 12.49,
+    });
+  });
 
-  it('toasts already on this list from the Family RPC', async () => {
-    const user = userEvent.setup()
-    vi.mocked(addFamilyListItem).mockRejectedValue({ message: 'already on this list' })
-    useSaveToCollectionStore.getState().open({
-      name: 'Gubbio',
-      catalog_kind: 'hotel',
-      catalog_entity_id: 'h-1',
-    })
-    renderModal()
-    await screen.findByRole('button', { name: /eats/i })
-    await user.click(screen.getByRole('button', { name: /eats/i }))
-    expect(await screen.findByText(/already on this list/i)).toBeInTheDocument()
-  })
+  it('FE-COMP-SAVETOCOL-004: shows the spinner until the lists arrive', async () => {
+    let resolve!: (v: CollectionListResponse) => void;
+    vi.spyOn(collectionsApi, 'list').mockReturnValue(new Promise(r => { resolve = r; }));
+    openFor();
+    render(<SaveToCollectionModal />);
+    expect(document.querySelector('.animate-spin')).not.toBeNull();
 
-  it('Nest google membership path skips Family RPCs', async () => {
-    const user = userEvent.setup()
-    vi.stubEnv('VITE_DATA_PLANE', 'nest')
-    seedStore(useAddonStore, {
-      addons: [{ id: 'collections', name: 'Collections', type: 'global', icon: 'Bookmark', enabled: true }],
-    })
-    vi.mocked(collectionsApi.list).mockResolvedValue({
-      collections: [{
-        id: 7,
-        owner_id: 1,
-        name: 'Paris list',
-        is_owner: true,
-      }],
-      incomingInvites: [],
-    })
-    vi.mocked(collectionsApi.membership).mockResolvedValue({ saved: false, lists: [] })
-    vi.mocked(collectionsApi.savePlace).mockResolvedValue({ place: { id: 99 } } as never)
-    useSaveToCollectionStore.getState().open({
-      name: 'Eiffel Tower',
-      google_place_id: 'ChIJxx',
-    })
-    renderModal()
-    await screen.findByRole('button', { name: /paris list/i })
-    await user.click(screen.getByRole('button', { name: /paris list/i }))
-    await waitFor(() => {
-      expect(collectionsApi.savePlace).toHaveBeenCalled()
-    })
-    expect(listFamilyLists).not.toHaveBeenCalled()
-    expect(listFamilyListMembership).not.toHaveBeenCalled()
-    expect(addFamilyListItem).not.toHaveBeenCalled()
-  })
+    resolve(listResponse([FAVORITES]));
+    expect(await screen.findByText('Favorites')).toBeInTheDocument();
+  });
 
-  it('empty Family library still offers a path to Collections', async () => {
-    vi.mocked(listFamilyLists).mockResolvedValue([])
-    useSaveToCollectionStore.getState().open({
-      name: 'Gubbio',
-      catalog_kind: 'place',
-      catalog_entity_id: 'pl-1',
-    })
-    renderModal()
-    expect(await screen.findByText(/create a list first/i)).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /new list/i })).toBeInTheDocument()
-    expect(collectionsApi.list).not.toHaveBeenCalled()
-  })
-})
+  it('FE-COMP-SAVETOCOL-005: a failing list request falls back to the empty state with a create shortcut', async () => {
+    vi.spyOn(collectionsApi, 'list').mockRejectedValue(new Error('offline'));
+    openFor();
+    render(<SaveToCollectionModal />);
+
+    expect(await screen.findByText('Create a list first to save places.')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /New list/ }));
+    expect(mockNavigate).toHaveBeenCalledWith('/collections');
+    expect(useSaveToCollectionStore.getState().target).toBeNull();
+  });
+
+  it('FE-COMP-SAVETOCOL-006: lists already holding the place are marked saved', async () => {
+    vi.spyOn(collectionsApi, 'membership').mockResolvedValue({
+      saved: true,
+      lists: [{ collection_id: 1, name: 'Favorites', place_id: 900, status: 'want', can_edit: true }],
+    });
+    openFor();
+    render(<SaveToCollectionModal />);
+
+    const favorites = await screen.findByRole('button', { name: /Favorites/ });
+    expect(favorites).toHaveAttribute('aria-pressed', 'true');
+    expect(favorites.querySelector('.lucide-bookmark-check')).not.toBeNull();
+    expect(screen.getByRole('button', { name: /Wishlist/ })).toHaveAttribute('aria-pressed', 'false');
+  });
+
+  it('FE-COMP-SAVETOCOL-007: a failing membership lookup degrades to "saved nowhere"', async () => {
+    vi.spyOn(collectionsApi, 'membership').mockRejectedValue(new Error('offline'));
+    openFor();
+    render(<SaveToCollectionModal />);
+
+    const favorites = await screen.findByRole('button', { name: /Favorites/ });
+    expect(favorites).not.toHaveClass('border-accent');
+  });
+
+  it('FE-COMP-SAVETOCOL-008: a shared list carries the SHARED badge', async () => {
+    vi.spyOn(collectionsApi, 'list').mockResolvedValue(listResponse([FAVORITES, SHARED]));
+    openFor();
+    render(<SaveToCollectionModal />);
+
+    const shared = await screen.findByRole('button', { name: /Team ideas/ });
+    expect(within(shared).getByText('Shared')).toBeInTheDocument();
+    expect(within(screen.getByRole('button', { name: /Favorites/ })).queryByText('Shared')).not.toBeInTheDocument();
+  });
+
+  it('FE-COMP-SAVETOCOL-009: picking an unsaved list forwards the whole target payload and bumps the version', async () => {
+    const save = vi.spyOn(collectionsApi, 'savePlace').mockResolvedValue({});
+    openFor();
+    render(<SaveToCollectionModal />);
+
+    fireEvent.click(await screen.findByRole('button', { name: /Wishlist/ }));
+
+    await waitFor(() => expect(addToast).toHaveBeenCalledWith('Added to Wishlist', 'success', undefined));
+    expect(save).toHaveBeenCalledWith(expect.objectContaining({
+      collection_id: 2,
+      source_trip_id: 5,
+      source_place_id: 42,
+      name: 'Colosseum',
+      lat: 41.89,
+      lng: 12.49,
+      google_place_id: 'gp-1',
+      osm_id: 'osm-1',
+      website: 'https://colosseo.example',
+      force: true,
+    }));
+    expect(useSaveToCollectionStore.getState().version).toBe(1);
+  });
+
+  it('FE-COMP-SAVETOCOL-010: a sparse target sends explicit nulls rather than undefined', async () => {
+    const save = vi.spyOn(collectionsApi, 'savePlace').mockResolvedValue({});
+    openFor({ name: 'Nameless bar' });
+    render(<SaveToCollectionModal />);
+
+    fireEvent.click(await screen.findByRole('button', { name: /Wishlist/ }));
+
+    await waitFor(() => expect(save).toHaveBeenCalled());
+    expect(save).toHaveBeenCalledWith(expect.objectContaining({
+      collection_id: 2,
+      name: 'Nameless bar',
+      lat: null,
+      lng: null,
+      source_trip_id: null,
+      phone: null,
+    }));
+  });
+
+  it('FE-COMP-SAVETOCOL-011: picking a saved list removes that place instead', async () => {
+    vi.spyOn(collectionsApi, 'membership').mockResolvedValue({
+      saved: true,
+      lists: [{ collection_id: 1, name: 'Favorites', place_id: 900, status: 'want', can_edit: true }],
+    });
+    const del = vi.spyOn(collectionsApi, 'deletePlace').mockResolvedValue({});
+    const save = vi.spyOn(collectionsApi, 'savePlace');
+    openFor();
+    render(<SaveToCollectionModal />);
+
+    fireEvent.click(await screen.findByRole('button', { name: /Favorites/ }));
+
+    await waitFor(() => expect(del).toHaveBeenCalledWith(900));
+    expect(save).not.toHaveBeenCalled();
+    expect(addToast).toHaveBeenCalledWith('Removed from Favorites', 'success', undefined);
+  });
+
+  it('FE-COMP-SAVETOCOL-012: a failing save surfaces the server message and leaves the version alone', async () => {
+    vi.spyOn(collectionsApi, 'savePlace').mockRejectedValue({ response: { data: { error: 'List is full' } } });
+    openFor();
+    render(<SaveToCollectionModal />);
+
+    fireEvent.click(await screen.findByRole('button', { name: /Wishlist/ }));
+
+    await waitFor(() => expect(addToast).toHaveBeenCalledWith('List is full', 'error', undefined));
+    expect(useSaveToCollectionStore.getState().version).toBe(0);
+  });
+
+  it('FE-COMP-SAVETOCOL-013: every row locks while a save runs', async () => {
+    let resolve!: (v: CollectionSaveResult) => void;
+    const save = vi.spyOn(collectionsApi, 'savePlace').mockReturnValue(new Promise(r => { resolve = r; }));
+    openFor();
+    render(<SaveToCollectionModal />);
+
+    const wishlist = await screen.findByRole('button', { name: /Wishlist/ });
+    fireEvent.click(wishlist);
+    expect(wishlist).toBeDisabled();
+    const favorites = screen.getByRole('button', { name: /Favorites/ });
+    expect(favorites).toBeDisabled();
+    fireEvent.click(favorites);
+    expect(save).toHaveBeenCalledTimes(1);
+
+    resolve({});
+    await waitFor(() => expect(useSaveToCollectionStore.getState().version).toBe(1));
+  });
+
+  it('FE-COMP-SAVETOCOL-015: a membership refresh that fails after a save falls back to "saved nowhere"', async () => {
+    vi.spyOn(collectionsApi, 'membership')
+      .mockResolvedValueOnce(EMPTY_MEMBERSHIP)
+      .mockRejectedValue(new Error('offline'));
+    vi.spyOn(collectionsApi, 'savePlace').mockResolvedValue({});
+    openFor();
+    render(<SaveToCollectionModal />);
+
+    fireEvent.click(await screen.findByRole('button', { name: /Wishlist/ }));
+
+    await waitFor(() => expect(useSaveToCollectionStore.getState().version).toBe(1));
+    expect(screen.getByRole('button', { name: /Wishlist/ })).toHaveAttribute('aria-pressed', 'false');
+  });
+
+  it('FE-COMP-SAVETOCOL-016: a response landing after the picker closed is dropped', async () => {
+    let resolve!: (v: CollectionListResponse) => void;
+    vi.spyOn(collectionsApi, 'list').mockReturnValue(new Promise(r => { resolve = r; }));
+    openFor();
+    const { unmount } = render(<SaveToCollectionModal />);
+    unmount();
+
+    resolve(listResponse([FAVORITES]));
+    await Promise.resolve();
+    expect(screen.queryByText('Favorites')).not.toBeInTheDocument();
+  });
+
+  // ── Per-list status + "visited everywhere" (#1469) ────────────────────────
+
+  const savedIn = (over: Partial<CollectionMembership['lists'][number]> = {}): CollectionMembership => ({
+    saved: true,
+    lists: [{ collection_id: 1, name: 'Favorites', place_id: 900, status: 'want', can_edit: true, ...over }],
+  });
+
+  it('FE-COMP-SAVETOCOL-017: a saved list shows its own status and one tap cycles it', async () => {
+    vi.spyOn(collectionsApi, 'membership').mockResolvedValue(savedIn());
+    const setStatus = vi.spyOn(collectionsApi, 'setStatus').mockResolvedValue({} as never);
+    const del = vi.spyOn(collectionsApi, 'deletePlace').mockResolvedValue({});
+    openFor();
+    render(<SaveToCollectionModal />);
+
+    const badge = await screen.findByRole('button', { name: 'Want to go' });
+    fireEvent.click(badge);
+
+    // want → visited, and the row toggle must NOT have fired underneath it.
+    await waitFor(() => expect(setStatus).toHaveBeenCalledWith(900, 'visited'));
+    expect(del).not.toHaveBeenCalled();
+  });
+
+  it('FE-COMP-SAVETOCOL-018: the header action marks every list holding the place visited', async () => {
+    vi.spyOn(collectionsApi, 'membership').mockResolvedValue({
+      saved: true,
+      lists: [
+        { collection_id: 1, name: 'Favorites', place_id: 900, status: 'want', can_edit: true },
+        { collection_id: 2, name: 'Wishlist', place_id: 901, status: 'idea', can_edit: true },
+      ],
+    });
+    const many = vi.spyOn(collectionsApi, 'setStatusMany').mockResolvedValue({ updated: 2 });
+    openFor();
+    render(<SaveToCollectionModal />);
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Visited everywhere' }));
+    await waitFor(() => expect(many).toHaveBeenCalledWith([900, 901], 'visited'));
+  });
+
+  it('FE-COMP-SAVETOCOL-019: the action disappears once every list is visited', async () => {
+    vi.spyOn(collectionsApi, 'membership').mockResolvedValue(savedIn({ status: 'visited' }));
+    openFor();
+    render(<SaveToCollectionModal />);
+
+    await screen.findByText('Favorites');
+    expect(screen.queryByRole('button', { name: /Visited everywhere|Mark visited/ })).not.toBeInTheDocument();
+  });
+
+  it('FE-COMP-SAVETOCOL-020: a read-only list shows its status but does not offer to change it', async () => {
+    vi.spyOn(collectionsApi, 'membership').mockResolvedValue(savedIn({ can_edit: false }));
+    openFor();
+    render(<SaveToCollectionModal />);
+
+    await screen.findByText('Favorites');
+    expect(screen.queryByRole('button', { name: 'Want to go' })).not.toBeInTheDocument();
+    expect(screen.getByTitle('Want to go')).toBeInTheDocument();
+    // Nothing to offer: the only list holding it is one the viewer cannot edit.
+    expect(screen.queryByRole('button', { name: /Visited everywhere|Mark visited/ })).not.toBeInTheDocument();
+  });
+
+  it('FE-COMP-SAVETOCOL-014: the footer navigates to the collections page or just closes', async () => {
+    openFor();
+    const { unmount } = render(<SaveToCollectionModal />);
+    await screen.findByText('Favorites');
+
+    fireEvent.click(screen.getByRole('button', { name: 'View' }));
+    expect(mockNavigate).toHaveBeenCalledWith('/collections');
+    expect(useSaveToCollectionStore.getState().target).toBeNull();
+    unmount();
+
+    mockNavigate.mockClear();
+    openFor();
+    render(<SaveToCollectionModal />);
+    await screen.findByText('Favorites');
+    fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+    expect(mockNavigate).not.toHaveBeenCalled();
+    expect(useSaveToCollectionStore.getState().target).toBeNull();
+  });
+});

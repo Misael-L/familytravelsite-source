@@ -1,37 +1,59 @@
+import { refreshCanonical } from '../sync/canonicalCache'
+import { captureWriteSession } from '../sync/writeSession'
+import { sessionRead } from './sessionRead'
+import { optionalReadCache } from '../sync/readSession'
+import { currentPlannerReadPort, guardPlannerReadOnly } from './plannerReadPort'
 import { placesApi } from '../api/client'
-import { offlineDb, upsertPlaces } from '../db/offlineDb'
+import { replaceTripRows, upsertPlaces } from '../db/offlineDb'
 import { mutationQueue, generateUUID, nextTempId } from '../sync/mutationQueue'
 import { isEffectivelyOffline } from '../sync/networkMode'
-import { onlineThenCache } from './withOfflineFallback'
 import type { Place } from '../types'
+
+/**
+ * What of a write the optimistic row keeps. `fieldOrigins` says which fields the
+ * user typed; it travels in the queued body for the server's origin tracking and
+ * is no column of the place.
+ */
+function placeRow(data: Record<string, unknown>): Record<string, unknown> {
+  const { fieldOrigins: _origins, ...row } = data
+  return row
+}
 
 export const placeRepo = {
   async list(tripId: number | string, params?: Record<string, unknown>): Promise<{ places: Place[] }> {
-    return onlineThenCache(
-      async () => {
-        const result = await placesApi.list(tripId, params)
-        upsertPlaces(result.places)
-        return result
-      },
-      async () => ({
-        places: await offlineDb.places
+    const port = currentPlannerReadPort()
+    if (port) return await port.places(tripId, params)
+    return sessionRead(
+      async session => (await refreshCanonical(session, Number(tripId), {
+        tables: ['places'],
+        fetch: () => placesApi.list(tripId, params),
+        cache: result => params ? upsertPlaces(result.places, session.db) : replaceTripRows('places', Number(tripId), result.places, session.db),
+        cached: async () => ({
+            places: await session.db.places
+              .where('trip_id').equals(Number(tripId)).toArray(),
+          }),
+      })).value,
+      async (session) => ({
+        places: await session.db.places
           .where('trip_id').equals(Number(tripId)).toArray(),
       }),
     )
   },
 
   async create(tripId: number | string, data: Record<string, unknown> & { name: string }): Promise<{ place: Place }> {
+    const session = captureWriteSession(), db = session.db
+    guardPlannerReadOnly()
     if (isEffectivelyOffline()) {
       const tempId = nextTempId()
       const tempPlace: Place = {
-        ...(data as Partial<Place>),
+        ...(placeRow(data) as Partial<Place>),
         id: tempId,
         trip_id: Number(tripId),
         name: (data.name as string) ?? 'New place',
       } as Place
-      await offlineDb.places.put(tempPlace)
+      await db.places.put(tempPlace)
       const id = generateUUID()
-      await mutationQueue.enqueue({
+      await session.perform(() => mutationQueue.enqueue({
         id,
         tripId: Number(tripId),
         method: 'POST',
@@ -39,22 +61,32 @@ export const placeRepo = {
         body: data,
         resource: 'places',
         tempId,
-      })
+      }))
       return { place: tempPlace }
     }
-    const result = await placesApi.create(tripId, data)
-    offlineDb.places.put(result.place)
+    const result = await session.perform(() => placesApi.create(tripId, data))
+    await optionalReadCache(db.places.put(result.place), session)
     return result
   },
 
   async update(tripId: number | string, id: number | string, data: Record<string, unknown>): Promise<{ place: Place }> {
+    const session = captureWriteSession(), db = session.db
+    guardPlannerReadOnly()
     if (isEffectivelyOffline()) {
-      const existing = await offlineDb.places.get(Number(id))
-      const optimistic: Place = { ...(existing ?? {} as Place), ...(data as Partial<Place>), id: Number(id) }
-      await offlineDb.places.put(optimistic)
+      const existing = await db.places.get(Number(id))
+      // trip_id has to be there even when nothing was cached: every read goes
+      // through places.where('trip_id'), and clearTripData() evicts by it too —
+      // a row without it is invisible and never cleaned up.
+      const optimistic: Place = {
+        ...(existing ?? {} as Place),
+        ...(placeRow(data) as Partial<Place>),
+        id: Number(id),
+        trip_id: Number(tripId),
+      }
+      await db.places.put(optimistic)
       const mutId = generateUUID()
       const isTemp = Number(id) < 0
-      await mutationQueue.enqueue({
+      await session.perform(() => mutationQueue.enqueue({
         id: mutId,
         tripId: Number(tripId),
         method: 'PUT',
@@ -64,20 +96,24 @@ export const placeRepo = {
         entityId: Number(id),
         baseUpdatedAt: existing?.updated_at ?? null,
         ...(isTemp ? { tempEntityId: Number(id) } : {}),
-      })
+      }))
       return { place: optimistic }
     }
-    const result = await placesApi.update(tripId, id, data)
-    offlineDb.places.put(result.place)
+    const result = await session.perform(() => placesApi.update(tripId, id, data))
+    await optionalReadCache(db.places.put(result.place), session)
     return result
   },
 
-  async delete(tripId: number | string, id: number | string): Promise<unknown> {
+  async delete(tripId: number | string, id: number | string): Promise<{ success?: boolean; tourPlaceIds?: number[] }> {
+    const session = captureWriteSession(), db = session.db
+    guardPlannerReadOnly()
     if (isEffectivelyOffline()) {
-      await offlineDb.places.delete(Number(id))
+      // A tour is a place plus its facet; the server's cascade drops both.
+      await db.places.delete(Number(id))
+      await db.tours.delete(Number(id))
       const mutId = generateUUID()
       const isTemp = Number(id) < 0
-      await mutationQueue.enqueue({
+      await session.perform(() => mutationQueue.enqueue({
         id: mutId,
         tripId: Number(tripId),
         method: 'DELETE',
@@ -86,21 +122,25 @@ export const placeRepo = {
         resource: 'places',
         entityId: Number(id),
         ...(isTemp ? { tempEntityId: Number(id) } : {}),
-      })
+      }))
       return { success: true }
     }
-    const result = await placesApi.delete(tripId, id)
-    offlineDb.places.delete(Number(id))
+    const result = await session.perform(() => placesApi.delete(tripId, id))
+    await optionalReadCache(db.places.delete(Number(id)), session)
+    await optionalReadCache(db.tours.delete(Number(id)), session)
     return result
   },
 
-  async deleteMany(tripId: number | string, ids: number[]): Promise<unknown> {
+  async deleteMany(tripId: number | string, ids: number[]): Promise<{ deleted?: number[]; count?: number; tourPlaceIds?: number[] }> {
+    const session = captureWriteSession(), db = session.db
+    guardPlannerReadOnly()
     if (isEffectivelyOffline()) {
-      await offlineDb.places.bulkDelete(ids)
+      await db.places.bulkDelete(ids)
+      await db.tours.bulkDelete(ids)
       for (const id of ids) {
         const mutId = generateUUID()
         const isTemp = id < 0
-        await mutationQueue.enqueue({
+        await session.perform(() => mutationQueue.enqueue({
           id: mutId,
           tripId: Number(tripId),
           method: 'DELETE',
@@ -109,24 +149,27 @@ export const placeRepo = {
           resource: 'places',
           entityId: id,
           ...(isTemp ? { tempEntityId: id } : {}),
-        })
+        }))
       }
       return { deleted: ids, count: ids.length }
     }
-    const result = await placesApi.bulkDelete(tripId, ids)
-    await offlineDb.places.bulkDelete(ids)
+    const result = await session.perform(() => placesApi.bulkDelete(tripId, ids))
+    await db.places.bulkDelete(ids)
+    await db.tours.bulkDelete(ids)
     return result
   },
 
   async updateMany(tripId: number | string, ids: number[], data: Record<string, unknown>): Promise<{ updated: number[]; count: number }> {
+    const session = captureWriteSession(), db = session.db
+    guardPlannerReadOnly()
     if (isEffectivelyOffline()) {
       // Offline fans out one queued PUT per id (mirrors deleteMany's DELETE fan-out).
       for (const id of ids) {
-        const existing = await offlineDb.places.get(id)
-        if (existing) await offlineDb.places.put({ ...existing, ...(data as Partial<Place>) })
+        const existing = await db.places.get(id)
+        if (existing) await db.places.put({ ...existing, ...(data as Partial<Place>) })
         const mutId = generateUUID()
         const isTemp = id < 0
-        await mutationQueue.enqueue({
+        await session.perform(() => mutationQueue.enqueue({
           id: mutId,
           tripId: Number(tripId),
           method: 'PUT',
@@ -136,13 +179,13 @@ export const placeRepo = {
           entityId: id,
           baseUpdatedAt: existing?.updated_at ?? null,
           ...(isTemp ? { tempEntityId: id } : {}),
-        })
+        }))
       }
       return { updated: ids, count: ids.length }
     }
-    const result = await placesApi.bulkUpdate(tripId, ids, data as Parameters<typeof placesApi.bulkUpdate>[2])
-    const cached = await offlineDb.places.bulkGet(ids)
-    await offlineDb.places.bulkPut(cached.filter(Boolean).map(p => ({ ...(p as Place), ...(data as Partial<Place>) })))
+    const result = await session.perform(() => placesApi.bulkUpdate(tripId, ids, data as Parameters<typeof placesApi.bulkUpdate>[2]))
+    const cached = await db.places.bulkGet(ids)
+    await db.places.bulkPut(cached.filter(Boolean).map(p => ({ ...(p as Place), ...(data as Partial<Place>) })))
     return result
   },
 }

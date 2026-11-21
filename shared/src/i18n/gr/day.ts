@@ -8,8 +8,9 @@ const day: TranslationStrings = {
   'day.sunset': 'Δύση',
   'day.hourlyForecast': 'Ωριαία Πρόγνωση',
   'day.climateHint':
-    'Ιστορικοί μέσοι όροι — η πραγματική πρόγνωση είναι διαθέσιμη εντός 16 ημερών από αυτή την ημερομηνία.',
+    'Ιστορικοί μέσοι όροι: η πραγματική πρόγνωση είναι διαθέσιμη εντός 16 ημερών από αυτή την ημερομηνία.',
   'day.noWeather': 'Δεν υπάρχουν διαθέσιμα δεδομένα καιρού. Προσθέστε μια τοποθεσία με συντεταγμένες.',
+  'day.weatherFor': 'Πρόγνωση για {name}',
   'day.overview': 'Ημερήσια Επισκόπηση',
   'day.accommodation': 'Διαμονή',
   'day.addAccommodation': 'Προσθήκη διαμονής',
@@ -19,6 +20,7 @@ const day: TranslationStrings = {
   'day.checkIn': 'Check-in',
   'day.checkInUntil': 'Έως',
   'day.checkOut': 'Check-out',
+  'day.openStayBooking': 'Άνοιγμα κράτησης',
   'day.confirmation': 'Επιβεβαίωση',
   'day.editAccommodation': 'Επεξεργασία διαμονής',
   'day.reservations': 'Κρατήσεις',

@@ -1,0 +1,28 @@
+import 'fake-indexeddb/auto';
+import {afterEach,beforeEach,describe,it,expect,vi} from 'vitest';
+import {resetAllStores} from '__ROOT__/client/tests/helpers/store';
+import {resetOfflineTestDatabase} from '__ROOT__/client/tests/helpers/offlineDb';
+import {currentSourcePolicy} from '__ROOT__/client/src/db/sourceDatabase';
+import {installFamilyNativeSourceOwnership} from '__ROOT__/client/src/integrations/family/nativeSourceOwnership';
+import {offlineTripQualificationEnabled,packingCategoryQualificationEnabled,packingIdentityQualificationEnabled,packingAggregateQualificationEnabled,packingBagQualificationEnabled,packingRecoveryQualificationEnabled,v4PublicImageSource,v4PrivateFileSource} from '__ROOT__/client/src/integrations/family/offlineTripQualification';
+import {coherentStayQualificationEnabled,nativeStayCommandQualificationEnabled,nativeStayControlsQualificationEnabled,nativeStayWriteQualificationEnabled} from '__ROOT__/client/src/integrations/family/coherentStayQualification';
+import {familyDeviceRecoveryAvailable} from '__ROOT__/client/src/integrations/family/deviceRecoveryGate';
+import {getSupabaseUrl} from '__ROOT__/client/src/integrations/family/legacy/data/supabase/env';
+import {writeFileSync} from 'node:fs';
+const flags={VITE_FAMILY_OFFLINE_READ_QUALIFICATION:'local-v1',VITE_FAMILY_PACKING_IDENTITY_QUALIFICATION:'local-v2',VITE_FAMILY_PACKING_AGGREGATE_QUALIFICATION:'local-v3',VITE_FAMILY_PACKING_BAG_QUALIFICATION:'local-v1',VITE_FAMILY_PACKING_RECOVERY_QUALIFICATION:'local-v1',VITE_FAMILY_STAY_READ_QUALIFICATION:'local-v4',VITE_FAMILY_STAY_WRITE_QUALIFICATION:'local-existing-v1',VITE_FAMILY_STAY_COMMAND_QUALIFICATION:'local-native-v1',VITE_FAMILY_STAY_CONTROLS_QUALIFICATION:'local-native-v1',VITE_FAMILY_PRIVATE_FILE_QUALIFICATION:'local-v4'};
+const sources=['http://127.0.0.1:55331','http://localhost:55331','http://127.0.0.1:55431','http://127.0.0.1:55631','http://127.0.0.1:55731','http://127.0.0.1:55931','http://127.0.0.1:56041','http://127.0.0.1:56471','http://127.0.0.1:56571','http://127.0.0.1:56671','http://127.0.0.1:57171'];
+const foreign=['https://readiness.example.invalid','http://localhost:57171','http://127.0.0.1:57172','http://127.0.0.1:57171/'];
+const vectors:Record<string,unknown>[]=[];
+beforeEach(async()=>{resetAllStores();await resetOfflineTestDatabase();vi.stubEnv('VITE_DATA_PLANE','supabase');for(const key of Object.keys(flags))vi.stubEnv(key,'');});
+afterEach(async()=>{vi.unstubAllEnvs();vi.restoreAllMocks();await resetOfflineTestDatabase();});
+function inspect(){const stop=installFamilyNativeSourceOwnership();try{return{sourceOwnedNativeQueue:currentSourcePolicy()!==null,coldReads:offlineTripQualificationEnabled(),packingCategories:packingCategoryQualificationEnabled(),packingIdentity:packingIdentityQualificationEnabled(),packingAggregate:packingAggregateQualificationEnabled(),packingBags:packingBagQualificationEnabled(),packingRecovery:packingRecoveryQualificationEnabled(),deviceRecovery:familyDeviceRecoveryAvailable(),coherentStayReads:coherentStayQualificationEnabled(),existingStayWriter:nativeStayWriteQualificationEnabled(),nativeStayCommands:nativeStayCommandQualificationEnabled(),nativeStayControls:nativeStayControlsQualificationEnabled(),v4PublicImages:v4PublicImageSource(getSupabaseUrl()),v4PrivateRAM:v4PrivateFileSource(getSupabaseUrl())};}finally{stop();}}
+function qualify(source:string){vi.stubEnv('VITE_SUPABASE_URL',source);for(const[key,value]of Object.entries(flags))vi.stubEnv(key,value);return inspect();}
+describe('current source-profile admission diagnostics; not feature acceptance',()=>{
+ for(const source of [...sources,...foreign])it('default build admits no local-only capability: '+source,()=>{vi.stubEnv('VITE_SUPABASE_URL',source);expect(Object.values(inspect()).every(value=>value===false)).toBe(true);});
+ for(const source of foreign)it('all qualification markers still refuse foreign source: '+source,()=>{expect(Object.values(qualify(source)).every(value=>value===false)).toBe(true);});
+ for(const source of sources)it('records actual gate vector without inventing a unified capability: '+source,()=>{const actual=qualify(source);vectors.push({source,...actual});expect(actual.sourceOwnedNativeQueue&&(actual.packingRecovery||actual.packingBags||actual.packingAggregate||actual.nativeStayControls)).toBe(false);});
+ it('Collection/native-source qualification leaves new stays and packing recovery held',()=>{const actual=qualify(sources[0]);expect(actual.sourceOwnedNativeQueue).toBe(true);expect(actual.nativeStayControls).toBe(false);expect(actual.packingRecovery).toBe(false);});
+ it('native stay qualification is not Collection native-source qualification',()=>{const actual=qualify('http://127.0.0.1:57171');expect(actual.nativeStayControls).toBe(true);expect(actual.sourceOwnedNativeQueue).toBe(false);expect(actual.packingRecovery).toBe(false);});
+ it('packing recovery qualification is not native stay or Collection qualification',()=>{const actual=qualify('http://127.0.0.1:56041');expect(actual.packingRecovery).toBe(true);expect(actual.sourceOwnedNativeQueue).toBe(false);expect(actual.nativeStayControls).toBe(false);});
+ it('writes bounded metadata vectors only, without accounts, sessions or network',()=>{expect(vectors).toHaveLength(sources.length);writeFileSync('__OUTPUT__/source-profile-vectors.json',JSON.stringify({diagnostic_scope:'actual selector/installer markers only; not functional or authorization acceptance',all_markers_set:true,source_profiles:vectors,shared_profile_existing_for_all_supported_domains:false,no_Docker_network_or_SQL:true},null,2)+'\n');});
+});

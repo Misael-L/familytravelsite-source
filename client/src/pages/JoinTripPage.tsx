@@ -25,16 +25,16 @@ export default function JoinTripPage() {
           className="bg-surface-hover"
           style={{ width: 52, height: 52, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}
         >
-          {state === 'invalid'
+          {state === 'invalid' || state === 'removed'
             ? <X size={24} className="text-content-faint" />
             : <Users size={24} className="text-accent" />}
         </div>
 
-        {state === 'invalid' ? (
+        {state === 'invalid' || state === 'removed' ? (
           <>
-            <h1 style={{ fontSize: 18, fontWeight: 700, marginBottom: 8 }}>{t('trip.invite.invalidTitle')}</h1>
-            <p className="text-content-secondary" style={{ fontSize: 14, marginBottom: 20 }}>{t('trip.invite.invalid')}</p>
-            <button
+            <h1 style={{ fontSize: 18, fontWeight: 700, marginBottom: 8 }}>{state === 'removed' ? t('trip.invite.removedTitle') : t('trip.invite.invalidTitle')}</h1>
+            <p className="text-content-secondary" style={{ fontSize: 14, marginBottom: 20 }}>{state === 'removed' ? t('trip.invite.removed') : t('trip.invite.invalid')}</p>
+            <button type="button"
               onClick={goToDashboard}
               className="bg-surface-hover text-content"
               style={{ border: 'none', borderRadius: 10, padding: '10px 18px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}
@@ -49,14 +49,14 @@ export default function JoinTripPage() {
               {state === 'loading' ? t('common.loading') : t('trip.invite.joinPrompt', { title })}
             </p>
             <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
-              <button
+              <button type="button"
                 onClick={goToDashboard}
                 className="bg-surface-hover text-content"
                 style={{ border: 'none', borderRadius: 10, padding: '10px 18px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}
               >
                 {t('common.cancel')}
               </button>
-              <button
+              <button type="button"
                 onClick={accept}
                 disabled={state !== 'ready'}
                 className="bg-accent text-accent-text"

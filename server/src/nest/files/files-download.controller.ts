@@ -1,8 +1,11 @@
+import { Public } from '../auth-core/public.decorator';
+import { contentDisposition } from '../common/content-disposition';
+import { StorageService } from '../storage/storage.service';
+import { FilesService } from './files.service';
 import { Controller, Get, HttpException, Param, Req, Res } from '@nestjs/common';
+
 import type { Request, Response } from 'express';
 import path from 'path';
-import fs from 'fs';
-import { FilesService } from './files.service';
 
 /**
  * GET /api/trips/:tripId/files/:id/download — authenticated file download.
@@ -10,34 +13,42 @@ import { FilesService } from './files.service';
  * Deliberately NOT behind the JwtAuthGuard: it accepts a cookie, a Bearer header
  * OR a one-shot `?token=` query param (so links can be opened directly), all via
  * the legacy authenticateDownload helper. Byte-identical to the legacy route:
- * 401 token, 404 trip/file, 403 path traversal, .pkpass served inline for Wallet.
+ * 401 token, 404 trip/file, .pkpass served inline for Wallet. Bytes come from
+ * storage.sendToResponse, whose local branch is the root-relative res.sendFile
+ * form this route needs under the ExpressAdapter.
  */
+@Public('authenticates itself: the download link carries a short-lived ?token the client mints')
 @Controller('api/trips/:tripId/files')
 export class FilesDownloadController {
-  constructor(private readonly files: FilesService) {}
+  constructor(
+    private readonly files: FilesService,
+    private readonly storage: StorageService,
+  ) {}
 
+  // response-contract-exempt: streams the file through @Res(), there is no JSON body to check.
   @Get(':id/download')
-  download(@Req() req: Request, @Res() res: Response, @Param('tripId') tripId: string, @Param('id') id: string): void {
-    const auth = this.files.authenticateDownload(req);
-    if ('error' in auth) {
-      throw new HttpException({ error: auth.error }, auth.status);
-    }
+  async download(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Param('tripId') tripId: string,
+    @Param('id') id: string,
+  ): Promise<void> {
+    const auth = await this.files.authenticateDownload(req);
 
-    const trip = this.files.verifyTripAccess(tripId, auth.userId);
+    const trip = await this.files.verifyTripAccess(tripId, auth.userId);
     if (!trip) {
       throw new HttpException({ error: 'Trip not found' }, 404);
     }
 
-    const file = this.files.getFileById(id, tripId);
+    const file = await this.files.getFileById(id, tripId);
     if (!file) {
       throw new HttpException({ error: 'File not found' }, 404);
     }
 
-    const { resolved, safe } = this.files.resolveFilePath(file.filename);
-    if (!safe) {
-      throw new HttpException({ error: 'Forbidden' }, 403);
-    }
-    if (!fs.existsSync(resolved)) {
+    // basename() tolerates a stray prefixed row (legacy rows sometimes stored
+    // a relative path); the storage layer's key validation refuses the rest.
+    const name = path.basename(file.filename);
+    if (!(await this.storage.exists('files', name).catch(() => false))) {
       throw new HttpException({ error: 'File not found' }, 404);
     }
 
@@ -45,22 +56,23 @@ export class FilesDownloadController {
     // (iOS/macOS) hands them to Wallet instead of downloading as a blob. A
     // `.pkpasses` bundle (a ZIP of multiple passes) is a distinct type with its
     // own plural MIME type — without it Wallet won't offer to add the passes.
+    const ext = path.extname(name).toLowerCase();
     const walletMime =
-      path.extname(resolved).toLowerCase() === '.pkpass'
+      ext === '.pkpass'
         ? 'application/vnd.apple.pkpass'
-        : path.extname(resolved).toLowerCase() === '.pkpasses'
+        : ext === '.pkpasses'
           ? 'application/vnd.apple.pkpasses'
           : null;
-    if (walletMime) {
-      res.setHeader('Content-Type', walletMime);
-      res.setHeader('Content-Disposition', `inline; filename="${path.basename(file.original_name || resolved)}"`);
-    }
-
-    // Serve with an explicit { root } + basename rather than an absolute path:
-    // under the Nest ExpressAdapter, res.sendFile(absolutePath) resolves the
-    // file relative to the (rewritten) req.url and fails with a spurious
-    // "Not Found", whereas the root-relative form streams correctly. The
-    // resolveFilePath guard above already pins this to the uploads dir.
-    res.sendFile(path.basename(resolved), { root: path.dirname(resolved) });
+    await this.storage.sendToResponse(
+      'files',
+      name,
+      res,
+      walletMime
+        ? {
+            contentType: walletMime,
+            disposition: contentDisposition(path.basename(file.original_name || name), 'inline'),
+          }
+        : undefined,
+    );
   }
 }

@@ -1,3 +1,4 @@
+import { captureReadSession } from './readSession'
 /**
  * Sync triggers — register event listeners that flush the mutation queue
  * and/or run a full trip sync based on the connectivity trigger source.
@@ -15,8 +16,11 @@
 import { mutationQueue } from './mutationQueue'
 import { tripSyncManager } from './tripSyncManager'
 import { isEffectivelyOnline, onNetworkModeChange } from './networkMode'
-import { setPreReconnectHook, setRefetchCallback, getActiveTrips } from '../api/websocket'
+import { setPreReconnectHook, setRefetchCallback, getActiveTrips, reconnectNow } from '../api/websocket'
 import { useTripStore } from '../store/tripStore'
+import { reloadTourVisits } from '../store/tourVisitStore'
+import { useSettingsStore } from '../store/settingsStore'
+import { useAuthStore } from '../store/authStore'
 
 const PERIODIC_MS = 30_000
 
@@ -24,12 +28,32 @@ let _intervalId: ReturnType<typeof setInterval> | null = null
 let _unsubscribeNetworkMode: (() => void) | null = null
 let _wasEffectivelyOnline = isEffectivelyOnline()
 let _registered = false
+let registration = 0
+let registrationOwner: ReturnType<typeof captureReadSession> | null = null
 
-/** Pull the latest server state for every open trip into the Zustand store. */
+/**
+ * User settings are loaded once on the auth transition (App.tsx), with no retry.
+ * If that single GET fails — offline at launch, or a server cold-start racing the
+ * first request — the store stays on built-in DEFAULT_SETTINGS and the user sees
+ * their currency/units/time-format "reset" for the whole session (#1618). Heal it
+ * on the same connectivity triggers that re-hydrate trips: retry until it loads.
+ */
+function ensureSettingsLoaded() {
+  if (!useAuthStore.getState().isAuthenticated) return
+  if (!isEffectivelyOnline()) return
+  if (useSettingsStore.getState().isLoaded) return
+  useSettingsStore.getState().loadSettings().catch(console.error)
+}
+
+/**
+ * Pull the latest server state for every open trip into the Zustand store,
+ * and the visits of its city walks, now that the queued marks were sent.
+ */
 function rehydrateActiveTrips() {
   const store = useTripStore.getState()
   for (const tripId of getActiveTrips()) {
     store.hydrateActiveTrip(tripId).catch(console.error)
+    reloadTourVisits(tripId)
   }
 }
 
@@ -43,18 +67,23 @@ function onOnline() {
   // syncAll would re-seed Dexie from the server and wipe un-flushed optimistic
   // edits from the cache/UI. Stay put until the user lifts the switch (which
   // routes through onNetworkMode → here with the force flag already cleared).
-  if (!isEffectivelyOnline()) return
+  if (!isEffectivelyOnline() || !useAuthStore.getState().isAuthenticated) return
+  const session = captureReadSession(), started = registration
+  ensureSettingsLoaded()
+  reconnectNow()
   mutationQueue.flush()
-    .catch(console.error)
-    .finally(() => {
+    .then(() => {
+      if (!session.current() || !_registered || started !== registration || !isEffectivelyOnline()) return
       tripSyncManager.syncAll().catch(console.error)
       rehydrateActiveTrips()
-    })
+    }).catch(console.error)
 }
 
 /** Tab became visible — flush only; don't trigger a potentially expensive syncAll. */
 function onVisibility() {
   if (!document.hidden && isEffectivelyOnline()) {
+    ensureSettingsLoaded()
+    reconnectNow()
     mutationQueue.flush().catch(console.error)
   }
 }
@@ -62,6 +91,7 @@ function onVisibility() {
 /** Periodic heartbeat — drain any lingering pending mutations. */
 function onPeriodic() {
   if (isEffectivelyOnline()) {
+    ensureSettingsLoaded()
     mutationQueue.flush().catch(console.error)
   }
 }
@@ -79,16 +109,25 @@ function onNetworkMode() {
 }
 
 export function registerSyncTriggers(): void {
-  if (_registered) return
+  if (_registered && registrationOwner?.current()) return
+  // Cached startup may register before the authenticated database/epoch opens.
+  // Replace that retired registration; its callbacks must never borrow the new owner.
+  if (_registered) unregisterSyncTriggers()
   _registered = true
+  const started = ++registration, owner = captureReadSession()
+  registrationOwner = owner
+  const current = () => _registered && started === registration && owner.current() && isEffectivelyOnline() && useAuthStore.getState().isAuthenticated
 
   // WS reconnect: flush mutations only — no syncAll to avoid triggering rate
   // limiters when the socket drops and reconnects while the device is online.
-  setPreReconnectHook(() => mutationQueue.flush())
+  setPreReconnectHook(() => current() ? mutationQueue.flush() : Promise.resolve())
   // After the reconnect flush, pull canonical state for the open trip back into
-  // the store (the WS layer awaits the flush hook before invoking this).
+  // the store (the WS layer awaits the flush hook before invoking this), and
+  // the walk visits, so a mark the replay dropped or failed leaves the day plan.
   setRefetchCallback(tripId => {
+    if (!current()) return
     useTripStore.getState().hydrateActiveTrip(tripId).catch(console.error)
+    reloadTourVisits(tripId)
   })
 
   window.addEventListener('online', onOnline)
@@ -103,6 +142,8 @@ export function registerSyncTriggers(): void {
 export function unregisterSyncTriggers(): void {
   if (!_registered) return
   _registered = false
+  registrationOwner = null
+  registration++
 
   setPreReconnectHook(null)
   setRefetchCallback(null)

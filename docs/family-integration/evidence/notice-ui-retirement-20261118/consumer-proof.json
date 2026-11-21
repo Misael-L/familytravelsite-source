@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "same_expanded_cases_before_after": 310,
+  "same_names_files_status_multiplicity": true,
+  "expanded_cases_sha256": "ed6ff83453d163e548b6010d8d0f778471b8905e964bcb3fc2e10a0813a4993b",
+  "candidate_only_two_files_absent": true,
+  "all_other_candidate_tracked_files_byte_exact": 18084,
+  "assertions_fixtures_config_timeouts_coverage_skips_unchanged": true,
+  "no_live_backend_browser_or_writer_admission": true
+}

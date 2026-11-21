@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import {
+  alongShortestArc,
   computeMapViewport,
   MAX_ZOOM_GL,
   MAX_ZOOM_RASTER,
@@ -222,5 +223,67 @@ describe('computeMapViewport', () => {
       expect(x).toBeGreaterThanOrEqual(400)
       expect(x).toBeLessThanOrEqual(VIEW.width)
     }
+  })
+
+  // Two 300px planner panels on an 860px foldable left the framing window 140px
+  // wide, and the camera then opened on half of East Asia instead of the trip
+  // (#2247). The layout fix stops it happening; this stops it mattering.
+  it('never frames the camera for less than a third of the box, however wide the padding', () => {
+    const sane = computeMapViewport([PARIS, LYON], {
+      ...VIEW,
+      tileSize: TILE_SIZE_RASTER,
+      padding: { left: 380, right: 340 },
+    })!
+    const absurd = computeMapViewport([PARIS, LYON], {
+      ...VIEW,
+      tileSize: TILE_SIZE_RASTER,
+      padding: { left: 480, right: 480 },
+    })!
+    // 1000 - 960 = 40px of window would zoom ~2.5 levels further out than the
+    // third the clamp guarantees.
+    const floored = computeMapViewport([PARIS, LYON], {
+      width: VIEW.width / 3,
+      height: VIEW.height,
+      tileSize: TILE_SIZE_RASTER,
+    })!
+    expect(absurd.zoom).toBe(floored.zoom)
+    expect(absurd.zoom).toBeGreaterThan(sane.zoom - 3)
+  })
+
+  it('leaves a sane padding untouched', () => {
+    const withPadding = computeMapViewport([PARIS, LYON], {
+      ...VIEW,
+      tileSize: TILE_SIZE_RASTER,
+      padding: { left: 200, right: 100 },
+    })!
+    const equivalent = computeMapViewport([PARIS, LYON], {
+      width: VIEW.width - 300,
+      height: VIEW.height,
+      tileSize: TILE_SIZE_RASTER,
+    })!
+    expect(withPadding.zoom).toBe(equivalent.zoom)
+  })
+})
+
+describe('alongShortestArc', () => {
+  const FIJI: [number, number] = [-18.14, 178.44]
+  const TONGA: [number, number] = [-21.14, -175.2]
+  const SAMOA: [number, number] = [-13.83, -171.76]
+
+  it('carries the places past the antimeridian on beyond 180, so a min-max box between them is the short one', () => {
+    const lngs = alongShortestArc([FIJI, TONGA, SAMOA]).map(([, lng]) => Math.round(lng * 100) / 100)
+
+    // From Fiji east across the date line: under ten degrees wide, not the 350 the other way round.
+    expect(lngs).toEqual([178.44, 184.8, 188.24])
+  })
+
+  it('leaves places that do not cross the antimeridian as they are', () => {
+    const cafes: [number, number][] = [[48.21, 16.37], [38.71, -9.14], [55.7, 12.55]]
+
+    expect(alongShortestArc(cafes)).toEqual(cafes)
+  })
+
+  it('has nothing to lay out for no places', () => {
+    expect(alongShortestArc([])).toEqual([])
   })
 })

@@ -1,4 +1,5 @@
 import type { NotificationLocale } from '../externalNotifications/types';
+import { pluralForm } from '../plural';
 
 const ca: NotificationLocale = {
   email: {
@@ -28,9 +29,16 @@ const ca: NotificationLocale = {
       title: 'Invitació a Vacay Fusion',
       body: `${p.actor} et va convidar a fusionar plans de vacances. Obre TREK per acceptar o rebutjar.`,
     }),
+    vacay_share: (p) => ({
+      title: 'Calendari de Vacay compartit',
+      body: `${p.actor} va compartir el seu calendari de vacances amb tu. Obre TREK per veure'l.`,
+    }),
     photos_shared: (p) => ({
-      title: `${p.count} fotos compartides`,
-      body: `${p.actor} va compartir ${p.count} foto(s) a "${p.trip}".`,
+      title: pluralForm(p.count, 'ca', { one: `${p.count} foto compartida`, other: `${p.count} fotos compartides` }),
+      body: pluralForm(p.count, 'ca', {
+        one: `${p.actor} va compartir ${p.count} foto a "${p.trip}".`,
+        other: `${p.actor} va compartir ${p.count} fotos a "${p.trip}".`,
+      }),
     }),
     collab_message: (p) => ({
       title: `Missatge nou a "${p.trip}"`,
@@ -44,6 +52,21 @@ const ca: NotificationLocale = {
       title: 'Versió nova de TREK disponible',
       body: `TREK ${p.version} ja està disponible. Visita el panell d'administració per actualitzar.`,
     }),
+    replica_failure: (p) => ({
+      title: "Error de rèplica d'emmagatzematge",
+      body:
+        `L'escriptura a la rèplica '${p.backend}' ha fallat: ${p.op} de ${p.key} — ${p.error}.` +
+        (p.suppressed !== '0'
+          ? pluralForm(p.suppressed, 'ca', {
+              one: ` S'ha suprimit ${p.suppressed} error més des de l'última notificació.`,
+              other: ` S'han suprimit ${p.suppressed} errors més des de l'última notificació.`,
+            })
+          : ''),
+    }),
+    paddle_region_requested: (p) => ({
+      title: 'Regió de caiac demanada',
+      body: `${p.actor} planifica una ruta en caiac a ${p.region}. Carrega o rebutja les seves dades d'aigua a l'administració, a Complements.`,
+    }),
     synology_session_cleared: () => ({
       title: 'Sessió de Synology tancada',
       body: 'El teu compte o URL de Synology ha canviat. Has tancat la sessió a Synology Photos.',
@@ -51,6 +74,15 @@ const ca: NotificationLocale = {
     collection_invite: (p) => ({
       title: 'Invitació a una col·lecció',
       body: `${p.actor} t'ha convidat a compartir una col·lecció. Obre TREK per acceptar-la o rebutjar-la.`,
+    }),
+    wanderer_source_hint: (p) => ({
+      title: `Camí de wanderer: ${p.tour}`,
+      body:
+        p.state === 'changed'
+          ? `«${p.tour}» a «${p.trip}» s'ha canviat a wanderer. Obre el recorregut i comprova'n la font per veure tots els canvis. Res del viatge canvia sol.`
+          : p.state === 'unverifiable'
+            ? `«${p.tour}» a «${p.trip}» ja no es pot comprovar a wanderer. El recorregut del teu viatge es queda com està.`
+            : `«${p.tour}» a «${p.trip}» pot haver canviat a wanderer. Obre el recorregut i comprova'n la font per saber-ho. Res del viatge canvia sol.`,
     }),
     plugin_notification: (p) => ({ title: p.title ?? '', body: p.body ?? '' }),
   },

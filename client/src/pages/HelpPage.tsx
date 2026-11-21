@@ -1,12 +1,12 @@
 import { Children, type ReactNode } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { Search, ChevronRight, Loader2, AlertCircle, BookOpen, PanelLeft, X } from 'lucide-react'
 import PageShell from '../components/Layout/PageShell'
-import SourceCodeLink from '../components/Legal/SourceCodeLink'
 import { useTranslation } from '../i18n'
 import { useHelp } from './help/useHelp'
+import { headingSlug } from '../help/headingSlug'
 
 export default function HelpPage() {
   const { t } = useTranslation()
@@ -16,12 +16,12 @@ export default function HelpPage() {
   const nav = (
     <nav className="flex flex-col gap-5">
       <div className="relative">
-        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-content-faint" />
+        <Search size={14} className="absolute start-3 top-1/2 -translate-y-1/2 text-content-faint" />
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={t('help.search')}
-          className="w-full bg-surface-tertiary text-content rounded-lg pl-9 pr-3 py-2 text-[13px] outline-none border border-transparent focus:border-edge"
+          className="w-full bg-surface-tertiary text-content rounded-lg ps-9 pe-3 py-2 text-[13px] outline-none border border-transparent focus:border-edge"
         />
       </div>
       {filtered.map((section) => (
@@ -45,7 +45,7 @@ export default function HelpPage() {
                   }`}
                 >
                   {active && <ChevronRight size={13} className="shrink-0" />}
-                  <span className={active ? '' : 'pl-[18px]'}>{p.title}</span>
+                  <span className={active ? '' : 'ps-[18px]'}>{p.title}</span>
                 </Link>
               )
             })}
@@ -53,12 +53,6 @@ export default function HelpPage() {
         </div>
       ))}
       {!filtered.length && <p className="text-[12px] text-content-faint px-2">{t('help.noResults')}</p>}
-      <p className="px-2 text-[12px] text-content-faint">
-        <SourceCodeLink
-          labelKey="help.sourceCode"
-          style={{ color: 'inherit', fontWeight: 600, textDecoration: 'underline', textUnderlineOffset: 2 }}
-        />
-      </p>
     </nav>
   )
 
@@ -67,7 +61,7 @@ export default function HelpPage() {
       <div className="max-w-[1600px] mx-auto px-4 lg:px-10 py-6 flex gap-10">
         {/* Desktop sidebar */}
         <aside className="hidden lg:block w-[260px] shrink-0">
-          <div className="sticky top-[calc(var(--nav-h,56px)+24px)] max-h-[calc(100vh-var(--nav-h,56px)-48px)] overflow-y-auto pr-1">
+          <div className="sticky top-[calc(var(--nav-h,56px)+24px)] max-h-[calc(100vh-var(--nav-h,56px)-48px)] overflow-y-auto pe-1">
             <div className="flex items-center gap-2 mb-4 px-2">
               <BookOpen size={16} className="text-accent" />
               <span className="text-[14px] font-bold text-content">{t('help.title')}</span>
@@ -79,7 +73,7 @@ export default function HelpPage() {
         {/* Content */}
         <main className="flex-1 min-w-0" ref={contentRef}>
           {/* Mobile nav toggle */}
-          <button
+          <button type="button"
             onClick={() => setNavOpen(true)}
             className="lg:hidden inline-flex items-center gap-2 mb-4 px-3 py-2 rounded-lg bg-surface-card border border-edge text-[13px] font-medium text-content"
           >
@@ -96,33 +90,28 @@ export default function HelpPage() {
               <p className="text-[14px] font-semibold text-content">{t('help.errorTitle')}</p>
               <p className="text-[13px] text-content-faint max-w-sm">{t('help.errorBody')}</p>
             </div>
-          ) : page && typeof page.markdown === 'string' ? (
+          ) : page ? (
             <article className="wiki-prose max-w-[1040px]">
               <WikiContent markdown={page.markdown} />
             </article>
           ) : null}
-          <p className="mt-10 text-[12px] text-content-faint">
-            <SourceCodeLink
-              labelKey="help.sourceCode"
-              style={{ color: 'inherit', fontWeight: 600, textDecoration: 'underline', textUnderlineOffset: 2 }}
-            />
-          </p>
         </main>
       </div>
 
       {/* Mobile sidebar drawer */}
       {navOpen && (
-        <div className="lg:hidden fixed inset-0 z-[120]" onClick={() => setNavOpen(false)}>
+        <div className="lg:hidden fixed inset-0 z-[120]" role="presentation" onClick={() => setNavOpen(false)}>
           <div className="absolute inset-0 bg-black/40" />
           <div
-            className="absolute left-0 top-0 bottom-0 w-[280px] bg-surface-card p-5 overflow-y-auto shadow-xl"
+            className="absolute start-0 top-0 bottom-0 w-[280px] bg-surface-card p-5 overflow-y-auto shadow-xl"
+            role="presentation"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
               <span className="text-[14px] font-bold text-content flex items-center gap-2">
                 <BookOpen size={16} className="text-accent" /> {t('help.title')}
               </span>
-              <button onClick={() => setNavOpen(false)} className="text-content-faint">
+              <button type="button" onClick={() => setNavOpen(false)} className="text-content-faint">
                 <X size={18} />
               </button>
             </div>
@@ -138,17 +127,14 @@ export default function HelpPage() {
  * GitHub's heading-anchor slug: lowercase, punctuation dropped, spaces to
  * hyphens. Wiki pages link to their own sections with `](#some-heading)`, and
  * those hrefs are written against GitHub's scheme — so ours has to match it, or
- * in-app anchors point at nothing.
+ * in-app anchors point at nothing. The slug itself lives in `help/headingSlug`,
+ * so the help center's doc links are checked against the same rule.
  */
 function headingId(children: ReactNode): string {
   const text = Children.toArray(children)
     .map(c => (typeof c === 'string' || typeof c === 'number' ? String(c) : ''))
     .join('')
-  return text
-    .toLowerCase()
-    .replace(/[^\w\s-]/g, '')
-    .trim()
-    .replace(/\s+/g, '-')
+  return headingSlug(text)
 }
 
 /** Markdown renderer with TREK-styled elements and SPA-internal links. */
@@ -168,8 +154,8 @@ function WikiContent({ markdown }: { markdown: string }) {
         h3: ({ children }) => <h3 id={headingId(children)} className="text-[15.5px] font-semibold text-content mt-6 mb-2 scroll-mt-24">{children}</h3>,
         h4: ({ children }) => <h4 id={headingId(children)} className="text-[14px] font-semibold text-content mt-5 mb-2 scroll-mt-24">{children}</h4>,
         p: ({ children }) => <p className="text-[14px] text-content-secondary leading-[1.7] my-3">{children}</p>,
-        ul: ({ children }) => <ul className="list-disc pl-5 my-3 space-y-1.5 text-[14px] text-content-secondary">{children}</ul>,
-        ol: ({ children }) => <ol className="list-decimal pl-5 my-3 space-y-1.5 text-[14px] text-content-secondary">{children}</ol>,
+        ul: ({ children }) => <ul className="list-disc ps-5 my-3 space-y-1.5 text-[14px] text-content-secondary">{children}</ul>,
+        ol: ({ children }) => <ol className="list-decimal ps-5 my-3 space-y-1.5 text-[14px] text-content-secondary">{children}</ol>,
         li: ({ children }) => <li className="leading-[1.6]">{children}</li>,
         a: ({ href, children }) => {
           const url = href ?? ''
@@ -195,7 +181,7 @@ function WikiContent({ markdown }: { markdown: string }) {
           </pre>
         ),
         blockquote: ({ children }) => (
-          <blockquote className="border-l-3 border-accent bg-accent-subtle/40 rounded-r-lg px-4 py-1 my-4 text-content-secondary">
+          <blockquote className="border-s-3 border-accent bg-accent-subtle/40 rounded-e-lg px-4 py-1 my-4 text-content-secondary">
             {children}
           </blockquote>
         ),
@@ -205,7 +191,7 @@ function WikiContent({ markdown }: { markdown: string }) {
           </div>
         ),
         th: ({ children }) => (
-          <th className="text-left font-semibold text-content border border-edge-secondary px-3 py-2 bg-surface-tertiary">
+          <th className="text-start font-semibold text-content border border-edge-secondary px-3 py-2 bg-surface-tertiary">
             {children}
           </th>
         ),

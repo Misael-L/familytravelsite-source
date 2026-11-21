@@ -1,0 +1,39 @@
+# U05-B2b3c5 — prepared cold original-command recovery
+
+Status: local recovery checkpoint,14 November2026, on top of the warm cohort checkpoint `e4b8d7c5aa7e702d508eb9237115397ec4f56af6`. This completes the cold recovery handoff prerequisite within C5 sections3–4. **Native Add/edit/lifecycle/confirmed-Trash UI and generated browser acceptance are still pending.** No hosted schema or site activation is implied.
+
+## Recovery contract
+
+The existing failed-read recovery surface now supplies a native-only `prepareCurrent` callback through `createPlannerCommandRecovery`. A retained original is still outcome-first: unknown stays unchanged; same-session explicit retry sends the same original; fresh same-actor login may inspect/cancel but never execute or rebind an old session's operation. Known commitment triggers the actual canonical native core and real authorized ancillary loaders, reusing the original exclusive command's read guard. There is no nested shared lock and no queue deletion to unblock a read.
+
+Preparation produces a synchronous publisher, successful-completion callback and discard callback. It creates a validated complete cache generation but leaves native selection, the original failure and queue entry unchanged. The session then checks current actor/session/source/registry/layer, exact queue metadata, competing local work and the read guard. It calls the checked synchronous publisher under that guard. Only this original publication can seat a null selection onto the already identified native Trip; an initially selected different Trip, an asynchronous publisher or a publisher that seats another Trip is refused.
+
+The same existing cohort publication method now serves ordinary/warm loads and prepared recovery. It preserves local field references, pairs stays/reservations and task/packing resources, and publishes the authoritative fresh read rather than the acknowledgement. Cold data is loaded before publication and only then initializes the native Trip. The failed-read owner/epoch remains unchanged through preparation, publication, the post-publication fences and exact acknowledgement. After acknowledgement succeeds, completion retires old retry/inspector callbacks and clears only the still-owned failure. A newer navigation/read/failure cannot be cleared by an older command.
+
+Ordinary same-Trip loads cannot join or replace a prepared flight, even immediately after its native publication and before acknowledgement. Deliberate navigation to another Trip still supersedes the old work and makes it refuse. Cancellation retains the existing ordinary Retry path: after an unknown original is actually cancelled and acknowledged, a fresh guarded complete load may publish the Trip.
+
+On a preparation/publication failure, the exact new cache generation is withdrawn and the command remains retained. If a **late** metadata/acknowledgement failure occurs after native publication, fresh displayed data is not blindly rolled back over other edits: its cohort is paused, its stay witness is retired and its exact cache head is withdrawn. The changed queue row and owned failure remain available for a new inspector. A real test proves that recovery then completes without a second server execution. This is a recoverable handoff, not an atomic transaction across server, IndexedDB and React stores.
+
+C4 keeps its original service dialect/core-only completion. Existing native `confirmCurrent` consumers keep their warm behavior. Only the native protocol can request the new prepared completion. No weaker session, identity, exact-metadata, permission or ownership rule was introduced; native/default/hosted activation remains unchanged.
+
+## Final qualification
+
+- 1,098 inherited/client regression cases in38files pass, including eight new prepared-session negative/ordering cases. The final41-case native-session file also passes after its final lint-safe malformed-callback fixture edit.
+- 24 actual installed-SDK/PostgREST/RLS/IndexedDB-adapter/native-cohort cases pass. They cover null-selection committed recovery, unknown retained across close/reopen/generic flush then exact retry, genuinely lost committed HTTP reply, fresh-login committed discovery, fresh-login unknown cancellation, real task/packing/expense refusal and same-inspector retry, held ancillary reads, source/Family/person/layer/logout/disposal/selection/queue/local-edit retirement, newer Trip navigation, simultaneous inspectors, warm recovery without remount, late acknowledgement CAS refusal followed by a fresh inspector, and the actual shared desktop/phone recovery buttons.
+- 11 original real-SDK queue cases pass again. Total focused cases:1,133; the41-case focused rerun is not added twice. Prior27 warm-cohort cases are inherited evidence rather than claimed as rerun in this checkpoint.
+- Types, zero-added scoped lint,99 source guards,23 isolation refusals, seven unchanged quality gates and default web build/secret scan/405JavaScript parses/descriptor check pass. Three existing adoption guards still refuse under the5.1.2 pin. No baseline/pin changes.
+- All324,419 original rows/240COPY projections,595 prior function bodies/owners/ACLs,17 existing schema135 narrowly granted additions,98 original NULL-owned visits,135migrations/314canonical sources and the mixed canonical index are preserved.12 protected5.1.4 layouts,98 older seals/7,197members, backend/dependencies/queue hold/source pins and old5.1.2 remain exact. No SQL changes.
+
+Auth metadata is synthetic signed identity; IndexedDB and Web Locks use test adapters. Real SDK/RLS/ancillary reads and existing React recovery controls are tested; this is **not GoTrue or generated App/browser acceptance**. No media-byte load or transformation operation is required by these fixtures. Actual generated desktop/phone flow and zero catalog `/render/image/` attempts remain activation requirements. Independent full database-plus-files restore remains unproved.
+
+## Exact next within C5
+
+Connect original published cohort/row observations to native Add/edit/Trash/restore/keepStop, using eligible saved hotel/manual lodging identities and current Direct schedule/reservation rights. Preserve original operation/observation bytes, owned/shared/repeated arrival identities and independent booking/expense/media facts. Keep confirmation edits separate. Provide reachable bounded confirmed-Trash restore for both desktop and phone before enabling removal. Audit generic visit/day actions against ownership guards; do not weaken SQL or enable unqualified off-calendar/seconds/overnight presentation.
+
+Reuse the now-qualified prepared cold recovery and warm refresher. Do not create another recovery implementation. Test the combined native forms/queue/cohort/Trash flows in the generated desktop/phone App, intercepting transformations and proving stored variants render. Keep12 protected upstream layouts exact; no preview deployment is included in this packet.
+
+Local fixture: retained schema135 candidate at `/private/tmp/trek-u05b2b3c5-native-20261114/rehearsal`. The newest exact restart metadata is `/private/tmp/trek-u05b2b3c5-cold-20261114/owned-fixture-stop.json`; earlier receipts are historical. Only this owned relay/database/HTTP fixture was restarted and stopped; volumes and unrelated service states remain retained. Future work must requalify that newest stopped receipt, exact container IDs/images/nonce and guarded readiness.
+
+Evidence: `/Users/Misael/Desktop/FamilyTravelApp/docs/backend-modernization/evidence/u05b2b3c5-native-stay-cold-recovery-2026-11-14`. Website changes are a scoped local commit. Canonical documents/evidence are outside its unchanged mixed index. No hosted SQL/settings/billing, production/preview/main/push/publication, original backup/media/ignored ETL, backfill/sync or image-transformation change.
+
+Continue [the same C5 client packet](trek-5.1.4-native-stay-client-packet.md), remaining sections3–4.

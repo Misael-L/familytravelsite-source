@@ -1,7 +1,11 @@
-// Presentation copied from TREK d4da05b. Family controllers retain data and focus ownership.
 import type { ReactNode } from 'react'
-import { Plus } from 'lucide-react'
-import { fs } from './DialogShell'
+import { createPortal } from 'react-dom'
+import { ChevronDown, Plus } from 'lucide-react'
+import { POPOVER } from '../Packing/packingPopoverStyles'
+import { PopoverItem } from '../Packing/PackingPopover'
+import { PILL, fs } from './DialogShell'
+import { usePopoverList } from './usePopoverList'
+
 // The editors' fields in the cards' language: framed white boxes under small
 // Geist eyebrows. The sizes are classes, not fs() styles, so components that
 // only take a className (BookingLinkAndFiles, BookingCodeInput, AddressInput)
@@ -85,6 +89,87 @@ export function Segmented<T extends string>({ value, options, onChange, label, a
         )
       })}
     </div>
+  )
+}
+
+export interface PillOption<T extends string> {
+  value: T
+  label: string
+  icon?: ReactNode
+  /** A quieter second part after the label, such as a day's date. */
+  hint?: string
+}
+
+/**
+ * A head band pill that opens a list to pick from, such as the booking type.
+ * Opening moves the focus onto the current choice; the arrow keys walk the
+ * list, Escape closes it and leaves the dialog open, Tab closes it and goes on
+ * from the pill.
+ */
+/** A PillSelect sitting in the body rather than on a head band: grey, flat and small. */
+const QUIET_PILL = 'inline-flex flex-none items-center gap-1.5 rounded-full bg-surface-tertiary px-2.5 py-1 font-semibold text-content'
+
+export function PillSelect<T extends string>({ value, options, onChange, label, fallback, quiet = false }: {
+  value: T
+  options: readonly PillOption<T>[]
+  onChange: (value: T) => void
+  /** What is being picked; read before the value by screen readers, and the list's name. */
+  label: string
+  /** What the pill shows while the value is none of the options, such as a type the list does not offer. */
+  fallback?: { label: string; icon?: ReactNode; hint?: string }
+  /** In the body of a dialog instead of on its head band. */
+  quiet?: boolean
+}) {
+  const list = usePopoverList(options.findIndex(o => o.value === value))
+  const { open, toggle, triggerRef, listId } = list
+  const current = options.find(o => o.value === value)
+  const shown = current ?? fallback
+
+  const pick = (next: T) => {
+    list.close()
+    onChange(next)
+  }
+
+  return (
+    <>
+      <button ref={triggerRef} type="button" onClick={toggle} aria-expanded={open} aria-controls={open ? listId : undefined}
+        className={`${quiet ? QUIET_PILL : PILL} hover:opacity-80`} style={quiet ? fs(11.5, 'body') : undefined}>
+        <span className="sr-only">{label}: </span>
+        {shown?.icon}
+        <span>{shown?.label}</span>
+        {shown?.hint && <span className="font-medium text-content-muted">{shown.hint}</span>}
+        <ChevronDown size={12} strokeWidth={2.2} className={`-me-0.5 flex-none text-content-faint transition-transform ${open ? 'rotate-180' : ''}`} />
+      </button>
+      <PopoverListPanel list={list} label={label} className="min-w-[200px]">
+        {options.map(o => (
+          <PopoverItem key={o.value} icon={o.icon ?? null} label={o.label} active={o.value === value} onClick={() => pick(o.value)}
+            trailing={o.hint ? <span className="font-geist text-content-faint" style={fs(11)}>{o.hint}</span> : undefined} />
+        ))}
+      </PopoverListPanel>
+    </>
+  )
+}
+
+/**
+ * The open list of a `usePopoverList` button, in the popover look, laid over
+ * the page beside its button: where the button sits decides where it opens.
+ */
+export function PopoverListPanel({ list, label, className = '', children }: {
+  list: ReturnType<typeof usePopoverList>
+  /** The list's name for a screen reader. */
+  label: string
+  className?: string
+  children: ReactNode
+}) {
+  const { open, box, menuRef, listId, onListKey } = list
+  if (!open || !box) return null
+  return createPortal(
+    <div ref={menuRef} id={listId} role="group" aria-label={label} onKeyDown={onListKey}
+      className={`fixed z-[var(--z-toast)] overflow-y-auto ${className}`}
+      style={{ ...POPOVER, top: box.top, bottom: box.bottom, left: box.left, maxHeight: box.maxHeight }}>
+      {children}
+    </div>,
+    document.body,
   )
 }
 

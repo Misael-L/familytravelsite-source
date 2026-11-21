@@ -1,0 +1,138 @@
+import type { LucideIcon } from 'lucide-react'
+import { BarChart3, Link2, MessageCircle, StickyNote } from 'lucide-react'
+import type { MTabScreenProps } from './tabModel'
+import { TabScroller } from './tabChrome'
+import MCollabChat from './MCollabChat'
+import MCollabNotes from './MCollabNotes'
+import MCollabPolls from './MCollabPolls'
+import CollabLinks from '../../../../components/Collab/CollabLinks'
+import { useIsSplit } from '../../../../hooks/sizeClass'
+import { collabBoardFor, collabSideBySide, isCollabBoard } from './collabPanes'
+
+/**
+ * Tab 6 — Collab. Routes `shell.collabTab` ('chat' | 'notes' | 'polls', the
+ * header segmented switcher already wired in MTripShell) to its sub-panel.
+ *
+ * Each sub-panel is fully self-contained (own state, own `collabApi` calls,
+ * own WebSocket listener) per the architecture note in
+ * analysis/10-tab-databindings.md §8.2 — none of them touch
+ * `planner.tripActions` or `useTripStore`.
+ *
+ * `planner.collabFeatures` gates the three sub-tabs a second time, inside
+ * this tab: the header's chat/notes/polls chips render unconditionally
+ * (MTripShell.tsx does not filter them), so a trip with e.g. notes disabled
+ * can still land here with `shell.collabTab === 'notes'` — the fallback below
+ * covers that case instead of rendering a broken/empty panel.
+ *
+ * `collabFeatures.whatsnext` (a 4th desktop panel, `WhatsNextWidget`) is
+ * deliberately not handled here — see the task report for why.
+ */
+export default function MCollabTab({ planner, shell }: MTabScreenProps) {
+  const split = useIsSplit()
+
+  // With room for two panes the conversation stays in view at the trailing edge
+  // while the notes, links or polls it is about fill the page beside it, the way
+  // a comments pane accompanies a document. The header's segment then switches
+  // only the board (MTripShell asks collabPanes.ts the same question).
+  //
+  // The chat keeps its place in the tree either way (a slot that stays empty
+  // still holds its index), so a rotation or a fold that crosses into or out of
+  // two panes keeps the draft and the scroll position instead of remounting it.
+  // That holds for a board picked beside it too: turning an iPad upright then
+  // leaves the board on its own and only hides the chat, with its half typed
+  // message, until the switch brings it back.
+  const sideBySide = collabSideBySide(split, planner.collabFeatures)
+  const board = sideBySide
+    ? collabBoardFor(shell.collabTab, planner.collabFeatures)
+    : isCollabBoard(shell.collabTab) ? shell.collabTab : null
+  const chat = sideBySide || shell.collabTab === 'chat'
+  const keepChat = chat || planner.collabFeatures.chat
+  if (!board && !chat) return null
+  let chatPane = 'hidden'
+  if (sideBySide) chatPane = 'm-pane-trail relative h-full flex-none border-s border-[color:var(--m-rowbr)]'
+  else if (chat) chatPane = 'relative h-full min-w-0 flex-1'
+  return (
+    <div className="flex h-full">
+      {board && (
+        <div className="relative h-full min-w-0 flex-1">
+          <CollabPanel planner={planner} tab={board} />
+        </div>
+      )}
+      {keepChat && (
+        <div className={chatPane}>
+          <CollabPanel planner={planner} tab="chat" />
+        </div>
+      )}
+    </div>
+  )
+}
+
+function CollabPanel({ planner, tab }: { planner: MTabScreenProps['planner']; tab: MTabScreenProps['shell']['collabTab'] }) {
+  const { t } = planner
+  const label = t('mobileTrip.collabFeatureDisabled')
+
+  if (tab === 'chat') {
+    if (!planner.collabFeatures.chat) {
+      return (
+        <div className="flex h-full flex-col px-4 pb-[var(--bottom-nav-h,84px)] pt-[calc(var(--m-safe-top,12px)+58px)]">
+          <CollabDisabledNotice icon={MessageCircle} label={label} />
+        </div>
+      )
+    }
+    return <MCollabChat planner={planner} />
+  }
+
+  if (tab === 'notes') {
+    if (!planner.collabFeatures.notes) {
+      return (
+        <TabScroller>
+          <CollabDisabledNotice icon={StickyNote} label={label} />
+        </TabScroller>
+      )
+    }
+    return <MCollabNotes planner={planner} />
+  }
+
+  if (tab === 'links') {
+    if (planner.collabFeatures.links === false) {
+      return (
+        <TabScroller>
+          <CollabDisabledNotice icon={Link2} label={label} />
+        </TabScroller>
+      )
+    }
+    // On a wide window the card is as tall as its links: a page-high card with
+    // four rows at its top read as a list that failed to fill.
+    return (
+      <TabScroller>
+        <div className="min-h-[70vh] overflow-hidden rounded-[18px] bg-[color:var(--m-card)] wide:min-h-0">
+          <CollabLinks tripId={planner.tripId} />
+        </div>
+      </TabScroller>
+    )
+  }
+
+  if (tab === 'polls') {
+    if (!planner.collabFeatures.polls) {
+      return (
+        <TabScroller>
+          <CollabDisabledNotice icon={BarChart3} label={label} />
+        </TabScroller>
+      )
+    }
+    return <MCollabPolls planner={planner} />
+  }
+
+  return null
+}
+
+function CollabDisabledNotice({ icon: Icon, label }: { icon: LucideIcon; label: string }) {
+  return (
+    <div className="flex flex-1 flex-col items-center justify-center px-8 text-center">
+      <span className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[color:var(--m-ic)] text-m-faint">
+        <Icon size={24} strokeWidth={1.8} />
+      </span>
+      <p className="font-geist text-[0.8125rem] font-medium text-m-muted">{label}</p>
+    </div>
+  )
+}

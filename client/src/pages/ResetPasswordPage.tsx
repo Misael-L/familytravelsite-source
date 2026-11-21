@@ -2,19 +2,21 @@ import React, { ChangeEvent } from 'react'
 import { Lock, KeyRound, CheckCircle2, AlertTriangle, Eye, EyeOff } from 'lucide-react'
 import { useTranslation } from '../i18n'
 import { useResetPassword } from './resetPassword/useResetPassword'
+import PasswordChecklist from '../components/shared/PasswordChecklist'
 
 const inputBase: React.CSSProperties = {
-  width: '100%', padding: '11px 44px 11px 38px', borderRadius: 12,
+  width: '100%', paddingBlock: 11, paddingInlineEnd: 44, paddingInlineStart: 38, borderRadius: 12,
   border: '1px solid #e5e7eb', fontSize: 'calc(14px * var(--fs-scale-body, 1))', fontFamily: 'inherit',
   outline: 'none', transition: 'border-color 120ms',
   background: 'white', color: '#111827',
 }
 
-const ResetPasswordPage: React.FC = () => {
+function ResetPasswordPage() {
   const { t } = useTranslation()
   // Page = wiring container: token, form state, validation + submit live in the hook.
   const {
     navigate, token,
+    familyRecoveryPending, familyRecoveryReady,
     pw, setPw, pw2, setPw2, showPw, setShowPw,
     mfaCode, setMfaCode, mfaRequired, error, success, isLoading,
     handleSubmit,
@@ -56,7 +58,11 @@ const ResetPasswordPage: React.FC = () => {
     )
   }
 
-  if (!token) {
+  if (familyRecoveryPending) {
+    return shell(<div aria-busy="true" data-testid="reset-password-pending" style={{ minHeight: 80 }} />)
+  }
+
+  if (!familyRecoveryReady && !token) {
     return shell(
       <div style={{ textAlign: 'center', padding: '12px 0' }}>
         <div style={{
@@ -101,7 +107,7 @@ const ResetPasswordPage: React.FC = () => {
                 {t('login.newPassword')}
               </label>
               <div style={{ position: 'relative' }}>
-                <Lock size={15} className="text-[#9ca3af]" style={{ position: 'absolute', left: 13, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
+                <Lock size={15} className="text-[#9ca3af]" style={{ position: 'absolute', insetInlineStart: 13, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
                 <input
                   type={showPw ? 'text' : 'password'} value={pw}
                   onChange={(e: ChangeEvent<HTMLInputElement>) => setPw(e.target.value)}
@@ -110,17 +116,18 @@ const ResetPasswordPage: React.FC = () => {
                   onBlur={(e) => { e.currentTarget.style.borderColor = '#e5e7eb' }}
                 />
                 <button type="button" onClick={() => setShowPw(v => !v)} style={{
-                  position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)',
+                  position: 'absolute', insetInlineEnd: 12, top: '50%', transform: 'translateY(-50%)',
                   background: 'none', border: 'none', cursor: 'pointer', padding: 2, color: '#9ca3af',
                 }}>{showPw ? <EyeOff size={16} /> : <Eye size={16} />}</button>
               </div>
+              <PasswordChecklist password={pw} className="mt-2" tone="light" />
             </div>
             <div>
               <label style={{ display: 'block', fontSize: 'calc(12.5px * var(--fs-scale-body, 1))', fontWeight: 600, color: '#374151', marginBottom: 6 }}>
                 {t('login.confirmPassword')}
               </label>
               <div style={{ position: 'relative' }}>
-                <Lock size={15} className="text-[#9ca3af]" style={{ position: 'absolute', left: 13, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
+                <Lock size={15} className="text-[#9ca3af]" style={{ position: 'absolute', insetInlineStart: 13, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
                 <input
                   type={showPw ? 'text' : 'password'} value={pw2}
                   onChange={(e: ChangeEvent<HTMLInputElement>) => setPw2(e.target.value)}
@@ -138,11 +145,11 @@ const ResetPasswordPage: React.FC = () => {
               {t('login.mfaCode')}
             </label>
             <div style={{ position: 'relative' }}>
-              <KeyRound size={15} className="text-[#9ca3af]" style={{ position: 'absolute', left: 13, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
+              <KeyRound size={15} className="text-[#9ca3af]" style={{ position: 'absolute', insetInlineStart: 13, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
               <input
                 type="text" inputMode="numeric" value={mfaCode}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => setMfaCode(e.target.value)}
-                required placeholder="123456 or backup-code" style={{ ...inputBase, paddingRight: 12 }}
+                required placeholder="123456 or backup-code" style={{ ...inputBase, paddingInlineEnd: 12 }}
                 autoFocus
                 onFocus={(e) => { e.currentTarget.style.borderColor = '#111827' }}
                 onBlur={(e) => { e.currentTarget.style.borderColor = '#e5e7eb' }}

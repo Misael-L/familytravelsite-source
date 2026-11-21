@@ -1,0 +1,21 @@
+{
+  "id": "REDACTED_PRODUCTION_PROJECT",
+  "name": "Family Travel App Project",
+  "region": "us-west-2",
+  "status": "ACTIVE_HEALTHY",
+  "database": {
+    "host": "REDACTED_PRODUCTION_DATABASE_HOST",
+    "version": "17.6.1.141",
+    "postgres_engine": "17",
+    "release_channel": "ga"
+  },
+  "_sourcePublication": {
+    "redactedFields": [
+      "/id",
+      "/database/host"
+    ],
+    "reason": "Operational project and database host identity withheld from public source. Unredacted original retained in private Git history.",
+    "originalPrivateCommit": "2d25cc818b9844e77b693b4cde2393388184b12f",
+    "originalFileSha256": "d109ef7550d1acc21c5c617106cf5210eff2d167911d65b01ca27d35d2ba0c43"
+  }
+}

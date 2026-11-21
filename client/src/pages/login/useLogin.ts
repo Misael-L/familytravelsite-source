@@ -1,18 +1,32 @@
 import { useState, useEffect, useMemo, useRef } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
-import { sanitizeInternalRedirect } from '../../utils/internalRedirect'
-import { useAuthStore, selectIsFamilyMember } from '../../store/authStore'
+import { useNavigate, useLocation } from 'react-router'
+import { useAuthStore } from '../../store/authStore'
 import { useSettingsStore, hasStoredLanguage } from '../../store/settingsStore'
 import { useTranslation, detectBrowserLanguage } from '../../i18n'
 import { startAuthentication } from '@simplewebauthn/browser'
+import { clearSignedOut, wasSignedOut } from '../../utils/signedOut'
 import { authApi, configApi } from '../../api/client'
 import { getApiErrorMessage } from '../../types'
-import { isSupabaseDataPlane } from '../../data/supabase/auth'
+import { START_DESTINATION_ROUTE } from '../../utils/startDestination'
+import { passwordErrorKey } from '../../utils/passwordError'
+import { isFamilyFrontendActive } from '../../integrations/family/runtime'
+import { familyAuthStore } from '../../integrations/family/repository'
+import { isNativeApp } from '../../native/platform'
+import {
+  BrowserSignInCancelled,
+  isHandoffReturn,
+  rememberHandoffReturn,
+  resumeBrowserSignIn,
+  signInThroughBrowser,
+  takeHandoffReturn,
+  type BrowserSignInStart,
+} from '../../native/browserSignIn'
 
 interface AppConfig {
   has_users: boolean
   allow_registration: boolean
   setup_complete: boolean
+  managed?: boolean
   demo_mode: boolean
   oidc_configured: boolean
   oidc_display_name?: string
@@ -26,6 +40,24 @@ interface AppConfig {
   env_override_oidc_only: boolean
 }
 
+const CONFIG_CACHE_KEY = 'trek_app_config_cache'
+
+/** Where an OIDC-only instance sends its users; the IdP owns the session policy (#1927). */
+export const IDP_LOGIN_URL = '/api/auth/oidc/login?remember=1'
+
+/** How long the redirect screen waits before it offers the way on by hand. */
+const IDP_SLOW_MS = 8000
+
+function readCachedConfig(): AppConfig | null {
+  try {
+    const raw = localStorage.getItem(CONFIG_CACHE_KEY)
+    return raw ? (JSON.parse(raw) as AppConfig) : null
+  } catch { return null }
+}
+
+const isOidcOnly = (config: AppConfig | null): boolean =>
+  !!config && !config.password_login && config.oidc_login && config.oidc_configured
+
 /**
  * Login data hook — owns the whole auth surface: login/register/demo, the MFA
  * step-up, the must-change-password step, the OIDC code exchange + error
@@ -35,35 +67,34 @@ interface AppConfig {
  */
 export function useLogin() {
   const { t } = useTranslation()
-  const supabasePlane = isSupabaseDataPlane()
   const [mode, setMode] = useState<'login' | 'register'>('login')
   const [username, setUsername] = useState<string>('')
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
-  const [rememberMe, setRememberMe] = useState<boolean>(false)
+  // On by default in the app: a session cookie there dies with the app process,
+  // and nobody expects to sign in again every time the phone unloads an app.
+  const [rememberMe, setRememberMe] = useState<boolean>(isNativeApp)
+  const [nativeApp] = useState(isNativeApp)
   const [showPassword, setShowPassword] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [error, setError] = useState<string>('')
+  // Set when the server signals it just issued a Secure cookie over plain HTTP —
+  // the browser drops it, so we explain the fix instead of a bare 401 later.
   const [insecureCookie, setInsecureCookie] = useState(false)
-  const [appConfig, setAppConfig] = useState<AppConfig | null>(
-    supabasePlane
-      ? {
-          has_users: true,
-          allow_registration: false,
-          setup_complete: true,
-          demo_mode: false,
-          oidc_configured: false,
-          oidc_only_mode: false,
-          password_login: true,
-          password_registration: false,
-          oidc_login: false,
-          oidc_registration: false,
-          passkey_login: false,
-          passkey_configured: false,
-          env_override_oidc_only: false,
-        }
-      : null,
-  )
+  const [appConfig, setAppConfig] = useState<AppConfig | null>(null)
+  // Until the config answers, the page cannot know which sign-in it offers, and
+  // on a slow line the password form it drew meanwhile was the first thing an
+  // OIDC-only user saw (#1167). What the last visit cached says it early: an
+  // instance that sends everyone to the IdP is announced as that redirect.
+  const [configLoaded, setConfigLoaded] = useState(false)
+  const [cachedConfig] = useState(readCachedConfig)
+  const [expectRedirect] = useState(() => {
+    const params = new URLSearchParams(window.location.search)
+    return !isNativeApp() && isOidcOnly(cachedConfig) && !!cachedConfig?.has_users
+      && !params.get('invite') && !params.get('oidc_code') && !params.get('oidc_error')
+  })
+  const [idpRedirect, setIdpRedirect] = useState(false)
+  const [idpSlow, setIdpSlow] = useState(false)
   const [inviteToken, setInviteToken] = useState<string>('')
   const [inviteValid, setInviteValid] = useState<boolean>(false)
   const exchangeInitiated = useRef(false)
@@ -71,8 +102,8 @@ export function useLogin() {
   const [langDropdownOpen, setLangDropdownOpen] = useState<boolean>(false)
 
   const [showTakeoff, setShowTakeoff] = useState<boolean>(false)
-  const [mfaStep, setMfaStep] = useState(false)
-  const [mfaToken, setMfaToken] = useState('')
+  const [mfaStep, setMfaStep] = useState(() => isFamilyFrontendActive() && familyAuthStore.getState().authGate === 'mfa_challenge')
+  const [mfaToken, setMfaToken] = useState(() => isFamilyFrontendActive() && familyAuthStore.getState().authGate === 'mfa_challenge' ? 'family-session-challenge' : '')
   const [mfaCode, setMfaCode] = useState('')
   const [passwordChangeStep, setPasswordChangeStep] = useState(false)
   const [savedLoginPassword, setSavedLoginPassword] = useState('')
@@ -80,54 +111,103 @@ export function useLogin() {
   const [confirmPassword, setConfirmPassword] = useState('')
 
   const { login, register, demoLogin, completeMfaLogin, loadUser } = useAuthStore()
-  const { setLanguageLocal, setLanguageTransient } = useSettingsStore()
+  const { setLanguageLocal, setLanguageTransient, loadSettings } = useSettingsStore()
   const navigate = useNavigate()
   const location = useLocation()
-  const noRedirect = !!(location.state as { noRedirect?: boolean } | null)?.noRedirect
+  // Location state alone is not enough: a deliberate sign-out loses it to
+  // ProtectedRoute's stateless <Navigate replace>, and to any full document
+  // load. The per-tab marker survives both — see utils/signedOut (#2123).
+  const noRedirect = !!(location.state as { noRedirect?: boolean } | null)?.noRedirect || wasSignedOut()
+  const redirectScreen = idpRedirect || (!configLoaded && expectRedirect && !noRedirect)
+  const configWait = !configLoaded && !appConfig && !redirectScreen
+  const idpName = (appConfig ?? cachedConfig)?.oidc_display_name || 'SSO'
+
+  // A redirect that has not left the page after a while offers the way on by
+  // hand, so a stalled IdP never strands anybody on a screen without a control.
+  useEffect(() => {
+    if (!redirectScreen) return
+    const timer = window.setTimeout(() => setIdpSlow(true), IDP_SLOW_MS)
+    return () => window.clearTimeout(timer)
+  }, [redirectScreen])
 
   const redirectTarget = useMemo(() => {
     const params = new URLSearchParams(window.location.search)
-    return sanitizeInternalRedirect(params.get('redirect'))
+    const redirect = params.get('redirect')
+    // Only allow relative paths starting with / to prevent open redirect attacks
+    if (redirect && redirect.startsWith('/') && !redirect.startsWith('//') && !redirect.startsWith('/\\')) {
+      return redirect
+    }
+    // No page to return to: hand the choice to RootRedirect, which is the one
+    // place that knows whether this user starts on the dashboard or in a trip.
+    return START_DESTINATION_ROUTE
   }, [])
 
-  function postLoginNavigate() {
-    const state = useAuthStore.getState()
-    if (supabasePlane) {
-      if (state.authGate === 'mfa_enroll' || state.authGate === 'mfa_challenge') {
-        navigate('/settings?mfa=required', { replace: true })
-        return
-      }
-      if (
-        state.authGate === 'pending_invite'
-        || state.authGate === 'suspended'
-        || state.authGate === 'no_membership'
-        || state.authGate === 'unlinked'
-      ) {
-        navigate('/request-access', { replace: true })
-        return
-      }
-      if (!selectIsFamilyMember(state)) {
-        navigate('/request-access', { replace: true })
-        return
-      }
-    }
-    navigate(redirectTarget, { replace: true })
-  }
-
   useEffect(() => {
-    if (redirectTarget !== '/dashboard') {
+    if (redirectTarget !== START_DESTINATION_ROUTE) {
       sessionStorage.setItem('oidc_redirect', redirectTarget)
     }
   }, [redirectTarget])
 
+  /**
+   * Start the takeoff animation, and spend those 2.6 seconds fetching the
+   * settings instead of letting them sit idle. Whoever we hand over to then
+   * already has them — which matters for the startup destination, decided the
+   * moment we navigate, and otherwise racing this exact request.
+   */
+  const takeOff = (): void => {
+    setShowTakeoff(true)
+    loadSettings()
+    setTimeout(() => navigate(redirectTarget), 2600)
+  }
+
   useEffect(() => {
-    if (supabasePlane) return
+    // Hoisted out of the `oidcCode` branch below (#2126). An exchange in flight
+    // owns this page, but it strips `oidc_code` from the URL before it navigates
+    // away — so while it waits on /api/auth/me and IndexedDB, a re-run of this
+    // effect read an empty search, fell past the branch that used to hold the
+    // guard, and reached the auto-redirect at the bottom. That bounced to the
+    // IdP, which answered silently, which landed back here: the loop the
+    // reporter saw flashing. Guarding on the ref alone closes it whatever
+    // re-triggers the effect.
+    if (exchangeInitiated.current) return
 
     const params = new URLSearchParams(window.location.search)
 
     const invite = params.get('invite')
     const oidcCode = params.get('oidc_code')
     const oidcError = params.get('oidc_error')
+
+    // Also after a failed sign-in at the IdP, only then without the redirect: an
+    // OIDC-only instance has to show its own screen and the error, not a password
+    // form nobody can use.
+    const loadConfig = (allowRedirect: boolean): void => {
+      const request = authApi.getAppConfig?.()
+      if (!request) { setConfigLoaded(true); return }
+      request
+        .then((config: AppConfig) => {
+          try { localStorage.setItem(CONFIG_CACHE_KEY, JSON.stringify(config)) } catch { /* ignore quota errors */ }
+          return { config, fromCache: false }
+        })
+        .catch(() => {
+          const cached = readCachedConfig()
+          return { config: cached, fromCache: !!cached }
+        })
+        .then(({ config, fromCache }) => {
+          if (config) {
+            setAppConfig(config)
+            if (!config.has_users) setMode('register')
+            // Skip auto-redirect when config is from cache — network is unreliable
+            // and auto-redirecting to the IdP could loop if the proxy changed.
+            // Not in the app: its WebView cannot host the IdP, and opening the
+            // system browser uninvited on every launch would be worse than a button.
+            if (allowRedirect && !fromCache && !nativeApp && isOidcOnly(config) && config.has_users && !invite && !noRedirect) {
+              setIdpRedirect(true)
+              window.location.href = IDP_LOGIN_URL
+            }
+          }
+          setConfigLoaded(true)
+        })
+    }
 
     if (invite) {
       setInviteToken(invite)
@@ -141,25 +221,30 @@ export function useLogin() {
     }
 
     if (oidcCode) {
-      if (exchangeInitiated.current) return
       exchangeInitiated.current = true
       setIsLoading(true)
       fetch('/api/auth/oidc/exchange?code=' + encodeURIComponent(oidcCode), { credentials: 'include' })
-        .then(r => r.json())
-        .then(async data => {
+        .then(async r => ({ ok: r.ok, data: (await r.json()) as { success?: boolean; error?: string } }))
+        .then(async ({ ok, data }) => {
           window.history.replaceState({}, '', '/login')
-          if (data.token) {
+          // The exchange set the session cookie; the deprecated `token` in the
+          // body is never read, so it can go without breaking SSO sign-in.
+          if (ok && data.success === true) {
             await loadUser()
-            const savedRedirect = sanitizeInternalRedirect(sessionStorage.getItem('oidc_redirect'))
+            // Taken either way, so a handoff left from an abandoned sign-in cannot catch a later one.
+            const handoffReturn = takeHandoffReturn()
+            const savedRedirect = sessionStorage.getItem('oidc_redirect') || handoffReturn || START_DESTINATION_ROUTE
             sessionStorage.removeItem('oidc_redirect')
             navigate(savedRedirect, { replace: true })
           } else {
             setError(data.error || t('login.oidcFailed'))
+            loadConfig(false)
           }
         })
         .catch(() => {
           window.history.replaceState({}, '', '/login')
           setError(t('login.oidcFailed'))
+          loadConfig(false)
         })
         .finally(() => setIsLoading(false))
       return
@@ -171,36 +256,31 @@ export function useLogin() {
         no_email: t('login.oidc.noEmail'),
         token_failed: t('login.oidc.tokenFailed'),
         invalid_state: t('login.oidc.invalidState'),
+        email_not_verified: t('login.oidc.emailNotVerified'),
+        email_link_blocked: t('login.oidc.emailLinkBlocked'),
       }
       setError(errorMessages[oidcError] || oidcError)
-      sessionStorage.removeItem('oidc_redirect')
+      // A round trip the app's sign-in started keeps its way back. The next SSO
+      // attempt from this page is a plain web login, and without the handoff page
+      // to return to it ends in the web app inside the app's browser sheet. The
+      // handoff page asks for a tap before it passes anything on, so keeping the
+      // path hands nothing over by itself; the copy is renewed for a slow retry.
+      const stashed = sessionStorage.getItem('oidc_redirect')
+      if (isHandoffReturn(stashed)) rememberHandoffReturn(stashed)
+      else sessionStorage.removeItem('oidc_redirect')
       window.history.replaceState({}, '', '/login')
+      loadConfig(false)
       return
     }
 
-    const CONFIG_CACHE_KEY = 'trek_app_config_cache'
-    authApi.getAppConfig?.()
-      .then((config: AppConfig) => {
-        try { localStorage.setItem(CONFIG_CACHE_KEY, JSON.stringify(config)) } catch { /* ignore quota errors */ }
-        return { config, fromCache: false }
-      })
-      .catch(() => {
-        try {
-          const raw = localStorage.getItem(CONFIG_CACHE_KEY)
-          return raw ? { config: JSON.parse(raw) as AppConfig, fromCache: true } : { config: null as AppConfig | null, fromCache: false }
-        } catch { return { config: null as AppConfig | null, fromCache: false } }
-      })
-      .then(({ config, fromCache }) => {
-        if (config) {
-          setAppConfig(config)
-          if (!config.has_users) setMode('register')
-          if (!fromCache && !config.password_login && config.oidc_login && config.oidc_configured && config.has_users && !invite && !noRedirect) {
-            window.location.href = '/api/auth/oidc/login'
-          }
-        }
-      })
-  }, [navigate, t, noRedirect, supabasePlane, loadUser])
+    loadConfig(true)
+  }, [navigate, t, noRedirect, nativeApp])
 
+  // Language detection chain (runs once on mount, only if user has no saved preference):
+  // 1. localStorage → already in store initial state, skip
+  // 2. Browser/OS language (navigator.languages)
+  // 3. Server default (DEFAULT_LANGUAGE env var)
+  // 4. 'en' → hardcoded fallback already in store
   useEffect(() => {
     if (hasStoredLanguage()) return
 
@@ -210,12 +290,10 @@ export function useLogin() {
       return
     }
 
-    if (supabasePlane) return
-
     configApi.getPublicConfig()
       .then(({ defaultLanguage }) => { if (defaultLanguage) setLanguageTransient(defaultLanguage) })
       .catch((err) => console.warn('Failed to fetch default language config:', err))
-  }, [setLanguageTransient, supabasePlane])
+  }, [setLanguageTransient])
 
   useEffect(() => {
     if (!langDropdownOpen) return
@@ -225,16 +303,11 @@ export function useLogin() {
   }, [langDropdownOpen])
 
   const handleDemoLogin = async (): Promise<void> => {
-    if (supabasePlane) {
-      setError('Demo login is not available for Family Travel web')
-      return
-    }
     setError('')
     setIsLoading(true)
     try {
       await demoLogin()
-      setShowTakeoff(true)
-      setTimeout(() => navigate(redirectTarget), 2600)
+      takeOff()
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : t('login.demoFailed'))
     } finally {
@@ -242,11 +315,47 @@ export function useLogin() {
     }
   }
 
-  const handlePasskeyLogin = async (): Promise<void> => {
-    if (supabasePlane) {
-      setError('Passkey login is not available for Family Travel web yet')
-      return
+  // In the app: a sign-in the system browser finished while Android started the
+  // app anew. Its return waited natively; redeemed here, it signs the app in.
+  useEffect(() => {
+    if (!nativeApp) return
+    resumeBrowserSignIn()
+      .then(async (signedIn) => {
+        if (!signedIn) return
+        await loadUser({ silent: true })
+        setShowTakeoff(true)
+        void loadSettings()
+        setTimeout(() => {
+          void navigate(redirectTarget)
+        }, 2600)
+      })
+      .catch(() => setError(t('native.login.failed')))
+  }, [nativeApp, loadUser, loadSettings, navigate, redirectTarget, t])
+
+  /** In the app: SSO and passkeys run in the system browser (native/browserSignIn.ts). */
+  const handleBrowserSignIn = async (start?: BrowserSignInStart): Promise<void> => {
+    setError('')
+    setIsLoading(true)
+    try {
+      await signInThroughBrowser(start)
+      await loadUser({ silent: true })
+      takeOff()
+    } catch (err: unknown) {
+      if (!(err instanceof BrowserSignInCancelled)) setError(t('native.login.failed'))
+      setIsLoading(false)
     }
+  }
+
+  /** The SSO links: a plain navigation in a browser, the system browser in the app. */
+  const handleSsoClick = (e: React.MouseEvent<HTMLAnchorElement>): void => {
+    clearSignedOut()
+    if (!nativeApp) return
+    e.preventDefault()
+    void handleBrowserSignIn('oidc')
+  }
+
+  const handlePasskeyLogin = async (): Promise<void> => {
+    if (nativeApp) return handleBrowserSignIn('passkey')
     setError('')
     setIsLoading(true)
     try {
@@ -254,9 +363,9 @@ export function useLogin() {
       const assertion = await startAuthentication({ optionsJSON: options })
       await authApi.passkey.loginVerify(assertion)
       await loadUser({ silent: true })
-      setShowTakeoff(true)
-      setTimeout(() => navigate(redirectTarget), 2600)
+      takeOff()
     } catch (err: unknown) {
+      // The user dismissing the native prompt isn't an error worth surfacing.
       const name = (err as { name?: string })?.name
       if (name === 'NotAllowedError' || name === 'AbortError') {
         setIsLoading(false)
@@ -275,12 +384,12 @@ export function useLogin() {
     try {
       if (passwordChangeStep) {
         if (!newPassword) { setError(t('settings.passwordRequired')); setIsLoading(false); return }
-        if (newPassword.length < 8) { setError(t('settings.passwordTooShort')); setIsLoading(false); return }
+        const weak = passwordErrorKey(newPassword)
+        if (weak) { setError(t(weak)); setIsLoading(false); return }
         if (newPassword !== confirmPassword) { setError(t('settings.passwordMismatch')); setIsLoading(false); return }
         await authApi.changePassword({ current_password: savedLoginPassword, new_password: newPassword })
         await loadUser({ silent: true })
-        setShowTakeoff(true)
-        setTimeout(() => postLoginNavigate(), 2600)
+        takeOff()
         return
       }
       if (mode === 'login' && mfaStep) {
@@ -296,27 +405,19 @@ export function useLogin() {
           setIsLoading(false)
           return
         }
-        setShowTakeoff(true)
-        setTimeout(() => postLoginNavigate(), 2600)
+        takeOff()
         return
       }
       if (mode === 'register') {
-        if (supabasePlane) {
-          setError('Create your account in the Family Travel iOS app, then sign in here with the same email and password.')
-          setIsLoading(false)
-          return
-        }
         if (!username.trim()) { setError(t('login.usernameRequired')); setIsLoading(false); return }
-        if (password.length < 8) { setError(t('login.passwordMinLength')); setIsLoading(false); return }
+        const weakPassword = passwordErrorKey(password)
+        if (weakPassword) { setError(t(weakPassword)); setIsLoading(false); return }
         await register(username, email, password, inviteToken || undefined)
       } else {
-        if (supabasePlane && !email.trim()) {
-          setError('Email is required')
-          setIsLoading(false)
-          return
-        }
         const result = await login(email, password, rememberMe)
         if ((result as { insecureCookie?: boolean }).insecureCookie) {
+          // Credentials were correct, but the secure cookie won't survive plain
+          // HTTP — proceeding would just dead-end on "Access token required".
           setInsecureCookie(true)
           setIsLoading(false)
           return
@@ -335,19 +436,17 @@ export function useLogin() {
           return
         }
       }
-      setShowTakeoff(true)
-      setTimeout(() => postLoginNavigate(), 2600)
+      takeOff()
     } catch (err: unknown) {
       setError(getApiErrorMessage(err, t('login.error')))
       setIsLoading(false)
     }
   }
 
-  const showRegisterOption = supabasePlane
-    ? false
-    : (appConfig?.password_registration || !appConfig?.has_users || inviteValid) && (appConfig?.setup_complete !== false || !appConfig?.has_users)
+  const showRegisterOption = (appConfig?.password_registration || !appConfig?.has_users || inviteValid) && (appConfig?.setup_complete !== false || !appConfig?.has_users)
 
-  const oidcOnly = !supabasePlane && !appConfig?.password_login && appConfig?.oidc_login && appConfig?.oidc_configured
+  // In OIDC-only mode, show a minimal page that redirects directly to the IdP
+  const oidcOnly = !appConfig?.password_login && appConfig?.oidc_login && appConfig?.oidc_configured
 
   return {
     navigate,
@@ -358,7 +457,8 @@ export function useLogin() {
     showTakeoff, mfaStep, setMfaStep, mfaToken, setMfaToken, mfaCode, setMfaCode,
     passwordChangeStep, newPassword, setNewPassword, confirmPassword, setConfirmPassword,
     noRedirect, showRegisterOption, oidcOnly,
+    redirectScreen, configWait, idpSlow, idpName,
     handleDemoLogin, handleSubmit, handlePasskeyLogin,
-    supabasePlane,
+    handleSsoClick,
   }
 }

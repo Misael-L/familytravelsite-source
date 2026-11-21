@@ -1,11 +1,9 @@
-// Presentation copied from TREK d4da05b. Family controllers retain data and focus ownership.
 import React from 'react'
 import { CalendarDays, Route } from 'lucide-react'
 import { useTranslation } from '../../i18n/TranslationContext'
 import { NEUTRAL_TINT } from '../shared/DialogShell'
 
 interface RoadtripModeSwitchProps {
-  unavailableReason?: string
   active: boolean
   onChange: (roadtrip: boolean) => void
 }
@@ -16,7 +14,7 @@ interface RoadtripModeSwitchProps {
  * driven anywhere never grows a control it has no use for. It opens the rail's tinted
  * head band, so with the day plan's tools below it the two read as one band.
  */
-export default function RoadtripModeSwitch({ active, onChange, unavailableReason }: RoadtripModeSwitchProps): React.ReactElement {
+export default function RoadtripModeSwitch({ active, onChange }: RoadtripModeSwitchProps): React.ReactElement {
   const { t } = useTranslation()
   const options: [boolean, string, typeof Route][] = [
     [false, t('roadtrip.mode.days'), CalendarDays],
@@ -37,13 +35,11 @@ export default function RoadtripModeSwitch({ active, onChange, unavailableReason
             type="button"
             role="tab"
             aria-selected={selected}
-            disabled={value && !!unavailableReason}
-            title={value ? unavailableReason : undefined}
             onClick={() => onChange(value)}
             // Sized off the day plan's own type, like the road trip rail below it: the
             // switcher sits above both, so it cannot be the largest thing in the column.
             style={{ fontSize: 'calc(11.5px * var(--fs-scale-body, 1))' }}
-            className={`flex h-[30px] flex-1 items-center justify-center gap-1.5 rounded-lg px-2 transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
+            className={`flex h-[30px] flex-1 items-center justify-center gap-1.5 rounded-lg px-2 transition-colors ${
               selected
                 ? 'bg-surface-card font-semibold text-content shadow-card'
                 : 'font-medium text-content-muted hover:bg-surface-hover hover:text-content'

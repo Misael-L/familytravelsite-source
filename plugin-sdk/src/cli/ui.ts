@@ -50,12 +50,12 @@ export const spinner = (): SpinnerResult => clackSpinner({ output: OUT });
 // ── cancellation ─────────────────────────────────────────────────────────────
 
 /** Clack returns a symbol when the user hits Ctrl+C — turn that into a clean exit. */
-export function orCancel<T>(value: T | symbol): T {
+export function orCancel<T>(value: T): Exclude<T, symbol> {
   if (isCancel(value)) {
     clackCancel('Cancelled.', { output: OUT });
     process.exit(0);
   }
-  return value as T;
+  return value as Exclude<T, symbol>;
 }
 
 // ── prompts (cancel-checked, stderr-rendered) ────────────────────────────────
@@ -212,9 +212,15 @@ export const PERMISSION_FAMILIES: PermissionFamily[] = [
       { value: 'hook:photo-provider', hint: 'Supply place photos to TREK' },
       { value: 'hook:calendar-source', hint: 'Supply calendar events to TREK' },
       { value: 'hook:place-detail-provider', hint: 'Contribute extra details (reviews, ratings, links) to a place' },
+      { value: 'hook:search-provider', hint: 'Answer place searches from your own index, beside the core results' },
+      { value: 'hook:poi-category-provider', hint: 'Add your own categories to the map\'s Explore bar and answer them for the visible area' },
       { value: 'hook:trip-warning-provider', hint: 'Raise validation warnings on a trip (shown in the planner)' },
       { value: 'hook:table-contributor', hint: 'Add columns to TREK\'s tables' },
       { value: 'hook:map-marker-provider', hint: 'Add your own markers to the map' },
+      { value: 'hook:map-layer-provider', hint: 'Draw routes, corridors and zones on the trip map' },
+      { value: 'hook:route-provider', hint: 'Offer routing profiles the planner can route days with (e.g. EV with charging stops)' },
+      { value: 'hook:day-schedule-provider', hint: 'Attach time contributions to the day plan (charging, security, buffers)' },
+      { value: 'hook:day-tint-provider', hint: 'Colour-code days in the day plan (e.g. which leg of the trip each day belongs to)' },
       { value: 'hook:pdf-section-provider', hint: 'Add a section to the exported trip PDF' },
       { value: 'hook:atlas-layer-provider', hint: 'Add a layer to the Atlas map' },
       { value: 'hook:journal-entry-provider', hint: 'Contribute entries to a journey' },
@@ -252,6 +258,8 @@ export const PERMISSION_FAMILIES: PermissionFamily[] = [
       { value: 'notify:send', hint: 'Send a TREK notification to a user or trip' },
       { value: 'ai:invoke', hint: 'Call the instance\'s configured AI model' },
       { value: 'oauth:client', hint: 'Obtain OAuth access tokens for the user' },
+      { value: 'geolocation:read', hint: 'Ask the host for the browser\'s live position in your frames (browser prompt still applies)' },
+      { value: 'mcp:tools', hint: 'Publish MCP tools an assistant can call, running as the requesting user' },
     ],
   },
 ];
@@ -263,7 +271,7 @@ export const PERMISSION_CATALOG: { value: string; label: string; hint: string; f
   );
 
 /** Every grantable permission id. Derived — never hand-maintained. */
-export const KNOWN_PERMISSIONS: string[] = PERMISSION_CATALOG.map((p) => p.value);
+export const PICKER_PERMISSIONS: string[] = PERMISSION_CATALOG.map((p) => p.value);
 
 // ── reporter seam (for commands that log their own progress, e.g. publish) ────
 

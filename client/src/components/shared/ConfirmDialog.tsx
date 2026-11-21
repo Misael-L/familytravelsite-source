@@ -1,7 +1,12 @@
-import React, { useEffect, useCallback, useLayoutEffect, useRef } from 'react'
-import ReactDOM from 'react-dom'
-import { AlertTriangle } from 'lucide-react'
+import React, { useEffect, useCallback, useId, useLayoutEffect, useRef, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
+import { AlertTriangle, HelpCircle } from 'lucide-react'
 import { useTranslation } from '../../i18n'
+import { useIsPhone } from '../../mobile/useIsPhone'
+import { DialogTile, NEUTRAL_TINT, fs } from './DialogShell'
+import { trapTab } from './dialogFocus'
+import { useLastOpen, usePresence } from './usePresence'
+import { useNativeQuestion } from '../../native/useNativeQuestion'
 
 interface ConfirmDialogProps {
   isOpen: boolean
@@ -12,12 +17,45 @@ interface ConfirmDialogProps {
   confirmLabel?: string
   cancelLabel?: string
   danger?: boolean
-  /** Opt-in for the booking-details pilot. Other callers keep the previous focus behavior. */
-  initialFocus?: 'cancel'
-  restoreFocusTo?: HTMLElement | null
+  /** Treat the HTML question as a modal and start keyboard focus on Cancel. */
+  manageFocus?: boolean
+  /** Extra content under the message, such as a list of what the action takes with it. */
+  children?: ReactNode
 }
 
-export default function ConfirmDialog({
+// Callers commonly pass an async handler that reports its own failure and then
+// rethrows. The dialog has already closed at that point, so the rejection would
+// escape as an unhandled promise — absorb it here.
+function runConfirm(onConfirm: () => void): void {
+  const result = onConfirm() as unknown
+  if (result && typeof (result as PromiseLike<unknown>).then === 'function') {
+    void Promise.resolve(result).catch(() => {})
+  }
+}
+
+export default function ConfirmDialog(props: ConfirmDialogProps) {
+  const { t } = useTranslation()
+  // In the app the system asks (native/nativeDialogs.ts); a list under the question needs the HTML card.
+  const question = props.children
+    ? null
+    : {
+        title: props.title || t('common.confirm'),
+        message: props.message,
+        confirmLabel: props.confirmLabel || t('common.delete'),
+        cancelLabel: props.cancelLabel || t('common.cancel'),
+        danger: props.danger ?? true,
+      }
+  const html = useNativeQuestion(props.isOpen, question, (yes) => {
+    if (yes) runConfirm(props.onConfirm)
+    props.onClose()
+  })
+  const { mounted, closing } = usePresence(props.isOpen && html)
+  // The question stays readable while it fades, even when its owner clears the subject on close.
+  const shown = useLastOpen(props, props.isOpen)
+  return mounted ? <ConfirmDialogFrame {...shown} isOpen={props.isOpen && html} closing={closing} /> : null
+}
+
+function ConfirmDialogFrame({
   isOpen,
   onClose,
   onConfirm,
@@ -26,86 +64,158 @@ export default function ConfirmDialog({
   confirmLabel,
   cancelLabel,
   danger = true,
-  initialFocus,
-  restoreFocusTo = null,
-}: ConfirmDialogProps) {
+  manageFocus = false,
+  children,
+  closing = false,
+}: ConfirmDialogProps & { closing?: boolean }) {
   const { t } = useTranslation()
+  const isPhone = useIsPhone()
+  const titleId = useId()
+  const messageId = useId()
+  const panelRef = useRef<HTMLDivElement>(null)
   const cancelRef = useRef<HTMLButtonElement>(null)
-  const focusGeneration = useRef(0)
+  const confirmed = useRef(false)
 
+  useLayoutEffect(() => {
+    if (!manageFocus || !isOpen) return
+    const opener = document.activeElement
+    const panel = panelRef.current
+    confirmed.current = false
+    cancelRef.current?.focus({ preventScroll: true })
+    return () => {
+      if (confirmed.current || !(opener instanceof HTMLElement) || !opener.isConnected) return
+      const active = document.activeElement
+      if (active === document.body || panel?.contains(active)) opener.focus({ preventScroll: true })
+    }
+  }, [manageFocus, isOpen, isPhone])
+
+  // Captured and stopped here: the question often opens over another dialog
+  // (a Modal) that closes on Escape too, and one key press should only take
+  // back the question, not the dialog it was asked from.
   const handleEsc = useCallback((e: KeyboardEvent) => {
-    if (e.key === 'Escape') onClose()
+    if (e.key !== 'Escape') return
+    e.stopPropagation()
+    onClose()
   }, [onClose])
 
   useEffect(() => {
-    if (isOpen) {
-      document.addEventListener('keydown', handleEsc)
-    }
-    return () => document.removeEventListener('keydown', handleEsc)
+    if (!isOpen) return
+    document.addEventListener('keydown', handleEsc, true)
+    return () => document.removeEventListener('keydown', handleEsc, true)
   }, [isOpen, handleEsc])
 
-  useLayoutEffect(() => {
-    if (!isOpen || (!initialFocus && !restoreFocusTo)) return
-    const generation = ++focusGeneration.current
-    if (initialFocus === 'cancel') cancelRef.current?.focus()
-    return () => {
-      const restore = restoreFocusTo
-      queueMicrotask(() => {
-        if (focusGeneration.current !== generation) return
-        if (!(restore instanceof HTMLElement) || !restore.isConnected) return
-        restore.focus()
-      })
-    }
-  }, [isOpen, initialFocus, restoreFocusTo])
+  if (!isOpen && !closing) return null
 
-  if (!isOpen) return null
+  // Each used by both layouts, worked out once.
+  const heading = title || t('common.confirm')
+  const cancelText = cancelLabel || t('common.cancel')
+  const confirmText = confirmLabel || t('common.delete')
+  const modalExit = closing ? 'trek-modal-exit' : ''
+  const width = children ? 'max-w-md' : 'max-w-sm'
+  const panelProps = manageFocus ? {
+    ref: panelRef,
+    role: 'alertdialog',
+    'aria-modal': true as const,
+    'aria-labelledby': titleId,
+    'aria-describedby': message ? messageId : undefined,
+    inert: !isOpen,
+    onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => trapTab(event, event.currentTarget),
+  } : { role: 'presentation' }
+  const confirm = () => {
+    confirmed.current = true
+    runConfirm(onConfirm)
+    onClose()
+  }
 
-  return ReactDOM.createPortal(
+  return createPortal(
     <div
-      className="fixed inset-0 z-[10000] flex items-center justify-center px-4 trek-backdrop-enter bg-[rgba(15,23,42,0.5)]"
+      // Backdrop only — Escape (above) and the Cancel button below are the
+      // keyboard routes out of the dialog.
+      role="presentation"
+      className={`fixed inset-0 z-[10000] flex items-center justify-center px-4 trek-backdrop-enter bg-[rgba(15,23,42,0.5)] ${closing ? 'trek-backdrop-exit pointer-events-none' : ''}`}
       style={{ paddingBottom: 'var(--bottom-nav-h)' }}
       onClick={onClose}
     >
-      <div
-        className="trek-modal-enter rounded-2xl shadow-2xl w-full max-w-sm p-6 bg-surface-card"
-        onClick={e => e.stopPropagation()}
-      >
-        <div className="flex items-start gap-4">
-          {danger && (
-            <div className="flex-shrink-0 w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
-              <AlertTriangle className="w-5 h-5 text-red-600" />
+      {isPhone ? (
+        <>
+        {/* Capped at the viewport: a long list of what goes along scrolls on its
+            own, and the two buttons below it always stay in reach. */}
+        <div
+          {...panelProps}
+          className={`trek-modal-enter ${modalExit} flex max-h-[calc(100dvh-2rem-var(--bottom-nav-h,0px))] flex-col rounded-2xl shadow-2xl w-full ${width} p-6 bg-surface-card`}
+          onClick={e => e.stopPropagation()}
+        >
+          <div className="flex min-h-0 items-start gap-4 overflow-y-auto overscroll-contain">
+            {danger && (
+              <div className="flex-shrink-0 w-10 h-10 rounded-full bg-danger-soft flex items-center justify-center">
+                <AlertTriangle className="w-5 h-5 text-danger" />
+              </div>
+            )}
+            <div className="flex-1 min-w-0">
+              <h3 id={manageFocus ? titleId : undefined} className="text-base font-semibold text-content">
+                {heading}
+              </h3>
+              <p id={manageFocus ? messageId : undefined} className="mt-1 text-sm text-content-secondary">
+                {message}
+              </p>
+              {children}
             </div>
-          )}
-          <div className="flex-1">
-            <h3 className="text-base font-semibold text-content">
-              {title || t('common.confirm')}
-            </h3>
-            <p className="mt-1 text-sm text-content-secondary">
-              {message}
-            </p>
+          </div>
+
+          <div className="flex flex-none justify-end gap-3 mt-6">
+            <button type="button" ref={manageFocus ? cancelRef : undefined}
+              onClick={onClose}
+              className="px-4 py-2 text-sm font-medium rounded-lg transition-colors text-content-secondary border border-edge-secondary"
+            >
+              {cancelText}
+            </button>
+            <button type="button"
+              onClick={confirm}
+              className={`px-4 py-2 text-sm font-medium rounded-lg transition-opacity hover:opacity-90 ${
+                danger ? 'bg-danger text-white' : 'bg-accent text-accent-text'
+              }`}
+            >
+              {confirmText}
+            </button>
           </div>
         </div>
-
-        <div className="flex justify-end gap-3 mt-6">
-          <button
-            ref={cancelRef}
-            type="button"
-            onClick={onClose}
-            className="px-4 py-2 text-sm font-medium rounded-lg transition-colors text-content-secondary border border-edge-secondary"
-          >
-            {cancelLabel || t('common.cancel')}
-          </button>
-          <button
-            onClick={() => { onConfirm(); onClose() }}
-            className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors text-white ${
-              danger ? 'bg-red-600 hover:bg-red-700' : 'bg-blue-600 hover:bg-blue-700'
-            }`}
-          >
-            {confirmLabel || t('common.delete')}
-          </button>
+        </>
+      ) : (
+        // The desktop draws the question like the planner's dialogs: a head band
+        // with its tile, the message below, the answers in a bar at the foot.
+        <div
+          {...panelProps}
+          className={`trek-modal-enter ${modalExit} flex max-h-[calc(100dvh-2rem-var(--bottom-nav-h,0px))] w-full flex-col overflow-hidden rounded-[22px] bg-surface-card shadow-2xl ${width}`}
+          onClick={e => e.stopPropagation()}
+        >
+          <div className={`flex flex-none items-center gap-3.5 px-6 pb-4 pt-5 ${danger ? 'bg-danger-soft' : ''}`} style={danger ? undefined : { background: NEUTRAL_TINT }}>
+            <DialogTile>
+              {danger
+                ? <AlertTriangle size={20} strokeWidth={1.9} className="text-danger" />
+                : <HelpCircle size={20} strokeWidth={1.9} className="text-content-muted" />}
+            </DialogTile>
+            <h3 id={manageFocus ? titleId : undefined} className="m-0 min-w-0 flex-1 font-bold tracking-[-0.01em] text-content" style={fs(18, 'subtitle')}>
+              {heading}
+            </h3>
+          </div>
+          <div className="flex min-h-0 flex-col gap-3 overflow-y-auto overscroll-contain px-6 py-5">
+            <p id={manageFocus ? messageId : undefined} className="m-0 text-content-secondary" style={fs(13.5, 'body')}>{message}</p>
+            {children}
+          </div>
+          <div className="flex flex-none items-center justify-end gap-2 border-t border-edge-faint px-6 py-3.5" style={fs(13, 'body')}>
+            <button type="button" ref={manageFocus ? cancelRef : undefined} onClick={onClose}
+              className="inline-flex items-center rounded-[10px] bg-surface-tertiary px-3.5 py-2 font-medium text-content hover:bg-surface-hover">
+              {cancelText}
+            </button>
+            <button type="button"
+              onClick={confirm}
+              className={`inline-flex items-center rounded-[10px] px-4 py-2 font-medium hover:opacity-90 ${danger ? 'bg-danger text-white' : 'bg-accent text-accent-text'}`}
+            >
+              {confirmText}
+            </button>
+          </div>
         </div>
-      </div>
-
+      )}
     </div>,
     document.body
   )

@@ -1,16 +1,5 @@
-import { Circle, Bookmark, CheckCircle2 } from 'lucide-react'
-import type { LucideIcon } from 'lucide-react'
-import type { CollectionPlace, CollectionStatus, CollectionLabel } from '@trek/shared'
-import { COLLECTION_STATUSES } from '@trek/shared'
-import { ALL_SAVED, type StatusFilter } from '../../store/collectionStore'
-
-/** Nest numeric ids or Family UUID strings. */
-export type CollectionEntityId = string | number
-
-/** A concrete list — not the "All saved" union and not an empty selection. */
-export function isRealCollectionId(id: unknown): id is CollectionEntityId {
-  return id != null && id !== ALL_SAVED && id !== ''
-}
+import type { CollectionPlace, CollectionLabel } from '@trek/shared'
+import type { StatusFilter, CollectionSortMode } from '../../store/collectionStore'
 
 /**
  * Pure data shaping + presentation metadata for the Collections page. No React
@@ -18,33 +7,16 @@ export function isRealCollectionId(id: unknown): id is CollectionEntityId {
  * page hook (useCollections) and the view components share these helpers.
  */
 
-export interface StatusMeta {
-  icon: LucideIcon
-  /** i18n key for the human label. */
-  labelKey: string
-  /** CSS colour token / hex for the badge on a light/surface background. */
-  color: string
-  /** Brighter variant for a pill sitting over a photo cover / the hero scrim. */
-  coverColor: string
-}
+// The status presentation lives with the components (the assistant's cards
+// draw it too); re-exported here for the page and its views.
+export { STATUS_META, STATUS_ORDER, nextStatus } from '../../components/Collections/collectionStatus'
 
-export const STATUS_META: Record<CollectionStatus, StatusMeta> = {
-  idea: { icon: Circle, labelKey: 'collections.status.idea', color: 'var(--text-muted)', coverColor: '#e5e7eb' },
-  want: { icon: Bookmark, labelKey: 'collections.status.want', color: 'var(--accent)', coverColor: '#c7d2fe' },
-  visited: { icon: CheckCircle2, labelKey: 'collections.status.visited', color: '#10b981', coverColor: '#6ee7b7' },
-}
-
-/** Stable order for the filter chips + the one-tap cycle. */
-export const STATUS_ORDER: CollectionStatus[] = [...COLLECTION_STATUSES]
-
-/** idea → want → visited → idea */
-export function nextStatus(status: CollectionStatus): CollectionStatus {
-  const i = STATUS_ORDER.indexOf(status)
-  return STATUS_ORDER[(i + 1) % STATUS_ORDER.length]
-}
-
-/** Sort places by explicit sort_order, falling back to created_at (newest first). */
-export function sortPlaces(places: CollectionPlace[]): CollectionPlace[] {
+/** Order the places for display. 'default' keeps the saved order (sort_order,
+ *  then newest first); 'name_asc' sorts alphabetically by name (locale-aware). */
+export function sortPlaces(places: CollectionPlace[], mode: CollectionSortMode = 'default'): CollectionPlace[] {
+  if (mode === 'name_asc') {
+    return [...places].sort((a, b) => a.name.localeCompare(b.name))
+  }
   return [...places].sort((a, b) => {
     const so = (a.sort_order ?? 0) - (b.sort_order ?? 0)
     if (so !== 0) return so
@@ -62,12 +34,15 @@ export function filterPlaces(
   search: string,
   categoryFilter: number | 'all' = 'all',
   labelFilter: number[] = [],
+  ratingFilter: number | 'all' = 'all',
 ): CollectionPlace[] {
   const q = search.trim().toLowerCase()
   return places.filter(p => {
     if (!p) return false
     if (statusFilter !== 'all' && p.status !== statusFilter) return false
     if (categoryFilter !== 'all' && (p.category_id ?? null) !== categoryFilter) return false
+    // Minimum-average-stars filter (#1435): unrated places drop out once a floor is set.
+    if (ratingFilter !== 'all' && (p.rating_avg == null || p.rating_avg < ratingFilter)) return false
     if (labelFilter.length && !labelFilter.some(id => (p.label_ids ?? []).includes(id))) return false
     if (!q) return true
     return (

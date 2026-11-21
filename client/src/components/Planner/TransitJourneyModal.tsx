@@ -1,21 +1,32 @@
+import { transportPlannerActionsAvailable } from '../../integrations/family/uiPermissions'
 import { useEffect, useRef, useState } from 'react'
 import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import remarkBreaks from 'remark-breaks'
-import { ArrowRight, ArrowRightLeft, Bold, Clock, Code, Footprints, Heading2, Italic, Link2, List, ListChecks, MoveRight, Pencil, RefreshCw, Strikethrough, TramFront, Trash2 } from 'lucide-react'
+import { ArrowRight, ArrowRightLeft, Bold, CalendarDays, Clock, Code, Footprints, Heading2, Italic, Link2, List, ListChecks, MoveRight, Pencil, RefreshCw, Strikethrough, TramFront, Trash2 } from 'lucide-react'
 import Modal from '../shared/Modal'
 import ConfirmDialog from '../shared/ConfirmDialog'
+import { DialogShell, DialogSection, DialogFooter, FooterSpacer, DialogButton, DeleteButton, PILL, fs } from '../shared/DialogShell'
+import { Segmented, TEXTAREA } from '../shared/dialogParts'
+import { Tooltip } from '../shared/Tooltip'
+import { BookingDialogHeader, TypePill } from './bookings/BookingDialogShell'
+import { TransitLegs } from './bookings/transitParts'
+import { deleteBodyKey } from './bookings/bookingsModel'
 import { useTranslation } from '../../i18n'
 import { useSettingsStore } from '../../store/settingsStore'
+import { useTripStore } from '../../store/tripStore'
 import { splitReservationDateTime, formatTime } from '../../utils/formatters'
 import { TransitTitle, TransitMetaBadges, TransitWalkDivider, fmtTransitDuration } from './transitDisplay'
 import type { Reservation } from '../../types'
+import { useIsPhone } from '../../mobile/useIsPhone'
 
 /**
  * The journey view for an automated public-transit entry (#1065): a roomy modal
  * around the stop-by-stop itinerary. The title renames inline right in the
  * header, notes get the full width with markdown support, and "Change route"
- * re-enters the transit search pre-seeded with this journey's route.
+ * re-enters the transit search pre-seeded with this journey's route. "Edit
+ * details" hands off to the full transport editor for the booking fields
+ * (travelers, costs, files, code, status — #2148).
  */
 
 interface TransitLegMeta {
@@ -38,13 +49,17 @@ interface TransitJourneyModalProps {
   onSave: (fields: { title: string; notes: string | null }) => Promise<unknown>
   onDelete: () => Promise<unknown>
   onChangeRoute: () => void
+  /** Switch to the full transport editor (travelers, costs, files, code, status). */
+  onEditDetails?: () => void
   canEdit: boolean
 }
 
-export default function TransitJourneyModal({ reservation, onClose, onSave, onDelete, onChangeRoute, canEdit }: TransitJourneyModalProps) {
+export default function TransitJourneyModal({ reservation, onClose, onSave, onDelete, onChangeRoute, onEditDetails, canEdit: canEditDay }: TransitJourneyModalProps) {
+  const canEdit = canEditDay && transportPlannerActionsAvailable()
   const { t, locale } = useTranslation()
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
+  const isMobile = useIsPhone()
   const timeFormat = useSettingsStore(st => st.settings.time_format) || '24h'
+  const budgetItems = useTripStore(st => st.budgetItems)
   const res = reservation
   const meta = typeof res.metadata === 'string' ? (() => { try { return JSON.parse(res.metadata || '{}') } catch { return {} } })() : (res.metadata || {})
   const transit = meta.transit && Array.isArray(meta.transit.legs) ? meta.transit : null
@@ -133,6 +148,121 @@ export default function TransitJourneyModal({ reservation, onClose, onSave, onDe
     { Icon: Footprints, value: transit.walk_seconds > 59 ? t('transit.min', { count: Math.round(transit.walk_seconds / 60) }) : '—', label: t('transit.walkLabel') },
   ] : []
 
+  if (!isMobile) {
+    const titleId = `transit-journey-${res.id}`
+    const timeText = time ? `${formatTime(time, locale, timeFormat)}${endTime ? ` – ${formatTime(endTime, locale, timeFormat)}` : ''}` : ''
+    const header = (
+      <BookingDialogHeader
+        tone="transit"
+        type="transit"
+        labelId={titleId}
+        onClose={onClose}
+        title={<TransitTitle title={title} iconSize={16} />}
+        onTitleClick={canEdit ? () => setEditingTitle(true) : undefined}
+        titleTooltip={t('reservations.rename')}
+        titleInput={editingTitle ? {
+          value: title,
+          onChange: setTitle,
+          label: t('reservations.titleLabel'),
+          autoFocus: true,
+          onBlur: () => setEditingTitle(false),
+          onKeyDown: e => {
+            if (e.key === 'Enter') setEditingTitle(false)
+            // Spent here, so the dialog stays open and only the rename is dropped.
+            if (e.key === 'Escape') { e.preventDefault(); setTitle(res.title || ''); setEditingTitle(false) }
+          },
+        } : undefined}
+        pills={(
+          <>
+            <TypePill type="transit" />
+            {dateStr && <span className={PILL}><CalendarDays size={13} strokeWidth={2.2} className="text-content-faint" />{dateStr}</span>}
+            {timeText && <span className={PILL}><Clock size={13} strokeWidth={2.2} className="text-content-faint" /><span className="tabular-nums">{timeText}</span></span>}
+          </>
+        )}
+      />
+    )
+    const footer = (
+      <DialogFooter>
+        {canEdit && <DialogButton onClick={onChangeRoute} icon={<RefreshCw size={14} strokeWidth={2} />}>{t('transit.changeRoute')}</DialogButton>}
+        {canEdit && onEditDetails && <DialogButton onClick={onEditDetails} icon={<Pencil size={14} strokeWidth={2} />}>{t('transit.editDetails')}</DialogButton>}
+        <FooterSpacer />
+        {canEdit && <DeleteButton onClick={() => setConfirmDelete(true)} />}
+        {canEdit
+          ? <DialogButton variant="primary" onClick={save} disabled={saving || !title.trim() || !dirty}>{saving ? t('common.saving') : t('common.save')}</DialogButton>
+          : <DialogButton variant="primary" onClick={onClose}>{t('common.close')}</DialogButton>}
+      </DialogFooter>
+    )
+    const noteTools = canEdit && (
+      <span className="flex items-center gap-2">
+        {notesTab === 'write' && (
+          <span className="flex gap-px rounded-[10px] bg-surface-tertiary p-[3px]">
+            {MD_TOOLS.map(({ Icon, label, action }) => (
+              <Tooltip key={label} label={label} placement="top">
+                <button type="button" onClick={() => applyMd(action)} aria-label={label}
+                  className="grid h-7 w-7 place-items-center rounded-[8px] text-content-muted hover:bg-surface-card hover:text-content">
+                  <Icon size={13} strokeWidth={2} />
+                </button>
+              </Tooltip>
+            ))}
+          </span>
+        )}
+        <Segmented<'write' | 'preview'>
+          value={notesTab}
+          onChange={setNotesTab}
+          label={t('reservations.notes')}
+          options={[{ value: 'write', label: t('common.edit') }, { value: 'preview', label: t('common.preview') }]}
+        />
+      </span>
+    )
+    return (
+      <>
+        <DialogShell onClose={onClose} labelledBy={titleId} blocked={confirmDelete} header={header} footer={footer}>
+          {transit && (
+            <div className="flex gap-2">
+              {statTiles.map(({ value, label }) => (
+                <div key={label} className="min-w-0 flex-1 rounded-[12px] bg-surface-tertiary px-3 py-2.5 text-center">
+                  <div className="truncate font-bold tabular-nums tracking-[-0.01em] text-content" style={fs(18, 'subtitle')}>{value}</div>
+                  <div className="mt-0.5 truncate font-geist text-content-faint" style={fs(10.5)}>{label}</div>
+                </div>
+              ))}
+            </div>
+          )}
+          {transit && transit.legs.length > 0 && (
+            <DialogSection label={t('transit.itinerary')}>
+              <TransitLegs legs={transit.legs as TransitLegMeta[]} />
+            </DialogSection>
+          )}
+          <DialogSection label={t('reservations.notes')} action={noteTools}>
+            {canEdit && notesTab === 'write' ? (
+              <textarea
+                ref={notesRef}
+                value={notes}
+                onChange={e => setNotes(e.target.value)}
+                placeholder={t('reservations.notesPlaceholder')}
+                aria-label={t('reservations.notes')}
+                className={TEXTAREA}
+                style={{ minHeight: 130, resize: 'vertical', lineHeight: 1.55 }}
+              />
+            ) : (
+              <div className={`rounded-[10px] border border-edge-faint bg-surface-card px-3.5 py-3 ${canEdit ? 'min-h-[130px]' : ''}`}>
+                {notes.trim()
+                  ? <div className="collab-note-md break-words text-content" style={fs(13, 'body')}><Markdown remarkPlugins={[remarkGfm, remarkBreaks]}>{notes}</Markdown></div>
+                  : <span className="text-content-faint" style={fs(12.5, 'body')}>{t('reservations.notesPlaceholder')}</span>}
+              </div>
+            )}
+          </DialogSection>
+        </DialogShell>
+        <ConfirmDialog
+          isOpen={confirmDelete}
+          onClose={() => setConfirmDelete(false)}
+          onConfirm={async () => { setConfirmDelete(false); await onDelete(); onClose() }}
+          title={t('reservations.confirm.deleteTitle')}
+          message={t(deleteBodyKey(res.id, budgetItems), { name: res.title })}
+        />
+      </>
+    )
+  }
+
   return (
     <Modal
       isOpen
@@ -142,7 +272,7 @@ export default function TransitJourneyModal({ reservation, onClose, onSave, onDe
       footer={
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
           {canEdit && (
-            <button onClick={() => setConfirmDelete(true)} aria-label={t('common.delete')} title={t('common.delete')} style={{
+            <button type="button" onClick={() => setConfirmDelete(true)} aria-label={t('common.delete')} title={t('common.delete')} style={{
               display: 'inline-flex', alignItems: 'center', gap: 5, padding: isMobile ? '9px 11px' : '8px 14px', borderRadius: 10,
               border: '1px solid rgba(239,68,68,0.3)', background: 'rgba(239,68,68,0.06)', color: '#ef4444',
               fontSize: 'calc(12px * var(--fs-scale-body, 1))', fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit',
@@ -152,7 +282,7 @@ export default function TransitJourneyModal({ reservation, onClose, onSave, onDe
           )}
           <div style={{ flex: 1 }} />
           {canEdit && (
-            <button onClick={onChangeRoute} className="text-content-muted" style={{
+            <button type="button" onClick={onChangeRoute} className="text-content-muted" style={{
               display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 10,
               border: '1px solid var(--border-primary)', background: 'none',
               fontSize: 'calc(12px * var(--fs-scale-body, 1))', cursor: 'pointer', fontFamily: 'inherit',
@@ -160,8 +290,17 @@ export default function TransitJourneyModal({ reservation, onClose, onSave, onDe
               <RefreshCw size={13} /> {t('transit.changeRoute')}
             </button>
           )}
+          {canEdit && onEditDetails && (
+            <button type="button" onClick={onEditDetails} className="text-content-muted" style={{
+              display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 10,
+              border: '1px solid var(--border-primary)', background: 'none',
+              fontSize: 'calc(12px * var(--fs-scale-body, 1))', cursor: 'pointer', fontFamily: 'inherit',
+            }}>
+              <Pencil size={13} /> {t('transit.editDetails')}
+            </button>
+          )}
           {canEdit ? (
-            <button onClick={save} disabled={saving || !title.trim() || !dirty} className="bg-[var(--text-primary)] text-[var(--bg-primary)]" style={{
+            <button type="button" onClick={save} disabled={saving || !title.trim() || !dirty} className="bg-[var(--text-primary)] text-[var(--bg-primary)]" style={{
               padding: '8px 20px', borderRadius: 10, border: 'none',
               fontSize: 'calc(12px * var(--fs-scale-body, 1))', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
               opacity: saving || !title.trim() || !dirty ? 0.5 : 1,
@@ -169,7 +308,7 @@ export default function TransitJourneyModal({ reservation, onClose, onSave, onDe
               {saving ? t('common.saving') : t('common.save')}
             </button>
           ) : (
-            <button onClick={onClose} className="bg-accent text-accent-text" style={{ padding: '8px 20px', borderRadius: 10, border: 'none', fontSize: 'calc(12px * var(--fs-scale-body, 1))', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
+            <button type="button" onClick={onClose} className="bg-accent text-accent-text" style={{ padding: '8px 20px', borderRadius: 10, border: 'none', fontSize: 'calc(12px * var(--fs-scale-body, 1))', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}>
               {t('common.close')}
             </button>
           )}
@@ -198,7 +337,7 @@ export default function TransitJourneyModal({ reservation, onClose, onSave, onDe
               <div className="text-content" style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 'calc(17px * var(--fs-scale-subtitle, 1))', fontWeight: 700, letterSpacing: '-0.015em', minWidth: 0 }}>
                 <span style={{ minWidth: 0, overflow: 'hidden' }}><TransitTitle title={title} iconSize={15} /></span>
                 {canEdit && (
-                  <button onClick={() => setEditingTitle(true)} aria-label={t('common.edit')} title={t('common.edit')} className="text-content-faint" style={{ border: 'none', background: 'none', padding: 3, cursor: 'pointer', display: 'flex', flexShrink: 0 }}>
+                  <button type="button" onClick={() => setEditingTitle(true)} aria-label={t('common.edit')} title={t('common.edit')} className="text-content-faint" style={{ border: 'none', background: 'none', padding: 3, cursor: 'pointer', display: 'flex', flexShrink: 0 }}>
                     <Pencil size={13} strokeWidth={1.8} />
                   </button>
                 )}
@@ -268,7 +407,7 @@ export default function TransitJourneyModal({ reservation, onClose, onSave, onDe
                       </div>
                     )
                     const timeCell = (time?: string | null) => (
-                      <div className="text-content-muted" style={{ fontSize: 'calc(11.5px * var(--fs-scale-caption, 1))', fontWeight: 600, textAlign: 'right', paddingTop: 1 }}>
+                      <div className="text-content-muted" style={{ fontSize: 'calc(11.5px * var(--fs-scale-caption, 1))', fontWeight: 600, textAlign: 'end', paddingTop: 1 }}>
                         {time || ''}
                       </div>
                     )
@@ -310,7 +449,7 @@ export default function TransitJourneyModal({ reservation, onClose, onSave, onDe
                   }
                   return (
                     <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
-                      <div className="text-content-muted" style={{ width: 44, flexShrink: 0, textAlign: 'right', fontSize: 'calc(12px * var(--fs-scale-body, 1))', fontWeight: 600, paddingTop: 1 }}>
+                      <div className="text-content-muted" style={{ width: 44, flexShrink: 0, textAlign: 'end', fontSize: 'calc(12px * var(--fs-scale-body, 1))', fontWeight: 600, paddingTop: 1 }}>
                         {leg.from?.time || ''}
                       </div>
                       <span style={{ display: 'inline-flex', alignItems: 'center', background: leg.line_color || 'var(--bg-hover)', color: leg.line_color ? (leg.line_text_color || '#fff') : 'var(--text-primary)', borderRadius: 6, padding: '2px 8px', fontSize: 'calc(11.5px * var(--fs-scale-caption, 1))', fontWeight: 700, flexShrink: 0 }}>
@@ -396,7 +535,7 @@ export default function TransitJourneyModal({ reservation, onClose, onSave, onDe
         onClose={() => setConfirmDelete(false)}
         onConfirm={async () => { setConfirmDelete(false); await onDelete(); onClose() }}
         title={t('reservations.confirm.deleteTitle')}
-        message={t('reservations.confirm.deleteBody', { name: res.title })}
+        message={t(deleteBodyKey(res.id, budgetItems), { name: res.title })}
       />
     </Modal>
   )

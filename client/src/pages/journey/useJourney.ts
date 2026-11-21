@@ -1,89 +1,111 @@
 import { useEffect, useState, useMemo, useRef } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router'
 import { useJourneyStore } from '../../store/journeyStore'
+import { useAuthStore } from '../../store/authStore'
 import { journeyApi } from '../../api/client'
 import { useToast } from '../../components/shared/Toast'
 import { useTranslation } from '../../i18n'
-import { isSupabaseDataPlane } from '../../data/supabase/auth'
-import { listFamilyJourneyAvailableTrips } from '../../data/supabase/journeys'
-import { useAuthStore } from '../../store/authStore'
-import type { JourneyEntityId } from '../../store/journeyStore'
-import {
-  isLiveJourney,
-  linkedTripIdSet,
-  pickFamilyEndedTripSuggestion,
-  pickJourneyHero,
-  type JourneyListItem,
-  type JourneySuggestionTrip,
-} from './journeyFrontpageModel'
+import { computeJourneyLifecycle } from '../../utils/journeyLifecycle'
+import { useServerPing } from '../../sync/useServerPing'
+
+function dismissedSuggestionsKey(userId: number | undefined): string {
+  return `trek:journey:dismissed-suggestions:v1:${userId ?? 'anonymous'}`
+}
+
+/** The trips this user put away, as stored here; anything unreadable reads as none. */
+function readDismissedSuggestions(userId: number | undefined): Set<number> {
+  try {
+    const value: unknown = JSON.parse(window.localStorage.getItem(dismissedSuggestionsKey(userId)) || '[]')
+    return new Set(Array.isArray(value) ? value.filter((id): id is number => Number.isInteger(id)) : [])
+  } catch {
+    return new Set()
+  }
+}
+
+function saveDismissedSuggestions(userId: number | undefined, dismissed: Set<number>): void {
+  const key = dismissedSuggestionsKey(userId)
+  if (dismissed.size === 0) {
+    window.localStorage.removeItem(key)
+    return
+  }
+  window.localStorage.setItem(key, JSON.stringify([...dismissed]))
+}
+
+/** The journey events after which the list reads itself again. */
+const JOURNEY_LIST_EVENTS = ['journey:updated', 'journey:deleted', 'journey:contributor:changed'] as const
 
 /**
- * Journey list page logic — store load, create modal, search, suggestion banner,
- * and live-vs-latest hero. JourneyPage stays a wiring container.
+ * A journey renamed, given other trips or deleted in another tab or through
+ * MCP, or this user taken off one as a contributor: the list reads itself
+ * again, once per burst. The spinner only shows over an empty list, so a
+ * reread of a full one does not flash.
+ */
+function useJourneyListReread(loadJourneys: () => Promise<void>): void {
+  useServerPing(JOURNEY_LIST_EVENTS, true, async () => {
+    try {
+      await loadJourneys()
+    } catch {
+      // A failed reread keeps the list on screen; the next event or visit reads it again.
+    }
+  })
+}
+
+/**
+ * Journey list page logic — owns the journey store load, the create-journey
+ * modal (title, available trips, selection), the search box, the trip
+ * suggestion banner and the active/filtered journey derivations. JourneyPage
+ * stays a wiring container around its hero/grid/modal JSX and JourneyCard.
+ * Behaviour is identical to the previous in-component logic.
  */
 export function useJourney() {
   const navigate = useNavigate()
   const toast = useToast()
   const { t } = useTranslation()
-  const { journeys, loading, loadError, loadJourneys, createJourney } = useJourneyStore()
-  const familyPlane = isSupabaseDataPlane()
-  const familyId = useAuthStore(s => s.familyId)
+  const { journeys, loading, loadJourneys, createJourney } = useJourneyStore()
+  const userId = useAuthStore(s => s.user?.id)
 
   const [showCreate, setShowCreate] = useState(false)
   const [newTitle, setNewTitle] = useState('')
-  const [availableTrips, setAvailableTrips] = useState<JourneySuggestionTrip[]>([])
-  const [selectedTripIds, setSelectedTripIds] = useState<Set<JourneyEntityId>>(new Set())
+  const [newSubtitle, setNewSubtitle] = useState('')
+  const [availableTrips, setAvailableTrips] = useState<any[]>([])
+  const [selectedTripIds, setSelectedTripIds] = useState<Set<number>>(new Set())
   const [searchOpen, setSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const searchInputRef = useRef<HTMLInputElement>(null)
 
-  const [suggestions, setSuggestions] = useState<JourneySuggestionTrip[]>([])
-  const [dismissedSuggestions, setDismissedSuggestions] = useState<Set<JourneyEntityId>>(new Set())
-  const [suggestionError, setSuggestionError] = useState(false)
-  const [availableTripsError, setAvailableTripsError] = useState(false)
-  const [suggestionEpoch, setSuggestionEpoch] = useState(0)
+  // suggestion
+  const [suggestions, setSuggestions] = useState<any[]>([])
+  const [dismissedSuggestions, setDismissedSuggestions] = useState<Set<number>>(() => readDismissedSuggestions(userId))
 
   const [searchParams, setSearchParams] = useSearchParams()
 
   useEffect(() => {
-    void loadJourneys()
-  }, [familyPlane, familyId])
+    loadJourneys()
+  }, [])
+  useJourneyListReread(loadJourneys)
 
   useEffect(() => {
-    if (!familyPlane) {
-      setSuggestionError(false)
-      journeyApi.suggestions()
-        .then(d => {
-          setSuggestions(d.trips || [])
-          setSuggestionError(false)
-        })
-        .catch(() => {
-          setSuggestions([])
-          setSuggestionError(true)
-        })
-      return
-    }
-    if (!familyId) {
-      setSuggestions([])
-      setSuggestionError(false)
-      return
-    }
     let cancelled = false
-    setSuggestionError(false)
-    listFamilyJourneyAvailableTrips(familyId)
-      .then(trips => {
-        if (cancelled) return
-        setSuggestions(trips)
-        setSuggestionError(false)
-      })
-      .catch(() => {
-        if (cancelled) return
-        setSuggestions([])
-        setSuggestionError(true)
-      })
+    journeyApi.suggestions().then(d => {
+      if (cancelled) return
+      const trips = d.trips || []
+      const suggestionIds = new Set<number>(trips.map((trip: { id: number }) => trip.id))
+      const stored = readDismissedSuggestions(userId)
+      const retained = new Set([...stored].filter(id => suggestionIds.has(id)))
+      setSuggestions(trips)
+      setDismissedSuggestions(retained)
+      if (retained.size !== stored.size) {
+        try {
+          saveDismissedSuggestions(userId, retained)
+        } catch {
+          // Pruning is best effort; a failed write leaves the old IDs to retry later.
+        }
+      }
+    }).catch(() => {})
     return () => { cancelled = true }
-  }, [familyPlane, familyId, suggestionEpoch])
+  }, [userId])
 
+  // The bottom-nav "+" opens the new-journey modal via ?create=1.
   useEffect(() => {
     if (searchParams.get('create') === '1') {
       void openCreateModal()
@@ -91,56 +113,62 @@ export function useJourney() {
     }
   }, [searchParams])
 
-  const list = journeys as JourneyListItem[]
+  const activeSuggestion = suggestions.find(s => !dismissedSuggestions.has(s.id))
 
-  const activeJourney = useMemo(
-    () => pickJourneyHero(list, searchQuery),
-    [list, searchQuery],
-  )
-  const activeJourneyIsLive = isLiveJourney(activeJourney)
+  const dismissSuggestion = (tripId: number) => {
+    const next = new Set(dismissedSuggestions)
+    next.add(tripId)
+    try {
+      saveDismissedSuggestions(userId, next)
+      setDismissedSuggestions(next)
+    } catch {
+      toast.error(t('journey.frontpage.dismissError'))
+    }
+  }
 
-  const activeSuggestion = useMemo(() => {
-    const remaining = suggestions.filter(s => !dismissedSuggestions.has(s.id))
-    if (!familyPlane) return remaining[0]
-    return pickFamilyEndedTripSuggestion(remaining, linkedTripIdSet(list))
-  }, [familyPlane, suggestions, dismissedSuggestions, list])
+  // The frontpage always features one journey as the hero. A journey tied to a
+  // currently-running trip wins; otherwise we fall back to the most recent one
+  // (the list arrives sorted by updated_at DESC, so journeys[0] is the newest).
+  // This guarantees there is always a hero header, and a freshly created or
+  // updated journey — e.g. from an ongoing or more recent trip — takes over.
+  const activeJourney = useMemo(() => {
+    if (searchQuery.trim() || journeys.length === 0) return null
+    const live = journeys.find(j => {
+      const j2 = j as any
+      return computeJourneyLifecycle(j.status, j2.trip_date_min, j2.trip_date_max, j.status_override) === 'live'
+    })
+    return live ?? journeys[0]
+  }, [journeys, searchQuery])
+
+  // Whether the hero is a live (currently-running) journey — drives the eyebrow
+  // label ("Active Journey" vs "Latest Journey").
+  const activeJourneyIsLive = useMemo(() => {
+    if (!activeJourney) return false
+    const j2 = activeJourney as any
+    return computeJourneyLifecycle(activeJourney.status, j2.trip_date_min, j2.trip_date_max, activeJourney.status_override) === 'live'
+  }, [activeJourney])
 
   const filteredJourneys = useMemo(() => {
     const q = searchQuery.trim().toLowerCase()
-    if (!q) return list.filter(j => j.id !== activeJourney?.id)
-    return list.filter(j => {
+    if (!q) return journeys.filter(j => j.id !== activeJourney?.id)
+    return journeys.filter(j => {
       const inTitle = j.title.toLowerCase().includes(q)
       const inSubtitle = j.subtitle?.toLowerCase().includes(q) ?? false
       return inTitle || inSubtitle
     })
-  }, [list, activeJourney, searchQuery])
+  }, [journeys, activeJourney, searchQuery])
 
-  const openCreateModal = async (preSelectedTripId?: JourneyEntityId) => {
+  const openCreateModal = async (preSelectedTripId?: number) => {
     setShowCreate(true)
     setNewTitle('')
-    const initial = new Set<JourneyEntityId>()
-    if (preSelectedTripId != null) initial.add(preSelectedTripId)
+    setNewSubtitle('')
+    const initial = new Set<number>()
+    if (preSelectedTripId) initial.add(preSelectedTripId)
     setSelectedTripIds(initial)
-    setAvailableTripsError(false)
     try {
-      if (familyPlane) {
-        if (!familyId) {
-          setAvailableTrips([])
-          setAvailableTripsError(false)
-          return
-        }
-        const trips = await listFamilyJourneyAvailableTrips(familyId)
-        setAvailableTrips(trips)
-        setAvailableTripsError(false)
-      } else {
-        const data = await journeyApi.availableTrips()
-        setAvailableTrips(data.trips || [])
-        setAvailableTripsError(false)
-      }
-    } catch {
-      setAvailableTrips([])
-      setAvailableTripsError(true)
-    }
+      const data = await journeyApi.availableTrips()
+      setAvailableTrips(data.trips || [])
+    } catch {}
   }
 
   const handleCreate = async () => {
@@ -148,6 +176,7 @@ export function useJourney() {
     try {
       const j = await createJourney({
         title: newTitle.trim(),
+        subtitle: newSubtitle.trim() || undefined,
         trip_ids: [...selectedTripIds],
       })
       setShowCreate(false)
@@ -158,19 +187,17 @@ export function useJourney() {
   }
 
   const totalPlaces = useMemo(() => {
-    return availableTrips
-      .filter(trip => selectedTripIds.has(trip.id))
-      .reduce((sum, trip) => sum + (trip.place_count || 0), 0)
+    return availableTrips.filter(t => selectedTripIds.has(t.id)).reduce((sum: number, t: any) => sum + (t.place_count || 0), 0)
   }, [availableTrips, selectedTripIds])
 
   return {
-    navigate, journeys: list, loading, loadError, loadJourneys,
-    showCreate, setShowCreate, newTitle, setNewTitle,
+    navigate, journeys, loading,
+    // Pull-to-refresh on mobile; the list stays on screen while it reloads.
+    loadJourneys,
+    showCreate, setShowCreate, newTitle, setNewTitle, newSubtitle, setNewSubtitle,
     availableTrips, selectedTripIds, setSelectedTripIds,
     searchOpen, setSearchOpen, searchQuery, setSearchQuery, searchInputRef,
-    activeSuggestion, setDismissedSuggestions,
-    suggestionError, availableTripsError,
-    retrySuggestions: () => setSuggestionEpoch(n => n + 1),
+    activeSuggestion, dismissSuggestion,
     activeJourney, activeJourneyIsLive, filteredJourneys,
     openCreateModal, handleCreate, totalPlaces,
   }

@@ -1,128 +1,161 @@
-import React, { useEffect, ReactNode, Suspense } from 'react'
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
-import { useAuthStore, selectIsBlockedMembershipGate, selectIsFamilyMember, selectMayHydratePrivateFamily } from './store/authStore'
+import { FamilyStartupBoundary } from './integrations/family/FamilyStartupBoundary'
+import { accountDataReady, hideAccountWidgets } from './integrations/family/authReadiness'
+import { FamilyTripRecoveryBoundary } from './integrations/family/FamilyTripRecoveryBoundary'
+import React, { useEffect, useState, useRef, ReactNode, Suspense } from 'react'
+import { Routes, Route, Navigate, useLocation, useNavigationType } from 'react-router'
+import { FamilyDomainBoundary } from './integrations/family/FamilyDomainBoundary'
+import { canReviewFamilyAdmin } from './integrations/family/legacy/data/supabase/capabilities'
+import { isFamilyFrontendActive } from './integrations/family/runtime'
+import { useAuthStore as useFamilyAuthStore } from './integrations/family/legacy/store/authStore'
+import FamilyRequestAccessPage from './integrations/family/legacy/pages/RequestAccessPage'
+import { TranslationProvider as FamilyTranslationProvider } from './integrations/family/legacy/i18n'
+import { FamilyTripBoundary } from './integrations/family/FamilyTripBoundary'
+import { useAuthStore } from './store/authStore'
 import { useSettingsStore } from './store/settingsStore'
 import { applyAppearance } from './theme/applyAppearance'
 import { useAddonStore } from './store/addonStore'
 import { usePluginStore } from './store/pluginStore'
-import PluginPage from './pages/PluginPage'
+// The one page that stays in the entry chunk. Anyone logged out lands here, and
+// every other route redirects here first — a chunk round trip in front of the login
+// form would slow down the single screen that has to be there immediately.
 import LoginPage from './pages/LoginPage'
-import ForgotPasswordPage from './pages/ForgotPasswordPage'
-import ResetPasswordPage from './pages/ResetPasswordPage'
-import RequestAccessPage from './pages/RequestAccessPage'
-import DashboardPage from './pages/DashboardPage'
-import FilesPage from './pages/FilesPage'
-import HelpPage from './pages/HelpPage'
-import JourneyPublicPage from './pages/JourneyPublicPage'
-import SharedTripPage from './pages/SharedTripPage'
-import JoinTripPage from './pages/JoinTripPage'
-import InAppNotificationsPage from './pages/InAppNotificationsPage.tsx'
-import OAuthAuthorizePage from './pages/OAuthAuthorizePage'
-import { PageLoadingSurface } from './components/shared/PageLoadingSurface'
-import { PageLoadFailed } from './components/shared/PageLoadFailed'
-import RouteErrorBoundary from './components/Layout/RouteErrorBoundary'
-import { lazyWithRetry } from './utils/lazyWithRetry'
 import { ToastContainer } from './components/shared/Toast'
 import SaveToCollectionModal from './components/Collections/SaveToCollectionModal'
+import MSaveToCollectionSheet from './components/Collections/MSaveToCollectionSheet'
+import { useSaveToCollectionStore } from './store/saveToCollectionStore'
 import BackgroundTasksWidget from './components/BackgroundTasks/BackgroundTasksWidget'
-import BottomNav from './components/Layout/BottomNav'
+import MobileShell from './mobile/MobileShell'
+import MRouteFallback from './mobile/components/MRouteFallback'
+import ErrorBoundary from './components/shared/ErrorBoundary'
+import { lazyWithRetry } from './utils/lazyWithRetry'
+import { reconcileAppVersion } from './utils/versionHandover'
+import { useServerVersionStore } from './store/serverVersionStore'
+import { useIsPhone } from './mobile/useIsPhone'
+import { useRouteTransition } from './mobile/routeTransition'
 import { TranslationProvider, useTranslation } from './i18n'
+import { authApi, isAuthPublicPath } from './api/client'
+import { tripRepo } from './repo/tripRepo'
+import { readStartDestination, tripStartPath, DEFAULT_START_PAGE, DEFAULT_START_TRIP_TAB, SETTINGS_WAIT_MS, START_DESTINATION_ROUTE } from './utils/startDestination'
+import { takeResumeRoute, useRememberRoute } from './utils/resumeRoute'
+import { usePermissionsStore, PermissionLevel } from './store/permissionsStore'
 import { useInAppNotificationListener } from './hooks/useInAppNotificationListener.ts'
-import { useFamilyFeatureStore } from './store/familyFeatureStore'
-import { useFamilyMapStore } from './store/familyMapStore'
-import type { FamilyFeatureKey } from './data/supabase/familyFeatures'
-import FamilyFeatureUnavailable from './components/Layout/FamilyFeatureUnavailable'
-import { useFamilyInboxRefresh } from './hooks/useFamilyInboxRefresh.ts'
+import { useRoadtripPreferencesSync } from './hooks/useRoadtripPreferencesSync'
 import { registerSyncTriggers, unregisterSyncTriggers } from './sync/syncTriggers'
 import OfflineBanner from './components/Layout/OfflineBanner'
+import NewVersionNotice from './components/Layout/NewVersionNotice'
+import NativeUpdateNotice from './components/Layout/NativeUpdateNotice'
+import AppLockGate from './components/Layout/AppLockGate'
+import NativeImportSheet from './mobile/components/NativeImportSheet'
+import MPushPrompt from './mobile/components/MPushPrompt'
+import NativeWidgetsSync from './components/Layout/NativeWidgetsSync'
+import NativeQuickActionsSync from './components/Layout/NativeQuickActionsSync'
 import { SystemNoticeHost } from './components/SystemNotices/SystemNoticeHost.js'
-import { isSupabaseDataPlane, onSupabaseAuthStateChange } from './data/supabase/auth'
-import { canReviewFamilyAdmin } from './data/supabase/capabilities'
-import { isPublicMapIsolatedPath } from './utils/publicMapRoutes'
-import { useAppStartup } from './startup/useAppStartup'
-import { retryStartupAt } from './startup/coordinator'
-import { selectStartupGate } from './startup/selectStartupGate'
-import PwaLifecycle from './startup/PwaLifecycle'
+import HelpPanel from './components/Help/HelpPanel'
 // Notice action registrations (side-effect imports):
 import './pages/Trips/noticeActions.js'
+import { managedRoutes } from './managed'
 
+// Every page below loads on demand. The entry chunk used to carry all twenty of
+// them eagerly, so opening /dashboard also paid for the planner, the journal, the
+// atlas and the vacation planner. lazyWithRetry rather than lazy: a chunk that
+// fails once gets a second, cache-busted attempt before the route boundary reaches
+// for a reload.
+const PluginPage = lazyWithRetry(() => import('./pages/PluginPage'))
+const ForgotPasswordPage = lazyWithRetry(() => import('./pages/ForgotPasswordPage'))
+const NativeHandoffPage = lazyWithRetry(() => import('./pages/NativeHandoffPage'))
+const ResetPasswordPage = lazyWithRetry(() => import('./pages/ResetPasswordPage'))
+const DashboardPage = lazyWithRetry(() => import('./pages/DashboardPage'))
 const TripPlannerPage = lazyWithRetry(() => import('./pages/TripPlannerPage'))
+const FilesPage = lazyWithRetry(() => import('./pages/FilesPage'))
 const AdminPage = lazyWithRetry(() => import('./pages/AdminPage'))
+const FamilyAdminPage = lazyWithRetry(() => import('./integrations/family/FamilyAdminPage'))
 const SettingsPage = lazyWithRetry(() => import('./pages/SettingsPage'))
 const VacayPage = lazyWithRetry(() => import('./pages/VacayPage'))
+const HelpPage = lazyWithRetry(() => import('./pages/HelpPage'))
 const AtlasPage = lazyWithRetry(() => import('./pages/AtlasPage'))
 const JourneyPage = lazyWithRetry(() => import('./pages/JourneyPage'))
 const JourneyDetailPage = lazyWithRetry(() => import('./pages/JourneyDetailPage'))
+const JourneyStudioPage = lazyWithRetry(() => import('./pages/JourneyStudioPage'))
 const CollectionsPage = lazyWithRetry(() => import('./pages/CollectionsPage'))
+const JourneyPublicPage = lazyWithRetry(() => import('./pages/JourneyPublicPage'))
+const SharedTripPage = lazyWithRetry(() => import('./pages/SharedTripPage'))
+const JoinTripPage = lazyWithRetry(() => import('./pages/JoinTripPage'))
+const InAppNotificationsPage = lazyWithRetry(() => import('./pages/InAppNotificationsPage.tsx'))
+const OAuthAuthorizePage = lazyWithRetry(() => import('./pages/OAuthAuthorizePage'))
+// The tour keep dialog a day plan row opens; it loads only once a tour is to be kept.
+const TourSaveToCollectionHost = lazyWithRetry(() => import('./components/Tours/collection/TourSaveToCollectionHost'))
+// The desktop assistant window: its own chunk, and nothing at all until a connection is set up.
+const AssistantHost = lazyWithRetry(() => import('./components/Assistant/AssistantHost'))
+const MAssistantHomeScreen = lazyWithRetry(() => import('./mobile/screens/assistant/MAssistantHomeScreen'))
+
+// The ten phone screens are chunks of their own, alongside the desktop pages
+// rather than inside them. Each page used to import its M screen statically and
+// decide while rendering, so the route chunk always carried both trees and the
+// viewport only picked which half stayed dark. Here the branch decides the
+// chunk: a phone never loads the desktop planner, a desktop never the mobile
+// shell.
+const MDashboardScreen = lazyWithRetry(() => import('./mobile/screens/dashboard/MDashboard'))
+const MTripScreen = lazyWithRetry(() => import('./mobile/screens/trip/MTripShell'))
+const MAdminScreen = lazyWithRetry(() => import('./mobile/screens/admin/MAdmin'))
+const MSettingsScreen = lazyWithRetry(() => import('./mobile/screens/settings/MSettings'))
+const MVacayScreen = lazyWithRetry(() => import('./mobile/screens/vacay/MVacay'))
+const MAtlasScreen = lazyWithRetry(() => import('./mobile/screens/atlas/MAtlas'))
+const MJourneyScreen = lazyWithRetry(() => import('./mobile/screens/journey/MJourney'))
+const MJourneyDetailScreen = lazyWithRetry(() => import('./mobile/screens/journey/MJourneyDetail'))
+const MCollectionsScreen = lazyWithRetry(() => import('./mobile/screens/collections/MCollections'))
+const MNotificationsScreen = lazyWithRetry(() => import('./mobile/screens/notifications/MNotifications'))
 
 interface ProtectedRouteProps {
   children: ReactNode
   adminRequired?: boolean
   addonId?: string
-  familyFeature?: FamilyFeatureKey
 }
 
-function LazyRoute({ children }: { children: ReactNode }) {
-  return <Suspense fallback={<PageLoadingSurface />}>{children}</Suspense>
+function ProtectedRoute(props: ProtectedRouteProps) {
+  return <FamilyStartupBoundary><ValidatedProtectedRoute {...props} /></FamilyStartupBoundary>
 }
 
-function StartupRecovery({ onRetry }: { onRetry: () => void }) {
-  const { t } = useTranslation()
-  const offline = typeof navigator !== 'undefined' && !navigator.onLine
-  return (
-    <PageLoadFailed
-      title={offline ? t('common.startupOfflineTitle') : t('common.startupFailedTitle')}
-      body={offline ? t('common.startupOfflineBody') : t('common.startupFailedBody')}
-      onRetry={onRetry}
-    />
-  )
-}
-
-function ProtectedRoute({ children, adminRequired = false, addonId, familyFeature }: ProtectedRouteProps) {
+function ValidatedProtectedRoute({ children, adminRequired = false, addonId }: ProtectedRouteProps) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const user = useAuthStore((s) => s.user)
   const isLoading = useAuthStore((s) => s.isLoading)
-  const authCheckFailed = useAuthStore((s) => s.authCheckFailed)
   const appRequireMfa = useAuthStore((s) => s.appRequireMfa)
-  const membershipLoaded = useAuthStore((s) => s.membershipLoaded)
-  const isSuperAdmin = useAuthStore((s) => s.isSuperAdmin)
-  const membershipRole = useAuthStore((s) => s.membershipRole)
-  const membershipStatus = useAuthStore((s) => s.membershipStatus)
-  const authGate = useAuthStore((s) => s.authGate)
+  const loggingOut = useAuthStore((s) => s.loggingOut)
   const addonStore = useAddonStore()
-  const featureHydrated = useFamilyFeatureStore(s => s.hydrated)
-  const featureEnabled = useFamilyFeatureStore(s => (familyFeature ? s.isEnabled(familyFeature) : true))
   const { t } = useTranslation()
   const location = useLocation()
-  const supabasePlane = isSupabaseDataPlane()
-  const startupGate = selectStartupGate(
-    { isLoading, isAuthenticated, authCheckFailed, membershipLoaded, authGate },
-    supabasePlane,
-  )
+  const isPhone = useIsPhone()
+  const familyGate = useFamilyAuthStore(s => s.authGate)
+  const familySignedIn = useFamilyAuthStore(s => s.isAuthenticated)
+  const familyLoading = useFamilyAuthStore(s => s.isLoading)
+  const familyRole = useFamilyAuthStore(s => s.membershipRole)
+  const familySuperAdmin = useFamilyAuthStore(s => s.isSuperAdmin)
 
-  if (startupGate === 'recovery') {
-    return <StartupRecovery onRetry={() => retryStartupAt(location.pathname)} />
+  if (isLoading || (isFamilyFrontendActive() && familySignedIn && familyLoading)) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-10 h-10 border-4 border-slate-200 border-t-slate-900 rounded-full animate-spin"></div>
+          <p className="text-slate-500 text-sm">{t('common.loading')}</p>
+        </div>
+      </div>
+    )
   }
 
-  if (startupGate === 'loading') {
-    return <PageLoadingSurface label={t('common.loading')} />
+  if (isFamilyFrontendActive() && familySignedIn && familyGate && familyGate !== 'ok') {
+    if (familyGate === 'mfa_challenge') return <LoginPage />
+    if (familyGate === 'mfa_enroll') {
+      if (location.pathname !== '/settings') return <Navigate to="/settings?mfa=required" replace />
+    } else return <FamilyTranslationProvider><FamilyRequestAccessPage /></FamilyTranslationProvider>
   }
 
   if (!isAuthenticated) {
+    // A session that ended on its own should come back to where it left off; a
+    // deliberate sign-out is a fresh start and gets no return ticket, so the
+    // startup destination decides where the next login lands.
+    if (loggingOut) return <Navigate to="/login" replace state={{ noRedirect: true }} />
     const redirectParam = encodeURIComponent(location.pathname + location.search + location.hash)
     return <Navigate to={`/login?redirect=${redirectParam}`} replace />
-  }
-
-  if (supabasePlane) {
-    if (
-      selectIsBlockedMembershipGate(authGate)
-      || !selectIsFamilyMember({ isSuperAdmin, membershipRole, membershipStatus })
-    ) {
-      return <Navigate to="/request-access" replace />
-    }
-    if ((authGate === 'mfa_enroll' || authGate === 'mfa_challenge') && location.pathname !== '/settings') {
-      return <Navigate to="/settings?mfa=required" replace />
-    }
   }
 
   if (
@@ -134,150 +167,265 @@ function ProtectedRoute({ children, adminRequired = false, addonId, familyFeatur
     return <Navigate to="/settings?mfa=required" replace />
   }
 
-  if (adminRequired) {
-    const familyReviewer = canReviewFamilyAdmin({ isSuperAdmin, membershipRole })
-    const nestAdmin = user?.role === 'admin'
-    if (supabasePlane ? !familyReviewer : !nestAdmin) {
-      return <Navigate to="/dashboard" replace />
-    }
-  }
-
-  if (!supabasePlane && addonId && addonStore.loaded && !addonStore.isEnabled(addonId)) {
+  if (adminRequired && user && (isFamilyFrontendActive() ? !canReviewFamilyAdmin({ membershipRole: familyRole, isSuperAdmin: familySuperAdmin }) : user.role !== 'admin')) {
     return <Navigate to="/dashboard" replace />
   }
 
-  if (supabasePlane && familyFeature && !featureHydrated) {
-    return <PageLoadingSurface />
+  if (addonId && addonStore.loaded && !addonStore.isEnabled(addonId)) {
+    return <Navigate to="/dashboard" replace />
   }
 
-  if (supabasePlane && familyFeature && !featureEnabled) {
-    return <FamilyFeatureUnavailable />
-  }
-
+  // Below the md breakpoint the new mobile shell owns chrome (tokens, dock,
+  // sheets, toasts); from 768px up the legacy wrapper stays untouched. The
+  // shell branches internally so pages keep their state when the viewport
+  // crosses the breakpoint.
+  // The boundary sits inside the shell so a broken page keeps the navigation the
+  // user needs to leave it — outside, the route would be a dead end, and the
+  // mobile --m-* tokens live on the shell's .m-root anyway.
+  //
+  // key, not resetKeys: ProtectedRoute is the same component at the same position
+  // for all 16 protected routes, so without it React could keep the failed
+  // instance across a navigation and the error would follow the user around.
   return (
-    <div className="flex flex-col h-dvh md:block md:h-auto">
-      <div className="flex-1 overflow-y-auto md:overflow-visible">{children}</div>
-      <BottomNav />
+    <MobileShell isPhone={isPhone}>
+      <RouteMemory />
+      <ErrorBoundary
+        key={location.pathname}
+        boundaryId="route"
+        level="route"
+        variant={isPhone ? 'mobile' : 'desktop'}
+      >
+        {children}
+      </ErrorBoundary>
+    </MobileShell>
+  )
+}
+
+/**
+ * The public routes render outside ProtectedRoute, so the route boundary above
+ * never sees them — including /login, where someone lands when everything else
+ * failed, and the two anonymous share pages.
+ */
+function PublicRoute({ children, redirectAuthed = false }: { children: React.ReactNode; redirectAuthed?: boolean }) {
+  const location = useLocation()
+  // redirectAuthed (only /login and /register) bounces a visitor who is already
+  // authenticated when they land here — manual URL, browser back button (#1810).
+  // Only on a bare URL, because every parameter this page takes is a flow that
+  // has to reach useLogin intact: ?redirect= carries the OAuth consent handoff
+  // (bouncing drops it, or loops if the server still reports login_required),
+  // ?invite= puts the form into register mode against a validated token, and
+  // ?oidc_code= / ?oidc_error= complete an external login. A visitor with any of
+  // those in the URL asked for this page on purpose.
+  // Capture the flag at mount so a fresh login is left alone: it flips
+  // isAuthenticated to true while the takeoff animation still plays here, before
+  // useLogin navigates away.
+  // The target is START_DESTINATION_ROUTE, not /dashboard, so the bounce honours
+  // the start-page preference the same way useLogin does.
+  const wasAuthenticated = useRef(useAuthStore.getState().isAuthenticated)
+  if (redirectAuthed && wasAuthenticated.current && !location.search) {
+    return <Navigate to={START_DESTINATION_ROUTE} replace />
+  }
+  return (
+    <ErrorBoundary key={location.pathname} boundaryId="public-route" level="route">
+      {children}
+    </ErrorBoundary>
+  )
+}
+
+/**
+ * Picks the chunk, not just the branch. Both sides come through lazyWithRetry,
+ * so exactly one of them is fetched for a given viewport — which is the whole
+ * point: the ternary that used to sit in each page only ran once the browser
+ * had already paid for both trees.
+ */
+function ViewportRoute({ phone: Phone, desktop: Desktop }: {
+  phone: React.ComponentType
+  desktop: React.ComponentType
+}): React.ReactElement {
+  const isPhone = useIsPhone()
+  return isPhone ? <Phone /> : <Desktop />
+}
+
+/**
+ * The entry point every shortcut, bookmark and the installed PWA share
+ * (manifest start_url is '/'), which is why the startup destination is decided
+ * here rather than on /dashboard — landing on the dashboard directly has to keep
+ * working, or there would be no way back to it.
+ *
+ * Once this device has seen the preference it comes from the localStorage
+ * mirror, so the common launch waits for nothing. A device that has never seen
+ * it waits for the settings instead of assuming the default — the preference
+ * lives on the server, and guessing here would ignore it on every browser that
+ * didn't set it. Only 'active_trip' costs the one lookup that finds the trip,
+ * and any failure along the way lands on the dashboard.
+ */
+/** Remembers the protected route for the installed app's relaunch (#1024). Renders nothing. */
+function RouteMemory() {
+  useRememberRoute()
+  return null
+}
+
+function RootRedirect() {
+  const { isAuthenticated, isLoading } = useAuthStore()
+  const settingsLoaded = useSettingsStore((s) => s.isLoaded)
+  const settings = useSettingsStore((s) => s.settings)
+  const loadSettings = useSettingsStore((s) => s.loadSettings)
+  const [target, setTarget] = useState<string | null>(null)
+  // Bounds the wait below: loadSettings deliberately leaves isLoaded false on a
+  // failed request so it can retry, which would otherwise strand a launch that
+  // started offline on the spinner.
+  const [settingsGaveUp, setSettingsGaveUp] = useState(false)
+
+  useEffect(() => {
+    if (settingsLoaded) return
+    const timer = setTimeout(() => setSettingsGaveUp(true), SETTINGS_WAIT_MS)
+    return () => clearTimeout(timer)
+  }, [settingsLoaded])
+
+  useEffect(() => {
+    if (isLoading || !isAuthenticated || target) return
+    // The installed app coming back after the system threw it away (#1024):
+    // back to the trip and tab it was in, ahead of the start page.
+    const resume = takeResumeRoute()
+    if (resume) { setTarget(resume); return }
+    const mirrored = readStartDestination()
+    if (!mirrored && !settingsLoaded && !settingsGaveUp) {
+      // Ask for the settings instead of waiting for whoever else might. The
+      // store de-dupes concurrent loads, so this is free when one is already in
+      // flight — and it stops the decision from riding on where that request
+      // happens to land in the queue behind everything else a launch fires off.
+      loadSettings()
+      return
+    }
+    // Loaded settings are the truth; the mirror is what we knew last time.
+    const { page, tab } = settingsLoaded
+      ? { page: settings.start_page ?? DEFAULT_START_PAGE, tab: settings.start_trip_tab ?? DEFAULT_START_TRIP_TAB }
+      : (mirrored ?? { page: DEFAULT_START_PAGE, tab: DEFAULT_START_TRIP_TAB })
+    if (page !== 'active_trip') { setTarget('/dashboard'); return }
+    let cancelled = false
+    // Through the repo, not the api: offline this answers from Dexie instead of
+    // bouncing a cached trip to the dashboard.
+    tripRepo.active()
+      .then(({ trip }) => { if (!cancelled) setTarget(trip ? tripStartPath(trip.id, tab) : '/dashboard') })
+      .catch(() => { if (!cancelled) setTarget('/dashboard') })
+    return () => { cancelled = true }
+  }, [isLoading, isAuthenticated, settingsLoaded, settingsGaveUp, settings, target])
+
+  if (isLoading || (isAuthenticated && !target)) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <div className="w-10 h-10 border-4 border-slate-200 border-t-slate-900 rounded-full animate-spin"></div>
+      </div>
+    )
+  }
+
+  return <Navigate to={isAuthenticated ? (target ?? '/dashboard') : '/login'} replace />
+}
+
+/**
+ * Shown while a route chunk is in flight. Same geometry as the auth spinner above,
+ * but on theme tokens — that one predates the styleguide and a new surface does not
+ * get to inherit its raw slate.
+ */
+function RouteFallback() {
+  // The fallback renders above MobileShell, so it has to pick its own palette —
+  // on a phone the desktop spinner on bg-surface would be a foreign white sheet
+  // in front of the mobile screen.
+  const isPhone = useIsPhone()
+  if (isPhone) return <MRouteFallback />
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-surface">
+      <div className="w-10 h-10 border-4 border-edge border-t-content rounded-full animate-spin"></div>
     </div>
   )
 }
 
-function RootRedirect() {
-  const { isAuthenticated, isLoading, isSuperAdmin, membershipRole, membershipLoaded, membershipStatus, authGate, authCheckFailed } = useAuthStore()
-  const supabasePlane = isSupabaseDataPlane()
-  const location = useLocation()
-  const startupGate = selectStartupGate(
-    { isLoading, isAuthenticated, authCheckFailed, membershipLoaded, authGate },
-    supabasePlane,
-  )
-
-  if (startupGate === 'recovery') {
-    return <StartupRecovery onRetry={() => retryStartupAt(location.pathname)} />
-  }
-
-  if (startupGate === 'loading') {
-    return <PageLoadingSurface />
-  }
-
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />
-  }
-
-  if (supabasePlane) {
-    if (
-      selectIsBlockedMembershipGate(authGate)
-      || !selectIsFamilyMember({ isSuperAdmin, membershipRole, membershipStatus })
-    ) {
-      return <Navigate to="/request-access" replace />
-    }
-    if (authGate === 'mfa_enroll' || authGate === 'mfa_challenge') {
-      return <Navigate to="/settings?mfa=required" replace />
-    }
-  }
-
-  return <Navigate to="/dashboard" replace />
-}
-
 export default function App() {
-  const { loadUser, isAuthenticated } = useAuthStore()
-  const { loadSettings, hydrateSupabasePlaneSettings, hydrateFamilyPreferences } = useSettingsStore()
-  const hydrateFamilyFeatures = useFamilyFeatureStore(s => s.hydrate)
-  const resetFamilyFeatures = useFamilyFeatureStore(s => s.reset)
-  const hydrateFamilyMaps = useFamilyMapStore(s => s.hydrate)
-  const resetFamilyMaps = useFamilyMapStore(s => s.reset)
+  const { loadUser, isAuthenticated, isLoading, demoMode, setManaged, setDemoMode, setDevMode, setIsPrerelease, setAppVersion, setHasMapsKey, setHasAmapKey, setPlacesProvider, setServerTimezone, setAppRequireMfa, setTripRemindersEnabled, setPlacesPhotosEnabled, setPlacesAutocompleteEnabled, setPlacesDetailsEnabled, setPlacesEnrichEnabled, setPlaceShadowEnabled } = useAuthStore()
+  const { loadSettings } = useSettingsStore()
   const { loadAddons } = useAddonStore()
   const { loadPlugins } = usePluginStore()
-  const location = useLocation()
-  const isolatePublicMaps = isPublicMapIsolatedPath(location.pathname)
-  const supabasePlane = isSupabaseDataPlane()
-  useAppStartup()
+  const familyReady = useFamilyAuthStore(s => s.isAuthenticated && s.authGate === 'ok' && !s.isLoading && !s.authCheckFailed)
+  const nativeValidationFailed = useAuthStore(s => s.authCheckFailed)
+  const dataSessionReady = accountDataReady({ authenticated: isAuthenticated, loading: isLoading, familyActive: isFamilyFrontendActive(), familyReady: familyReady && !nativeValidationFailed })
+
 
   useEffect(() => {
-    if (!supabasePlane) return
-    const { data: { subscription } } = onSupabaseAuthStateChange((event) => {
-      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED' || event === 'SIGNED_OUT') {
-        void loadUser({ silent: true })
+    if (!location.pathname.startsWith('/shared/') && !location.pathname.startsWith('/public/') && (!location.pathname.startsWith('/login') || (isFamilyFrontendActive() && useAuthStore.getState().isAuthenticated))) {
+      // Native display snapshots may render while cookie validation runs. Family
+      // must resolve its current membership/actor before any trip controller mounts;
+      // its persisted display cache does not establish a repository session.
+      const alreadyAuthenticated = useAuthStore.getState().isAuthenticated
+      if (alreadyAuthenticated && !isFamilyFrontendActive()) {
+        useAuthStore.setState({ isLoading: false })
+        loadUser({ silent: true })
+      } else {
+        loadUser()
       }
+    }
+    // Asked again until it answers: a page opened while the server restarts got a
+    // 502 here and kept the defaults for the whole session, which on a managed
+    // install put back every setting the operator owns.
+    let cancelled = false
+    let retryTimer: ReturnType<typeof setTimeout> | undefined
+    type AppConfigAnswer = Awaited<ReturnType<typeof authApi.getAppConfig>>
+    const fetchAppConfig = (attempt: number): Promise<AppConfigAnswer> => authApi.getAppConfig().catch((err: unknown) => {
+      if (cancelled) throw err
+      return new Promise<AppConfigAnswer>((resolve, reject) => {
+        retryTimer = setTimeout(() => {
+          fetchAppConfig(attempt + 1).then(resolve, reject)
+        }, Math.min(30_000, 1_000 * 2 ** attempt))
+      })
     })
-    return () => subscription.unsubscribe()
-  }, [supabasePlane, loadUser])
+    fetchAppConfig(0).then(async (config: { managed?: boolean; demo_mode?: boolean; dev_mode?: boolean; is_prerelease?: boolean; has_maps_key?: boolean; has_amap_key?: boolean; places_provider?: string; version?: string; timezone?: string; require_mfa?: boolean; trip_reminders_enabled?: boolean; places_photos_enabled?: boolean; places_autocomplete_enabled?: boolean; places_details_enabled?: boolean; places_enrich_enabled?: boolean; place_shadow_enabled?: boolean; max_upload_mb?: number; permissions?: Record<string, PermissionLevel> }) => {
+      setManaged(!!config?.managed)
+      setDemoMode(!!config?.demo_mode)
+      if (config?.dev_mode) setDevMode(true)
+      if (config?.is_prerelease !== undefined) setIsPrerelease(config.is_prerelease)
+      if (config?.version) setAppVersion(config.version)
+      if (config?.has_maps_key !== undefined) setHasMapsKey(config.has_maps_key)
+      if (config?.has_amap_key !== undefined) setHasAmapKey(config.has_amap_key)
+      if (config?.places_provider) setPlacesProvider(config.places_provider)
+      if (config?.timezone) setServerTimezone(config.timezone)
+      if (config?.require_mfa !== undefined) setAppRequireMfa(!!config.require_mfa)
+      if (config?.trip_reminders_enabled !== undefined) setTripRemindersEnabled(config.trip_reminders_enabled)
+      if (config?.places_photos_enabled !== undefined) setPlacesPhotosEnabled(config.places_photos_enabled)
+      if (config?.places_autocomplete_enabled !== undefined) setPlacesAutocompleteEnabled(config.places_autocomplete_enabled)
+      if (config?.places_details_enabled !== undefined) setPlacesDetailsEnabled(config.places_details_enabled)
+      if (config?.places_enrich_enabled !== undefined) setPlacesEnrichEnabled(config.places_enrich_enabled)
+      if (config?.place_shadow_enabled !== undefined) setPlaceShadowEnabled(config.place_shadow_enabled)
+      if (typeof config?.max_upload_mb === 'number' && config.max_upload_mb > 0) useAuthStore.getState().setMaxUploadMb(config.max_upload_mb)
+      if (config?.permissions) usePermissionsStore.getState().setPermissions(config.permissions)
+      // The version this page starts out with, before the realtime socket reports.
+      useServerVersionStore.getState().note(config?.version)
+      // Last, since a new release reloads the page from here.
+      await reconcileAppVersion(config?.version)
+    }).catch(() => {})
+    return () => {
+      cancelled = true
+      clearTimeout(retryTimer)
+    }
+  }, [])
 
   const { settings } = useSettingsStore()
-  const familyId = useAuthStore(s => s.familyId)
-  const authGate = useAuthStore(s => s.authGate)
-  const mayHydratePrivateFamily = selectMayHydratePrivateFamily(authGate, supabasePlane)
 
-  useInAppNotificationListener()
-  useFamilyInboxRefresh()
+  useInAppNotificationListener(dataSessionReady)
+  useRoadtripPreferencesSync()
 
   useEffect(() => {
-    if (isAuthenticated) {
-      if (supabasePlane) {
-        hydrateSupabasePlaneSettings()
-        return
-      }
+    if (dataSessionReady) {
       loadSettings()
       loadAddons()
       loadPlugins()
     }
-  }, [isAuthenticated, supabasePlane, loadSettings, hydrateSupabasePlaneSettings, loadAddons, loadPlugins])
+  }, [dataSessionReady])
 
   useEffect(() => {
-    if (!supabasePlane || !isAuthenticated || !familyId || !mayHydratePrivateFamily) return
-    void hydrateFamilyPreferences(familyId)
-  }, [supabasePlane, isAuthenticated, familyId, mayHydratePrivateFamily, hydrateFamilyPreferences])
-
-  useEffect(() => {
-    if (!supabasePlane || !isAuthenticated || !familyId || !mayHydratePrivateFamily) {
-      if (!isAuthenticated) resetFamilyFeatures()
-      return
-    }
-    void hydrateFamilyFeatures(familyId)
-  }, [supabasePlane, isAuthenticated, familyId, mayHydratePrivateFamily, hydrateFamilyFeatures, resetFamilyFeatures])
-
-  useEffect(() => {
-    if (isolatePublicMaps) return
-    if (!supabasePlane || !isAuthenticated || !familyId || !mayHydratePrivateFamily) {
-      if (!isAuthenticated) resetFamilyMaps()
-      return
-    }
-    void hydrateFamilyMaps(familyId)
-  }, [
-    isolatePublicMaps,
-    supabasePlane,
-    isAuthenticated,
-    familyId,
-    mayHydratePrivateFamily,
-    hydrateFamilyMaps,
-    resetFamilyMaps,
-  ])
-
-  useEffect(() => {
-    if (supabasePlane) return
     registerSyncTriggers()
     return () => unregisterSyncTriggers()
-  }, [supabasePlane])
+  }, [])
 
+  const location = useLocation()
   const isSharedPage = location.pathname.startsWith('/shared/')
 
   useEffect(() => {
@@ -288,6 +436,7 @@ export default function App() {
         isSharedPage,
       })
     run()
+    // Re-resolve on OS theme change while in auto mode.
     if (!isSharedPage && settings.dark_mode === 'auto') {
       const mq = window.matchMedia('(prefers-color-scheme: dark)')
       const handler = () => run()
@@ -296,180 +445,214 @@ export default function App() {
     }
   }, [settings.dark_mode, settings.appearance, isSharedPage])
 
+  const isPhone = useIsPhone()
+  // On the phone, pages slide like a native navigation stack (mobile/routeTransition.ts).
+  const navigationType = useNavigationType()
+  const routedLocation = useRouteTransition(location, navigationType, isPhone)
+  const keepingTour = useSaveToCollectionStore(s => s.tour !== null)
   const isAuthPage = location.pathname.startsWith('/login')
     || location.pathname.startsWith('/register')
     || location.pathname.startsWith('/forgot-password')
     || location.pathname.startsWith('/reset-password')
-    || location.pathname.startsWith('/request-access')
+  // No session on these, so authenticated-only widgets (system notices,
+  // background tasks, save-to-collection) have nothing to do and would only fire
+  // a doomed authenticated request on mount.
+  //
+  // Off isAuthPublicPath rather than a second hand-kept list: the two had already
+  // drifted, this one naming only /public/journey/ while the response
+  // interceptor's covers all of /public/. A route that is public to one and not
+  // to the other is exactly the seam that puts a 401 back.
+  const hideAuthedWidgets = hideAccountWidgets({ authPage: isAuthPage, publicPage: isAuthPublicPath(location.pathname), familyActive: isFamilyFrontendActive(), dataReady: dataSessionReady })
+  // The Help & Docs page is the wiki, written for somebody who runs TREK
+  // themselves: keys, backups, updates, the server behind it. A managed install
+  // does not offer it; the in-app help center stays.
+  const managed = useAuthStore(s => s.managed)
 
   return (
     <TranslationProvider>
-      {!isAuthPage && <SystemNoticeHost />}
-      <ToastContainer />
-      {!isAuthPage && !supabasePlane && <BackgroundTasksWidget />}
-      {!isAuthPage && <SaveToCollectionModal />}
-      <OfflineBanner />
-      <PwaLifecycle />
-      <RouteErrorBoundary>
-      <Routes>
-        <Route path="/" element={<RootRedirect />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/request-access" element={<RequestAccessPage />} />
-        <Route path="/shared/:token" element={<SharedTripPage />} />
-        <Route path="/public/journey/:token" element={<JourneyPublicPage />} />
-        <Route path="/register" element={<LoginPage />} />
-        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-        <Route path="/reset-password" element={<ResetPasswordPage />} />
-        <Route path="/oauth/consent" element={<OAuthAuthorizePage />} />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <DashboardPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/join/:token"
-          element={
-            <ProtectedRoute>
-              <JoinTripPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/help"
-          element={
-            <ProtectedRoute>
-              <HelpPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/help/:slug"
-          element={
-            <ProtectedRoute>
-              <HelpPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/trips/:id"
-          element={
-            <ProtectedRoute>
-              <LazyRoute>
-                <TripPlannerPage />
-              </LazyRoute>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/trips/:id/files"
-          element={
-            <ProtectedRoute>
-              <FilesPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin"
-          element={
-            <ProtectedRoute adminRequired>
-              <LazyRoute>
-                <AdminPage />
-              </LazyRoute>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/settings"
-          element={
-            <ProtectedRoute>
-              <LazyRoute>
-                <SettingsPage />
-              </LazyRoute>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/plugins/:pluginId"
-          element={
-            <ProtectedRoute>
-              <PluginPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/vacay"
-          element={
-            <ProtectedRoute familyFeature="vacay">
-              <LazyRoute>
-                <VacayPage />
-              </LazyRoute>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/atlas"
-          element={
-            <ProtectedRoute>
-              <LazyRoute>
-                <AtlasPage />
-              </LazyRoute>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/journey"
-          element={
-            <ProtectedRoute addonId="journey" familyFeature="journey">
-              <LazyRoute>
-                <JourneyPage />
-              </LazyRoute>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/journey/:id"
-          element={
-            <ProtectedRoute addonId="journey" familyFeature="journey">
-              <LazyRoute>
-                <JourneyDetailPage />
-              </LazyRoute>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/collections"
-          element={
-            <ProtectedRoute addonId="collections" familyFeature="collections">
-              <LazyRoute>
-                <CollectionsPage />
-              </LazyRoute>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/collections/:id"
-          element={
-            <ProtectedRoute addonId="collections" familyFeature="collections">
-              <LazyRoute>
-                <CollectionsPage />
-              </LazyRoute>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/notifications"
-          element={
-            <ProtectedRoute>
-              <InAppNotificationsPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-      </RouteErrorBoundary>
+      {!hideAuthedWidgets && <ErrorBoundary boundaryId="widget:system-notice" fallback={null}><SystemNoticeHost /></ErrorBoundary>}
+      {!hideAuthedWidgets && <ErrorBoundary boundaryId="widget:help-panel" fallback={null}><HelpPanel /></ErrorBoundary>}
+      <ErrorBoundary boundaryId="widget:toast" fallback={null}><ToastContainer /></ErrorBoundary>
+      {!hideAuthedWidgets && <ErrorBoundary boundaryId="widget:background-tasks" fallback={null}><BackgroundTasksWidget /></ErrorBoundary>}
+      {!hideAuthedWidgets && (isPhone ? <MSaveToCollectionSheet /> : <SaveToCollectionModal />)}
+      {!hideAuthedWidgets && keepingTour && <ErrorBoundary boundaryId="widget:keep-tour" fallback={null}><Suspense fallback={null}><TourSaveToCollectionHost /></Suspense></ErrorBoundary>}
+      {/* The phone has its own assistant screen inside the trip, and the home chat's outside it. */}
+      {!hideAuthedWidgets && isAuthenticated && (
+        <ErrorBoundary boundaryId="widget:assistant" fallback={null}>
+          <Suspense fallback={null}>{isPhone ? <MAssistantHomeScreen /> : <AssistantHost />}</Suspense>
+        </ErrorBoundary>
+      )}
+      <ErrorBoundary boundaryId="widget:offline-banner" fallback={null}><OfflineBanner /></ErrorBoundary>
+      <ErrorBoundary boundaryId="widget:new-version" fallback={null}><NewVersionNotice /></ErrorBoundary>
+      <ErrorBoundary boundaryId="widget:native-update" fallback={null}><NativeUpdateNotice /></ErrorBoundary>
+      <ErrorBoundary boundaryId="widget:app-lock" fallback={null}><AppLockGate /></ErrorBoundary>
+      <ErrorBoundary boundaryId="widget:native-import" fallback={null}><NativeImportSheet /></ErrorBoundary>
+      {!hideAuthedWidgets && isPhone && <ErrorBoundary boundaryId="widget:push-prompt" fallback={null}><MPushPrompt /></ErrorBoundary>}
+      <ErrorBoundary boundaryId="widget:native-widgets" fallback={null}><NativeWidgetsSync /></ErrorBoundary>
+      <ErrorBoundary boundaryId="widget:native-quick-actions" fallback={null}><NativeQuickActionsSync /></ErrorBoundary>
+      {/* One boundary for all route chunks, above <Routes> so it stays mounted
+          across navigations. react-router runs location updates inside a transition,
+          so a mounted boundary keeps the current page on screen instead of flashing
+          a spinner on every jump — the spinner is for the first paint of a deep link. */}
+      <Suspense fallback={<RouteFallback />}>
+        <Routes location={routedLocation}>
+          <Route path="/" element={<RootRedirect />} />
+          <Route path="/login" element={<PublicRoute redirectAuthed><LoginPage /></PublicRoute>} />
+          <Route path="/shared/:token" element={<PublicRoute><SharedTripPage /></PublicRoute>} />
+          <Route path="/public/journey/:token" element={<PublicRoute><JourneyPublicPage /></PublicRoute>} />
+          <Route path="/register" element={<PublicRoute redirectAuthed><LoginPage /></PublicRoute>} />
+          <Route path="/forgot-password" element={<PublicRoute><ForgotPasswordPage /></PublicRoute>} />
+          <Route path="/native-handoff" element={<PublicRoute><NativeHandoffPage /></PublicRoute>} />
+          <Route path="/reset-password" element={<PublicRoute><ResetPasswordPage /></PublicRoute>} />
+          {/* OAuth 2.1 consent page — intentionally outside ProtectedRoute */}
+          <Route path="/oauth/consent" element={<PublicRoute><OAuthAuthorizePage /></PublicRoute>} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <FamilyTripRecoveryBoundary><ViewportRoute phone={MDashboardScreen} desktop={DashboardPage} /></FamilyTripRecoveryBoundary>
+              </ProtectedRoute>
+            }
+          />
+          {/* Trip invite link (#1143) — behind ProtectedRoute so an anonymous
+              visitor is redirected to /login (never registration) and returns here. */}
+          <Route
+            path="/join/:token"
+            element={
+              <ProtectedRoute>
+                <JoinTripPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/help"
+            element={
+              <ProtectedRoute>
+                {managed ? <Navigate to="/dashboard" replace /> : <HelpPage />}
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/help/:slug"
+            element={
+              <ProtectedRoute>
+                {managed ? <Navigate to="/dashboard" replace /> : <HelpPage />}
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/trips/:id"
+            element={
+              <ProtectedRoute>
+                <FamilyTripBoundary><ViewportRoute phone={MTripScreen} desktop={TripPlannerPage} /></FamilyTripBoundary>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/trips/:id/files"
+            element={
+              <ProtectedRoute>
+                <FilesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute adminRequired>
+                {isFamilyFrontendActive() ? <FamilyAdminPage /> : <ViewportRoute phone={MAdminScreen} desktop={AdminPage} />}
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <ProtectedRoute>
+                <ViewportRoute phone={MSettingsScreen} desktop={SettingsPage} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/plugins/:pluginId"
+            element={
+              <ProtectedRoute>
+                <PluginPage />
+              </ProtectedRoute>
+            }
+          />
+          {/* Empty in this repository, and read unconditionally so the public
+              build walks the same path as any other. See client/src/managed. */}
+          {managedRoutes.map(r => (
+            <Route
+              key={r.path}
+              path={r.path}
+              element={<ProtectedRoute adminRequired={r.adminOnly}>{r.element}</ProtectedRoute>}
+            />
+          ))}
+          <Route
+            path="/vacay"
+            element={
+              <ProtectedRoute>
+                <ViewportRoute phone={MVacayScreen} desktop={VacayPage} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/atlas"
+            element={
+              <ProtectedRoute>
+                <ViewportRoute phone={MAtlasScreen} desktop={AtlasPage} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/journey"
+            element={
+              <ProtectedRoute addonId="journey">
+                <FamilyDomainBoundary kind="journey"><ViewportRoute phone={MJourneyScreen} desktop={JourneyPage} /></FamilyDomainBoundary>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/journey/:id"
+            element={
+              <ProtectedRoute addonId="journey">
+                <FamilyDomainBoundary kind="journey"><ViewportRoute phone={MJourneyDetailScreen} desktop={JourneyDetailPage} /></FamilyDomainBoundary>
+              </ProtectedRoute>
+            }
+          >
+            {/* Studio is nested so the journey stays mounted underneath it and
+                shows through the panel's margin — it is opened on top of the
+                journey, not navigated away to. */}
+            <Route path="studio" element={<JourneyStudioPage />} />
+          </Route>
+          <Route
+            path="/collections"
+            element={
+              <ProtectedRoute addonId="collections">
+                <FamilyDomainBoundary kind="collection"><ViewportRoute phone={MCollectionsScreen} desktop={CollectionsPage} /></FamilyDomainBoundary>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/collections/:id"
+            element={
+              <ProtectedRoute addonId="collections">
+                <FamilyDomainBoundary kind="collection"><ViewportRoute phone={MCollectionsScreen} desktop={CollectionsPage} /></FamilyDomainBoundary>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/notifications"
+            element={
+              <ProtectedRoute>
+                <ViewportRoute phone={MNotificationsScreen} desktop={InAppNotificationsPage} />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Suspense>
     </TranslationProvider>
   )
 }

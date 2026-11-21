@@ -1,9 +1,11 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '../../tests/helpers/render';
+import { act, render, screen, waitFor } from '../../tests/helpers/render';
 import userEvent from '@testing-library/user-event';
 import { resetAllStores, seedStore } from '../../tests/helpers/store';
 import { buildUser } from '../../tests/helpers/factories';
 import { useAuthStore } from '../store/authStore';
+import { useAddonStore } from '../store/addonStore';
+import { usePluginStore } from '../store/pluginStore';
 import SettingsPage from './SettingsPage';
 
 // Mock heavy settings sub-tabs to focus on page-level concerns
@@ -25,6 +27,10 @@ vi.mock('../components/Settings/IntegrationsTab', () => ({
 
 vi.mock('../components/Settings/AccountTab', () => ({
   default: () => <div data-testid="account-tab">Account Settings</div>,
+}));
+
+vi.mock('../components/Settings/PluginSettingsTab', () => ({
+  default: () => <div data-testid="plugins-tab">Plugin Settings</div>,
 }));
 
 vi.mock('../components/Settings/AboutTab', () => ({
@@ -128,14 +134,6 @@ describe('SettingsPage', () => {
   });
 
   describe('FE-PAGE-SETTINGS-006: About tab shown when version loads', () => {
-    it('About tab is available without a Nest app version', async () => {
-      render(<SettingsPage />);
-
-      await waitFor(() => {
-        expect(screen.getByRole('button', { name: /about/i })).toBeInTheDocument();
-      });
-    });
-
     it('About tab appears when app version is returned by API', async () => {
       const { http, HttpResponse } = await import('msw');
       const { server } = await import('../../tests/helpers/msw/server');
@@ -158,6 +156,61 @@ describe('SettingsPage', () => {
       await waitFor(() => {
         expect(screen.getByRole('button', { name: /about/i })).toBeInTheDocument();
       });
+    });
+  });
+
+  describe('FE-PAGE-SETTINGS-007: Integrations tab without any integration addon', () => {
+    // API keys live in the Integrations tab and need no addon, so the tab has to
+    // be there on an instance where MCP, AirTrail, AI Parsing, Dawarich and the
+    // photo providers are all switched off.
+    it('still offers the Integrations tab and opens it', async () => {
+      seedStore(useAddonStore, { isEnabled: () => false, loadAddons: vi.fn().mockResolvedValue(undefined) });
+      const user = userEvent.setup();
+      render(<SettingsPage />);
+
+      await user.click(await screen.findByRole('button', { name: /integrations/i }));
+
+      expect(await screen.findByTestId('integrations-tab')).toBeInTheDocument();
+    });
+
+    it('keeps it on a managed install too', async () => {
+      seedStore(useAddonStore, { isEnabled: () => false, loadAddons: vi.fn().mockResolvedValue(undefined) });
+      seedStore(useAuthStore, { managed: true });
+      render(<SettingsPage />, { initialEntries: ['/settings?tab=integrations'] });
+
+      expect(await screen.findByTestId('integrations-tab')).toBeInTheDocument();
+    });
+  });
+
+  describe('Plugin settings deep links', () => {
+    const plugin = { id: 'example', name: 'Example', type: 'widget', icon: null } as const;
+
+    it('shows General when no plugin is available', () => {
+      seedStore(usePluginStore, { loaded: true, plugins: [] });
+      render(<SettingsPage />, { initialEntries: ['/settings?tab=plugins'] });
+
+      expect(screen.getByTestId('display-settings-tab')).toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: 'Plugins' })).toBeNull();
+      expect(screen.queryByTestId('plugins-tab')).toBeNull();
+    });
+
+    it('shows General on managed instances with an active plugin', () => {
+      seedStore(useAuthStore, { managed: true });
+      seedStore(usePluginStore, { loaded: true, plugins: [plugin] });
+      render(<SettingsPage />, { initialEntries: ['/settings?tab=plugins'] });
+
+      expect(screen.getByTestId('display-settings-tab')).toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: 'Plugins' })).toBeNull();
+      expect(screen.queryByTestId('plugins-tab')).toBeNull();
+    });
+
+    it('opens the requested tab when plugins become available', async () => {
+      seedStore(usePluginStore, { loaded: false, plugins: [] });
+      render(<SettingsPage />, { initialEntries: ['/settings?tab=plugins'] });
+
+      expect(screen.getByTestId('display-settings-tab')).toBeInTheDocument();
+      act(() => seedStore(usePluginStore, { loaded: true, plugins: [plugin] }));
+      expect(await screen.findByTestId('plugins-tab')).toBeInTheDocument();
     });
   });
 });

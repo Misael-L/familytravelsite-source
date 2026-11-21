@@ -19,6 +19,8 @@ export interface FlightLeg {
   to: string | null
   airline?: string
   flight_number?: string
+  /** This segment's own booking reference, when it was booked separately (#1943). */
+  confirmation_number?: string
   dep_day_id?: number | null
   dep_time?: string | null // 'HH:mm'
   arr_day_id?: number | null
@@ -41,9 +43,38 @@ export function parseReservationMetadata(r: Pick<Reservation, 'metadata'>): Reco
   return m as Record<string, any>
 }
 
+export function isStoredTransportLeg(entry: unknown): boolean {
+  return entry !== null && typeof entry === 'object' && !Array.isArray(entry)
+}
+
+/** Only use a complete list so indexes still refer to the stored segments. */
+export function readStoredTransportLegs(value: unknown) {
+  return Array.isArray(value) && value.every(isStoredTransportLeg) ? value : []
+}
+
 /** Endpoints ordered by `sequence` (geometry + order source of truth). */
 export function orderedEndpoints(r: Pick<Reservation, 'endpoints'>): ReservationEndpoint[] {
   return (r.endpoints || []).slice().sort((a, b) => (a.sequence ?? 0) - (b.sequence ?? 0))
+}
+
+/** Transport waypoints in sequence order, using only route endpoints. */
+export function orderedTransportWaypoints(r: Pick<Reservation, 'endpoints'>): ReservationEndpoint[] {
+  return orderedEndpoints({
+    endpoints: (r.endpoints || []).filter(
+      (endpoint) => endpoint.role === 'from' || endpoint.role === 'to' || endpoint.role === 'stop'
+    ),
+  });
+}
+
+/**
+ * An airport endpoint's name without the code every writer appends to it:
+ * "Paris Charles de Gaulle (CDG)" → "Paris Charles de Gaulle". Done as a trim plus an
+ * anchored test instead of /\s*\([A-Z]{3}\)\s*$/, because the leading \s* backtracks over
+ * every space in a long name for a quadratic worst case.
+ */
+export function stripAirportCode(name: string): string {
+  const trimmed = name.trimEnd()
+  return /\([A-Z]{3}\)$/.test(trimmed) ? trimmed.slice(0, -5).trimEnd() : name
 }
 
 /**
@@ -53,12 +84,14 @@ export function orderedEndpoints(r: Pick<Reservation, 'endpoints'>): Reservation
  */
 export function getFlightLegs(r: Reservation): FlightLeg[] {
   const meta = parseReservationMetadata(r)
-  if (Array.isArray(meta.legs) && meta.legs.length > 0) {
-    return meta.legs.map((l: any): FlightLeg => ({
+  const legs = readStoredTransportLegs(meta.legs)
+  if (legs.length > 0) {
+    return legs.map((l): FlightLeg => ({
       from: l.from ?? null,
       to: l.to ?? null,
       airline: l.airline || undefined,
       flight_number: l.flight_number || undefined,
+      confirmation_number: l.confirmation_number || undefined,
       dep_day_id: l.dep_day_id ?? null,
       dep_time: l.dep_time ?? null,
       arr_day_id: l.arr_day_id ?? null,
@@ -77,6 +110,8 @@ export function getFlightLegs(r: Reservation): FlightLeg[] {
     to: toCode,
     airline: meta.airline || undefined,
     flight_number: meta.flight_number || undefined,
+    // The single segment IS the booking, so its reference is the booking's.
+    confirmation_number: r.confirmation_number || undefined,
     dep_day_id: r.day_id ?? null,
     dep_time: first?.local_time ?? null,
     arr_day_id: r.end_day_id ?? r.day_id ?? null,
@@ -95,6 +130,8 @@ export interface TrainLeg {
   train_number?: string
   platform?: string
   seat?: string
+  /** This segment's own booking reference, when it was booked separately (#1943). */
+  confirmation_number?: string
   dep_day_id?: number | null
   dep_time?: string | null
   arr_day_id?: number | null
@@ -108,13 +145,15 @@ export interface TrainLeg {
  */
 export function getTrainLegs(r: Reservation): TrainLeg[] {
   const meta = parseReservationMetadata(r)
-  if (Array.isArray(meta.legs) && meta.legs.length > 0) {
-    return meta.legs.map((l: any): TrainLeg => ({
+  const legs = readStoredTransportLegs(meta.legs)
+  if (legs.length > 0) {
+    return legs.map((l): TrainLeg => ({
       from: l.from ?? null,
       to: l.to ?? null,
       train_number: l.train_number || undefined,
       platform: l.platform || undefined,
       seat: l.seat || undefined,
+      confirmation_number: l.confirmation_number || undefined,
       dep_day_id: l.dep_day_id ?? null,
       dep_time: l.dep_time ?? null,
       arr_day_id: l.arr_day_id ?? null,
@@ -133,6 +172,8 @@ export function getTrainLegs(r: Reservation): TrainLeg[] {
     train_number: meta.train_number || undefined,
     platform: meta.platform || undefined,
     seat: meta.seat || undefined,
+    // The single segment IS the booking, so its reference is the booking's.
+    confirmation_number: r.confirmation_number || undefined,
     dep_day_id: r.day_id ?? null,
     dep_time: first?.local_time ?? null,
     arr_day_id: r.end_day_id ?? r.day_id ?? null,
@@ -145,8 +186,17 @@ export function legCount(r: Reservation): number {
   return getFlightLegs(r).length
 }
 
+/**
+ * Types whose route is a row of stations, each with its own arrival and
+ * departure: trains, and cruises with their ports of call (#1807). Both use
+ * the station form and the legs getTrainLegs reads.
+ */
+export function usesStationRoute(type: string | null | undefined): boolean {
+  return type === 'train' || type === 'cruise'
+}
+
 export function isMultiLegTrain(r: Reservation): boolean {
-  return r.type === 'train' && getTrainLegs(r).length > 1
+  return usesStationRoute(r.type) && getTrainLegs(r).length > 1
 }
 
 export function isMultiLegFlight(r: Reservation): boolean {

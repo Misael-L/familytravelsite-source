@@ -1,9 +1,14 @@
 import {
   collabNoteCreateRequestSchema,
+  collabNoteUpdateRequestSchema,
   collabPollCreateRequestSchema,
   collabPollVoteRequestSchema,
+  collabLinkCreateRequestSchema,
+  collabLinkUpdateRequestSchema,
   collabMessageCreateRequestSchema,
   collabReactionRequestSchema,
+  collabMessageSchema,
+  COLLAB_MESSAGE_ORIGIN_ASSISTANT,
 } from './collab.schema';
 
 import { describe, it, expect } from 'vitest';
@@ -13,6 +18,35 @@ describe('collabNoteCreateRequestSchema', () => {
     expect(collabNoteCreateRequestSchema.safeParse({ title: 'Idea' }).success).toBe(true);
     expect(collabNoteCreateRequestSchema.safeParse({ title: '' }).success).toBe(false);
     expect(collabNoteCreateRequestSchema.safeParse({}).success).toBe(false);
+  });
+
+  it('accepts explicit null for the optional fields (desktop null-clearing)', () => {
+    expect(
+      collabNoteCreateRequestSchema.safeParse({
+        title: 'Idea',
+        content: 'Body',
+        category: null,
+        color: '#6366f1',
+        website: null,
+      }).success,
+    ).toBe(true);
+  });
+});
+
+describe('collabNoteUpdateRequestSchema', () => {
+  it('accepts explicit null for the optional fields (desktop null-clearing)', () => {
+    expect(
+      collabNoteUpdateRequestSchema.safeParse({
+        title: 'Idea',
+        content: null,
+        category: null,
+        color: null,
+        website: null,
+        pinned: 1,
+      }).success,
+    ).toBe(true);
+    expect(collabNoteUpdateRequestSchema.safeParse({ pinned: true }).success).toBe(true);
+    expect(collabNoteUpdateRequestSchema.safeParse({ title: null }).success).toBe(false);
   });
 });
 
@@ -41,11 +75,29 @@ describe('collabPollVoteRequestSchema', () => {
   });
 });
 
+describe('collabLinkCreateRequestSchema', () => {
+  it('requires a title and an http(s) URL', () => {
+    expect(collabLinkCreateRequestSchema.safeParse({ title: 'Docs', url: 'https://example.com' }).success).toBe(true);
+    expect(collabLinkCreateRequestSchema.safeParse({ title: 'Docs', url: 'ftp://example.com' }).success).toBe(false);
+    expect(collabLinkCreateRequestSchema.safeParse({ title: '  ', url: 'https://example.com' }).success).toBe(false);
+    expect(collabLinkCreateRequestSchema.safeParse({ title: 'Docs', url: 'not-a-url' }).success).toBe(false);
+  });
+});
+
+describe('collabLinkUpdateRequestSchema', () => {
+  it('allows partial updates and still rejects non-http URLs', () => {
+    expect(collabLinkUpdateRequestSchema.safeParse({ pinned: true }).success).toBe(true);
+    expect(collabLinkUpdateRequestSchema.safeParse({ url: 'https://example.com/x' }).success).toBe(true);
+    expect(collabLinkUpdateRequestSchema.safeParse({ url: 'javascript:alert(1)' }).success).toBe(false);
+  });
+});
+
 describe('collabMessageCreateRequestSchema', () => {
-  it('requires text, caps it at 5000, allows a nullable reply_to', () => {
+  it('caps text at 5000, allows empty text for image-only messages, and accepts multipart reply_to strings', () => {
     expect(collabMessageCreateRequestSchema.safeParse({ text: 'hi', reply_to: null }).success).toBe(true);
     expect(collabMessageCreateRequestSchema.safeParse({ text: 'hi', reply_to: 4 }).success).toBe(true);
-    expect(collabMessageCreateRequestSchema.safeParse({ text: '' }).success).toBe(false);
+    expect(collabMessageCreateRequestSchema.safeParse({ text: '', reply_to: '4' }).success).toBe(true);
+    expect(collabMessageCreateRequestSchema.safeParse({}).success).toBe(true);
     expect(collabMessageCreateRequestSchema.safeParse({ text: 'x'.repeat(5001) }).success).toBe(false);
   });
 });
@@ -54,5 +106,36 @@ describe('collabReactionRequestSchema', () => {
   it('requires a non-empty emoji', () => {
     expect(collabReactionRequestSchema.safeParse({ emoji: '👍' }).success).toBe(true);
     expect(collabReactionRequestSchema.safeParse({ emoji: '' }).success).toBe(false);
+  });
+});
+
+describe('collabMessageSchema', () => {
+  const message = {
+    id: 1,
+    trip_id: 2,
+    user_id: 3,
+    text: 'See you at the station',
+    reply_to: null,
+    created_at: '2026-10-21 08:00:00',
+    deleted: null,
+    username: 'ana',
+    avatar: null,
+    reply_text: null,
+    reply_username: null,
+    user_avatar: null,
+    avatar_url: null,
+    reactions: [],
+    attachments: [],
+  };
+
+  it('reads a message without an origin, with none and with one shared from the assistant', () => {
+    expect(collabMessageSchema.safeParse(message).success).toBe(true);
+    expect(collabMessageSchema.safeParse({ ...message, origin: null }).success).toBe(true);
+    expect(collabMessageSchema.parse({ ...message, origin: COLLAB_MESSAGE_ORIGIN_ASSISTANT }).origin).toBe('assistant');
+  });
+
+  it('takes an origin it does not know yet, but only as text', () => {
+    expect(collabMessageSchema.safeParse({ ...message, origin: 'plugin' }).success).toBe(true);
+    expect(collabMessageSchema.safeParse({ ...message, origin: 1 }).success).toBe(false);
   });
 });

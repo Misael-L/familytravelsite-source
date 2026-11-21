@@ -1,22 +1,50 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpException, NotFoundException, Param, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
-import type { Request } from 'express';
-import { AdminService } from './admin.service';
-import { PluginRuntimeService } from '../plugins/plugin-runtime.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { AdminGuard } from '../auth/admin.guard';
-import { CurrentUser } from '../auth/current-user.decorator';
-import { writeAudit, getClientIp, logInfo } from '../../services/auditLog';
-import { send as sendNotification } from '../../services/notificationService';
+import { readEnv } from '../../app-config';
 import type { User } from '../../types';
+import { AddonsService } from '../addons/addons.service';
+import { logInfo } from '../audit/audit-log.logger';
+import { AuditService } from '../audit/audit.service';
+import { getClientIp } from '../audit/client-ip';
+import { AdminGuard } from '../auth-core/admin.guard';
+import { CurrentUser } from '../auth-core/current-user.decorator';
+import { JwtAuthGuard } from '../auth-core/jwt-auth.guard';
+import { RegistrationInvitesService } from '../auth/registration-invites.service';
+import { KitineraryExtractorService } from '../booking-import/kitinerary-extractor.service';
+import { ManagedForbidden } from '../common/managed';
+import { ResponseContract } from '../common/response-contract';
+import { NotificationsService } from '../notifications/notifications.service';
+import { OauthService } from '../oauth/oauth.service';
+import { PluginRuntimeService } from '../plugins/plugin-runtime.service';
+import { TokenService } from '../tokens/token.service';
+import {
+  AdminUserCreateDto,
+  AdminUserUpdateDto,
+  AdminPermissionsDto,
+  AdminInviteCreateDto,
+  AdminFeatureToggleDto,
+  AdminAddonUpdateDto,
+  AdminCollabFeaturesDto,
+  AdminTestNotificationDto,
+  AdminTransitProviderDto,
+} from './admin.dto';
+import { AdminService } from './admin.service';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpException,
+  NotFoundException,
+  Param,
+  Post,
+  Put,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
+import { adminFeatureToggleResponseSchema, adminSsoUnlinkResponseSchema } from '@trek/shared';
 
-/** Throw the legacy {error,status} envelope when a service call reports failure. */
-function ok<T>(result: T): Exclude<T, { error: string }> {
-  if (result && typeof result === 'object' && 'error' in (result as Record<string, unknown>)) {
-    const r = result as unknown as { error: string; status?: number };
-    throw new HttpException({ error: r.error }, r.status ?? 400);
-  }
-  return result as Exclude<T, { error: string }>;
-}
+import type { Request } from 'express';
 
 /**
  * /api/admin — admin-only control surface (users, stats, permissions, audit log,
@@ -27,92 +55,164 @@ function ok<T>(result: T): Exclude<T, { error: string }> {
  * admin-gated, the {error,status} envelopes, the audit-log writes, the MCP
  * session invalidation on addon/collab changes, create-201 vs the rest 200, and
  * the dev-only test-notification endpoint (404 outside development).
+ *
+ * Bodies validate via admin.dto.ts (@trek/shared schemas through the global
+ * ZodValidationPipe) — malformed bodies now get the pipe's standard
+ * { error: 'field: message; …' } envelope instead of the old inline typeof
+ * checks (the sanctioned ratchet behavior); valid bodies behave identically,
+ * and every bespoke service-level 400 is untouched.
  */
 @Controller('api/admin')
 @UseGuards(JwtAuthGuard, AdminGuard)
 export class AdminController {
   constructor(
     private readonly admin: AdminService,
+    private readonly addons: AddonsService,
     private readonly pluginRuntime: PluginRuntimeService,
+    private readonly audit: AuditService,
+    private readonly notifications: NotificationsService,
+    private readonly tokens: TokenService,
+    private readonly invites: RegistrationInvitesService,
+    private readonly oauth: OauthService,
+    private readonly kitinerary: KitineraryExtractorService,
   ) {}
 
   // ── Users ──
   @Get('users')
-  listUsers() { return { users: this.admin.listUsers() }; }
+  async listUsers() {
+    return { users: await this.admin.listUsers() };
+  }
 
   @Post('users')
   @HttpCode(201)
-  createUser(@CurrentUser() user: User, @Body() body: unknown, @Req() req: Request) {
-    const result = ok(this.admin.createUser(body));
-    writeAudit({ userId: user.id, action: 'admin.user_create', resource: String(result.insertedId), ip: getClientIp(req), details: result.auditDetails });
+  async createUser(@CurrentUser() user: User, @Body() body: AdminUserCreateDto, @Req() req: Request) {
+    const result = await this.admin.createUser(body as Parameters<AdminService['createUser']>[0]);
+    await this.audit.writeAudit({
+      userId: user.id,
+      action: 'admin.user_create',
+      resource: String(result.insertedId),
+      ip: getClientIp(req),
+      details: result.auditDetails,
+    });
     return { user: result.user };
   }
 
   @Put('users/:id')
-  updateUser(@CurrentUser() user: User, @Param('id') id: string, @Body() body: unknown, @Req() req: Request) {
-    const result = ok(this.admin.updateUser(id, body));
-    writeAudit({ userId: user.id, action: 'admin.user_update', resource: String(id), ip: getClientIp(req), details: { targetUser: result.previousEmail, fields: result.changed } });
+  async updateUser(
+    @CurrentUser() user: User,
+    @Param('id') id: string,
+    @Body() body: AdminUserUpdateDto,
+    @Req() req: Request,
+  ) {
+    const result = await this.admin.updateUser(id, body);
+    await this.audit.writeAudit({
+      userId: user.id,
+      action: 'admin.user_update',
+      resource: String(id),
+      ip: getClientIp(req),
+      details: { targetUser: result.previousEmail, fields: result.changed },
+    });
     logInfo(`Admin ${user.email} edited user ${result.previousEmail} (fields: ${result.changed.join(', ')})`);
     return { user: result.user };
   }
 
   @Delete('users/:id')
-  deleteUser(@CurrentUser() user: User, @Param('id') id: string, @Req() req: Request) {
-    const result = ok(this.admin.deleteUser(id, user.id));
-    writeAudit({ userId: user.id, action: 'admin.user_delete', resource: String(id), ip: getClientIp(req), details: { targetUser: result.email } });
+  async deleteUser(@CurrentUser() user: User, @Param('id') id: string, @Req() req: Request) {
+    const result = await this.admin.deleteUser(id, user.id);
+    await this.audit.writeAudit({
+      userId: user.id,
+      action: 'admin.user_delete',
+      resource: String(id),
+      ip: getClientIp(req),
+      details: { targetUser: result.email },
+    });
     logInfo(`Admin ${user.email} deleted user ${result.email}`);
     return { success: true };
   }
 
   @Delete('users/:id/passkeys')
-  resetUserPasskeys(@CurrentUser() user: User, @Param('id') id: string, @Req() req: Request) {
-    const result = ok(this.admin.resetUserPasskeys(id));
-    writeAudit({ userId: user.id, action: 'admin.user_passkeys_reset', resource: String(id), ip: getClientIp(req), details: { targetUser: result.email, deleted: result.deleted } });
+  async resetUserPasskeys(@CurrentUser() user: User, @Param('id') id: string, @Req() req: Request) {
+    const result = await this.admin.resetUserPasskeys(id);
+    await this.audit.writeAudit({
+      userId: user.id,
+      action: 'admin.user_passkeys_reset',
+      resource: String(id),
+      ip: getClientIp(req),
+      details: { targetUser: result.email, deleted: result.deleted },
+    });
     return { success: true, deleted: result.deleted };
+  }
+
+  @Delete('users/:id/mfa')
+  async resetUserMfa(@CurrentUser() user: User, @Param('id') id: string, @Req() req: Request) {
+    const result = await this.admin.resetUserMfa(id, user.id);
+    await this.audit.writeAudit({
+      userId: user.id,
+      action: 'admin.user_mfa_reset',
+      resource: String(id),
+      ip: getClientIp(req),
+      details: { targetUser: result.email },
+    });
+    return { success: true };
+  }
+
+  @Delete('users/:id/sso')
+  @ResponseContract(adminSsoUnlinkResponseSchema)
+  async unlinkUserSso(@CurrentUser() user: User, @Param('id') id: string, @Req() req: Request) {
+    const result = await this.admin.unlinkUserSso(id, user.id);
+    if (result.unlinked) {
+      await this.audit.writeAudit({
+        userId: user.id,
+        action: 'admin.user_sso_unlink',
+        resource: String(id),
+        ip: getClientIp(req),
+        details: { targetUser: result.email },
+      });
+      logInfo(`Admin ${user.email} removed the SSO link of user ${result.email}`);
+    }
+    return { success: true, unlinked: result.unlinked };
   }
 
   // ── Stats / permissions / audit ──
   @Get('stats')
-  stats() { return this.admin.getStats(); }
+  stats() {
+    return this.admin.getStats();
+  }
 
   @Get('permissions')
-  permissions() { return this.admin.getPermissions(); }
+  permissions() {
+    return this.admin.getPermissions();
+  }
 
   @Put('permissions')
-  savePermissions(@CurrentUser() user: User, @Body() body: { permissions?: unknown }, @Req() req: Request) {
-    if (!body.permissions || typeof body.permissions !== 'object') {
-      throw new HttpException({ error: 'permissions object required' }, 400);
-    }
-    const result = this.admin.savePermissions(body.permissions as unknown as Parameters<AdminService['savePermissions']>[0]);
-    writeAudit({ userId: user.id, action: 'admin.permissions_update', resource: 'permissions', ip: getClientIp(req), details: body.permissions as Record<string, unknown> });
-    return { success: true, permissions: result.permissions, ...(result.skipped.length ? { skipped: result.skipped } : {}) };
+  async savePermissions(@CurrentUser() user: User, @Body() body: AdminPermissionsDto, @Req() req: Request) {
+    const result = await this.admin.savePermissions(
+      body.permissions as unknown as Parameters<AdminService['savePermissions']>[0],
+    );
+    await this.audit.writeAudit({
+      userId: user.id,
+      action: 'admin.permissions_update',
+      resource: 'permissions',
+      ip: getClientIp(req),
+      details: body.permissions as Record<string, unknown>,
+    });
+    return {
+      success: true,
+      permissions: result.permissions,
+      ...(result.skipped.length ? { skipped: result.skipped } : {}),
+    };
   }
 
   @Get('audit-log')
-  auditLog(@Query() query: { limit?: string; offset?: string }) { return this.admin.getAuditLog(query); }
-
-  // ── OIDC ──
-  @Get('oidc')
-  getOidc() { return this.admin.getOidcSettings(); }
-
-  @Put('oidc')
-  updateOidc(@CurrentUser() user: User, @Body() body: { issuer?: string } & Record<string, unknown>, @Req() req: Request) {
-    const result = this.admin.updateOidcSettings(body);
-    if (result.error) {
-      throw new HttpException({ error: result.error }, result.status || 400);
-    }
-    writeAudit({ userId: user.id, action: 'admin.oidc_update', ip: getClientIp(req), details: { issuer_set: !!body.issuer } });
-    return { success: true };
+  auditLog(@Query() query: { limit?: string; offset?: string }) {
+    return this.admin.getAuditLog(query);
   }
 
   @Post('save-demo-baseline')
   @HttpCode(200)
-  saveDemoBaseline(@CurrentUser() user: User, @Req() req: Request) {
-    const result = this.admin.saveDemoBaseline();
-    if (result.error) {
-      throw new HttpException({ error: result.error }, result.status!);
-    }
-    writeAudit({ userId: user.id, action: 'admin.demo_baseline_save', ip: getClientIp(req) });
+  async saveDemoBaseline(@CurrentUser() user: User, @Req() req: Request) {
+    const result = await this.admin.saveDemoBaseline();
+    await this.audit.writeAudit({ userId: user.id, action: 'admin.demo_baseline_save', ip: getClientIp(req) });
     return { success: true, message: result.message };
   }
 
@@ -123,161 +223,326 @@ export class AdminController {
   }
 
   @Get('version-check')
-  async versionCheck() { return this.admin.checkVersion(); }
+  async versionCheck() {
+    return this.admin.checkVersion();
+  }
 
-  // ── Admin notification preferences ──
-  @Get('notification-preferences')
-  getNotificationPrefs(@CurrentUser() user: User) { return this.admin.getPreferencesMatrix(user.id, user.role); }
-
-  @Put('notification-preferences')
-  setNotificationPrefs(@CurrentUser() user: User, @Body() body: unknown) {
-    this.admin.setAdminPreferences(user.id, body);
-    return this.admin.getPreferencesMatrix(user.id, user.role);
+  /**
+   * Versions of the bundled tools an operator cannot see from the UI. Today the
+   * only one is the KItinerary extractor, whose age decides which booking
+   * providers parse at all — and a stale one is indistinguishable from an
+   * unsupported provider without this (#2261).
+   */
+  @Get('system-info')
+  systemInfo() {
+    return { kitinerary: this.kitinerary.describe() };
   }
 
   // ── Invites ──
   @Get('invites')
-  listInvites() { return { invites: this.admin.listInvites() }; }
+  async listInvites() {
+    return { invites: await this.invites.listInvites() };
+  }
 
   // Trips an admin can optionally bind a registration invite to (#1402).
   @Get('invites/trips')
-  listInviteTrips() { return { trips: this.admin.listTripsForInvite() }; }
+  async listInviteTrips() {
+    return { trips: await this.invites.listTripsForInvite() };
+  }
 
   @Post('invites')
   @HttpCode(201)
-  createInvite(@CurrentUser() user: User, @Body() body: unknown, @Req() req: Request) {
-    const result = this.admin.createInvite(user.id, body);
-    writeAudit({ userId: user.id, action: 'admin.invite_create', resource: String(result.inviteId), ip: getClientIp(req), details: { max_uses: result.uses, expires_in_days: result.expiresInDays, trip_id: result.tripId } });
+  async createInvite(@CurrentUser() user: User, @Body() body: AdminInviteCreateDto, @Req() req: Request) {
+    const result = await this.invites.createInvite(user.id, body);
+    await this.audit.writeAudit({
+      userId: user.id,
+      action: 'admin.invite_create',
+      resource: String(result.inviteId),
+      ip: getClientIp(req),
+      details: { max_uses: result.uses, expires_in_days: result.expiresInDays, trip_id: result.tripId },
+    });
     return { invite: result.invite };
   }
 
   @Delete('invites/:id')
-  deleteInvite(@CurrentUser() user: User, @Param('id') id: string, @Req() req: Request) {
-    ok(this.admin.deleteInvite(id));
-    writeAudit({ userId: user.id, action: 'admin.invite_delete', resource: String(id), ip: getClientIp(req) });
+  async deleteInvite(@CurrentUser() user: User, @Param('id') id: string, @Req() req: Request) {
+    await this.invites.deleteInvite(id);
+    await this.audit.writeAudit({
+      userId: user.id,
+      action: 'admin.invite_delete',
+      resource: String(id),
+      ip: getClientIp(req),
+    });
     return { success: true };
   }
 
   // ── Feature toggles ──
+  // Straight to AddonsService, which owns every one of these flags. They used to go
+  // through eleven-plus pass-through methods on AdminService, and the three places
+  // flags were raw app_settings SQL there even though the other flags lived in the
+  // addons domain. The routes stay HERE rather than moving next to the service: an
+  // admin-gated controller in AddonsModule would make that module import AuthModule,
+  // and PluginGuardsModule imports AddonsModule precisely because it is a leaf — the
+  // edge would close a cycle.
+
   @Get('bag-tracking')
-  getBagTracking() { return this.admin.getBagTracking(); }
+  getBagTracking() {
+    return this.addons.getBagTracking();
+  }
 
   @Put('bag-tracking')
-  updateBagTracking(@CurrentUser() user: User, @Body() body: { enabled?: unknown }, @Req() req: Request) {
-    const result = this.admin.updateBagTracking(body.enabled);
-    writeAudit({ userId: user.id, action: 'admin.bag_tracking', ip: getClientIp(req), details: { enabled: result.enabled } });
+  async updateBagTracking(@CurrentUser() user: User, @Body() body: AdminFeatureToggleDto, @Req() req: Request) {
+    const result = await this.addons.updateBagTracking(body.enabled);
+    await this.audit.writeAudit({
+      userId: user.id,
+      action: 'admin.bag_tracking',
+      ip: getClientIp(req),
+      details: { enabled: result.enabled },
+    });
+    return result;
+  }
+
+  @Get('tours-wanderer')
+  @ResponseContract(adminFeatureToggleResponseSchema)
+  getToursWanderer() {
+    return this.addons.getToursWanderer();
+  }
+
+  @Put('tours-wanderer')
+  @ResponseContract(adminFeatureToggleResponseSchema)
+  @ManagedForbidden('wanderer sends searches to a server the user picks, which the operator has not agreed to')
+  async updateToursWanderer(@CurrentUser() user: User, @Body() body: AdminFeatureToggleDto, @Req() req: Request) {
+    const result = await this.addons.updateToursWanderer(body.enabled);
+    await this.audit.writeAudit({
+      userId: user.id,
+      action: 'admin.tours_wanderer',
+      ip: getClientIp(req),
+      details: { enabled: result.enabled },
+    });
+    return result;
+  }
+
+  @Get('tours-hiking-map')
+  @ResponseContract(adminFeatureToggleResponseSchema)
+  getToursHikingMap() {
+    return this.addons.getToursHikingMap();
+  }
+
+  @Put('tours-hiking-map')
+  @ResponseContract(adminFeatureToggleResponseSchema)
+  async updateToursHikingMap(@CurrentUser() user: User, @Body() body: AdminFeatureToggleDto, @Req() req: Request) {
+    const result = await this.addons.updateToursHikingMap(body.enabled);
+    await this.audit.writeAudit({
+      userId: user.id,
+      action: 'admin.tours_hiking_map',
+      ip: getClientIp(req),
+      details: { enabled: result.enabled },
+    });
+    return result;
+  }
+
+  @Get('tours-cycle-map')
+  @ResponseContract(adminFeatureToggleResponseSchema)
+  getToursCycleMap() {
+    return this.addons.getToursCycleMap();
+  }
+
+  @Put('tours-cycle-map')
+  @ResponseContract(adminFeatureToggleResponseSchema)
+  async updateToursCycleMap(@CurrentUser() user: User, @Body() body: AdminFeatureToggleDto, @Req() req: Request) {
+    const result = await this.addons.updateToursCycleMap(body.enabled);
+    await this.audit.writeAudit({
+      userId: user.id,
+      action: 'admin.tours_cycle_map',
+      ip: getClientIp(req),
+      details: { enabled: result.enabled },
+    });
+    return result;
+  }
+
+  @Get('tours-ski-routing')
+  @ResponseContract(adminFeatureToggleResponseSchema)
+  getToursSkiRouting() {
+    return this.addons.getToursSkiRouting();
+  }
+
+  @Put('tours-ski-routing')
+  @ResponseContract(adminFeatureToggleResponseSchema)
+  async updateToursSkiRouting(@CurrentUser() user: User, @Body() body: AdminFeatureToggleDto, @Req() req: Request) {
+    const result = await this.addons.updateToursSkiRouting(body.enabled);
+    await this.audit.writeAudit({
+      userId: user.id,
+      action: 'admin.tours_ski_routing',
+      ip: getClientIp(req),
+      details: { enabled: result.enabled },
+    });
     return result;
   }
 
   @Get('places-photos')
-  getPlacesPhotos() { return this.admin.getPlacesPhotos(); }
+  getPlacesPhotos() {
+    return this.addons.getPlacesPhotos();
+  }
 
   @Put('places-photos')
-  updatePlacesPhotos(@CurrentUser() user: User, @Body() body: { enabled?: unknown }, @Req() req: Request) {
-    if (typeof body.enabled !== 'boolean') throw new HttpException({ error: 'enabled must be a boolean' }, 400);
-    const result = this.admin.updatePlacesPhotos(body.enabled);
-    writeAudit({ userId: user.id, action: 'admin.places_photos', ip: getClientIp(req), details: { enabled: result.enabled } });
+  async updatePlacesPhotos(@CurrentUser() user: User, @Body() body: AdminFeatureToggleDto, @Req() req: Request) {
+    const result = await this.addons.updatePlacesPhotos(body.enabled);
+    await this.audit.writeAudit({
+      userId: user.id,
+      action: 'admin.places_photos',
+      ip: getClientIp(req),
+      details: { enabled: result.enabled },
+    });
     return result;
   }
 
   @Get('places-autocomplete')
-  getPlacesAutocomplete() { return this.admin.getPlacesAutocomplete(); }
+  getPlacesAutocomplete() {
+    return this.addons.getPlacesAutocomplete();
+  }
 
   @Put('places-autocomplete')
-  updatePlacesAutocomplete(@CurrentUser() user: User, @Body() body: { enabled?: unknown }, @Req() req: Request) {
-    if (typeof body.enabled !== 'boolean') throw new HttpException({ error: 'enabled must be a boolean' }, 400);
-    const result = this.admin.updatePlacesAutocomplete(body.enabled);
-    writeAudit({ userId: user.id, action: 'admin.places_autocomplete', ip: getClientIp(req), details: { enabled: result.enabled } });
+  async updatePlacesAutocomplete(@CurrentUser() user: User, @Body() body: AdminFeatureToggleDto, @Req() req: Request) {
+    const result = await this.addons.updatePlacesAutocomplete(body.enabled);
+    await this.audit.writeAudit({
+      userId: user.id,
+      action: 'admin.places_autocomplete',
+      ip: getClientIp(req),
+      details: { enabled: result.enabled },
+    });
     return result;
   }
 
   @Get('places-details')
-  getPlacesDetails() { return this.admin.getPlacesDetails(); }
+  getPlacesDetails() {
+    return this.addons.getPlacesDetails();
+  }
 
   @Put('places-details')
-  updatePlacesDetails(@CurrentUser() user: User, @Body() body: { enabled?: unknown }, @Req() req: Request) {
-    if (typeof body.enabled !== 'boolean') throw new HttpException({ error: 'enabled must be a boolean' }, 400);
-    const result = this.admin.updatePlacesDetails(body.enabled);
-    writeAudit({ userId: user.id, action: 'admin.places_details', ip: getClientIp(req), details: { enabled: result.enabled } });
+  async updatePlacesDetails(@CurrentUser() user: User, @Body() body: AdminFeatureToggleDto, @Req() req: Request) {
+    const result = await this.addons.updatePlacesDetails(body.enabled);
+    await this.audit.writeAudit({
+      userId: user.id,
+      action: 'admin.places_details',
+      ip: getClientIp(req),
+      details: { enabled: result.enabled },
+    });
+    return result;
+  }
+
+  @Get('place-shadow')
+  getPlaceShadow() {
+    return this.addons.getPlaceShadow();
+  }
+
+  @Put('place-shadow')
+  @ManagedForbidden('place search belongs to the operator on a managed install')
+  async updatePlaceShadow(@CurrentUser() user: User, @Body() body: AdminFeatureToggleDto, @Req() req: Request) {
+    const result = await this.addons.updatePlaceShadow(body.enabled);
+    await this.audit.writeAudit({
+      userId: user.id,
+      action: 'admin.place_shadow',
+      ip: getClientIp(req),
+      details: { enabled: result.enabled },
+    });
+    return result;
+  }
+
+  @Get('places-google-only')
+  getPlacesGoogleOnly() {
+    return this.addons.getPlacesGoogleOnly();
+  }
+
+  @Put('places-google-only')
+  async updatePlacesGoogleOnly(@CurrentUser() user: User, @Body() body: AdminFeatureToggleDto, @Req() req: Request) {
+    const result = await this.addons.updatePlacesGoogleOnly(body.enabled);
+    await this.audit.writeAudit({
+      userId: user.id,
+      action: 'admin.places_google_only',
+      ip: getClientIp(req),
+      details: { enabled: result.enabled },
+    });
+    return result;
+  }
+
+  @Get('places-enrich')
+  getPlacesEnrich() {
+    return this.addons.getPlacesEnrich();
+  }
+
+  @Put('places-enrich')
+  async updatePlacesEnrich(@CurrentUser() user: User, @Body() body: AdminFeatureToggleDto, @Req() req: Request) {
+    const result = await this.addons.updatePlacesEnrich(body.enabled);
+    await this.audit.writeAudit({
+      userId: user.id,
+      action: 'admin.places_enrich',
+      ip: getClientIp(req),
+      details: { enabled: result.enabled },
+    });
     return result;
   }
 
   @Get('collab-features')
-  getCollabFeatures() { return this.admin.getCollabFeatures(); }
+  getCollabFeatures() {
+    return this.addons.getCollabFeatures();
+  }
 
   @Put('collab-features')
-  updateCollabFeatures(@CurrentUser() user: User, @Body() body: unknown, @Req() req: Request) {
-    const { features, changed } = this.admin.updateCollabFeatures(body);
+  async updateCollabFeatures(@CurrentUser() user: User, @Body() body: AdminCollabFeaturesDto, @Req() req: Request) {
+    const { features, changed } = await this.addons.updateCollabFeatures(body);
     // Collab flags gate MCP registration, but a no-op save must not tear down
     // every live MCP session (#1414).
     if (changed) this.admin.invalidateMcpSessions();
-    writeAudit({ userId: user.id, action: 'admin.collab_features', ip: getClientIp(req), details: features });
+    await this.audit.writeAudit({
+      userId: user.id,
+      action: 'admin.collab_features',
+      ip: getClientIp(req),
+      details: features,
+    });
     return features;
   }
 
-  // ── Packing templates ──
-  @Get('packing-templates')
-  listPackingTemplates() { return { templates: this.admin.listPackingTemplates() }; }
-
-  @Get('packing-templates/:id')
-  getPackingTemplate(@Param('id') id: string) { return ok(this.admin.getPackingTemplate(id)); }
-
-  @Post('packing-templates')
-  @HttpCode(201)
-  createPackingTemplate(@CurrentUser() user: User, @Body() body: { name?: unknown }) {
-    return ok(this.admin.createPackingTemplate(body.name, user.id));
+  // Which backend answers /api/transit (#1699). Transitous unless an admin
+  // says otherwise, and still Transitous if Google is picked without a key.
+  @Get('transit-provider')
+  getTransitProvider(@CurrentUser() user: User) {
+    return this.addons.getTransitProvider(user.id);
   }
 
-  @Put('packing-templates/:id')
-  updatePackingTemplate(@Param('id') id: string, @Body() body: unknown) { return ok(this.admin.updatePackingTemplate(id, body)); }
-
-  @Delete('packing-templates/:id')
-  deletePackingTemplate(@CurrentUser() user: User, @Param('id') id: string, @Req() req: Request) {
-    const result = ok(this.admin.deletePackingTemplate(id));
-    writeAudit({ userId: user.id, action: 'admin.packing_template_delete', resource: String(id), ip: getClientIp(req), details: { name: result.name } });
-    return { success: true };
-  }
-
-  @Post('packing-templates/:id/categories')
-  @HttpCode(201)
-  createTemplateCategory(@Param('id') id: string, @Body() body: { name?: unknown }) {
-    return ok(this.admin.createTemplateCategory(id, body.name));
-  }
-
-  @Put('packing-templates/:templateId/categories/:catId')
-  updateTemplateCategory(@Param('templateId') templateId: string, @Param('catId') catId: string, @Body() body: unknown) {
-    return ok(this.admin.updateTemplateCategory(templateId, catId, body));
-  }
-
-  @Delete('packing-templates/:templateId/categories/:catId')
-  deleteTemplateCategory(@Param('templateId') templateId: string, @Param('catId') catId: string) {
-    ok(this.admin.deleteTemplateCategory(templateId, catId));
-    return { success: true };
-  }
-
-  @Post('packing-templates/:templateId/categories/:catId/items')
-  @HttpCode(201)
-  createTemplateItem(@Param('templateId') templateId: string, @Param('catId') catId: string, @Body() body: { name?: unknown }) {
-    return ok(this.admin.createTemplateItem(templateId, catId, body.name));
-  }
-
-  @Put('packing-templates/:templateId/items/:itemId')
-  updateTemplateItem(@Param('itemId') itemId: string, @Body() body: unknown) { return ok(this.admin.updateTemplateItem(itemId, body)); }
-
-  @Delete('packing-templates/:templateId/items/:itemId')
-  deleteTemplateItem(@Param('itemId') itemId: string) {
-    ok(this.admin.deleteTemplateItem(itemId));
-    return { success: true };
+  @Put('transit-provider')
+  @ManagedForbidden('routing belongs to the operator on a managed install')
+  async updateTransitProvider(@CurrentUser() user: User, @Body() body: AdminTransitProviderDto, @Req() req: Request) {
+    const result = await this.addons.updateTransitProvider(body.provider, user.id);
+    await this.audit.writeAudit({
+      userId: user.id,
+      action: 'admin.transit_provider',
+      ip: getClientIp(req),
+      details: { provider: result.provider },
+    });
+    return result;
   }
 
   // ── Addons ──
   @Get('addons')
-  listAddons() { return { addons: this.admin.listAddons() }; }
+  async listAddons() {
+    return { addons: await this.admin.listAddons() };
+  }
 
   @Put('addons/:id')
-  async updateAddon(@CurrentUser() user: User, @Param('id') id: string, @Body() body: unknown, @Req() req: Request) {
-    const result = ok(this.admin.updateAddon(id, body));
-    writeAudit({ userId: user.id, action: 'admin.addon_update', resource: String(id), ip: getClientIp(req), details: result.auditDetails });
+  async updateAddon(
+    @CurrentUser() user: User,
+    @Param('id') id: string,
+    @Body() body: AdminAddonUpdateDto,
+    @Req() req: Request,
+  ) {
+    const result = await this.admin.updateAddon(id, body);
+    await this.audit.writeAudit({
+      userId: user.id,
+      action: 'admin.addon_update',
+      resource: String(id),
+      ip: getClientIp(req),
+      details: result.auditDetails,
+    });
     // Sessions only need re-creating when the registered MCP surface can
     // actually change — an enabled-flip of an MCP-relevant addon. Config-only
     // saves and photo-provider toggles used to kill every session (#1414).
@@ -286,77 +551,78 @@ export class AdminController {
     // plugin that transitively depends on them) so a plugin never runs against a
     // disabled addon (#plugins dependencies).
     if (result.addon && result.addon.enabled === false && (body as { enabled?: boolean })?.enabled === false) {
-      await this.pluginRuntime.deactivateForDisabledAddon(id);
+      const stopped = await this.pluginRuntime.deactivateForDisabledAddon(id);
+      // A stopped plugin takes its MCP tools off the surface, and the addon that
+      // cascaded here is not necessarily an MCP-relevant one, so mcpAffected
+      // above does not cover this. Still conditional on something actually
+      // stopping, which keeps the #1414 rule that a no-op save kills nothing.
+      if (stopped.length && !result.mcpAffected) this.admin.invalidateMcpSessions();
     }
     return { addon: result.addon };
   }
 
   // ── MCP tokens / OAuth sessions ──
   @Get('mcp-tokens')
-  listMcpTokens() { return { tokens: this.admin.listMcpTokens() }; }
+  async listMcpTokens() {
+    return { tokens: await this.tokens.listAllMcpTokens() };
+  }
 
   @Delete('mcp-tokens/:id')
-  deleteMcpToken(@Param('id') id: string) {
-    ok(this.admin.deleteMcpToken(id));
+  async deleteMcpToken(@CurrentUser() user: User, @Param('id') id: string, @Req() req: Request) {
+    await this.tokens.adminDeleteMcpToken(id);
+    await this.audit.writeAudit({
+      userId: user.id,
+      action: 'admin.mcp_token_delete',
+      resource: String(id),
+      ip: getClientIp(req),
+    });
     return { success: true };
   }
 
   @Get('oauth-sessions')
-  listOAuthSessions() { return { sessions: this.admin.listOAuthSessions() }; }
+  async listOAuthSessions() {
+    return { sessions: await this.oauth.listAllOAuthSessions() };
+  }
 
   @Delete('oauth-sessions/:id')
-  revokeOAuthSession(@CurrentUser() user: User, @Param('id') id: string, @Req() req: Request) {
-    ok(this.admin.revokeOAuthSession(id));
-    writeAudit({ userId: user.id, action: 'admin.oauth_session.revoke', resource: String(id), ip: getClientIp(req) });
+  async revokeOAuthSession(@CurrentUser() user: User, @Param('id') id: string, @Req() req: Request) {
+    await this.oauth.adminRevokeOAuthSession(id);
+    await this.audit.writeAudit({
+      userId: user.id,
+      action: 'admin.oauth_session_revoke',
+      resource: String(id),
+      ip: getClientIp(req),
+    });
     return { success: true };
   }
 
   // ── JWT rotation ──
+  @ManagedForbidden('rotating the secret signs every user out and fixes nothing the admin can reach')
   @Post('rotate-jwt-secret')
   @HttpCode(200)
-  rotateJwtSecret(@CurrentUser() user: User, @Req() req: Request) {
-    const result = this.admin.rotateJwtSecret();
-    if (result.error) {
-      throw new HttpException({ error: result.error }, result.status!);
-    }
-    writeAudit({ userId: user.id, action: 'admin.rotate_jwt_secret', ip: getClientIp(req) });
+  async rotateJwtSecret(@CurrentUser() user: User, @Req() req: Request) {
+    this.admin.rotateJwtSecret();
+    await this.audit.writeAudit({ userId: user.id, action: 'admin.rotate_jwt_secret', ip: getClientIp(req) });
     return { success: true };
   }
 
   // ── Default user settings ──
-  @Get('default-user-settings')
-  getDefaultUserSettings() { return this.admin.getAdminUserDefaults(); }
-
-  @Put('default-user-settings')
-  setDefaultUserSettings(@CurrentUser() user: User, @Body() body: unknown, @Req() req: Request) {
-    if (!body || typeof body !== 'object' || Array.isArray(body)) {
-      throw new HttpException({ error: 'Object body required' }, 400);
-    }
-    try {
-      this.admin.setAdminUserDefaults(body as unknown as Record<string, unknown>);
-      writeAudit({ userId: user.id, action: 'admin.default_user_settings_update', ip: getClientIp(req), details: body as Record<string, unknown> });
-      return this.admin.getAdminUserDefaults();
-    } catch (err) {
-      throw new HttpException({ error: err instanceof Error ? err.message : String(err) }, 400);
-    }
-  }
-
   // ── Dev-only: test notification (404 outside development, mirroring the conditional mount) ──
   @Post('dev/test-notification')
   @HttpCode(200)
-  async devTestNotification(@CurrentUser() user: User, @Body() body: { event?: string; scope?: string; targetId?: number; params?: Record<string, unknown>; inApp?: boolean }) {
-    if (process.env.NODE_ENV?.toLowerCase() !== 'development') {
+  async devTestNotification(@CurrentUser() user: User, @Body() body: AdminTestNotificationDto) {
+    if (!readEnv().app.isDevelopment) {
       throw new NotFoundException();
     }
     try {
-      await sendNotification({
+      await this.notifications.send({
         event: body.event ?? 'trip_reminder',
         actorId: user.id,
         scope: body.scope ?? 'user',
         targetId: body.targetId ?? user.id,
-        params: { actor: user.email, ...(body.params ?? {}) },
+        params: { actor: user.username, ...(body.params ?? {}) },
         inApp: body.inApp,
-      } as unknown as Parameters<typeof sendNotification>[0]);
+      } as unknown as Parameters<NotificationsService['send']>[0]);
       return { success: true };
     } catch (err) {
       throw new HttpException({ error: err instanceof Error ? err.message : String(err) }, 400);

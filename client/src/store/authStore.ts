@@ -1,35 +1,48 @@
+import { sourceDatabaseCurrent } from '../db/sourceDatabase'
+import { useBackgroundTasksStore } from './backgroundTasksStore'
+import { useTourVisitStore } from './tourVisitStore'
+import { coordinateLogout, waitForLogout, logoutInProgress } from '../sync/logoutCoordinator'
+import { currentOfflineDatabase, invalidateOfflineSession, offlineSessionEpoch } from '../db/offlineDb'
+import { useTripStore } from './tripStore'
 import { create } from 'zustand'
-import { persist, createJSONStorage } from 'zustand/middleware'
-import { AUTH_BOOTSTRAP_TIMEOUT_MS, isStartupTimeoutError, withTimeout } from '../startup/timeout'
-import { readLocal, removeLocal, safePersistStorage, writeLocal } from '../startup/safeStorage'
-import type { User as SbUser } from '@supabase/supabase-js'
+import { createJSONStorage, persist } from 'zustand/middleware'
+import { NATIVE_AUTH_SNAPSHOT_KEY, nativeAuthStorage } from '../db/nativeAuthSnapshot'
 import { authApi } from '../api/client'
 import { connect, disconnect } from '../api/websocket'
 import type { User } from '../types'
 import { getApiErrorMessage } from '../types'
 import { tripSyncManager } from '../sync/tripSyncManager'
-import { reopenForUser, deleteCurrentUserDb } from '../db/offlineDb'
-import { setAuthed } from '../sync/authGate'
-import { unregisterSyncTriggers } from '../sync/syncTriggers'
+import { reopenForUser, reopenAnonymous, deleteCurrentUserDb } from '../db/offlineDb'
+import { isAuthed, setAuthed } from '../sync/authGate'
+import { isEffectivelyOffline, setForcedOffline } from '../sync/networkMode'
+import { mutationQueue } from '../sync/mutationQueue'
+import { registerSyncTriggers, unregisterSyncTriggers } from '../sync/syncTriggers'
 import { useSystemNoticeStore } from './systemNoticeStore.js'
 import { clearAppearanceSnapshot } from '../theme/applyAppearance'
-import {
-  getSupabaseSession,
-  isSupabaseDataPlane,
-  signInWithPassword,
-  signOutSupabase,
-  type FamilyAuthGate,
-} from '../data/supabase/auth'
-import {
-  isFamilyMember,
-  loadMembershipSnapshot,
-  type MembershipSnapshot,
-} from '../data/supabase/membership'
-import { resolveCurrentPersonAvatarUrl } from '../data/supabase/personAvatars'
+import { clearAllPluginSessions } from './pluginStore'
+import { forgetStartDestination } from '../utils/startDestination'
+import { forgetServerLanguage, useSettingsStore } from './settingsStore'
+import { useAddonStore } from './addonStore'
+import { forgetResumeRoute } from '../utils/resumeRoute'
+import { markSignedOut, clearSignedOut, wasSignedOut } from '../utils/signedOut'
+import { forgetPushDeviceOnLogout, resyncPushSubscription } from '../push/webPush'
+import { browserTimeZone } from '../utils/localDate'
+
+function isPendingFamilyValidation(error: unknown): boolean {
+  const code = (error as { response?: { data?: { code?: unknown } } } | null)?.response?.data?.code
+  return httpStatusOf(error) === 503 && code === 'family_validation_pending'
+}
+
+/** How long a logout waits for the queued changes to go out. */
+const LOGOUT_FLUSH_MS = 5000
 
 interface AuthResponse {
   user: User
-  token: string
+  /**
+   * @deprecated Still in the body for API clients that read it; the session is
+   * the httpOnly cookie the same response sets. Nothing here reads it.
+   */
+  token?: string
 }
 
 export type LoginResult = AuthResponse | { mfa_required: true; mfa_token: string }
@@ -42,316 +55,237 @@ interface AuthState {
   user: User | null
   isAuthenticated: boolean
   isLoading: boolean
+  /** The auth check (loadUser) failed for a non-401 reason while we were online —
+   *  the server was unreachable or erroring. Surfaced by the UI so a backend/IdP
+   *  outage doesn't render as a blank, error-free page that looks like lost data.
+   *  Transient, never persisted. #1283 */
   authCheckFailed: boolean
+  /** The user pressed "log out" — as opposed to a session that simply ended.
+   *  Read by ProtectedRoute: a deliberate sign-out should not leave a
+   *  ?redirect= pointing back at the page they just left. Transient. */
+  loggingOut: boolean
   error: string | null
+  /** The operator of this install owns its configuration, not the admin. */
+  managed: boolean
   demoMode: boolean
   devMode: boolean
   isPrerelease: boolean
   appVersion: string
   hasMapsKey: boolean
+  /** The same question for Amap. Kept apart from hasMapsKey rather than folded
+   *  into one "has a search key": which of the two is missing decides what the
+   *  admin has to go and do. */
+  hasAmapKey: boolean
+  /** The admin's places provider choice, as app-config normalises it: 'auto',
+   *  'google', 'amap' or 'openstreetmap'. Read with hasMapsKey to tell whether
+   *  a search can reach Google at all (utils/placeSource googleHoldsSlot). */
+  placesProvider: string
   serverTimezone: string
+  /** Server policy: all users must enable MFA */
   appRequireMfa: boolean
   tripRemindersEnabled: boolean
   placesPhotosEnabled: boolean
   placesAutocompleteEnabled: boolean
   placesDetailsEnabled: boolean
-
-  /** Family Travel Supabase session (W1+). Null on Nest plane. */
-  authUserId: string | null
-  personId: string | null
-  familyId: string | null
-  membershipRole: string | null
-  isSuperAdmin: boolean
-  membershipLoaded: boolean
-  membershipStatus: string | null
-  authGate: FamilyAuthGate | null
+  placesEnrichEnabled: boolean
+  /** FILE_UPLOAD_LIMIT_MB from the server (#1364); 50 until the config arrives. */
+  maxUploadMb: number
+  /** Server records which search result was picked (admin switch, default off). */
+  placeShadowEnabled: boolean
 
   login: (email: string, password: string, rememberMe?: boolean) => Promise<LoginResult>
   completeMfaLogin: (mfaToken: string, code: string, rememberMe?: boolean) => Promise<AuthResponse>
   register: (username: string, email: string, password: string, invite_token?: string) => Promise<AuthResponse>
   logout: () => Promise<void>
+  /** Pass `{ silent: true }` to refresh the user without toggling global isLoading (avoids unmounting protected routes). */
   loadUser: (opts?: { silent?: boolean }) => Promise<void>
   updateMapsKey: (key: string | null) => Promise<void>
   updateApiKeys: (keys: Record<string, string | null>) => Promise<void>
   updateProfile: (profileData: Partial<User>) => Promise<void>
   uploadAvatar: (file: File) => Promise<AvatarResponse>
   deleteAvatar: () => Promise<void>
+  setManaged: (val: boolean) => void
   setDemoMode: (val: boolean) => void
   setDevMode: (val: boolean) => void
   setIsPrerelease: (val: boolean) => void
   setAppVersion: (val: string) => void
   setHasMapsKey: (val: boolean) => void
+  setHasAmapKey: (val: boolean) => void
+  setPlacesProvider: (val: string) => void
   setServerTimezone: (tz: string) => void
   setAppRequireMfa: (val: boolean) => void
   setTripRemindersEnabled: (val: boolean) => void
   setPlacesPhotosEnabled: (val: boolean) => void
   setPlacesAutocompleteEnabled: (val: boolean) => void
   setPlacesDetailsEnabled: (val: boolean) => void
+  setPlacesEnrichEnabled: (val: boolean) => void
+  setMaxUploadMb: (val: number) => void
+  setPlaceShadowEnabled: (val: boolean) => void
   demoLogin: () => Promise<AuthResponse>
 }
 
-let authSequence = 0
+function httpStatusOf(error: unknown): number | undefined {
+  return error && typeof error === 'object' && 'response' in error
+    ? (error as { response?: { status?: number } }).response?.status
+    : undefined
+}
 
+// Sequence counter to prevent stale loadUser responses from overwriting fresh auth state
+let authSequence = 0
+let authValidationSequence = 0
+let validatedSession: {
+  sequence: number
+  userId: number
+  db: ReturnType<typeof currentOfflineDatabase>
+  epoch: number
+} | null = null
+
+function isCurrentValidatedSession(userId: number, sequence: number): boolean {
+  const previous = validatedSession, state = useAuthStore.getState()
+  return Boolean(previous && previous.sequence === sequence && previous.userId === userId
+    && previous.db === currentOfflineDatabase() && previous.epoch === offlineSessionEpoch()
+    && previous.db.isOpen() && state.isAuthenticated && state.user?.id === userId
+    && isAuthed() && sourceDatabaseCurrent(currentOfflineDatabase().name) && !logoutInProgress())
+}
+
+
+/**
+ * Mark the session authenticated and point the offline DB at this user's scoped
+ * database before any background sync runs, so cached data never crosses users.
+ */
 async function onAuthSuccess(userId: number): Promise<void> {
-  setAuthed(true)
+  const seq = authSequence
+  // Successful validation of the same live owner must not cancel in-flight reads.
+  // A new login, database or ownership epoch still requires the full pause barrier.
+  if (isCurrentValidatedSession(userId, seq)) return
+  validatedSession = null
+  setAuthed(false)
+  if (useAuthStore.getState().user?.id !== userId) {
+    useSystemNoticeStore.getState().reset()
+    unregisterSyncTriggers()
+    if (useAuthStore.getState().user) disconnect()
+    useTripStore.getState().resetTrip()
+    useTripStore.setState({ tags: [], categories: [] })
+    useSettingsStore.getState().resetSettings()
+    useAddonStore.getState().resetAddons()
+    useTourVisitStore.getState().clear()
+  }
+  // Whatever brought them back in - password, SSO, MFA, demo, a restored
+  // session - the tab is no longer "just signed out", so the login page may
+  // auto-SSO again next time.
   try {
     await reopenForUser(userId)
   } catch (err) {
-    console.error('[auth] failed to open user-scoped offline DB', err)
+    const fallbackError = await reopenAnonymous().then(() => null, error => error)
+    console.error('[auth] failed to open user-scoped offline DB', fallbackError === null ? err : { storage: err, anonymous: fallbackError })
+    if (seq === authSequence && !logoutInProgress()) clearSignedOut()
+    return
   }
-}
-
-function clearMembershipFields() {
-  return {
-    authUserId: null as string | null,
-    personId: null as string | null,
-    familyId: null as string | null,
-    membershipRole: null as string | null,
-    isSuperAdmin: false,
-    membershipLoaded: false,
-    membershipStatus: null as string | null,
-    authGate: null as FamilyAuthGate | null,
-  }
-}
-
-function supabaseUserToTrekUser(sbUser: SbUser): User {
-  const email = sbUser.email ?? ''
-  const username =
-    (typeof sbUser.user_metadata?.username === 'string' && sbUser.user_metadata.username) ||
-    (typeof sbUser.user_metadata?.full_name === 'string' && sbUser.user_metadata.full_name) ||
-    email.split('@')[0] ||
-    'member'
-  return {
-    // Sentinel — Nest APIs must not use this on the supabase plane.
-    id: 0,
-    username,
-    email,
-    role: 'user',
-    avatar_url: null,
-    maps_api_key: null,
-    created_at: sbUser.created_at,
-    mfa_enabled: false,
-    must_change_password: false,
-  }
-}
-
-function membershipToState(snapshot: MembershipSnapshot) {
-  return {
-    personId: snapshot.personId,
-    familyId: snapshot.familyId,
-    membershipRole: snapshot.role,
-    isSuperAdmin: snapshot.isSuperAdmin,
-    membershipLoaded: true,
-    membershipStatus: snapshot.membershipStatus,
-    authGate: snapshot.gate,
-    appRequireMfa: snapshot.reviewerMfaRequired,
-  }
-}
-
-async function applySupabaseSession(sbUser: SbUser): Promise<{ user: User; snapshot: MembershipSnapshot }> {
-  const user = supabaseUserToTrekUser(sbUser)
-  const snapshot = await loadMembershipSnapshot(sbUser.id)
-  if (snapshot.isSuperAdmin) {
-    user.role = 'admin'
-  }
-  user.mfa_enabled = snapshot.hasVerifiedTotp
-  if (snapshot.gate === 'ok' && snapshot.familyId && snapshot.personId) {
-    const previousUrl = useAuthStore.getState().user?.avatar_url ?? null
-    try {
-      user.avatar_url = await resolveCurrentPersonAvatarUrl({
-        familyId: snapshot.familyId,
-        personId: snapshot.personId,
-      })
-    } catch {
-      user.avatar_url = previousUrl
-    }
-  }
+  if (seq !== authSequence || logoutInProgress()) return
   setAuthed(true)
-  return { user, snapshot }
+  validatedSession = { sequence: seq, userId, db: currentOfflineDatabase(), epoch: offlineSessionEpoch() }
+  clearSignedOut()
+  // logout() tears the triggers down, and App's mount effect never runs again in
+  // an SPA session, so a second login in the same tab would leave the mutation
+  // queue without a flush trigger. Re-registering is a no-op while they are up.
+  registerSyncTriggers()
+  // Tell the server again which push subscription this device holds, in the
+  // background: sign-in must not wait on it, and it never rejects.
+  void resyncPushSubscription()
 }
 
-export const AUTH_SNAPSHOT_VERSION = 1
-
-export type PersistedAuthSnapshot = {
-  isAuthenticated: boolean
-  user: {
-    id: number
-    username: string
-    email: string
-    role: User['role']
-    mfa_enabled?: boolean
-    must_change_password?: boolean
-  } | null
-  authUserId: string | null
-  personId: string | null
-  familyId: string | null
-  membershipRole: string | null
-  isSuperAdmin: boolean
-}
-
-/** Drop signed `avatar_url` from older `trek_auth_snapshot` payloads. */
-export function sanitizePersistedAuthSnapshot(persisted: unknown): unknown {
-  if (!persisted || typeof persisted !== 'object') return persisted
-  const rec = persisted as Record<string, unknown>
-  const user = rec.user
-  if (!user || typeof user !== 'object' || Array.isArray(user)) return persisted
-  if (!Object.prototype.hasOwnProperty.call(user, 'avatar_url')) return persisted
-  const nextUser = { ...(user as Record<string, unknown>) }
-  delete nextUser.avatar_url
-  return { ...rec, user: nextUser }
-}
-
-export function selectIsFamilyMember(state: Pick<AuthState, 'isSuperAdmin' | 'membershipRole' | 'membershipStatus'>): boolean {
-  return isFamilyMember({
-    isSuperAdmin: state.isSuperAdmin,
-    role: state.membershipRole,
-    membershipStatus: state.membershipStatus ?? (state.membershipRole ? 'active' : 'none'),
+function publishCompletedSignIn(set: (patch: Partial<AuthState>) => void, user: User) {
+  set({
+    user,
+    isAuthenticated: true,
+    loggingOut: false,
+    isLoading: false,
+    error: null,
   })
+  connect()
+  tripSyncManager.syncAll().catch(console.error)
+  if (!user?.must_change_password) {
+    useSystemNoticeStore.getState().fetch()
+  }
 }
 
-const BLOCKED_MEMBERSHIP_GATES: FamilyAuthGate[] = [
-  'unlinked',
-  'pending_invite',
-  'suspended',
-  'no_membership',
-]
-
-/** True when bootstrap finished and the member must not enter the private shell. */
-export function selectIsBlockedMembershipGate(authGate: FamilyAuthGate | null): boolean {
-  return authGate != null && BLOCKED_MEMBERSHIP_GATES.includes(authGate)
+function refreshNoticesForReplacedAccount(previous: User | null, current: User) {
+  if (previous && previous.id !== current.id && !current.must_change_password) {
+    void useSystemNoticeStore.getState().fetch()
+  }
 }
 
-/**
- * Private family reads (prefs, inbox, avatars, accent) wait for bootstrap `ok`.
- * Nest plane has no authGate — hydration stays on `isAuthenticated`.
- */
-export function selectMayHydratePrivateFamily(
-  authGate: FamilyAuthGate | null,
-  supabasePlane = isSupabaseDataPlane(),
-): boolean {
-  if (!supabasePlane) return true
-  return authGate === 'ok'
+function beginPrivateSessionTeardown() {
+  useSystemNoticeStore.getState().reset()
+  validatedSession = null
+  invalidateOfflineSession()
+  useBackgroundTasksStore.setState({ tasks: [] })
 }
 
 export const useAuthStore = create<AuthState>()(
   persist(
-  (set) => ({
+  (set, get) => ({
   user: null,
   isAuthenticated: false,
   isLoading: true,
   authCheckFailed: false,
+  loggingOut: false,
   error: null,
-  demoMode: readLocal('demo_mode') === 'true',
+  managed: false,
+  demoMode: localStorage.getItem('demo_mode') === 'true',
   devMode: false,
   isPrerelease: false,
   appVersion: '',
   hasMapsKey: false,
-  serverTimezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+  hasAmapKey: false,
+  placesProvider: 'auto',
+  serverTimezone: browserTimeZone() ?? '',
   appRequireMfa: false,
   tripRemindersEnabled: false,
   placesPhotosEnabled: true,
   placesAutocompleteEnabled: true,
   placesDetailsEnabled: true,
-  ...clearMembershipFields(),
+  placesEnrichEnabled: true,
+  maxUploadMb: 50,
+  // Fail-closed: an old server sends no flag and nothing is logged.
+  placeShadowEnabled: false,
 
   login: async (email: string, password: string, rememberMe?: boolean) => {
-    authSequence++
+    await waitForLogout()
+    const seq = ++authSequence
     set({ isLoading: true, error: null })
     try {
-      if (isSupabaseDataPlane()) {
-        const session = await signInWithPassword(email, password)
-        const { user, snapshot } = await applySupabaseSession(session.user)
-        set({
-          user,
-          isAuthenticated: true,
-          isLoading: false,
-          error: null,
-          authUserId: session.user.id,
-          authCheckFailed: false,
-          ...membershipToState(snapshot),
-        })
-        if (snapshot.gate === 'mfa_challenge') {
-          return { mfa_required: true as const, mfa_token: 'supabase-totp' }
-        }
-        return { user, token: session.access_token }
-      }
-
       const data = await authApi.login({ email, password, remember_me: rememberMe }) as AuthResponse & { mfa_required?: boolean; mfa_token?: string }
+      if (seq !== authSequence) throw new Error('The authentication session changed.')
       if (data.mfa_required && data.mfa_token) {
         set({ isLoading: false, error: null })
         return { mfa_required: true as const, mfa_token: data.mfa_token }
       }
-      set({
-        user: data.user,
-        isAuthenticated: true,
-        isLoading: false,
-        error: null,
-        ...clearMembershipFields(),
-      })
       await onAuthSuccess(data.user.id)
-      connect()
-      tripSyncManager.syncAll().catch(console.error)
-      if (!data.user?.must_change_password) {
-        useSystemNoticeStore.getState().fetch()
-      }
+      if (seq !== authSequence) throw new Error('The authentication session changed.')
+      publishCompletedSignIn(set, data.user)
       return data as AuthResponse
     } catch (err: unknown) {
-      const error = isSupabaseDataPlane()
-        ? (err instanceof Error ? err.message : 'Login failed')
-        : getApiErrorMessage(err, 'Login failed')
+      if (seq !== authSequence) throw err
+      const error = getApiErrorMessage(err, 'Login failed')
       set({ isLoading: false, error })
       throw new Error(error)
     }
   },
 
   completeMfaLogin: async (mfaToken: string, code: string, rememberMe?: boolean) => {
-    if (isSupabaseDataPlane()) {
-      authSequence++
-      set({ isLoading: true, error: null })
-      try {
-        const { listTotpFactors, verifyTotpFactor } = await import('../data/supabase/auth')
-        const factors = await listTotpFactors()
-        const factor = factors.find(f => f.status === 'verified') ?? factors[0]
-        if (!factor) throw new Error('No authenticator enrolled')
-        await verifyTotpFactor(factor.id, code)
-        const session = await getSupabaseSession()
-        if (!session?.user) throw new Error('No session after MFA')
-        const { user, snapshot } = await applySupabaseSession(session.user)
-        set({
-          user,
-          isAuthenticated: true,
-          isLoading: false,
-          error: null,
-          authUserId: session.user.id,
-          authCheckFailed: false,
-          ...membershipToState(snapshot),
-        })
-        return { user, token: session.access_token }
-      } catch (err: unknown) {
-        const error = err instanceof Error ? err.message : 'Verification failed'
-        set({ isLoading: false, error })
-        throw new Error(error)
-      }
-    }
-    authSequence++
+    await waitForLogout()
+    const seq = ++authSequence
     set({ isLoading: true, error: null })
     try {
       const data = await authApi.verifyMfaLogin({ mfa_token: mfaToken, code: code.replace(/\s/g, ''), remember_me: rememberMe })
-      set({
-        user: data.user,
-        isAuthenticated: true,
-        isLoading: false,
-        error: null,
-        ...clearMembershipFields(),
-      })
+      if (seq !== authSequence) throw new Error('The authentication session changed.')
       await onAuthSuccess(data.user.id)
-      connect()
-      tripSyncManager.syncAll().catch(console.error)
-      if (!data.user?.must_change_password) {
-        useSystemNoticeStore.getState().fetch()
-      }
+      if (seq !== authSequence) throw new Error('The authentication session changed.')
+      publishCompletedSignIn(set, data.user)
       return data as AuthResponse
     } catch (err: unknown) {
+      if (seq !== authSequence) throw err
       const error = getApiErrorMessage(err, 'Verification failed')
       set({ isLoading: false, error })
       throw new Error(error)
@@ -359,146 +293,197 @@ export const useAuthStore = create<AuthState>()(
   },
 
   register: async (username: string, email: string, password: string, invite_token?: string) => {
-    if (isSupabaseDataPlane()) {
-      throw new Error('Registration is managed in the Family Travel iOS app / Supabase Auth — not via this form')
-    }
-    authSequence++
+    await waitForLogout()
+    const seq = ++authSequence
     set({ isLoading: true, error: null })
     try {
       const data = await authApi.register({ username, email, password, invite_token })
+      if (seq !== authSequence) throw new Error('The authentication session changed.')
+      await onAuthSuccess(data.user.id)
+      if (seq !== authSequence) throw new Error('The authentication session changed.')
       set({
         user: data.user,
         isAuthenticated: true,
+        loggingOut: false,
         isLoading: false,
         error: null,
-        ...clearMembershipFields(),
       })
-      await onAuthSuccess(data.user.id)
       connect()
       tripSyncManager.syncAll().catch(console.error)
       useSystemNoticeStore.getState().fetch()
       return data
     } catch (err: unknown) {
+      if (seq !== authSequence) throw err
       const error = getApiErrorMessage(err, 'Registration failed')
       set({ isLoading: false, error })
       throw new Error(error)
     }
   },
 
-  logout: async () => {
-    authSequence += 1
-    setAuthed(false)
-    set({ isAuthenticated: false })
-    unregisterSyncTriggers()
-    disconnect()
-    useSystemNoticeStore.getState().reset()
-    clearAppearanceSnapshot()
-
-    if (isSupabaseDataPlane()) {
-      await signOutSupabase().catch(() => {})
-    } else {
-      await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' }).catch(() => {})
-      if ('caches' in window) {
-        await Promise.all([
-          caches.delete('api-data').catch(() => {}),
-          caches.delete('user-uploads').catch(() => {}),
-        ])
-      }
-      await deleteCurrentUserDb().catch(console.error)
+  logout: () => coordinateLogout(async () => {
+    authSequence++
+    beginPrivateSessionTeardown()
+    // 0. Attempt existing queued work while authenticated. Unresolved originals
+    // are retained and paused below; a slow request never holds logout indefinitely.
+    if (!isEffectivelyOffline()) {
+      await Promise.race([
+        mutationQueue.flush().catch(() => {}),
+        new Promise(resolve => setTimeout(resolve, LOGOUT_FLUSH_MS)),
+      ])
     }
-
+    // 1. Gate first so any in-flight flush/syncAll bails before we wipe the DB.
+    setAuthed(false)
+    invalidateOfflineSession()
+    useTripStore.getState().resetTrip()
+    useTripStore.setState({ tags: [], categories: [] })
+    // Flagged in the same update that drops the session: clearing isAuthenticated
+    // re-renders ProtectedRoute for whatever page is still on screen, and without
+    // this it would stamp a ?redirect= back to it — which then beats the user's
+    // startup destination on the next login.
+    set({ isAuthenticated: false, loggingOut: true })
+    useSettingsStore.getState().resetSettings()
+    useAddonStore.getState().resetAddons()
+    useTourVisitStore.getState().clear()
+    // The same fact, in the one place that survives ProtectedRoute's stateless
+    // <Navigate replace> and a full document load — without it an OIDC-only
+    // install silently signs the user straight back in (#2123). Set here rather
+    // than at the call sites so all seven are covered at once.
+    markSignedOut()
+    // 2. Stop background sync triggers (30s interval, WS pre-reconnect hook, listeners).
+    unregisterSyncTriggers()
+    // 3. Tear down the live connection.
+    disconnect()
+    // Drop the per-device appearance snapshot so the next user on a shared
+    // browser doesn't get a pre-paint flash of this user's theme.
+    clearAppearanceSnapshot()
+    // Same reason for the brokered plugin session state: it is keyed by user id,
+    // but sessionStorage outlives a logout within the tab.
+    clearAllPluginSessions()
+    // And the startup-destination mirror, or the next account on this browser
+    // gets bounced into a trip it may not even be able to see.
+    forgetStartDestination()
+    // Likewise the language mirror: the login page only overrides it when the
+    // browser language is one TREK ships, so otherwise the next user here stays
+    // in the previous account's language, launch after launch.
+    forgetServerLanguage()
+    forgetResumeRoute()
+    // And work-offline, for the same reason with sharper teeth: the switch lives
+    // in localStorage, step 6 below deletes the offline database it reads from,
+    // and the next account would come up believing it is offline over a working
+    // connection, with nothing cached to answer from.
+    setForcedOffline(false)
+    // Forget this device's push subscription, on the server and in the browser,
+    // or the next account on a shared device keeps receiving this one's
+    // notifications. It has to happen here: the DELETE needs the session cookie
+    // that step 4 clears. Best effort and bounded, so logout never hangs on it.
+    await forgetPushDeviceOnLogout()
+    // 4. Tell server to clear the httpOnly cookie (best-effort).
+    await fetch('/api/auth/logout', { method: 'POST', credentials: 'include', signal: AbortSignal.timeout(8000) }).catch(() => {})
+    // 5. Clear service worker caches containing sensitive data.
+    if ('caches' in window) {
+      await Promise.all([
+        caches.delete('api-data').catch(() => {}),
+        caches.delete('user-uploads').catch(() => {}),
+      ])
+    }
+    // 6. Purge read caches; unresolved originals remain paused in the original account DB.
+    let cleanupError: string | null = null
+    try { await deleteCurrentUserDb() } catch (error) {
+      console.error('[auth] local recovery cleanup failed', error)
+      cleanupError = 'You are signed out. Local cleanup could not finish; original work remains on this device.'
+    }
+    // 7. Finish clearing auth state.
     set({
       user: null,
       isAuthenticated: false,
       authCheckFailed: false,
-      error: null,
-      ...clearMembershipFields(),
+      isLoading: false,
+      error: cleanupError,
     })
-  },
+  }),
 
   loadUser: async (opts?: { silent?: boolean }) => {
-    authSequence += 1
-    const seq = authSequence
-    const silent = !!opts?.silent
-    if (!silent) set({ isLoading: true })
-
-    if (isSupabaseDataPlane()) {
-      try {
-        const session = await withTimeout(getSupabaseSession(), AUTH_BOOTSTRAP_TIMEOUT_MS)
-        if (seq !== authSequence) return
-        if (!session?.user) {
-          set({
-            user: null,
-            isAuthenticated: false,
-            isLoading: false,
-            authCheckFailed: false,
-            ...clearMembershipFields(),
-          })
-          return
-        }
-        const { user, snapshot } = await withTimeout(
-          applySupabaseSession(session.user),
-          AUTH_BOOTSTRAP_TIMEOUT_MS,
-        )
-        if (seq !== authSequence) return
-        set({
-          user,
-          isAuthenticated: true,
-          isLoading: false,
-          authCheckFailed: false,
-          authUserId: session.user.id,
-          ...membershipToState(snapshot),
-        })
-      } catch (err: unknown) {
-        if (seq !== authSequence) return
-        const offline = typeof navigator !== 'undefined' && !navigator.onLine
-        if (offline && !isStartupTimeoutError(err)) {
-          set({ isLoading: false, authCheckFailed: true })
-          return
-        }
-        console.error('[auth] supabase loadUser failed', err)
-        set({ isLoading: false, authCheckFailed: true })
-      }
+    if (logoutInProgress()) return
+    if (wasSignedOut()) {
+      setAuthed(false)
+      invalidateOfflineSession()
+      set({ user: null, isAuthenticated: false, isLoading: false, authCheckFailed: false, loggingOut: true })
       return
     }
-
+    const seq = authSequence
+    const validation = ++authValidationSequence
+    // Actor refresh and startup may validate concurrently. An older answer must
+    // not overwrite a newer result, including a current refusal or network error.
+    const current = () => seq === authSequence && validation === authValidationSequence
+    const silent = !!opts?.silent
+    if (!silent) set({ isLoading: true })
     try {
-      const data = await withTimeout(authApi.me(), AUTH_BOOTSTRAP_TIMEOUT_MS)
-      if (seq !== authSequence) return
+      const data = await authApi.me()
+      if (!current()) return // stale response — a login/register happened meanwhile
+      const previousUser = get().user
+      await onAuthSuccess(data.user.id)
+      if (!current()) return
       set({
         user: data.user,
         isAuthenticated: true,
+        loggingOut: false,
         isLoading: false,
         authCheckFailed: false,
-        ...clearMembershipFields(),
       })
-      await onAuthSuccess(data.user.id)
       connect()
+      refreshNoticesForReplacedAccount(previousUser, data.user)
     } catch (err: unknown) {
-      if (seq !== authSequence) return
-      const status = err && typeof err === 'object' && 'response' in err
-        ? (err as { response?: { status?: number } }).response?.status
-        : undefined
+      if (!current()) return // stale response — ignore
+      const status = httpStatusOf(err)
+      if (isPendingFamilyValidation(err)) {
+        // A cached display identity cannot activate private sync before current
+        // Family membership/assurance is checked. Retain its original local work.
+        setAuthed(false)
+        set({ isLoading: false, authCheckFailed: true })
+        return
+      }
       if (status === 401) {
+        useSystemNoticeStore.getState().reset()
+        validatedSession = null
+        setAuthed(false)
+        invalidateOfflineSession()
+        // Invalid/expired token — clear auth so the guard redirects to login.
         set({
           user: null,
           isAuthenticated: false,
           isLoading: false,
           authCheckFailed: false,
-          ...clearMembershipFields(),
         })
-      } else if (status === undefined && typeof navigator !== 'undefined' && !navigator.onLine && !isStartupTimeoutError(err)) {
-        set({ isLoading: false, authCheckFailed: true })
+      } else if (status === undefined && typeof navigator !== 'undefined' && !navigator.onLine) {
+        // Genuinely offline — keep the persisted session so the PWA serves cached
+        // data without a scary error. This is the offline-first happy path.
+        set({ isLoading: false })
+        // ...but the session still has to be marked live. onAuthSuccess is the
+        // only caller of setAuthed(true), and every repair path (the mutation
+        // queue's flush, syncAll, prepareForOffline) is gated on it. Skipping
+        // it here left a session that launched without network unable to sync
+        // for the rest of its life, even after the signal came back: the offline
+        // settings buttons spun and returned instantly having done nothing, and
+        // queued edits never uploaded (#2228). It also points the offline DB at
+        // this user's scoped database, so cached data is read from the right
+        // one rather than the anonymous fallback.
+        const cachedUser = get().user
+        if (cachedUser && get().isAuthenticated) await onAuthSuccess(cachedUser.id)
       } else {
+        // Server erroring (5xx) or unreachable while we're online: keep the session
+        // (don't eject the user over a transient outage), but flag it so the UI can
+        // say "couldn't reach the server" instead of showing a blank, error-free
+        // page that looks like the user's trips were lost. #1283
         set({ isLoading: false, authCheckFailed: true })
+        // Same reasoning as the offline branch: the session is kept, so it must
+        // be marked live or the sync layer stays dead until the next full login.
+        const cachedUser = get().user
+        if (cachedUser && get().isAuthenticated) await onAuthSuccess(cachedUser.id)
       }
     }
   },
 
   updateMapsKey: async (key: string | null) => {
-    if (isSupabaseDataPlane()) {
-      throw new Error('Maps API key settings are not available on the Supabase plane yet')
-    }
     try {
       await authApi.updateMapsKey(key)
       set((state) => ({
@@ -511,14 +496,14 @@ export const useAuthStore = create<AuthState>()(
   },
 
   updateApiKeys: async (keys: Record<string, string | null>) => {
-    if (isSupabaseDataPlane()) {
-      throw new Error('API key settings are not available on the Supabase plane yet')
-    }
     try {
       const data = await authApi.updateApiKeys(keys)
       set({ user: data.user })
       if ('maps_api_key' in keys) {
         set({ hasMapsKey: !!keys.maps_api_key })
+      }
+      if ('amap_api_key' in keys) {
+        set({ hasAmapKey: !!keys.amap_api_key })
       }
     } catch (err: unknown) {
       throw new Error(getApiErrorMessage(err, 'Error saving API keys'))
@@ -526,9 +511,6 @@ export const useAuthStore = create<AuthState>()(
   },
 
   updateProfile: async (profileData: Partial<User>) => {
-    if (isSupabaseDataPlane()) {
-      throw new Error('Profile settings are not available on the Supabase plane yet')
-    }
     try {
       const data = await authApi.updateSettings(profileData)
       set({ user: data.user })
@@ -538,9 +520,6 @@ export const useAuthStore = create<AuthState>()(
   },
 
   uploadAvatar: async (file: File) => {
-    if (isSupabaseDataPlane()) {
-      throw new Error('Avatar upload is not available on the Supabase plane yet')
-    }
     const formData = new FormData()
     formData.append('avatar', file)
     const data = await authApi.uploadAvatar(formData)
@@ -549,16 +528,19 @@ export const useAuthStore = create<AuthState>()(
   },
 
   deleteAvatar: async () => {
-    if (isSupabaseDataPlane()) {
-      throw new Error('Avatar delete is not available on the Supabase plane yet')
-    }
     await authApi.deleteAvatar()
     set((state) => ({ user: state.user ? { ...state.user, avatar_url: null } : null }))
   },
 
+  // Not persisted, unlike demoMode above: two installs can share a browser
+  // profile, and a stale 'this one is managed' would then take settings away
+  // from an admin on an install that never set the flag. Re-read on every boot
+  // from app-config, which is one request the app makes anyway.
+  setManaged: (val: boolean) => set({ managed: val }),
+
   setDemoMode: (val: boolean) => {
-    if (val) writeLocal('demo_mode', 'true')
-    else removeLocal('demo_mode')
+    if (val) localStorage.setItem('demo_mode', 'true')
+    else localStorage.removeItem('demo_mode')
     set({ demoMode: val })
   },
 
@@ -566,33 +548,39 @@ export const useAuthStore = create<AuthState>()(
   setIsPrerelease: (val: boolean) => set({ isPrerelease: val }),
   setAppVersion: (val: string) => set({ appVersion: val }),
   setHasMapsKey: (val: boolean) => set({ hasMapsKey: val }),
+  setHasAmapKey: (val: boolean) => set({ hasAmapKey: val }),
+  setPlacesProvider: (val: string) => set({ placesProvider: val }),
   setServerTimezone: (tz: string) => set({ serverTimezone: tz }),
   setAppRequireMfa: (val: boolean) => set({ appRequireMfa: val }),
   setTripRemindersEnabled: (val: boolean) => set({ tripRemindersEnabled: val }),
   setPlacesPhotosEnabled: (val: boolean) => set({ placesPhotosEnabled: val }),
   setPlacesAutocompleteEnabled: (val: boolean) => set({ placesAutocompleteEnabled: val }),
   setPlacesDetailsEnabled: (val: boolean) => set({ placesDetailsEnabled: val }),
+  setPlacesEnrichEnabled: (val: boolean) => set({ placesEnrichEnabled: val }),
+  setMaxUploadMb: (val: number) => set({ maxUploadMb: val }),
+  setPlaceShadowEnabled: (val: boolean) => set({ placeShadowEnabled: val }),
 
   demoLogin: async () => {
-    if (isSupabaseDataPlane()) {
-      throw new Error('Demo login is not available on the Supabase data plane')
-    }
-    authSequence++
+    await waitForLogout()
+    const seq = ++authSequence
     set({ isLoading: true, error: null })
     try {
       const data = await authApi.demoLogin()
+      if (seq !== authSequence) throw new Error('The authentication session changed.')
+      await onAuthSuccess(data.user.id)
+      if (seq !== authSequence) throw new Error('The authentication session changed.')
       set({
         user: data.user,
         isAuthenticated: true,
+        loggingOut: false,
         isLoading: false,
         demoMode: true,
         error: null,
-        ...clearMembershipFields(),
       })
-      await onAuthSuccess(data.user.id)
       connect()
       return data
     } catch (err: unknown) {
+      if (seq !== authSequence) throw err
       const error = getApiErrorMessage(err, 'Demo login failed')
       set({ isLoading: false, error })
       throw new Error(error)
@@ -600,11 +588,16 @@ export const useAuthStore = create<AuthState>()(
   },
   }),
   {
-    name: 'trek_auth_snapshot',
-    version: AUTH_SNAPSHOT_VERSION,
-    storage: createJSONStorage(() => safePersistStorage),
-    migrate: (persisted) => sanitizePersistedAuthSnapshot(persisted) as PersistedAuthSnapshot,
-    partialize: (state): PersistedAuthSnapshot => ({
+    name: NATIVE_AUTH_SNAPSHOT_KEY,
+    storage: createJSONStorage(() => nativeAuthStorage(localStorage)),
+    // Only persist the minimal user snapshot needed to avoid redirecting to
+    // login when the PWA reopens offline. The JWT remains in the httpOnly
+    // cookie and is still validated by the server on every request.
+    // Family owns its older snapshot key; this native UI cache has its own format.
+    // Signed avatars are not cached here. They are resolved in the current session.
+    // maps_api_key is intentionally excluded — it's an API key that should
+    // not sit in localStorage any longer than the active session requires.
+    partialize: (state) => ({
       isAuthenticated: state.isAuthenticated,
       user: state.user ? {
         id: state.user.id,
@@ -614,11 +607,6 @@ export const useAuthStore = create<AuthState>()(
         mfa_enabled: state.user.mfa_enabled,
         must_change_password: state.user.must_change_password,
       } : null,
-      authUserId: state.authUserId,
-      personId: state.personId,
-      familyId: state.familyId,
-      membershipRole: state.membershipRole,
-      isSuperAdmin: state.isSuperAdmin,
     }),
   }
 ))

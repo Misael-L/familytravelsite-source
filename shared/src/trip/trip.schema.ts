@@ -14,6 +14,25 @@ import { z } from 'zod';
  */
 
 /**
+ * The most days a trip can have, whether from its date range or from the
+ * `day_count` of a dateless trip. A range longer than this is refused rather
+ * than cut short: a trip whose end date lies past its last day is exactly the
+ * kind of half-state #2403 reported, and a mistyped year is easier to spot as
+ * an error than as a few hundred empty days. Three digits keep every day badge
+ * in the planner intact.
+ */
+export const MAX_TRIP_DAYS = 999;
+
+/** Calendar days in an inclusive YYYY-MM-DD range, counted the same way on both sides of the wire. */
+export function tripSpanDays(startDate: string, endDate: string): number {
+  const utcDay = (date: string) => {
+    const [y = NaN, m = NaN, d = NaN] = date.split('-').map(Number);
+    return Date.UTC(y, m - 1, d);
+  };
+  return Math.floor((utcDay(endDate) - utcDay(startDate)) / 86400000) + 1;
+}
+
+/**
  * Trip entity as returned by the trip list / get / create / update endpoints
  * (server/src/services/tripService.ts -> TRIP_SELECT). Columns of the `trips`
  * table plus the computed list fields (day_count, place_count, is_owner as 0/1,
@@ -99,7 +118,9 @@ export const tripUpdateRequestSchema = z.object({
   reminder_days: z.number().optional(),
   day_count: z.number().optional(),
   is_archived: z.union([z.boolean(), z.number()]).optional(),
-  cover_image: z.string().nullable().optional(),
+  // Bounded like a place's image url: a replaced cover is queued for release,
+  // and every upload path the old value spells out is one queued object.
+  cover_image: z.string().max(2048).nullable().optional(),
 });
 export type TripUpdateRequest = z.infer<typeof tripUpdateRequestSchema>;
 
@@ -118,3 +139,43 @@ export const tripTransferOwnershipRequestSchema = z.object({
   newOwnerId: z.number().int().positive(),
 });
 export type TripTransferOwnershipRequest = z.infer<typeof tripTransferOwnershipRequestSchema>;
+
+/**
+ * The one trip TREK opens on for a user who wants to land in their trip instead
+ * of on the dashboard (GET /api/trips/active). Deliberately narrow: it is read
+ * on the very first paint to decide where to navigate, so it carries the id plus
+ * enough to label the destination — nothing that would make it as wide (or as
+ * slow) as the trip list it replaces there.
+ *
+ * Relevance order matches the dashboard hero (client sortTrips): the trip
+ * running today, else the next one starting, else the most recently started.
+ */
+export const activeTripSchema = z.object({
+  id: z.number(),
+  title: z.string(),
+  start_date: z.string().nullable().optional(),
+  end_date: z.string().nullable().optional(),
+});
+export type ActiveTrip = z.infer<typeof activeTripSchema>;
+
+// null when the user has no unarchived trip at all — the caller falls back to
+// the dashboard rather than navigating into nothing.
+export const activeTripResponseSchema = z.object({
+  trip: activeTripSchema.nullable(),
+});
+export type ActiveTripResponse = z.infer<typeof activeTripResponseSchema>;
+
+/**
+ * Trips whose places match a dashboard search (#2190), so "that diner in
+ * Philly" finds the trip it was on. A few matching place names per trip ride
+ * along for the card; title and date matching stays on the client.
+ */
+export const tripSearchResponseSchema = z.object({
+  matches: z.array(
+    z.object({
+      trip_id: z.number(),
+      places: z.array(z.string()),
+    }),
+  ),
+});
+export type TripSearchResponse = z.infer<typeof tripSearchResponseSchema>;

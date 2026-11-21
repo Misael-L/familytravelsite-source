@@ -49,7 +49,7 @@ describe('AdminMcpTokensPanel', () => {
 
   it('FE-ADMIN-MCP-002: empty state rendered when no tokens', async () => {
     render(<AdminMcpTokensPanel />);
-    await screen.findByText('No MCP tokens have been created yet');
+    expect(await screen.findByText('No MCP tokens have been created yet')).toBeInTheDocument();
   });
 
   it('FE-ADMIN-MCP-003: token list renders correctly', async () => {
@@ -89,7 +89,7 @@ describe('AdminMcpTokensPanel', () => {
     render(<AdminMcpTokensPanel />);
     await screen.findByText('CI Token');
 
-    const deleteButtons = screen.getAllByTitle('Delete');
+    const deleteButtons = screen.getAllByLabelText('Delete');
     await user.click(deleteButtons[0]);
 
     expect(screen.getByText('Delete Token')).toBeInTheDocument();
@@ -108,7 +108,7 @@ describe('AdminMcpTokensPanel', () => {
     render(<AdminMcpTokensPanel />);
     await screen.findByText('CI Token');
 
-    const deleteButtons = screen.getAllByTitle('Delete');
+    const deleteButtons = screen.getAllByLabelText('Delete');
     await user.click(deleteButtons[0]);
     expect(screen.getByText('Delete Token')).toBeInTheDocument();
 
@@ -129,7 +129,7 @@ describe('AdminMcpTokensPanel', () => {
     render(<AdminMcpTokensPanel />);
     await screen.findByText('CI Token');
 
-    const deleteButtons = screen.getAllByTitle('Delete');
+    const deleteButtons = screen.getAllByLabelText('Delete');
     await user.click(deleteButtons[0]);
     expect(screen.getByText('Delete Token')).toBeInTheDocument();
 
@@ -155,7 +155,7 @@ describe('AdminMcpTokensPanel', () => {
     render(<><ToastContainer /><AdminMcpTokensPanel /></>);
     await screen.findByText('CI Token');
 
-    const deleteButtons = screen.getAllByTitle('Delete');
+    const deleteButtons = screen.getAllByLabelText('Delete');
     await user.click(deleteButtons[0]);
     await user.click(screen.getByText('Delete'));
 
@@ -180,7 +180,7 @@ describe('AdminMcpTokensPanel', () => {
     render(<><ToastContainer /><AdminMcpTokensPanel /></>);
     await screen.findByText('CI Token');
 
-    const deleteButtons = screen.getAllByTitle('Delete');
+    const deleteButtons = screen.getAllByLabelText('Delete');
     await user.click(deleteButtons[0]);
     await user.click(screen.getByText('Delete'));
 
@@ -195,7 +195,7 @@ describe('AdminMcpTokensPanel', () => {
       )
     );
     render(<><ToastContainer /><AdminMcpTokensPanel /></>);
-    await screen.findByText('Failed to load tokens');
+    expect(await screen.findByText('Failed to load tokens')).toBeInTheDocument();
   });
 
   it('FE-ADMIN-MCP-011: OAuth sessions loading spinner shown on mount', async () => {
@@ -216,7 +216,7 @@ describe('AdminMcpTokensPanel', () => {
       )
     );
     render(<AdminMcpTokensPanel />);
-    await screen.findByText('No active OAuth sessions');
+    expect(await screen.findByText('No active OAuth sessions')).toBeInTheDocument();
   });
 
   it('FE-ADMIN-MCP-013: OAuth sessions list renders with scopes', async () => {
@@ -282,14 +282,14 @@ describe('AdminMcpTokensPanel', () => {
     await screen.findByText('Revoke Me');
 
     // Click the revoke (trash) button next to the session
-    const deleteBtn = screen.getAllByTitle('Delete')[0];
+    const deleteBtn = screen.getAllByLabelText('Delete')[0];
     await user.click(deleteBtn);
 
     // Confirmation modal opens
     expect(screen.getByText('Revoke Session')).toBeInTheDocument();
-    // Confirm — find the modal's Delete button (has no title, unlike the trash icon)
+    // Confirm — find the modal's Delete button (has no aria-label, unlike the trash icon)
     const deleteBtns = screen.getAllByRole('button', { name: 'Delete' });
-    const confirmBtn = deleteBtns.find(b => !b.title);
+    const confirmBtn = deleteBtns.find(b => !b.hasAttribute('aria-label'));
     await user.click(confirmBtn ?? deleteBtns[deleteBtns.length - 1]);
     await waitFor(() => {
       expect(screen.queryByText('Revoke Me')).not.toBeInTheDocument();
@@ -313,11 +313,11 @@ describe('AdminMcpTokensPanel', () => {
     render(<><ToastContainer /><AdminMcpTokensPanel /></>);
     await screen.findByText('Error Session');
 
-    const deleteBtn = screen.getAllByTitle('Delete')[0];
+    const deleteBtn = screen.getAllByLabelText('Delete')[0];
     await user.click(deleteBtn);
     const deleteBtns = screen.getAllByRole('button', { name: 'Delete' });
-    const confirmBtn = deleteBtns.find(b => !b.title);
+    const confirmBtn = deleteBtns.find(b => !b.hasAttribute('aria-label'));
     await user.click(confirmBtn ?? deleteBtns[deleteBtns.length - 1]);
-    await screen.findByText('Failed to revoke session');
+    expect(await screen.findByText('Failed to revoke session')).toBeInTheDocument();
   });
 });

@@ -1,4 +1,20 @@
-import type mapboxgl from 'mapbox-gl'
+import type {
+  FillExtrusionLayerSpecification,
+  RasterDEMSourceSpecification,
+  SkyLayerSpecification,
+  TerrainSpecification,
+  VectorSourceSpecification,
+} from 'mapbox-gl'
+
+// The setup uses the same methods in the native and Family Mapbox versions.
+interface MapboxSetupMap {
+  getLayer(id: string): unknown
+  getSource(id: string): unknown
+  getStyle(): { layers?: readonly { id: string; type: string }[] } | null | undefined
+  addSource(id: string, source: VectorSourceSpecification | RasterDEMSourceSpecification): void
+  addLayer(layer: FillExtrusionLayerSpecification | SkyLayerSpecification, beforeId?: string): void
+  setTerrain(options: TerrainSpecification): void
+}
 
 // "mapbox/standard" and "mapbox/standard-satellite" ship their own 3D
 // buildings and terrain. For every other style we inject a fill-extrusion
@@ -31,7 +47,7 @@ export function supportsCustom3d(style: string): boolean {
 // the pure satellite style we lazily attach `mapbox-streets-v8` as a
 // fallback source so real building volumes sit on top of the imagery —
 // the Apple Maps-style "3D satellite" look the user asked for.
-export function addCustom3dBuildings(map: mapboxgl.Map, dark: boolean) {
+export function addCustom3dBuildings(map: MapboxSetupMap, dark: boolean) {
   if (map.getLayer('trek-3d-buildings')) return
   const baseColor = dark ? '#3b3b3f' : '#cfd2d6'
 
@@ -78,7 +94,7 @@ export function addCustom3dBuildings(map: mapboxgl.Map, dark: boolean) {
 
 // Terrain + sky that works against any style that has the DEM source.
 // The Standard family already handles terrain internally, skip there.
-export function addTerrainAndSky(map: mapboxgl.Map) {
+export function addTerrainAndSky(map: MapboxSetupMap) {
   try {
     if (!map.getSource('mapbox-dem')) {
       map.addSource('mapbox-dem', {
@@ -96,7 +112,7 @@ export function addTerrainAndSky(map: mapboxgl.Map) {
         paint: {
           'sky-type': 'atmosphere',
           'sky-atmosphere-sun-intensity': 15,
-        } as unknown as mapboxgl.SkyLayerSpecification['paint'],
+        },
       })
     }
   } catch { /* style doesn't support terrain */ }

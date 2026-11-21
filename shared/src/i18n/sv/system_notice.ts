@@ -54,5 +54,40 @@ const system_notice: TranslationStrings = {
   'system_notice.pager.counter': '{current} / {total}',
   'system_notice.pager.goto': 'Gå till meddelandet {n}',
   'system_notice.pager.position': 'Meddlenade {current} av {total}',
+  // The release modal. One stable set of keys: each big release swaps the copy in place.
+  'system_notice.release_notes.eyebrow': 'Uppdatering klar',
+  'system_notice.release_notes.headline': 'Rätt plats, först.',
+  'system_notice.release_notes.intro':
+    'Platssökning, adressökning och ruttplanering körs nu på TREKs egna servrar, sponsrade av dataforest cloud, och varje TREK kan dela det den vet om platser med alla andra.',
+  'system_notice.release_notes.features_label': 'Höjdpunkterna',
+  'system_notice.release_notes.features_aside': 'Långt ifrån allt',
+  'system_notice.release_notes.feature_search_title': 'Platssökning som träffar rätt',
+  'system_notice.release_notes.feature_search_body':
+    'Städer, öar, sevärdheter och flygplatser via sin kod kommer först, kaféer hämtas från din närhet och förslag dyker upp medan du skriver.',
+  'system_notice.release_notes.feature_share_title': 'Platsdetaljer, delade',
+  'system_notice.release_notes.feature_share_body':
+    'Dela webbplatser, öppettider och foton med varje TREK, fält för fält, och dina sparade platser får med det som andra har lagt till.',
+  'system_notice.release_notes.feature_routing_title': 'Snabbare rutter',
+  'system_notice.release_notes.feature_routing_body':
+    'En hel dag planeras i ett svep med upp till tjugo stopp, en långsam rutt håller inte längre upp resten och kollektivtrafiken frågar en andra leverantör när den första inte hittar något.',
+  'system_notice.release_notes.footnote': 'Dessutom en lång rad mindre ändringar i resten av TREK.',
+  'system_notice.release_notes.notes_label': 'Versionsnyheter',
+  'system_notice.release_notes.note_eyebrow': 'Ett ord från utvecklaren',
+  'system_notice.release_notes.note_title': 'Du är anledningen till att jag fortsätter bygga TREK.',
+  'system_notice.release_notes.note_body':
+    'TREK började som ett litet verktyg för mina egna resor, skrivet efter jobbet för att jag ville ha ett bättre sätt att planera dem. Det har egentligen aldrig slutat växa. Nästan allt du använder byggdes sent på nätterna, på helger, på tåg, vid sidan av ett heltidsjobb, och många kvällar undrade jag tyst för mig själv om någon där ute någonsin skulle öppna det.',
+  'system_notice.release_notes.promise_label': 'Löftet',
+  'system_notice.release_notes.promise_lead': 'TREK förblir gratis, för alltid.',
+  'system_notice.release_notes.promise_text':
+    'Varje funktion, varje uppdatering, för alla. Inga betalnivåer, inga prenumerationer, inga förbehåll.',
+  'system_notice.release_notes.note_body_after':
+    'Och sedan gjorde ni det. Inom några månader var ni tusentals: stjärnor, felrapporter, översättningar till språk jag inte talar, pull requests från människor jag aldrig har träffat. Jag kollar fortfarande repot varje morgon innan jag gör något annat, och det känns ännu inte riktigt verkligt.',
+  'system_notice.release_notes.note_closing': 'Tack för att du är här. Hälsningar, Maurice.',
+  'system_notice.release_notes.support_label': 'Förbli oberoende',
+  'system_notice.release_notes.support_lead': 'Utan Google och co.',
+  'system_notice.release_notes.support_text':
+    'Platssökning, adressökning och ruttplanering körs på TREKs egna servrar, i dag sponsrade av dataforest cloud. Jag kämpar för det varje dag, och för att det ska förbli så behövs ditt stöd.',
+  'system_notice.release_notes.cta_bmc': 'Buy me a coffee',
+  'system_notice.release_notes.cta_kofi': 'Stöd på Ko-fi',
 };
 export default system_notice;

@@ -1,13 +1,5 @@
 // FE-COMP-BOTTOMNAV-001 to FE-COMP-BOTTOMNAV-010
 
-const { isSupabaseMock } = vi.hoisted(() => ({
-  isSupabaseMock: vi.fn(() => false),
-}))
-vi.mock('../../data/supabase/auth', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../../data/supabase/auth')>()
-  return { ...actual, isSupabaseDataPlane: isSupabaseMock }
-})
-
 vi.mock('../../api/websocket', () => ({
   connect: vi.fn(),
   disconnect: vi.fn(),
@@ -19,8 +11,8 @@ vi.mock('../../api/websocket', () => ({
 }));
 
 const mockNavigate = vi.fn();
-vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual<typeof import('react-router-dom')>('react-router-dom');
+vi.mock('react-router', async () => {
+  const actual = await vi.importActual<typeof import('react-router')>('react-router');
   return { ...actual, useNavigate: () => mockNavigate };
 });
 
@@ -30,7 +22,6 @@ import { useAuthStore } from '../../store/authStore';
 import { useSettingsStore } from '../../store/settingsStore';
 import { useAddonStore } from '../../store/addonStore';
 import { usePluginStore } from '../../store/pluginStore';
-import { useFamilyFeatureStore } from '../../store/familyFeatureStore';
 import { resetAllStores, seedStore } from '../../../tests/helpers/store';
 import { buildUser, buildSettings } from '../../../tests/helpers/factories';
 import BottomNav from './BottomNav';
@@ -39,7 +30,6 @@ const currentUser = buildUser({ id: 1, username: 'testuser', email: 'test@exampl
 
 beforeEach(() => {
   resetAllStores();
-  isSupabaseMock.mockReturnValue(false);
   mockNavigate.mockClear();
   sessionStorage.clear();
   seedStore(useAuthStore, { user: currentUser, isAuthenticated: true });
@@ -140,65 +130,5 @@ describe('BottomNav', () => {
     });
     const { container } = render(<BottomNav />);
     expect(container.querySelector('.lucide-blocks')).not.toBeNull();
-  });
-
-  it('FE-COMP-BOTTOMNAV-013: Family plane shows Vacay next to My Trips without Nest addons', async () => {
-    isSupabaseMock.mockReturnValue(true);
-    seedStore(useAddonStore, { addons: [] });
-    const user = userEvent.setup();
-    render(<BottomNav />);
-    expect(screen.getByText('Vacay')).toBeInTheDocument();
-    await user.click(screen.getByText('Vacay'));
-    expect(mockNavigate).toHaveBeenCalledWith('/vacay');
-  });
-
-  it('FE-COMP-BOTTOMNAV-013b: Family plane shows Collections without Nest addons', async () => {
-    isSupabaseMock.mockReturnValue(true);
-    seedStore(useAddonStore, { addons: [] });
-    const user = userEvent.setup();
-    render(<BottomNav />);
-    expect(screen.getByText('Collections')).toBeInTheDocument();
-    await user.click(screen.getByText('Collections'));
-    expect(mockNavigate).toHaveBeenCalledWith('/collections');
-  });
-
-  it('hides Journey on Family plane while the feature is off', () => {
-    isSupabaseMock.mockReturnValue(true);
-    seedStore(useAddonStore, { addons: [] });
-    render(<BottomNav />);
-    expect(screen.queryByText('Journey')).not.toBeInTheDocument();
-  });
-
-  it('shows Journey when the family feature is on', async () => {
-    isSupabaseMock.mockReturnValue(true);
-    seedStore(useAddonStore, { addons: [] });
-    seedStore(useFamilyFeatureStore, {
-      features: { vacay: true, collections: true, 'workspace.place_categories': true, journey: true },
-      hydrated: true,
-    });
-    const user = userEvent.setup();
-    render(<BottomNav />);
-    expect(screen.getByText('Journey')).toBeInTheDocument();
-    await user.click(screen.getByText('Journey'));
-    expect(mockNavigate).toHaveBeenCalledWith('/journey');
-  });
-
-  it('hides Vacay and Collections when those family features are off', () => {
-    isSupabaseMock.mockReturnValue(true);
-    seedStore(useAddonStore, { addons: [] });
-    seedStore(useFamilyFeatureStore, {
-      features: { vacay: false, collections: false, 'workspace.place_categories': true, journey: false },
-      hydrated: true,
-    });
-    render(<BottomNav />);
-    expect(screen.queryByText('Vacay')).not.toBeInTheDocument();
-    expect(screen.queryByText('Collections')).not.toBeInTheDocument();
-    expect(screen.queryByText('Journey')).not.toBeInTheDocument();
-  });
-
-  it('FE-COMP-BOTTOMNAV-014: Nest plane does not show Vacay when the addon is off', () => {
-    seedStore(useAddonStore, { addons: [] });
-    render(<BottomNav />);
-    expect(screen.queryByText('Vacay')).not.toBeInTheDocument();
   });
 });

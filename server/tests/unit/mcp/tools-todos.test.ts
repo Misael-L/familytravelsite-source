@@ -1,49 +1,35 @@
 /**
- * Unit tests for MCP todo tools:
+ * Unit tests for the todo MCP surface (TodoMcp, DI-discovered):
  * create_todo, update_todo, toggle_todo, delete_todo, reorder_todos,
- * list_todos, get_todo_category_assignees, set_todo_category_assignees.
+ * list_todos, get_todo_category_assignees, set_todo_category_assignees,
+ * plus the trek://trips/{tripId}/todos resource.
+ *
+ * All of it attaches via the nest-mcp registry inside registerTools, so every
+ * harness here keeps withTools on (the resource is NOT registered by the
+ * legacy registerResources fan-out anymore).
  */
+import { ADDON_IDS } from '../../../src/addons';
+import { db as testDb } from '../../../src/db/database';
+import { TodoCategoryAssignees } from '../../../src/db/entities/TodoCategoryAssignees.entity';
+import { TodoItems } from '../../../src/db/entities/TodoItems.entity';
+import { createUser, createTrip, createTodoItem } from '../../helpers/factories';
+import { findRow, insertRow } from '../../helpers/factories/rows';
+import { setAddonEnabled } from '../../helpers/factories/settings';
+import { makeTodoItem } from '../../helpers/factories/todos';
+import { FakeRealtimeService } from '../../helpers/fake-realtime';
+import { createMcpHarness, parseToolResult, parseResourceResult, type McpHarness } from '../../helpers/mcp-harness';
+import { resetTestDb } from '../../helpers/test-db';
+import { createTestOrm, type TestOrm } from '../../helpers/test-orm';
+
 import { describe, it, expect, vi, beforeAll, beforeEach, afterAll } from 'vitest';
 
-const { testDb, dbMock } = vi.hoisted(() => {
-  const Database = require('better-sqlite3');
-  const db = new Database(':memory:');
-  db.exec('PRAGMA journal_mode = WAL');
-  db.exec('PRAGMA foreign_keys = ON');
-  db.exec('PRAGMA busy_timeout = 5000');
-  const mock = {
-    db,
-    closeDb: () => {},
-    reinitialize: () => {},
-    getPlaceWithTags: () => null,
-    canAccessTrip: (tripId: any, userId: number) =>
-      db.prepare(`SELECT t.id, t.user_id FROM trips t LEFT JOIN trip_members m ON m.trip_id = t.id AND m.user_id = ? WHERE t.id = ? AND (t.user_id = ? OR m.user_id IS NOT NULL)`).get(userId, tripId, userId),
-    isOwner: (tripId: any, userId: number) =>
-      !!db.prepare('SELECT id FROM trips WHERE id = ? AND user_id = ?').get(tripId, userId),
-  };
-  return { testDb: db, dbMock: mock };
+vi.mock('../../../src/db/database', async () => {
+  const { createSnapshotTestDb, buildDbMock } = await import('../../helpers/db-mock');
+  return buildDbMock(createSnapshotTestDb());
 });
 
-vi.mock('../../../src/db/database', () => dbMock);
-vi.mock('../../../src/config', () => ({
-  JWT_SECRET: 'test-jwt-secret-for-trek-testing-only',
-  ENCRYPTION_KEY: 'a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6a7b8c9d0e1f2a3b4c5d6a7b8c9d0e1f2',
-  updateJwtSecret: () => {},
-}));
-
-const { broadcastMock } = vi.hoisted(() => ({ broadcastMock: vi.fn() }));
-vi.mock('../../../src/websocket', () => ({ broadcast: broadcastMock }));
-
-import { createTables } from '../../../src/db/schema';
-import { runMigrations } from '../../../src/db/migrations';
-import { resetTestDb } from '../../helpers/test-db';
-import { createUser, createTrip, createTodoItem } from '../../helpers/factories';
-import { createMcpHarness, parseToolResult, type McpHarness } from '../../helpers/mcp-harness';
-
-beforeAll(() => {
-  createTables(testDb);
-  runMigrations(testDb);
-});
+const realtime = new FakeRealtimeService();
+const broadcastMock = realtime.broadcastMock;
 
 beforeEach(() => {
   resetTestDb(testDb);
@@ -51,13 +37,24 @@ beforeEach(() => {
   delete process.env.DEMO_MODE;
 });
 
-afterAll(() => {
+let orm: TestOrm;
+
+beforeAll(async () => {
+  orm = await createTestOrm(testDb);
+});
+
+afterAll(async () => {
+  await orm.close();
   testDb.close();
 });
 
 async function withHarness(userId: number, fn: (h: McpHarness) => Promise<void>) {
-  const h = await createMcpHarness({ userId, withResources: false });
-  try { await fn(h); } finally { await h.cleanup(); }
+  const h = await createMcpHarness({ realtime, userId, withResources: false });
+  try {
+    await fn(h);
+  } finally {
+    await h.cleanup();
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -195,8 +192,7 @@ describe('Tool: update_todo', () => {
   it('clears due_date when passed null', async () => {
     const { user } = createUser(testDb);
     const trip = createTrip(testDb, user.id);
-    testDb.prepare("INSERT INTO todo_items (trip_id, name, checked, sort_order, due_date) VALUES (?, 'Task', 0, 0, '2025-01-01')").run(trip.id);
-    const item = testDb.prepare('SELECT * FROM todo_items WHERE trip_id = ? ORDER BY id DESC LIMIT 1').get(trip.id) as any;
+    const item = await makeTodoItem(orm, trip.id, { name: 'Task', checked: 0, sort_order: 0, due_date: '2025-01-01' });
     await withHarness(user.id, async (h) => {
       const result = await h.client.callTool({
         name: 'update_todo',
@@ -212,7 +208,10 @@ describe('Tool: update_todo', () => {
     const trip = createTrip(testDb, user.id);
     const item = createTodoItem(testDb, trip.id);
     await withHarness(user.id, async (h) => {
-      await h.client.callTool({ name: 'update_todo', arguments: { tripId: trip.id, itemId: item.id, name: 'Updated' } });
+      await h.client.callTool({
+        name: 'update_todo',
+        arguments: { tripId: trip.id, itemId: item.id, name: 'Updated' },
+      });
       expect(broadcastMock).toHaveBeenCalledWith(trip.id, 'todo:updated', expect.any(Object));
     });
   });
@@ -221,7 +220,10 @@ describe('Tool: update_todo', () => {
     const { user } = createUser(testDb);
     const trip = createTrip(testDb, user.id);
     await withHarness(user.id, async (h) => {
-      const result = await h.client.callTool({ name: 'update_todo', arguments: { tripId: trip.id, itemId: 99999, name: 'X' } });
+      const result = await h.client.callTool({
+        name: 'update_todo',
+        arguments: { tripId: trip.id, itemId: 99999, name: 'X' },
+      });
       expect(result.isError).toBe(true);
     });
   });
@@ -232,7 +234,10 @@ describe('Tool: update_todo', () => {
     const trip = createTrip(testDb, other.id);
     const item = createTodoItem(testDb, trip.id);
     await withHarness(user.id, async (h) => {
-      const result = await h.client.callTool({ name: 'update_todo', arguments: { tripId: trip.id, itemId: item.id, name: 'X' } });
+      const result = await h.client.callTool({
+        name: 'update_todo',
+        arguments: { tripId: trip.id, itemId: item.id, name: 'X' },
+      });
       expect(result.isError).toBe(true);
     });
   });
@@ -285,7 +290,10 @@ describe('Tool: toggle_todo', () => {
     const { user } = createUser(testDb);
     const trip = createTrip(testDb, user.id);
     await withHarness(user.id, async (h) => {
-      const result = await h.client.callTool({ name: 'toggle_todo', arguments: { tripId: trip.id, itemId: 99999, checked: true } });
+      const result = await h.client.callTool({
+        name: 'toggle_todo',
+        arguments: { tripId: trip.id, itemId: 99999, checked: true },
+      });
       expect(result.isError).toBe(true);
     });
   });
@@ -304,7 +312,7 @@ describe('Tool: delete_todo', () => {
       const result = await h.client.callTool({ name: 'delete_todo', arguments: { tripId: trip.id, itemId: item.id } });
       const data = parseToolResult(result) as any;
       expect(data.success).toBe(true);
-      expect(testDb.prepare('SELECT id FROM todo_items WHERE id = ?').get(item.id)).toBeUndefined();
+      expect(await findRow(orm, TodoItems, { id: item.id })).toBeNull();
     });
   });
 
@@ -357,8 +365,13 @@ describe('Tool: reorder_todos', () => {
       const data = parseToolResult(result) as any;
       expect(data.success).toBe(true);
       // item2 should now have sort_order 0
-      const updated = testDb.prepare('SELECT sort_order FROM todo_items WHERE id = ?').get(item2.id) as any;
-      expect(updated.sort_order).toBe(0);
+      const updated = await findRow(orm, TodoItems, { id: item2.id });
+      expect(updated?.sort_order).toBe(0);
+      // Every open list, the asking tab's too, takes the new order live.
+      expect(broadcastMock).toHaveBeenCalledWith(trip.id, 'todo:reordered', {
+        orderedIds: [item2.id, item1.id],
+        _source: 'mcp',
+      });
     });
   });
 
@@ -367,7 +380,10 @@ describe('Tool: reorder_todos', () => {
     const { user: other } = createUser(testDb);
     const trip = createTrip(testDb, other.id);
     await withHarness(user.id, async (h) => {
-      const result = await h.client.callTool({ name: 'reorder_todos', arguments: { tripId: trip.id, orderedIds: [1] } });
+      const result = await h.client.callTool({
+        name: 'reorder_todos',
+        arguments: { tripId: trip.id, orderedIds: [1] },
+      });
       expect(result.isError).toBe(true);
     });
   });
@@ -412,7 +428,7 @@ describe('Tool: set_todo_category_assignees', () => {
     const { user } = createUser(testDb);
     const trip = createTrip(testDb, user.id);
     // Set then clear
-    testDb.prepare('INSERT INTO todo_category_assignees (trip_id, category_name, user_id) VALUES (?, ?, ?)').run(trip.id, 'Booking', user.id);
+    await insertRow(orm, TodoCategoryAssignees, { trip: trip.id, category_name: 'Booking', user: user.id });
     await withHarness(user.id, async (h) => {
       const result = await h.client.callTool({
         name: 'set_todo_category_assignees',
@@ -433,6 +449,111 @@ describe('Tool: set_todo_category_assignees', () => {
         arguments: { tripId: trip.id, categoryName: 'Test', userIds: [] },
       });
       expect(result.isError).toBe(true);
+    });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Scope gating (todos read/write, registration-time)
+// ---------------------------------------------------------------------------
+
+describe('Todo tools — scope gating', () => {
+  const READ_TOOLS = ['list_todos', 'get_todo_category_assignees'];
+  const WRITE_TOOLS = [
+    'create_todo',
+    'update_todo',
+    'toggle_todo',
+    'delete_todo',
+    'reorder_todos',
+    'set_todo_category_assignees',
+  ];
+
+  async function listToolNames(userId: number, scopes: string[] | null): Promise<string[]> {
+    const h = await createMcpHarness({ realtime, userId, withResources: false, scopes });
+    try {
+      return (await h.client.listTools()).tools.map((t) => t.name);
+    } finally {
+      await h.cleanup();
+    }
+  }
+
+  it('registers all eight tools with null scopes (full access)', async () => {
+    const { user } = createUser(testDb);
+    const names = await listToolNames(user.id, null);
+    for (const tool of [...READ_TOOLS, ...WRITE_TOOLS]) expect(names).toContain(tool);
+  });
+
+  it('registers only the read tools with todos:read', async () => {
+    const { user } = createUser(testDb);
+    const names = await listToolNames(user.id, ['todos:read']);
+    for (const tool of READ_TOOLS) expect(names).toContain(tool);
+    for (const tool of WRITE_TOOLS) expect(names).not.toContain(tool);
+  });
+
+  it('registers no todo tools for an unrelated scope', async () => {
+    const { user } = createUser(testDb);
+    const names = await listToolNames(user.id, ['budget:read']);
+    for (const tool of [...READ_TOOLS, ...WRITE_TOOLS]) expect(names).not.toContain(tool);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Addon gating (packing addon, the legacy whole-registrar early return —
+// now the `when` predicate on every TodoMcp entry)
+// ---------------------------------------------------------------------------
+
+describe('Todo tools — packing addon gating', () => {
+  it('registers nothing (tools or resource) when the packing addon is disabled', async () => {
+    const { user } = createUser(testDb);
+    const trip = createTrip(testDb, user.id);
+    await setAddonEnabled(orm, ADDON_IDS.PACKING, false);
+    try {
+      await withHarness(user.id, async (h) => {
+        const names = (await h.client.listTools()).tools.map((t) => t.name);
+        expect(names).not.toContain('list_todos');
+        expect(names).not.toContain('create_todo');
+        await expect(h.client.readResource({ uri: `trek://trips/${trip.id}/todos` })).rejects.toThrow();
+      });
+    } finally {
+      await setAddonEnabled(orm, ADDON_IDS.PACKING, true);
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// trek://trips/{tripId}/todos resource (moved from the legacy registerResources)
+// ---------------------------------------------------------------------------
+
+describe('Resource: trek://trips/{tripId}/todos', () => {
+  it('returns the trip todos ordered by position', async () => {
+    const { user } = createUser(testDb);
+    const trip = createTrip(testDb, user.id);
+    createTodoItem(testDb, trip.id, { name: 'First' });
+    createTodoItem(testDb, trip.id, { name: 'Second' });
+    await withHarness(user.id, async (h) => {
+      const result = await h.client.readResource({ uri: `trek://trips/${trip.id}/todos` });
+      const items = parseResourceResult(result) as any[];
+      expect(items).toHaveLength(2);
+      expect(items[0].name).toBe('First');
+      expect(items[1].name).toBe('Second');
+    });
+  });
+
+  it('returns the access-denied payload for a non-member', async () => {
+    const { user } = createUser(testDb);
+    const { user: other } = createUser(testDb);
+    const trip = createTrip(testDb, other.id);
+    await withHarness(user.id, async (h) => {
+      const result = await h.client.readResource({ uri: `trek://trips/${trip.id}/todos` });
+      expect(parseResourceResult(result)).toEqual({ error: 'Trip not found or access denied' });
+    });
+  });
+
+  it('returns the access-denied payload for a malformed trip id', async () => {
+    const { user } = createUser(testDb);
+    await withHarness(user.id, async (h) => {
+      const result = await h.client.readResource({ uri: 'trek://trips/not-a-number/todos' });
+      expect(parseResourceResult(result)).toEqual({ error: 'Trip not found or access denied' });
     });
   });
 });

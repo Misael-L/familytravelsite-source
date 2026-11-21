@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router'
 import { helpApi, type HelpNavSection, type HelpPageData } from '../../api/client'
-import { asHelpPage, asHelpSections } from './helpModel'
 
 /** State + data loading for the in-app help wiki (see PATTERN.md). */
 export function useHelp() {
@@ -15,9 +14,7 @@ export function useHelp() {
   const contentRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    helpApi.index()
-      .then((d) => setSections(asHelpSections(d?.sections)))
-      .catch(() => setSections([]))
+    helpApi.index().then((d) => setSections(d.sections)).catch(() => setSections([]))
   }, [])
 
   const homeSlug = sections[0]?.pages[0]?.slug ?? 'Home'
@@ -31,14 +28,7 @@ export function useHelp() {
       .page(activeSlug)
       .then((p) => {
         if (!alive) return
-        const parsed = asHelpPage(p)
-        if (!parsed) {
-          setPage(null)
-          setPageError(true)
-          setLoading(false)
-          return
-        }
-        setPage(parsed)
+        setPage(p)
         setLoading(false)
       })
       .catch(() => {

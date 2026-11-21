@@ -1,5 +1,5 @@
-// FE-ADMIN-PKG-001 to FE-ADMIN-PKG-020
-import { render, screen, waitFor } from '../../../tests/helpers/render';
+// FE-ADMIN-PKG-001 to FE-ADMIN-PKG-032
+import { render, screen, waitFor, within } from '../../../tests/helpers/render';
 import userEvent from '@testing-library/user-event';
 import { http, HttpResponse } from 'msw';
 import { server } from '../../../tests/helpers/msw/server';
@@ -17,6 +17,29 @@ const item2 = { id: 101, category_id: 10, name: 'Shorts', sort_order: 1 }
 beforeEach(() => {
   resetAllStores();
 });
+
+/** Template rows carry [chevron, name, edit, delete]; category headers [add item, edit, delete]. */
+function rowButtons(name: string, selector: string): HTMLElement[] {
+  const row = screen.getByText(name).closest(selector) as HTMLElement;
+  return within(row).getAllByRole('button');
+}
+
+const templateButtons = (name: string) => rowButtons(name, '[data-row="template"]');
+const categoryButtons = (name: string) => rowButtons(name, '[data-row="category"]');
+const itemButtons = (name: string) => rowButtons(name, '[data-row="item"]');
+
+/** Answers the confirm dialog a template or category delete opens; its button is the last 'Delete' on the page. */
+async function confirmDelete(user: ReturnType<typeof userEvent.setup>) {
+  const buttons = await screen.findAllByRole('button', { name: 'Delete' });
+  await user.click(buttons[buttons.length - 1]);
+}
+
+/** Expands the single fixture template and waits for its content. */
+async function expandBeachTrip(user: ReturnType<typeof userEvent.setup>, firstChild: string) {
+  await screen.findByText('Beach Trip');
+  await user.click(screen.getByText('Beach Trip'));
+  await screen.findByText(firstChild);
+}
 
 describe('PackingTemplateManager', () => {
   it('FE-ADMIN-PKG-001: shows loading spinner on mount', async () => {
@@ -46,7 +69,7 @@ describe('PackingTemplateManager', () => {
     await screen.findByText('Beach Trip');
     expect(screen.getByText('City Break')).toBeInTheDocument();
     // tmpl1 has 2 categories and 5 items
-    expect(screen.getByText(/2 categories · 5 items/i)).toBeInTheDocument();
+    expect(screen.getByText(/2 categories, 5 items/i)).toBeInTheDocument();
   });
 
   it('FE-ADMIN-PKG-004: clicking "+" shows create input', async () => {
@@ -154,23 +177,11 @@ describe('PackingTemplateManager', () => {
     await screen.findByText('Beach Trip');
     expect(screen.getByText('City Break')).toBeInTheDocument();
 
-    // Find all Trash2 (delete) buttons — there are 2 (one per template)
-    const deleteButtons = screen.getAllByRole('button').filter(b =>
-      b.className.includes('hover:bg-red-50') || b.querySelector('svg')
-    );
-    // Click the delete button for "Beach Trip" (first template row's trash button)
-    // The buttons layout in each row: [chevron, edit, delete]
-    // We find rows first
-    const beachTripRow = screen.getByText('Beach Trip').closest('div');
-    const trashBtn = beachTripRow!.parentElement!.querySelector('button.hover\\:bg-red-50') as HTMLElement | null;
-    if (trashBtn) {
-      await user.click(trashBtn);
-    } else {
-      // Fallback: find all red-hover buttons and click first
-      const allBtns = screen.getAllByRole('button');
-      const redBtns = allBtns.filter(b => b.className.includes('hover:bg-red-50'));
-      await user.click(redBtns[0]);
-    }
+    // Template rows carry [chevron, name, edit, delete]
+    await user.click(templateButtons('Beach Trip')[3]);
+    expect(deleteCalled).toBe(false);
+    expect(screen.getByText('Delete the template "Beach Trip" with all its categories and items?')).toBeInTheDocument();
+    await confirmDelete(user);
     await waitFor(() => expect(deleteCalled).toBe(true));
     await waitFor(() => expect(screen.queryByText('Beach Trip')).not.toBeInTheDocument());
     expect(screen.getByText('City Break')).toBeInTheDocument();
@@ -192,18 +203,7 @@ describe('PackingTemplateManager', () => {
     render(<PackingTemplateManager />);
     await screen.findByText('Beach Trip');
 
-    // Find the Edit2 button on the template row
-    const beachTripText = screen.getByText('Beach Trip');
-    const row = beachTripText.closest('div')!.parentElement!;
-    const editBtn = row.querySelector('button.hover\\:bg-slate-100') as HTMLElement | null;
-    if (editBtn) {
-      await user.click(editBtn);
-    } else {
-      // Fallback: find all slate-100-hover buttons
-      const allBtns = screen.getAllByRole('button');
-      const editBtns = allBtns.filter(b => b.className.includes('hover:bg-slate-100'));
-      await user.click(editBtns[0]);
-    }
+    await user.click(templateButtons('Beach Trip')[2]);
 
     const input = screen.getByDisplayValue('Beach Trip');
     await user.clear(input);
@@ -233,7 +233,7 @@ describe('PackingTemplateManager', () => {
     await user.click(screen.getByText('Add category'));
     const catInput = screen.getByPlaceholderText('Category name (e.g. Clothing)');
     await user.type(catInput, 'Electronics{Enter}');
-    await screen.findByText('Electronics');
+    expect(await screen.findByText('Electronics')).toBeInTheDocument();
   });
 
   it('FE-ADMIN-PKG-012: adding an item to a category', async () => {
@@ -263,7 +263,7 @@ describe('PackingTemplateManager', () => {
     await user.type(itemInput, 'Sandals');
     // Submit via Enter key (the input's onKeyDown handler triggers handleAddItem)
     await user.type(itemInput, '{Enter}');
-    await screen.findByText('Sandals');
+    expect(await screen.findByText('Sandals')).toBeInTheDocument();
   });
 
   it('FE-ADMIN-PKG-013: renaming a category inline updates its name', async () => {
@@ -284,18 +284,13 @@ describe('PackingTemplateManager', () => {
     await user.click(screen.getByText('Beach Trip'));
     await screen.findByText('Clothing');
 
-    // Find the Edit2 button in the Clothing category header
-    const clothingHeader = screen.getByText('Clothing').closest('div')!;
-    const editBtns = Array.from(clothingHeader.querySelectorAll('button')).filter(
-      b => b.className.includes('hover:text-slate-700')
-    );
-    // Second button (after Plus) is Edit2
-    await user.click(editBtns[1]);
+    // Category headers carry [add item, edit, delete]
+    await user.click(categoryButtons('Clothing')[1]);
 
     const catInput = screen.getByDisplayValue('Clothing');
     await user.clear(catInput);
     await user.type(catInput, 'Shoes{Enter}');
-    await screen.findByText('Shoes');
+    expect(await screen.findByText('Shoes')).toBeInTheDocument();
   });
 
   it('FE-ADMIN-PKG-014: deleting a category removes it and its items', async () => {
@@ -317,10 +312,9 @@ describe('PackingTemplateManager', () => {
     await screen.findByText('Clothing');
     expect(screen.getByText('T-shirt')).toBeInTheDocument();
 
-    // Find the Trash2 button in the Clothing category header
-    const clothingHeader = screen.getByText('Clothing').closest('div')!;
-    const trashBtn = clothingHeader.querySelector('button.hover\\:text-red-500') as HTMLElement;
-    await user.click(trashBtn);
+    await user.click(categoryButtons('Clothing')[2]);
+    expect(screen.getByText('T-shirt')).toBeInTheDocument();
+    await confirmDelete(user);
 
     await waitFor(() => {
       expect(screen.queryByText('Clothing')).not.toBeInTheDocument();
@@ -346,23 +340,13 @@ describe('PackingTemplateManager', () => {
     await user.click(screen.getByText('Beach Trip'));
     await screen.findByText('T-shirt');
 
-    // Find the Edit2 button in the T-shirt item row (opacity-0 group-hover buttons)
-    const itemRow = screen.getByText('T-shirt').closest('div')!;
-    const editBtn = Array.from(itemRow.querySelectorAll('button')).find(
-      b => b.className.includes('opacity-0')
-    ) as HTMLElement | undefined;
-    if (editBtn) {
-      await user.click(editBtn);
-    } else {
-      // Directly click the first button in the item row
-      const btns = itemRow.querySelectorAll('button');
-      await user.click(btns[0] as HTMLElement);
-    }
+    // Item rows carry [edit, delete]
+    await user.click(itemButtons('T-shirt')[0]);
 
     const input = screen.getByDisplayValue('T-shirt');
     await user.clear(input);
     await user.type(input, 'Tank Top{Enter}');
-    await screen.findByText('Tank Top');
+    expect(await screen.findByText('Tank Top')).toBeInTheDocument();
   });
 
   it('FE-ADMIN-PKG-016: deleting an item removes it from the list', async () => {
@@ -384,14 +368,7 @@ describe('PackingTemplateManager', () => {
     await screen.findByText('T-shirt');
     expect(screen.getByText('Shorts')).toBeInTheDocument();
 
-    // Find the Trash2 button in the T-shirt row
-    const itemRow = screen.getByText('T-shirt').closest('div')!;
-    const trashBtns = Array.from(itemRow.querySelectorAll('button')).filter(
-      b => b.className.includes('opacity-0')
-    );
-    // Second opacity-0 button is the delete (trash) button
-    const trashBtn = trashBtns[1] || trashBtns[0];
-    await user.click(trashBtn as HTMLElement);
+    await user.click(itemButtons('T-shirt')[1]);
 
     await waitFor(() => expect(screen.queryByText('T-shirt')).not.toBeInTheDocument());
     expect(screen.getByText('Shorts')).toBeInTheDocument();
@@ -472,16 +449,7 @@ describe('PackingTemplateManager', () => {
     render(<PackingTemplateManager />);
     await screen.findByText('Beach Trip');
 
-    const beachTripText = screen.getByText('Beach Trip');
-    const row = beachTripText.closest('div')!.parentElement!;
-    const editBtn = row.querySelector('button.hover\\:bg-slate-100') as HTMLElement | null;
-    if (editBtn) {
-      await user.click(editBtn);
-    } else {
-      const allBtns = screen.getAllByRole('button');
-      const editBtns = allBtns.filter(b => b.className.includes('hover:bg-slate-100'));
-      await user.click(editBtns[0]);
-    }
+    await user.click(templateButtons('Beach Trip')[2]);
 
     const input = screen.getByDisplayValue('Beach Trip');
     await user.type(input, '{Escape}');
@@ -507,5 +475,300 @@ describe('PackingTemplateManager', () => {
     await waitFor(() =>
       expect(screen.queryByPlaceholderText('Template name (e.g. Beach Holiday)')).not.toBeInTheDocument()
     );
+  });
+
+  it('FE-ADMIN-PKG-021: a failing template list toasts and shows the empty state', async () => {
+    server.use(http.get('/api/admin/packing-templates', () => HttpResponse.error()));
+    render(<><ToastContainer /><PackingTemplateManager /></>);
+
+    expect(await screen.findByText('Failed to load templates')).toBeInTheDocument();
+    expect(screen.getByText('No templates created yet')).toBeInTheDocument();
+  });
+
+  it('FE-ADMIN-PKG-022: a failing expand toasts and leaves the template without content', async () => {
+    const user = userEvent.setup();
+    server.use(
+      http.get('/api/admin/packing-templates', () => HttpResponse.json({ templates: [tmpl1] })),
+      http.get('/api/admin/packing-templates/1', () => HttpResponse.error()),
+    );
+    render(<><ToastContainer /><PackingTemplateManager /></>);
+    await screen.findByText('Beach Trip');
+
+    await user.click(screen.getByText('Beach Trip'));
+
+    expect(await screen.findByText('Failed to load templates')).toBeInTheDocument();
+    expect(screen.getByText('Add category')).toBeInTheDocument();
+  });
+
+  it('FE-ADMIN-PKG-023: an empty name is not submitted and a failing create toasts', async () => {
+    const user = userEvent.setup();
+    let posts = 0;
+    server.use(
+      http.post('/api/admin/packing-templates', () => {
+        posts += 1;
+        return HttpResponse.json({ error: 'nope' }, { status: 500 });
+      }),
+    );
+    render(<><ToastContainer /><PackingTemplateManager /></>);
+    await screen.findByText('No templates created yet');
+
+    await user.click(screen.getByRole('button', { name: /new template/i }));
+    const input = screen.getByPlaceholderText('Template name (e.g. Beach Holiday)');
+    await user.type(input, '   {Enter}');
+    expect(posts).toBe(0);
+
+    await user.clear(input);
+    await user.type(input, 'Ski trip{Enter}');
+    expect(await screen.findByText('Failed to create template')).toBeInTheDocument();
+    expect(posts).toBe(1);
+  });
+
+  it('FE-ADMIN-PKG-024: deleting the expanded template collapses it, a failing delete toasts', async () => {
+    const user = userEvent.setup();
+    let calls = 0;
+    server.use(
+      http.get('/api/admin/packing-templates', () => HttpResponse.json({ templates: [tmpl1] })),
+      http.get('/api/admin/packing-templates/1', () => HttpResponse.json({ categories: [cat1], items: [item1] })),
+      http.delete('/api/admin/packing-templates/1', () => {
+        calls += 1;
+        return calls === 1
+          ? HttpResponse.json({ error: 'in use' }, { status: 500 })
+          : HttpResponse.json({ success: true });
+      }),
+    );
+    render(<><ToastContainer /><PackingTemplateManager /></>);
+    await expandBeachTrip(user, 'Clothing');
+
+    await user.click(templateButtons('Beach Trip')[3]);
+    await confirmDelete(user);
+    expect(await screen.findByText('Failed to delete template')).toBeInTheDocument();
+    expect(screen.getByText('Clothing')).toBeInTheDocument();
+
+    await user.click(templateButtons('Beach Trip')[3]);
+    await confirmDelete(user);
+    await screen.findByText('Template deleted');
+    await waitFor(() => expect(screen.queryByText('Clothing')).not.toBeInTheDocument());
+    expect(screen.getByText('No templates created yet')).toBeInTheDocument();
+  });
+
+  it('FE-ADMIN-PKG-025: a blank rename closes the editor, a failing rename toasts, blur commits', async () => {
+    const user = userEvent.setup();
+    let puts = 0;
+    server.use(
+      http.get('/api/admin/packing-templates', () => HttpResponse.json({ templates: [tmpl1] })),
+      http.put('/api/admin/packing-templates/1', () => {
+        puts += 1;
+        return HttpResponse.json({ error: 'nope' }, { status: 500 });
+      }),
+    );
+    render(<><ToastContainer /><PackingTemplateManager /></>);
+    await screen.findByText('Beach Trip');
+
+    await user.click(templateButtons('Beach Trip')[2]);
+    await user.clear(screen.getByDisplayValue('Beach Trip'));
+    await user.type(screen.getByRole('textbox'), '{Enter}');
+    await waitFor(() => expect(screen.getByText('Beach Trip')).toBeInTheDocument());
+    expect(puts).toBe(0);
+
+    // Blurring the field commits the pending name — here the request fails
+    await user.click(templateButtons('Beach Trip')[2]);
+    const input = screen.getByDisplayValue('Beach Trip');
+    await user.clear(input);
+    await user.type(input, 'Winter');
+    await user.tab();
+    expect(await screen.findByText('Failed to save')).toBeInTheDocument();
+    expect(puts).toBe(1);
+  });
+
+  it('FE-ADMIN-PKG-026: a blank category is not posted, a failing add toasts and X cancels', async () => {
+    const user = userEvent.setup();
+    let posts = 0;
+    server.use(
+      http.get('/api/admin/packing-templates', () => HttpResponse.json({ templates: [tmpl1] })),
+      http.get('/api/admin/packing-templates/1', () => HttpResponse.json({ categories: [], items: [] })),
+      http.post('/api/admin/packing-templates/1/categories', () => {
+        posts += 1;
+        return HttpResponse.json({ error: 'nope' }, { status: 500 });
+      }),
+    );
+    render(<><ToastContainer /><PackingTemplateManager /></>);
+    await expandBeachTrip(user, 'Add category');
+
+    await user.click(screen.getByText('Add category'));
+    const catInput = screen.getByPlaceholderText('Category name (e.g. Clothing)');
+    await user.type(catInput, '  {Enter}');
+    expect(posts).toBe(0);
+
+    await user.clear(catInput);
+    await user.type(catInput, 'Electronics{Enter}');
+    expect(await screen.findByText('Failed to save')).toBeInTheDocument();
+
+    const cancel = within(catInput.parentElement as HTMLElement).getAllByRole('button')[1];
+    await user.click(cancel);
+    await waitFor(() =>
+      expect(screen.queryByPlaceholderText('Category name (e.g. Clothing)')).not.toBeInTheDocument(),
+    );
+  });
+
+  it('FE-ADMIN-PKG-027: a blank category rename closes the editor and a failing rename toasts', async () => {
+    const user = userEvent.setup();
+    let puts = 0;
+    server.use(
+      http.get('/api/admin/packing-templates', () => HttpResponse.json({ templates: [tmpl1] })),
+      http.get('/api/admin/packing-templates/1', () => HttpResponse.json({ categories: [cat1], items: [] })),
+      http.put('/api/admin/packing-templates/1/categories/10', () => {
+        puts += 1;
+        return HttpResponse.json({ error: 'nope' }, { status: 500 });
+      }),
+    );
+    render(<><ToastContainer /><PackingTemplateManager /></>);
+    await expandBeachTrip(user, 'Clothing');
+
+    await user.click(categoryButtons('Clothing')[1]);
+    await user.clear(screen.getByDisplayValue('Clothing'));
+    await user.tab();
+    await waitFor(() => expect(screen.getByText('Clothing')).toBeInTheDocument());
+    expect(puts).toBe(0);
+
+    await user.click(categoryButtons('Clothing')[1]);
+    const catInput = screen.getByDisplayValue('Clothing');
+    await user.clear(catInput);
+    await user.type(catInput, 'Shoes{Enter}');
+    expect(await screen.findByText('Failed to save')).toBeInTheDocument();
+    expect(puts).toBe(1);
+  });
+
+  it('FE-ADMIN-PKG-028: a failing category delete toasts and keeps the category', async () => {
+    const user = userEvent.setup();
+    server.use(
+      http.get('/api/admin/packing-templates', () => HttpResponse.json({ templates: [tmpl1] })),
+      http.get('/api/admin/packing-templates/1', () => HttpResponse.json({ categories: [cat1], items: [item1] })),
+      http.delete('/api/admin/packing-templates/1/categories/10', () => HttpResponse.error()),
+    );
+    render(<><ToastContainer /><PackingTemplateManager /></>);
+    await expandBeachTrip(user, 'Clothing');
+
+    await user.click(categoryButtons('Clothing')[2]);
+    await confirmDelete(user);
+
+    expect(await screen.findByText('Failed to delete category')).toBeInTheDocument();
+    expect(screen.getByText('Clothing')).toBeInTheDocument();
+    expect(screen.getByText('T-shirt')).toBeInTheDocument();
+  });
+
+  it('FE-ADMIN-PKG-029: the add-item button posts the item, a failing add toasts and X closes the row', async () => {
+    const user = userEvent.setup();
+    let posts = 0;
+    server.use(
+      http.get('/api/admin/packing-templates', () => HttpResponse.json({ templates: [tmpl1] })),
+      http.get('/api/admin/packing-templates/1', () => HttpResponse.json({ categories: [cat1], items: [] })),
+      http.post('/api/admin/packing-templates/1/categories/10/items', () => {
+        posts += 1;
+        return posts === 1
+          ? HttpResponse.json({ item: { id: 102, category_id: 10, name: 'Sandals', sort_order: 0 } })
+          : HttpResponse.json({ error: 'nope' }, { status: 500 });
+      }),
+    );
+    render(<><ToastContainer /><PackingTemplateManager /></>);
+    await expandBeachTrip(user, 'Clothing');
+
+    await user.click(categoryButtons('Clothing')[0]);
+    const itemInput = screen.getByPlaceholderText('Item name');
+    const addRow = itemInput.parentElement as HTMLElement;
+    expect(within(addRow).getAllByRole('button')[0]).toBeDisabled();
+
+    await user.type(itemInput, 'Sandals');
+    await user.click(within(addRow).getAllByRole('button')[0]);
+    await screen.findByText('Sandals');
+
+    await user.type(screen.getByPlaceholderText('Item name'), 'Towel');
+    await user.click(within(addRow).getAllByRole('button')[0]);
+    expect(await screen.findByText('Failed to save')).toBeInTheDocument();
+
+    await user.click(within(addRow).getAllByRole('button')[1]);
+    await waitFor(() => expect(screen.queryByPlaceholderText('Item name')).not.toBeInTheDocument());
+  });
+
+  it('FE-ADMIN-PKG-030: the item editor commits on the check button, cancels on X and ignores a blank name', async () => {
+    const user = userEvent.setup();
+    let puts = 0;
+    server.use(
+      http.get('/api/admin/packing-templates', () => HttpResponse.json({ templates: [tmpl1] })),
+      http.get('/api/admin/packing-templates/1', () => HttpResponse.json({ categories: [cat1], items: [item1] })),
+      http.put('/api/admin/packing-templates/1/items/100', () => {
+        puts += 1;
+        return puts === 1
+          ? HttpResponse.json({ success: true })
+          : HttpResponse.json({ error: 'nope' }, { status: 500 });
+      }),
+    );
+    render(<><ToastContainer /><PackingTemplateManager /></>);
+    await expandBeachTrip(user, 'T-shirt');
+
+    // A blank name just closes the editor
+    await user.click(itemButtons('T-shirt')[0]);
+    const blank = screen.getByDisplayValue('T-shirt');
+    await user.clear(blank);
+    await user.click(within(blank.parentElement as HTMLElement).getAllByRole('button')[0]);
+    await waitFor(() => expect(screen.getByText('T-shirt')).toBeInTheDocument());
+    expect(puts).toBe(0);
+
+    // X discards the pending name
+    await user.click(itemButtons('T-shirt')[0]);
+    const editing = screen.getByDisplayValue('T-shirt');
+    await user.clear(editing);
+    await user.type(editing, 'Discarded');
+    await user.click(within(editing.parentElement as HTMLElement).getAllByRole('button')[1]);
+    await waitFor(() => expect(screen.getByText('T-shirt')).toBeInTheDocument());
+    expect(puts).toBe(0);
+
+    // The check button commits
+    await user.click(itemButtons('T-shirt')[0]);
+    const editing2 = screen.getByDisplayValue('T-shirt');
+    await user.clear(editing2);
+    await user.type(editing2, 'Tank Top');
+    await user.click(within(editing2.parentElement as HTMLElement).getAllByRole('button')[0]);
+    await screen.findByText('Tank Top');
+    expect(puts).toBe(1);
+
+    // A failing rename keeps the editor open and toasts
+    await user.click(itemButtons('Tank Top')[0]);
+    const editing3 = screen.getByDisplayValue('Tank Top');
+    await user.clear(editing3);
+    await user.type(editing3, 'Vest{Enter}');
+    expect(await screen.findByText('Failed to save')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('Vest')).toBeInTheDocument();
+  });
+
+  it('FE-ADMIN-PKG-031: a failing item delete toasts and keeps the item', async () => {
+    const user = userEvent.setup();
+    server.use(
+      http.get('/api/admin/packing-templates', () => HttpResponse.json({ templates: [tmpl1] })),
+      http.get('/api/admin/packing-templates/1', () => HttpResponse.json({ categories: [cat1], items: [item1] })),
+      http.delete('/api/admin/packing-templates/1/items/100', () => HttpResponse.error()),
+    );
+    render(<><ToastContainer /><PackingTemplateManager /></>);
+    await expandBeachTrip(user, 'T-shirt');
+
+    await user.click(itemButtons('T-shirt')[1]);
+
+    expect(await screen.findByText('Failed to delete item')).toBeInTheDocument();
+    expect(screen.getByText('T-shirt')).toBeInTheDocument();
+  });
+
+  it('FE-ADMIN-PKG-032: the chevron button expands and collapses the template', async () => {
+    const user = userEvent.setup();
+    server.use(
+      http.get('/api/admin/packing-templates', () => HttpResponse.json({ templates: [tmpl1] })),
+      http.get('/api/admin/packing-templates/1', () => HttpResponse.json({ categories: [cat1], items: [item1] })),
+    );
+    render(<PackingTemplateManager />);
+    await screen.findByText('Beach Trip');
+
+    await user.click(templateButtons('Beach Trip')[0]);
+    await screen.findByText('Clothing');
+
+    await user.click(templateButtons('Beach Trip')[0]);
+    await waitFor(() => expect(screen.queryByText('Clothing')).not.toBeInTheDocument());
   });
 });

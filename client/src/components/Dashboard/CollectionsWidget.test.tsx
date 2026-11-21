@@ -1,111 +1,100 @@
-import React from 'react'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { render, screen, waitFor } from '../../../tests/helpers/render'
-import { seedStore, resetAllStores } from '../../../tests/helpers/store'
-import { useAuthStore } from '../../store/authStore'
-import { collectionsApi } from '../../api/collections'
-import {
-  listFamilyListItems,
-  listFamilyLists,
-  signFamilyListCoverUrls,
-  type FamilyListItemRow,
-  type FamilyListRow,
-} from '../../data/supabase/familyLists'
-import CollectionsWidget from './CollectionsWidget'
+import React from 'react';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { http, HttpResponse } from 'msw';
+import { render, screen, fireEvent, waitFor } from '../../../tests/helpers/render';
+import { server } from '../../../tests/helpers/msw/server';
+import CollectionsWidget from './CollectionsWidget';
 
-vi.mock('../../api/collections', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../../api/collections')>()
-  return {
-    ...actual,
-    collectionsApi: {
-      ...actual.collectionsApi,
-      list: vi.fn(),
-    },
-  }
-})
+// FE-COMP-COLWIDGET-001 onwards
 
-vi.mock('../../data/supabase/familyLists', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../../data/supabase/familyLists')>()
-  return {
-    ...actual,
-    listFamilyLists: vi.fn(),
-    listFamilyListItems: vi.fn(),
-    signFamilyListCoverUrls: vi.fn(),
-  }
-})
-
-const nestHtml = '<!DOCTYPE html><html><body><div id="root"></div></body></html>'
-
-const familyList: FamilyListRow = {
-  id: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
-  family_id: 'fam-1',
-  name: 'Tokyo eats',
-  description: null,
-  color: '#14b8a6',
-  visibility: 'family',
-  sort_order: 0,
-  owner_person_id: 'p1',
-  archived_at: null,
-  created_at: '2026-01-01',
-  updated_at: '2026-01-01',
+function collections(list: unknown[]) {
+  server.use(http.get('/api/addons/collections', () => HttpResponse.json({ collections: list })));
 }
 
-const familyItem: FamilyListItemRow = {
-  id: 'item-1',
-  list_id: familyList.id,
-  item_kind: 'place',
-  status: 'want',
-  sort_order: 0,
-  name: 'Ramen',
-  notes: null,
-  country_id: null,
-  place_id: 'place-1',
-  experience_id: null,
-  hotel_id: null,
-  airport_id: null,
-  airline_id: null,
-  guide_id: null,
-  food_id: null,
-  added_at: null,
-}
+const list = (over: Record<string, unknown> = {}) => ({
+  id: 1, name: 'Tokyo eats', color: '#ff0000', cover_image: null, place_count: 12, ...over,
+});
+
+beforeEach(() => {
+  collections([]);
+});
 
 describe('CollectionsWidget', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-    resetAllStores()
-    vi.stubEnv('VITE_DATA_PLANE', 'nest')
-    vi.mocked(signFamilyListCoverUrls).mockResolvedValue({})
-    vi.mocked(listFamilyListItems).mockResolvedValue([])
-  })
+  it('FE-COMP-COLWIDGET-001: shows the empty hint once the fetch resolves', async () => {
+    render(<CollectionsWidget onOpen={() => {}} />);
 
-  it('does not crash when Nest/SPA fallback returns HTML instead of collections', async () => {
-    vi.mocked(collectionsApi.list).mockResolvedValue(nestHtml as never)
-    render(<CollectionsWidget onOpen={() => {}} />)
-    await waitFor(() => {
-      expect(screen.getByText(/no saved places yet/i)).toBeInTheDocument()
-    })
-  })
+    expect(await screen.findByText('No saved places yet')).toBeInTheDocument();
+    expect(screen.getByText('Collections')).toBeInTheDocument();
+  });
 
-  it('does not crash when the list payload omits collections', async () => {
-    vi.mocked(collectionsApi.list).mockResolvedValue({} as never)
-    render(<CollectionsWidget onOpen={() => {}} />)
-    await waitFor(() => {
-      expect(screen.getByText(/no saved places yet/i)).toBeInTheDocument()
-    })
-  })
+  it('FE-COMP-COLWIDGET-002: renders at most six badges with their counts', async () => {
+    collections([1, 2, 3, 4, 5, 6, 7].map(id => list({ id, name: `List ${id}`, place_count: id })));
+    render(<CollectionsWidget onOpen={() => {}} />);
 
-  it('loads family lists on the supabase plane and never hits Nest collections', async () => {
-    vi.stubEnv('VITE_DATA_PLANE', 'supabase')
-    seedStore(useAuthStore, { familyId: 'fam-1', personId: 'p1' })
-    vi.mocked(listFamilyLists).mockResolvedValue([familyList])
-    vi.mocked(listFamilyListItems).mockResolvedValue([familyItem])
+    expect(await screen.findByText('List 1')).toBeInTheDocument();
+    expect(screen.getByText('List 6')).toBeInTheDocument();
+    expect(screen.queryByText('List 7')).not.toBeInTheDocument();
+  });
 
-    render(<CollectionsWidget onOpen={() => {}} />)
+  it('FE-COMP-COLWIDGET-003: a list without a count renders a zero', async () => {
+    collections([list({ place_count: null })]);
+    render(<CollectionsWidget onOpen={() => {}} />);
 
-    await waitFor(() => {
-      expect(screen.getByText('Tokyo eats')).toBeInTheDocument()
-    })
-    expect(screen.getByText('1')).toBeInTheDocument()
-    expect(collectionsApi.list).not.toHaveBeenCalled()
-  })
-})
+    await screen.findByText('Tokyo eats');
+    expect(screen.getByText('0')).toBeInTheDocument();
+  });
+
+  it('FE-COMP-COLWIDGET-004: a cover image replaces the gradient tile', async () => {
+    collections([list({ cover_image: '/uploads/collections/1.jpg' })]);
+    const { container } = render(<CollectionsWidget onOpen={() => {}} />);
+
+    await screen.findByText('Tokyo eats');
+    expect(container.querySelector('img.col-badge-media')).toHaveAttribute('src', '/uploads/collections/1.jpg');
+  });
+
+  it('FE-COMP-COLWIDGET-005: a list without a colour falls back to the entity gradient', async () => {
+    collections([list({ color: null })]);
+    const { container } = render(<CollectionsWidget onOpen={() => {}} />);
+
+    await screen.findByText('Tokyo eats');
+    const media = container.querySelector('div.col-badge-media') as HTMLElement;
+    expect(media.style.backgroundImage).toContain('gradient');
+  });
+
+  it('FE-COMP-COLWIDGET-006: the header arrow runs the onOpen callback', async () => {
+    const onOpen = vi.fn();
+    render(<CollectionsWidget onOpen={onOpen} />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Collections' }));
+
+    expect(onOpen).toHaveBeenCalledTimes(1);
+  });
+
+  it('FE-COMP-COLWIDGET-007: a failing fetch degrades to the empty hint', async () => {
+    server.use(http.get('/api/addons/collections', () => new HttpResponse(null, { status: 500 })));
+    render(<CollectionsWidget onOpen={() => {}} />);
+
+    expect(await screen.findByText('No saved places yet')).toBeInTheDocument();
+  });
+
+  it('FE-COMP-COLWIDGET-008: only a placeholder shows while the fetch is still in flight', async () => {
+    const { container } = render(<CollectionsWidget onOpen={() => {}} />);
+
+    // Nothing remembered yet: the empty hint's shape, hidden from assistive tech, holds the place.
+    expect(container.querySelector('.col-empty.trek-skeleton')).toHaveAttribute('aria-hidden', 'true');
+    await waitFor(() => expect(container.querySelector('.trek-skeleton')).toBeNull());
+    expect(screen.getByText('No saved places yet')).toBeInTheDocument();
+  });
+
+  it('FE-COMP-COLWIDGET-009: #3009 holds the badges it showed last time while the lists load, then remembers the new count', async () => {
+    localStorage.setItem('trek_dash_collections_shown', '3');
+    collections([1, 2].map(id => list({ id, name: `List ${id}` })));
+    const { container } = render(<CollectionsWidget onOpen={() => {}} />);
+
+    expect(container.querySelectorAll('.col-badge-pending')).toHaveLength(3);
+    expect(await screen.findByText('List 1')).toBeInTheDocument();
+    expect(container.querySelectorAll('.col-badge-pending')).toHaveLength(0);
+    await waitFor(() => expect(localStorage.getItem('trek_dash_collections_shown')).toBe('2'));
+    localStorage.clear();
+  });
+});

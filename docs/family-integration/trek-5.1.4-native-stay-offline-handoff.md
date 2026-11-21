@@ -1,0 +1,33 @@
+# U05-B2b3c5 — offline creation and clock/calendar browser acceptance
+
+Status: local acceptance checkpoint, 14 November 2026, application parent `f3788b0439b72b396759df129230f23f018515d1`. No application or schema repair was necessary. Continue the remaining C5 section-4 acceptance; this is not complete C5, normal activation or a deployment.
+
+## What passed
+
+**17 new actual browser checkpoints** use the existing qualified generated App, real persistent Chrome IndexedDB and desktop/phone viewports. The seven offline checkpoints prove first Add while `navigator.onLine` is false, no execute request/database write before reconnect, repeated Save retaining the same command, changed desktop form refusing to replace that unresolved command, desktop reconnect completion and phone browser-close/reopen/retry completion. The retained whole original hash covers method, URL, Trip and complete nested body; stay and owned-arrival IDs are checked against that original after commit. Exactly two execute requests occurred, one per intentional Add. Both database stays have one untimed owned arrival with NULL appointment instants and zone. Four final browser profiles across six exact origins contain zero pending queue rows; a separate passive browser inspection read the real stores without booting the App or deleting anything.
+
+The ten clock/calendar checkpoints cover both layouts: manually typed seconds are preserved in the form and refused before retention/execution, an overnight check-in window is refused instead of being rewritten as same-day, and existing valid database stays with second precision, an overnight offset or off-calendar dates refuse lossy native publication and editing. All three existing-stay graphs remain byte-equivalent by normalized graph hashes. The complete raw read before/after each refusal is also identical. These are intentional unsupported native-editor cases, not lost database facts. They require a future expressive-editor decision before activation for affected Trips.
+
+Desktop displays the qualified public refusal; the unchanged native phone sheet displays its existing generic `Error` toast. The initial phone assertion incorrectly expected the desktop text, then a longer generic phrase. It was corrected to the actual upstream translation and all five phone cases passed. No product error was hidden or native layout changed. Phone-specific explanatory messaging remains a UX limitation, not proof of successful saving.
+
+## Exact artifact and test boundary
+
+The artifact was copied byte-for-byte from the preceding accepted combined-controls build. Its entry is `/assets/index-CdZ3H5Q4.js`, SHA256 `d3ff70d33741bb998757ce7405a19d72f3fc06ba87e799e8c24629219cdfbc1a`. All application sources remain exact to the parent. This packet does not claim new builds, typechecks or 1,267-case unit runs: those checks, the 19 previous browser checkpoints and secret/syntax scans are inherited from the sealed preceding checkpoint. This turn adds the 17 browser cases, read-only database/source preservation and 23 fresh isolation refusals. Rebuilding unchanged code was unnecessary.
+
+Both explicit local flags and exact API source `http://127.0.0.1:57171` remain required. The fixture uses signed synthetic Auth metadata/session rows, fixture `/auth/v1/user` and actual socket-only PostgREST/RLS; it does not prove GoTrue sign-in/refresh or gateway authentication. The compiled public anon credential is the prior fixture credential, while application session calls use the fresh signed fixture actor. External origins and `/render/image/` are aborted before network. Zero transformation attempts and zero uncaught page errors were recorded. No media bytes were loaded this turn; prior stored-variant decoding proof is inherited. Service workers were blocked, so this is retained-command/offline-network acceptance after App startup, not PWA cold-start acceptance or a physical phone test.
+
+## Preservation and retained environment
+
+All 324,419 original rows/240 COPY projections survive, including all 98 original NULL-owned visits. Canonical remains 136 migrations/317 migration-and-test sources with its mixed index unchanged. All 612 old routine bodies/owners/ACLs and the two already-qualified private calendar guards remain exact; there are zero ownership graph inconsistencies or retained native context rows. Twelve protected upstream 5.1.4 layouts, 103 prior evidence seals/7,575 members, all application/queue sources, package locks and the old clean 5.1.2 checkout remain exact. Source adoption remains 5.1.2 and its three pre-existing release holds are unchanged.
+
+Private stage: `/private/tmp/trek-u05b2b3c5-offline-20261114`. Accepted database: `/private/tmp/trek-u05b2b3c5-controls-20261114/rehearsal`, schema136. The retained pair was requalified from the previous exact stopped receipt before use; no regular stack was adopted. Only the owned relay/database/PostgREST services were stopped, retaining volumes/profiles and all 99 unrelated container states. The newest restart reference is this stage's `owned-fixture-stop.json`. The older schema135 reproduction fixture remains superseded. Recheck images/IDs/nonce/readiness/current synthetic expiry before reuse. Fresh Add tests need newly seeded empty-active-stay Trips and new browser origins/profiles; never clear existing commands to make a test pass.
+
+Sanitized scripts, receipts and exact document snapshots are sealed at `/Users/Misael/Desktop/FamilyTravelApp/docs/backend-modernization/evidence/u05b2b3c5-native-stay-offline-2026-11-14`. Raw restore data, credentials, full graph values and browser profile contents remain private. Canonical planning/evidence is outside its mixed index; the website checkpoint is a scoped local documentation commit.
+
+## Exact next
+
+Continue the same C5 section4 with actual generic visit/day controls around owned lodging arrivals, then delayed Direct-policy, Trip and source retirement while a command is waiting. Preserve the same original command, ownership constraints, publication fences and complete refresher; route or accurately refuse unsafe actions rather than weakening SQL. GoTrue/PWA acceptance remains explicitly unproved and normal/hosted controls gated. Once the combined C5 acceptance is complete, follow the existing saved/shared/ancillary and release-readiness plan. Independent complete database-plus-files recovery remains unproved.
+
+No production/preview/main/push/publication, hosted SQL/settings/billing, schema/dependency/qualification changes, backfill/sync, original backup/media/ignored ETL or transformation-setting operation.
+
+Continue [the same C5 packet](trek-5.1.4-native-stay-client-packet.md).

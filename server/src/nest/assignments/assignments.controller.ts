@@ -1,115 +1,131 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Headers,
-  HttpException,
-  Param,
-  Post,
-  Put,
-  UseGuards,
-} from '@nestjs/common';
 import type { User } from '../../types';
+import { CurrentUser } from '../auth-core/current-user.decorator';
+import { JwtAuthGuard } from '../auth-core/jwt-auth.guard';
+import { RequirePermission, TripAccessGuard } from '../permissions/trip-access.guard';
+import {
+  AssignmentCreateDto,
+  AssignmentReorderDto,
+  AssignmentMoveDto,
+  AssignmentTimeDto,
+  AssignmentEndDayDto,
+  AssignmentNotesDto,
+  AssignmentTransportDto,
+  AssignmentRouteDto,
+  AssignmentParticipantsDto,
+} from './assignments.dto';
 import { AssignmentsService } from './assignments.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { CurrentUser } from '../auth/current-user.decorator';
-
-type Trip = NonNullable<ReturnType<AssignmentsService['verifyTripAccess']>>;
-
-/** Shared trip-access guard (mirrors requireTripAccess → 404 "Trip not found"). */
-function requireTrip(svc: AssignmentsService, tripId: string, user: User): Trip {
-  const trip = svc.verifyTripAccess(tripId, user.id);
-  if (!trip) {
-    throw new HttpException({ error: 'Trip not found' }, 404);
-  }
-  return trip;
-}
-
-function requireEdit(svc: AssignmentsService, trip: Trip, user: User): void {
-  if (!svc.canEdit(trip, user)) {
-    throw new HttpException({ error: 'No permission' }, 403);
-  }
-}
+import { Body, Controller, Delete, Get, Headers, HttpException, Param, Post, Put, UseGuards } from '@nestjs/common';
 
 /**
  * /api/trips/:tripId/days/:dayId/assignments — the day's ordered itinerary items.
  *
- * Byte-identical to the legacy Express route (server/src/routes/assignments.ts):
- * trip access (404), 'day_edit' on mutations (403, GET is access-only), create
- * 201 / rest 200, the bespoke "Day not found" / "Place not found" / "Assignment
- * not found" bodies, the journey skeleton reconcile, and WebSocket broadcasts.
+ * Parity with the retired legacy Express route: trip access (404), 'day_edit'
+ * on mutations (403, GET is access-only), create 201 / rest 200, the bespoke
+ * "Day not found" / "Place not found" / "Assignment not found" bodies, the
+ * journey skeleton reconcile, and WebSocket broadcasts. Bodies are validated
+ * by the @trek/shared Zod contracts via assignments.dto.ts (global pipe).
  */
 @Controller('api/trips/:tripId/days/:dayId/assignments')
-@UseGuards(JwtAuthGuard)
+// TripAccessGuard resolves :tripId and 404s a trip the user cannot reach; mutations
+// add @RequirePermission('day_edit'), the same action string the service's canEdit
+// passes, so the HTTP and MCP paths cannot demand different rights.
+@UseGuards(JwtAuthGuard, TripAccessGuard)
 export class DayAssignmentsController {
   constructor(private readonly assignments: AssignmentsService) {}
 
   @Get()
-  list(@CurrentUser() user: User, @Param('tripId') tripId: string, @Param('dayId') dayId: string) {
-    requireTrip(this.assignments, tripId, user);
-    if (!this.assignments.dayExists(dayId, tripId)) {
+  async list(@CurrentUser() user: User, @Param('tripId') tripId: string, @Param('dayId') dayId: string) {
+    if (!(await this.assignments.dayExists(dayId, tripId))) {
       throw new HttpException({ error: 'Day not found' }, 404);
     }
-    return { assignments: this.assignments.listDayAssignments(dayId) };
+    return { assignments: await this.assignments.listDayAssignments(dayId) };
   }
 
+  @RequirePermission('day_edit')
   @Post()
-  create(
+  async create(
     @CurrentUser() user: User,
     @Param('tripId') tripId: string,
     @Param('dayId') dayId: string,
-    @Body() body: { place_id?: unknown; notes?: string | null },
+    @Body() body: AssignmentCreateDto,
     @Headers('x-socket-id') socketId?: string,
   ) {
-    const trip = requireTrip(this.assignments, tripId, user);
-    requireEdit(this.assignments, trip, user);
-    if (!this.assignments.dayExists(dayId, tripId)) {
+    if (!(await this.assignments.dayExists(dayId, tripId))) {
       throw new HttpException({ error: 'Day not found' }, 404);
     }
-    if (!this.assignments.placeExists(body.place_id, tripId)) {
+    if (!(await this.assignments.placeExists(body.place_id, tripId))) {
       throw new HttpException({ error: 'Place not found' }, 404);
     }
-    const assignment = this.assignments.createAssignment(dayId, body.place_id, body.notes);
+    const assignment = await this.assignments.createAssignment(dayId, body.place_id, body.notes, {
+      ...(body.tour_stage_key !== undefined ? { tourStageKey: body.tour_stage_key } : {}),
+    });
     this.assignments.broadcast(tripId, 'assignment:created', { assignment }, socketId);
-    this.assignments.reconcile(tripId, socketId);
+    await this.assignments.reconcile(tripId, socketId);
     return { assignment };
   }
 
+  @RequirePermission('day_edit')
   @Put('reorder')
-  reorder(
+  async reorder(
     @CurrentUser() user: User,
     @Param('tripId') tripId: string,
     @Param('dayId') dayId: string,
-    @Body('orderedIds') orderedIds: number[],
+    @Body() body: AssignmentReorderDto,
     @Headers('x-socket-id') socketId?: string,
   ) {
-    const trip = requireTrip(this.assignments, tripId, user);
-    requireEdit(this.assignments, trip, user);
-    if (!this.assignments.dayExists(dayId, tripId)) {
+    if (!(await this.assignments.dayExists(dayId, tripId))) {
       throw new HttpException({ error: 'Day not found' }, 404);
     }
-    this.assignments.reorderAssignments(dayId, orderedIds);
-    this.assignments.broadcast(tripId, 'assignment:reordered', { dayId: Number(dayId), orderedIds }, socketId);
+    await this.assignments.reorderAssignments(dayId, body.orderedIds);
+    this.assignments.broadcast(
+      tripId,
+      'assignment:reordered',
+      { dayId: Number(dayId), orderedIds: body.orderedIds },
+      socketId,
+    );
     return { success: true };
   }
 
+  // Declared before ':id' so the bare collection path is never read as an id (#2470).
+  @RequirePermission('day_edit')
+  @Delete()
+  async clear(
+    @CurrentUser() user: User,
+    @Param('tripId') tripId: string,
+    @Param('dayId') dayId: string,
+    @Headers('x-socket-id') socketId?: string,
+  ) {
+    if (!(await this.assignments.dayExists(dayId, tripId))) {
+      throw new HttpException({ error: 'Day not found' }, 404);
+    }
+    const removedIds = await this.assignments.clearDay(dayId);
+    for (const assignmentId of removedIds) {
+      this.assignments.broadcast(tripId, 'assignment:deleted', { assignmentId, dayId: Number(dayId) }, socketId);
+    }
+    if (removedIds.length > 0) await this.assignments.reconcile(tripId, socketId);
+    return { success: true, removedIds };
+  }
+
+  @RequirePermission('day_edit')
   @Delete(':id')
-  remove(
+  async remove(
     @CurrentUser() user: User,
     @Param('tripId') tripId: string,
     @Param('dayId') dayId: string,
     @Param('id') id: string,
     @Headers('x-socket-id') socketId?: string,
   ) {
-    const trip = requireTrip(this.assignments, tripId, user);
-    requireEdit(this.assignments, trip, user);
-    if (!this.assignments.assignmentExistsInDay(id, dayId, tripId)) {
+    if (!(await this.assignments.assignmentExistsInDay(id, dayId, tripId))) {
       throw new HttpException({ error: 'Assignment not found' }, 404);
     }
-    this.assignments.deleteAssignment(id);
-    this.assignments.broadcast(tripId, 'assignment:deleted', { assignmentId: Number(id), dayId: Number(dayId) }, socketId);
-    this.assignments.reconcile(tripId, socketId);
+    await this.assignments.deleteAssignment(id);
+    this.assignments.broadcast(
+      tripId,
+      'assignment:deleted',
+      { assignmentId: Number(id), dayId: Number(dayId) },
+      socketId,
+    );
+    await this.assignments.reconcile(tripId, socketId);
     return { success: true };
   }
 }
@@ -117,75 +133,164 @@ export class DayAssignmentsController {
 /**
  * /api/trips/:tripId/assignments/:id/* — per-assignment ops (move, time,
  * participants), independent of the day path. Same parity rules as above.
+ *
+ * Same guard pair as the day controller, and for the same reason: TripAccessGuard
+ * is what resolves :tripId and what reads @RequirePermission. The per-handler
+ * getAssignmentForTrip calls answer a different question — whether the assignment
+ * sits on the trip in the URL, not whether the caller may be on that trip.
  */
 @Controller('api/trips/:tripId/assignments')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, TripAccessGuard)
 export class AssignmentOpsController {
   constructor(private readonly assignments: AssignmentsService) {}
 
+  @RequirePermission('day_edit')
   @Put(':id/move')
-  move(
+  async move(
     @CurrentUser() user: User,
     @Param('tripId') tripId: string,
     @Param('id') id: string,
-    @Body() body: { new_day_id?: unknown; order_index?: number },
+    @Body() body: AssignmentMoveDto,
     @Headers('x-socket-id') socketId?: string,
   ) {
-    const trip = requireTrip(this.assignments, tripId, user);
-    requireEdit(this.assignments, trip, user);
-    const existing = this.assignments.getAssignmentForTrip(id, tripId);
-    if (!existing) {
+    if (!(await this.assignments.getAssignmentForTrip(id, tripId))) {
       throw new HttpException({ error: 'Assignment not found' }, 404);
     }
-    if (!this.assignments.dayExists(String(body.new_day_id), tripId)) {
+    if (!(await this.assignments.dayExists(String(body.new_day_id), tripId))) {
       throw new HttpException({ error: 'Target day not found' }, 404);
     }
-    const oldDayId = (existing as { day_id: number }).day_id;
-    const { assignment } = this.assignments.moveAssignment(id, body.new_day_id, body.order_index, oldDayId);
-    this.assignments.broadcast(tripId, 'assignment:moved', { assignment, oldDayId: Number(oldDayId), newDayId: Number(body.new_day_id) }, socketId);
-    this.assignments.reconcile(tripId, socketId);
+    const { assignment, oldDayId } = await this.assignments.moveAssignment(id, body.new_day_id, body.order_index);
+    this.assignments.broadcast(
+      tripId,
+      'assignment:moved',
+      { assignment, oldDayId: Number(oldDayId), newDayId: Number(body.new_day_id) },
+      socketId,
+    );
+    await this.assignments.reconcile(tripId, socketId);
     return { assignment };
   }
 
   @Get(':id/participants')
-  participants(@CurrentUser() user: User, @Param('tripId') tripId: string, @Param('id') id: string) {
-    requireTrip(this.assignments, tripId, user);
-    return { participants: this.assignments.getParticipants(id) };
+  async participants(@CurrentUser() user: User, @Param('tripId') tripId: string, @Param('id') id: string) {
+    if (!(await this.assignments.getAssignmentForTrip(id, tripId))) {
+      throw new HttpException({ error: 'Assignment not found' }, 404);
+    }
+    return { participants: await this.assignments.getParticipants(id) };
   }
 
+  @RequirePermission('day_edit')
   @Put(':id/time')
-  time(
+  async time(
     @CurrentUser() user: User,
     @Param('tripId') tripId: string,
     @Param('id') id: string,
-    @Body() body: { place_time?: string | null; end_time?: string | null },
+    @Body() body: AssignmentTimeDto,
     @Headers('x-socket-id') socketId?: string,
   ) {
-    const trip = requireTrip(this.assignments, tripId, user);
-    requireEdit(this.assignments, trip, user);
-    if (!this.assignments.getAssignmentForTrip(id, tripId)) {
+    if (!(await this.assignments.getAssignmentForTrip(id, tripId))) {
       throw new HttpException({ error: 'Assignment not found' }, 404);
     }
-    const assignment = this.assignments.updateTime(id, body.place_time, body.end_time);
+    const { assignment, reordered, vias } = await this.assignments.updateTime(id, body.place_time, body.end_time);
     this.assignments.broadcast(tripId, 'assignment:updated', { assignment }, socketId);
-    this.assignments.reconcile(tripId, socketId);
+    // The whole day when a start moved stops, or collaborators apply the one row
+    // they were sent to their old order and end up with a third one.
+    //
+    // Both to every socket, the writer's included, so the order and the vias pinned
+    // to it arrive together. The planner holds its vias in memory and would route the
+    // new anchors on the old order until its reload of the day came back, and a save
+    // replayed from the offline queue has no reload after it at all.
+    if (reordered) this.assignments.broadcast(tripId, 'assignment:reordered', reordered, undefined);
+    if (vias) this.assignments.broadcast(tripId, 'roadtripVia:changed', vias, undefined);
+    await this.assignments.reconcile(tripId, socketId);
     return { assignment };
   }
 
-  @Put(':id/participants')
-  setParticipants(
+  @RequirePermission('day_edit')
+  @Put(':id/end-day')
+  async endDay(
+    @Param('tripId') tripId: string,
+    @Param('id') id: string,
+    @Body() body: AssignmentEndDayDto,
+    @Headers('x-socket-id') socketId?: string,
+  ) {
+    if (!(await this.assignments.getAssignmentForTrip(id, tripId))) {
+      throw new HttpException({ error: 'Assignment not found' }, 404);
+    }
+    const assignment = await this.assignments.setEndDay(id, body.end_day);
+    this.assignments.broadcast(tripId, 'assignment:updated', { assignment }, socketId);
+    return { assignment };
+  }
+
+  // #2163: the per-assignment note was write-once (create bodies, MCP, plugin
+  // RPC) with no edit path anywhere. Same guard shape and 404 body as its
+  // neighbours; no reconcile — the note doesn't touch the journey skeleton.
+  @RequirePermission('day_edit')
+  @Put(':id/notes')
+  async notes(
     @CurrentUser() user: User,
     @Param('tripId') tripId: string,
     @Param('id') id: string,
-    @Body('user_ids') userIds: unknown,
+    @Body() body: AssignmentNotesDto,
     @Headers('x-socket-id') socketId?: string,
   ) {
-    const trip = requireTrip(this.assignments, tripId, user);
-    requireEdit(this.assignments, trip, user);
-    if (!Array.isArray(userIds)) {
-      throw new HttpException({ error: 'user_ids must be an array' }, 400);
+    if (!(await this.assignments.getAssignmentForTrip(id, tripId))) {
+      throw new HttpException({ error: 'Assignment not found' }, 404);
     }
-    const participants = this.assignments.setParticipants(id, userIds);
+    const assignment = await this.assignments.updateNotes(id, body.notes);
+    this.assignments.broadcast(tripId, 'assignment:updated', { assignment }, socketId);
+    return { assignment };
+  }
+
+  @RequirePermission('day_edit')
+  @Put(':id/transport')
+  async transport(
+    @CurrentUser() user: User,
+    @Param('tripId') tripId: string,
+    @Param('id') id: string,
+    @Body() body: AssignmentTransportDto,
+    @Headers('x-socket-id') socketId?: string,
+  ) {
+    if (!(await this.assignments.getAssignmentForTrip(id, tripId))) {
+      throw new HttpException({ error: 'Assignment not found' }, 404);
+    }
+    const assignment =
+      body.direction === 'incoming'
+        ? await this.assignments.setIncomingLegTransportMode(id, body.transport_mode ?? null)
+        : await this.assignments.setLegTransportMode(id, body.transport_mode ?? null);
+    this.assignments.broadcast(tripId, 'assignment:updated', { assignment }, socketId);
+    return { assignment };
+  }
+
+  @RequirePermission('day_edit')
+  @Put(':id/route')
+  async route(
+    @CurrentUser() user: User,
+    @Param('tripId') tripId: string,
+    @Param('id') id: string,
+    @Body() body: AssignmentRouteDto,
+    @Headers('x-socket-id') socketId?: string,
+  ) {
+    if (!(await this.assignments.getAssignmentForTrip(id, tripId))) {
+      throw new HttpException({ error: 'Assignment not found' }, 404);
+    }
+    const assignment = await this.assignments.setRouteExcluded(id, body.excluded);
+    this.assignments.broadcast(tripId, 'assignment:updated', { assignment }, socketId);
+    return { assignment };
+  }
+
+  @RequirePermission('day_edit')
+  @Put(':id/participants')
+  async setParticipants(
+    @CurrentUser() user: User,
+    @Param('tripId') tripId: string,
+    @Param('id') id: string,
+    @Body() body: AssignmentParticipantsDto,
+    @Headers('x-socket-id') socketId?: string,
+  ) {
+    if (!(await this.assignments.getAssignmentForTrip(id, tripId))) {
+      throw new HttpException({ error: 'Assignment not found' }, 404);
+    }
+    const participants = await this.assignments.setParticipants(id, body.user_ids, tripId);
     this.assignments.broadcast(tripId, 'assignment:participants', { assignmentId: Number(id), participants }, socketId);
     return { participants };
   }

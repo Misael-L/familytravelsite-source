@@ -10,7 +10,9 @@ for the permission catalogue see [[Plugin Permissions|Plugin-Permissions]].
 > need that user's `*_edit` permission. A read/write you're not allowed to do fails
 > loudly; it never silently escalates.
 
-The complete, runnable version of these recipes is the
+A runnable version of a handful of these recipes — reading a trip's places and
+bookings, raising validation warnings, contributing a place-detail row, and the
+entity metadata behind it — is the
 [`trip-doctor`](https://github.com/liketrek/TREK/tree/main/plugin-sdk/examples/trip-doctor)
 example plugin.
 
@@ -47,7 +49,9 @@ Both are membership-checked against the current user — same gate as `ctx.trips
 const place = await ctx.places.create(tripId, { name: 'Teamlab', lat: 35.62, lng: 139.78 })
 const day   = await ctx.days.create(tripId, { date: '2027-04-02', notes: 'Odaiba' })
 await ctx.itinerary.assign(tripId, day.id, place.id, 'buy tickets first')
-// days.create accepts { date?, notes?, position? }; set a day title later with ctx.days.update(tripId, day.id, { title: 'Odaiba' }).
+// days.create reads { date?, notes?, dated? } and appends at the end; a position is honoured on the REST route only, not on the plugin path.
+// { dated: true } instead adds the day after the trip's last date and extends the trip to it.
+// Set a day title later with ctx.days.update(tripId, day.id, { title: 'Odaiba' }).
 ```
 
 Updates and deletes mirror the REST app exactly (`ctx.places.update/delete`,
@@ -91,6 +95,166 @@ module.exports = {
 }
 ```
 
+## Answer place searches from your own index
+
+**Needs:** `hook:search-provider` (+ `http:outbound:<host>` and a matching `egress` when
+the index is somebody else's server)
+
+TREK searches its own place index and OpenStreetMap. This hook adds a third one, and
+its hits are drawn into the same list the user is already looking at.
+
+`rating` is the reason to reach for it: open data carries no ratings at all, so a
+question like "the best rated hotel around here" cannot be answered from OpenStreetMap.
+Whatever your index knows, this is where it reaches the search list.
+
+```js
+module.exports = {
+  hooks: {
+    searchProvider: {
+      async search({ query, limit, lang, near }, ctx) {
+        const res = await fetch(
+          `https://your-index.example/search?q=${encodeURIComponent(query)}&n=${limit}`,
+        )
+        const { results } = await res.json()
+        return results.map(r => ({
+          id: r.ref,                    // namespaced host-side to plugin:<yourId>:<ref>
+          name: r.title,
+          lat: r.lat,
+          lng: r.lon,
+          address: r.address,
+          rating: r.stars,              // 0..5, clamped host-side
+          website: r.url,               // http/https only
+        }))
+      },
+    },
+  },
+}
+```
+
+Called for an explicit search, never per keystroke, so an index with rate limits is
+safe here. You get two seconds to answer and at most 20 of your places are kept: a
+person is waiting on the list, and the app stops waiting at two and a half seconds
+whatever happens, so a provider that misses that window is left out of the list rather
+than holding it up. `near` is the coordinate the search is biased toward,
+and it is what tells the four places called "Hase-dera" apart — use it when you have it.
+
+The Road trip search along the route reaches the same hook. It calls `search` once per
+kind the person picked, with two more fields on the request: `category` (`fuel`,
+`charging`, `rest_area`, `campsite`, `restaurant`, `sights` or `hotel`) and `bounds`
+(`{ south, west, north, east }`, the rectangle to search, with `near` at its centre).
+`query` is then a fixed English phrase such as `EV charging station` rather than
+something typed, so an index that ignores `category` still gets a usable query. Hits
+outside `bounds` are dropped, and so is a hit whose own `category` names a different one
+of those seven kinds. Both fields are absent on ordinary searches, so read them as
+optional.
+
+### Suggestions while the user types
+
+Implement `suggest` beside `search`, and your places also show up in the dropdown under
+the search box while the person is still typing: after TREK's own suggestions, marked
+with your plugin's name. It gets the same request as `search`, from the second typed
+character on, with `limit` 3 and 800 ms to answer. The dropdown keeps at most three
+plugin rows, all search plugins together, so send your best few.
+
+Leave it out when every call costs you something, such as a rate-limited API. `search`
+alone works as before, and your places then appear once the search is run. `suggest` is
+for an index you hold yourself, for example an [All the Places](https://alltheplaces.xyz/)
+extract in your plugin's own database, where a prefix match per keystroke is cheap. `near`
+tells you where the person is planning, so an index kept per country only has to load the
+country they are looking at.
+
+```js
+module.exports = {
+  hooks: {
+    searchProvider: {
+      async search(request, ctx) {
+        return lookUp(request, ctx)
+      },
+      async suggest({ query, limit }, ctx) {
+        const rows = await ctx.db.query(
+          'SELECT ref, name, lat, lng, address, website FROM places WHERE name LIKE ? LIMIT ?',
+          `${query}%`,
+          limit,
+        )
+        return rows.map(r => ({ id: r.ref, name: r.name, lat: r.lat, lng: r.lng, address: r.address, website: r.website }))
+      },
+    },
+  },
+}
+```
+
+(`ctx.db` needs `db:own`.) Picking one of your rows takes it as it is: TREK does not look
+the place up again, because no details service knows your ids. So send the address,
+website and phone with the row rather than later. TREK finds out whether your hook has
+`suggest` when the plugin starts, from the hook object itself, so a class instance with a
+`suggest` method counts as well as an object literal.
+
+## Add your own place categories to the map
+
+**Needs:** `hook:poi-category-provider` and `capabilities.poiCategories` (+
+`http:outbound:<host>` and a matching `egress` when the data lives on somebody else's
+server)
+
+The trip map has a row of category buttons (restaurants, sights, museums and so on).
+Declare up to four of your own and they appear after the built-in ones, behind a thin
+divider: trailheads, EV chargers, step-free places, drinking water, campsites, a
+community's own list. When somebody picks one, TREK asks your plugin, and only yours,
+for the places in the part of the map they are looking at.
+
+```json
+"permissions": ["hook:poi-category-provider", "http:outbound:api.example-trails.org"],
+"egress": ["api.example-trails.org"],
+"capabilities": {
+  "poiCategories": [
+    { "id": "trailheads", "label": "Trailheads",
+      "labels": { "de": "Wanderparkplätze", "fr": "Départs de randonnée" },
+      "icon": "Signpost", "color": "#2f855a" }
+  ]
+}
+```
+
+```js
+hooks: {
+  poiCategoryProvider: {
+    async getPois({ category, bounds, lang, limit }, ctx) {
+      // category is one of your declared ids, bounds is { south, west, north, east }
+      const { south, west, north, east } = bounds
+      const res = await fetch(
+        `https://api.example-trails.org/${category}?bbox=${west},${south},${east},${north}&n=${limit}&lang=${lang ?? 'en'}`,
+      )
+      const { items } = await res.json()
+      return items.map(t => ({
+        id: t.ref,                    // namespaced host-side to plugin:<yourId>:<ref>
+        name: t.name,
+        lat: t.lat,
+        lng: t.lon,
+        website: t.url,               // http/https only
+        details: [                    // at most 6 rows, label 40 and value 120 characters
+          { label: 'Length', value: `${t.km} km` },
+          { label: 'Surface', value: t.surface },
+        ],
+      }))
+    },
+  },
+},
+```
+
+`icon` is one of a fixed list of lucide names (`POI_CATEGORY_ICONS` in the SDK) and
+`color` is `#rrggbb` only. The button and every marker use exactly those, whatever your
+answer says. The button is named `labels[<user's language>]` when you ship one, `label`
+otherwise.
+
+`bounds` is the viewport, narrowed to at most 0.5 degrees a side. The host keeps at most
+60 places inside it, caps every string and gives you 8 seconds; a timeout or a throw
+puts an error dot on your button only, and the built-in buttons never wait for it. You
+are called when somebody picks the button or presses **Search this area**, never on a
+pan. The hook runs as that user, so `ctx.settings.get(key)` reads their own settings (a
+wheelchair profile, say), and nothing is cached. The `details` rows show in the marker's
+hover card on the desktop, and a click on a marker opens the place form filled in from
+your answer. A declaration without the permission still installs, but no button ever
+appears; `trek-plugin validate` tells you. The full contract is under
+[Provider hooks](Plugin-Development#provider-hooks).
+
 ## Raise validation warnings on a trip
 
 **Needs:** `hook:trip-warning-provider`
@@ -128,19 +292,22 @@ with core events.
 
 **Needs:** `events:subscribe`
 
-Handlers run with no user and get the event name + tripId only (never the payload).
+Handlers run with no user and get `{ event, tripId, entity?, entityId?, snapshot? }` —
+the `snapshot` (a whitelisted field view of the changed entity) is delivered only when
+your plugin also holds that family's `db:read:*` grant; deletes/bulk/reorder events
+carry none.
 
 ```js
 events: [
-  { on: 'file:created', async handler({ tripId }, ctx) {
-      await notifySlack(`New file on trip ${tripId}`)   // needs http:outbound
+  { on: 'file:created', async handler({ tripId, entityId }, ctx) {
+      await notifySlack(`New file on trip ${tripId}`)   // needs http:outbound:<host>
   } },
 ]
 ```
 
 Fire-and-forget on a short timeout — never blocks a core write. Trip reads are
-refused (no user); use `ctx.db`, `ctx.ws.*`, or an outbound call. Your own
-`plugin:*` broadcasts are never re-delivered, so handlers can't loop.
+refused (no user), and so are `ctx.ws.*` broadcasts; use `ctx.db` or an outbound
+call. Your own `plugin:*` broadcasts are never re-delivered, so handlers can't loop.
 
 ## Depend on another plugin — call it and hear its events
 
@@ -210,7 +377,7 @@ The recipient is **forced** by the host: `scope:'user'` can only reach the actin
 **Needs:** `hook:notification-channel` + `http:outbound:<host>` (and a matching `egress`)
 
 The recipe above *produces* a notification. This one **delivers** one — your plugin becomes a
-channel next to email / webhook / ntfy in the user's notification preferences.
+channel next to email / webhook / ntfy / Web Push in the user's notification preferences.
 
 ```bash
 npx create-trek-plugin my-gotify --type integration --template notification-channel
@@ -254,8 +421,8 @@ whole point: you can be handed someone's push token without being handed their t
 Targeting a **self-hosted** Gotify? Your manifest can't name the user's hostname, so add
 `"operatorEgress": true` and let the admin add the real host after install
 (Admin → Plugins → Allowed hosts). See
-[Plugin-Development → Operator-supplied egress hosts](Plugin-Development.md#operator-supplied-egress-hosts-operatoregress),
-plus [Notification channels](Plugin-Development.md#notification-channels) for the event list, the
+[Plugin-Development → Operator-supplied egress hosts](Plugin-Development#operator-supplied-egress-hosts-operatoregress),
+plus [Notification channels](Plugin-Development#notification-channels) for the event list, the
 "configured" rule, and the `TREK_PLUGIN_ALLOW_PRIVATE_EGRESS` flag you need if the service runs
 on your own LAN.
 
@@ -293,6 +460,23 @@ beside them. Return `{ ok, message? }`; throwing is the same as `{ ok: false }` 
 the error text. `danger: true` asks for confirmation first. The host refuses any key your
 manifest didn't declare, and bounds the message it shows (200 chars, emoji stripped).
 
+**…and one for the admin.** A button that acts on **instance** configuration rather than one
+person's credentials takes `"scope": "instance"`:
+
+```json
+"actions": [
+  { "key": "purgeCache", "label": "Purge cache", "scope": "instance" }
+]
+```
+
+It renders in **Admin → Plugins → ⋯ → Instance settings** instead of on anyone's settings
+page, and runs as the clicking **admin** — so `ctx.config` is the instance settings shown
+right above it, while `ctx.settings.get()` is still that admin's own value. The button is
+**disabled until the plugin is active** (an action needs a running child), and an edited
+form is saved before the action fires, so you never test against configuration the plugin
+hasn't been given. Needs a manifest `trek` floor of `>=4.2.0` — hosts older than 4.2.0
+ignore `scope` and would show the button to every user.
+
 Contrast with the `notificationChannel` hook, which is **host**-initiated and therefore
 has *no* acting user — there, `ctx.settings.get()` returns `undefined` and the recipient's
 credentials arrive as an argument instead.
@@ -320,7 +504,7 @@ Output is **data**. To store it, push it through a gated write yourself (e.g. `c
 
 ## Call a third-party API the user connected
 
-**Needs:** `oauth:client` (and `http:outbound` for the fetch)
+**Needs:** `oauth:client` (and `http:outbound:<host>` for the fetch)
 
 The user connects the service under Settings → Plugins → Connect. The host keeps the refresh token and client secret; you only ever get a short-lived access token for the acting user.
 
@@ -350,11 +534,11 @@ Tenant-free and cached upstream — no trip access needed.
 
 **Needs:** `jobs:run`
 
-Two flavours: a fixed **cron job** declared in the manifest, or a **dynamic timer** you set at runtime via `ctx.scheduler`.
+Two flavours: a fixed **cron job** declared on the plugin definition, or a **dynamic timer** you set at runtime via `ctx.scheduler`.
 
 ```js
 module.exports = {
-  // fixed cron — runs on node-cron
+  // fixed cron — standard 5-field (or 6-field with seconds) expressions
   jobs: [
     { id: 'nightly', schedule: '0 3 * * *', async handler(ctx) { /* … */ } },
   ],
@@ -374,17 +558,17 @@ module.exports = {
 }
 ```
 
-Both jobs and scheduled tasks run with **no acting user** (trip reads are refused; only your own db + declared egress). `ctx.scheduler.set` is an upsert by name and survives restarts. Caps: ≤100 tasks/plugin, ≤128-char name, ≤8 KB payload, recurring interval ≥60s, ≤1 year out.
+Both jobs and scheduled tasks run with **no acting user** (trip reads are refused; only your own db + declared egress). `at`, `in` and `every` upsert by name — scheduling the same name again replaces the pending task — and survive restarts. Caps: ≤100 tasks/plugin, ≤128-char name, ≤8 KB payload, recurring interval ≥60s, ≤1 year out.
 
 ---
 
 ## Contribute native primitives to core views
 
-Six declarative hooks let a plugin push data into TREK's own screens — the host renders and sanitizes everything, so no iframe and no plugin JS on the canvas. Each needs its own `hook:*` permission, runs with the current user bound on a short timeout, and a slow or failing call is skipped (never fatal). The host caps counts and lengths.
+Seven declarative hooks let a plugin push data into TREK's own screens — the host renders and sanitizes everything, so no iframe and no plugin JS on the canvas. Each needs its own `hook:*` permission, runs with the current user bound on a short timeout, and a slow or failing call is skipped (never fatal). The host caps counts and lengths.
 
 ```js
 hooks: {
-  // hook:table-contributor — cells/buttons on a row. view ∈ reservations|places|day|costs|packing|files
+  // hook:table-contributor — cells/buttons on a row. view ∈ reservations|transports|places|day|costs|packing|files|todos
   tableContributor: { async getContributions(view, tripId, ctx) {
     return [{ kind: 'column', entityId: 42, id: 'crowd', label: 'Crowd', value: 'Quiet', tone: 'success' }]
   } },
@@ -392,6 +576,14 @@ hooks: {
   // hook:map-marker-provider — pins on the trip map (#587)
   mapMarkerProvider: { async getMarkers(tripId, ctx) {
     return [{ id: 'm1', lat: 35.62, lng: 139.78, label: 'Teamlab', popupText: 'Opens 10:00' }]
+  } },
+
+  // hook:map-layer-provider — routes/corridors/zones drawn on the trip map
+  mapLayerProvider: { async getLayers(tripId, ctx) {
+    return [{ id: 'route', name: 'Suggested route', features: [
+      { type: 'polyline', points: [[35.62, 139.78], [35.66, 139.70]], tone: 'success', width: 4 },
+      { type: 'circle', center: [35.66, 139.70], radiusM: 1500, dash: 'dash', fill: true, label: 'Reachable on foot' },
+    ] }]
   } },
 
   // hook:pdf-section-provider — text sections appended to the trip PDF export
@@ -416,7 +608,155 @@ hooks: {
 }
 ```
 
-`tone` is `'default' | 'success' | 'warn' | 'danger'`; any `url` must be http/https/mailto; `icon` is a lucide icon name. A table `action` (instead of a `column`) is a labelled button whose target opens your sandboxed frame or calls one of your routes.
+`tone` is `'default' | 'success' | 'warn' | 'danger'`; any `url` must be http/https/mailto; `icon` is a lucide icon name — and it is the only way to get a glyph in, because every string a hook returns is emoji-stripped at the render boundary before TREK draws it. A table `action` (instead of a `column`) is a labelled button whose target opens your sandboxed frame or calls one of your routes.
+
+---
+
+## Offer a routing profile (EV charging stops)
+
+Declare a profile and implement the `routeProvider` hook — your profile appears in the planner's route toggle next to Driving/Walking, and TREK asks *you* to route the day. Needs `hook:route-provider`; add `http:outbound:<solver-host>` if you call an external routing service.
+
+```json
+"permissions": ["hook:route-provider", "http:outbound:api.example-ev.com"],
+"egress": ["api.example-ev.com"],
+"capabilities": { "routeProfiles": [{ "id": "ev", "label": "EV (charging)" }] }
+```
+
+```js
+hooks: {
+  routeProvider: {
+    async getRoute({ tripId, dayId, profile, waypoints }, ctx) {
+      // waypoints = the day's located stops in visit order (2..30).
+      const plan = await solveEvRoute(waypoints) // your solver / external API
+      return {
+        coordinates: plan.polyline,          // [lat,lng][] for the map line
+        distance: plan.meters,
+        duration: plan.seconds,              // driving + charging
+        legs: waypoints.slice(1).map((_, i) => ({
+          distance: plan.legs[i].meters,
+          duration: plan.legs[i].seconds,
+          note: plan.legs[i].chargeMin ? `${plan.legs[i].chargeMin} min charge` : undefined,
+        })),
+        viaPoints: plan.chargers.map((c) => ({
+          lat: c.lat, lng: c.lng, tone: 'success',
+          label: `${c.name} · to ${c.targetSoc}%`, dwellSeconds: c.chargeMin * 60,
+        })),
+      }
+    },
+  },
+},
+```
+
+The legs must line up 1:1 with the waypoint pairs (TREK rejects the result whole otherwise), `note` shows on the day-plan connector, and via points are drawn as stops on the route line. You have 20 s per request; a throw or timeout simply falls back to straight lines. Pair this with `mapLayerProvider` if you also want corridors/zones, and with `db:write:places` + `db:write:itinerary` if the user should be able to persist charging stops as real places.
+
+To also make the *time plan* reflect your stops, add `hook:day-schedule-provider` and return anchored time rows — they render in the day plan on desktop and mobile, and their minutes count into the day's route-footer total:
+
+```js
+dayScheduleProvider: {
+  async getSchedule(tripId, ctx) {
+    const days = await ctx.trips.getDays(tripId)
+    return days.flatMap((d) => (d.assignments ?? [])
+      .filter((a) => needsCharge(a))
+      .map((a) => ({
+        id: `charge-${a.id}`, dayId: d.id, assignmentId: a.id,
+        minutes: 35, label: 'Charge to 80% nearby', tone: 'warn',
+      })))
+  },
+},
+```
+
+### Colour-code the days of a multi-destination trip
+
+`hook:day-schedule-provider` can announce "Kanazawa begins" as a row, but it cannot make
+day 12 *look* like it belongs to Kanazawa. `hook:day-tint-provider` does — it colours a
+day card in the Plan sidebar (and that day's mobile chip), with one of the four tones or
+with a colour of your own:
+
+```js
+dayTintProvider: {
+  async getDayTints(tripId, ctx) {
+    const legs = await loadLegs(ctx, tripId)          // your own db:own rows
+    const days = await ctx.trips.getDays(tripId)
+    return days
+      .map((d) => ({ d, leg: legs.find((l) => covers(l, d)) }))
+      .filter(({ leg }) => leg)                        // days no leg covers stay untinted
+      .map(({ d, leg }) => ({ dayId: d.id, tone: leg.tone, label: leg.name }))
+  },
+},
+```
+
+Return **one entry per day** — the bound here is the trip's day count, not a fixed item
+cap, so this stays correct on a six-month itinerary where the ≤60-item day-schedule hook
+would tint only the first 60 days.
+
+#### Bring your own colour
+
+Four tones cannot keep a twenty-stop trip's legs apart. Send `color` instead — `#rrggbb`
+only, and nothing else survives (`#abc`, `rgb(...)` and CSS names are all ignored,
+because the value ends up inside a CSS colour the host builds):
+
+```js
+// One hue per leg, from your own palette.
+return days.map((d) => ({ dayId: d.id, color: legColor(d), label: legName(d) }))
+
+// Mix freely: your colour on the badge, a shared tone for the rest of the card.
+return days.map((d) => ({ dayId: d.id, tone: 'default', badgeColor: legColor(d) }))
+```
+
+Each region takes `<region>Color` alongside `<region>Tone`. Within one region a colour
+wins over a tone, and anything you name on a region beats the shorthand — so the second
+example above tints the badge with your colour and the header and activity list with
+`default`.
+
+You choose the hue; the host still chooses the weight. It sets the alpha per theme and
+per region and clamps the colour's lightness into a band that reads on both the light
+and the dark sidebar, so the tint always lands as a wash behind the day rather than a
+fill, and no colour you send can make a day unreadable. An ordinary mid-range colour
+comes through as you sent it; only the extremes (near-white, near-black) are pulled in.
+
+Colour is decoration, not information — pair it with `label` (and a day-schedule row
+where the meaning matters) so it still works for anyone who can't tell your legs apart
+by hue.
+
+#### Tint one region instead of the whole card
+
+A day card has three separately tintable regions, and `tone` above is just the shorthand
+that fills all of them. Name them individually when colouring the whole card would fight
+the content — a packed day is much easier to read with only its badge marked:
+
+```js
+// Bold on the badge (and the mobile day chip), plain everywhere else.
+return days.map((d) => ({ dayId: d.id, badgeTone: legTone(d), label: legName(d) }))
+
+// Or: a quiet leg colour on the card, with the activity list left completely alone.
+return days.map((d) => ({
+  dayId: d.id,
+  badgeTone: legTone(d),
+  headerTone: legTone(d),
+  label: legName(d),
+}))
+
+// Or: reserve the activity list for a per-day signal of your own.
+return days.map((d) => ({ dayId: d.id, headerTone: legTone(d), activityTone: overbooked(d) ? 'danger' : undefined }))
+```
+
+| Field | Region |
+|---|---|
+| `badgeTone` / `badgeColor` | the day-number badge — smallest and boldest; also the mobile day chip |
+| `headerTone` / `headerColor` | the day header row (number, title, date, cost); hovering deepens the tint |
+| `activityTone` / `activityColor` | the expanded activity list — largest, behind the densest text, tinted faintest |
+
+A region you never name is not tinted and renders exactly as it does without your plugin.
+
+The regions follow the **desktop** day card. On mobile only the badge renders, as the
+day chip's tint — header and activity tints do not show on phones. Keep whatever every
+user must see on the badge (or the shorthands, which include it), and treat the finer
+regions as desktop refinement.
+
+`label` becomes the day's tooltip. A day takes at most one contribution and it is
+resolved **whole** — within your list the first entry for a day wins, and if another
+plugin also tints that day the first granted provider wins outright, so days never
+flicker and two plugins can't each own part of one card.
 
 ---
 
@@ -443,7 +783,7 @@ module.exports = {
 
 ## Write across every subsystem
 
-Beyond places/days/itinerary, TREK 3.3.0 opens create/update/delete on almost every trip subsystem. Each is membership-checked against the acting user and needs its `db:write:*` scope **plus** the app's edit permission — declare only what you use.
+Beyond places/days/itinerary, TREK opens create/update/delete on almost every trip subsystem. Each is membership-checked against the acting user and needs its `db:write:*` scope **plus** the app's edit permission — declare only what you use.
 
 ```js
 // Bookings & lodging — needs 'reservation_edit' / 'day_edit'
@@ -453,11 +793,11 @@ await ctx.accommodations.create(tripId, { place_id, start_day_id, end_day_id, ch
 await ctx.packing.create(tripId, { name: 'Passport', visibility: 'personal' })
 await ctx.todos.create(tripId, { name: 'Buy JR pass', due_date: '2027-04-01' })
 // Costs (budget) — needs 'budget_edit' + the Costs addon
-await ctx.costs.create(tripId, { title: 'Hotel', amount: 120, currency: 'EUR' })
+await ctx.costs.create(tripId, { name: 'Hotel', total_price: 120, currency: 'EUR' })
 // Collab notes/polls/chat — needs 'collab_edit' + the Collab addon
 await ctx.collab.createNote(tripId, { title: 'Meeting point' })
 // Day notes — needs 'day_edit'
-await ctx.daynotes.create(tripId, dayId, { content: 'Rainy — swap plans' })
+await ctx.daynotes.create(tripId, dayId, { text: 'Rainy — swap plans' })
 // Tags (the acting user's own)
 const tag = await ctx.tags.create({ name: 'foodie', color: '#4F46E5' })
 ```

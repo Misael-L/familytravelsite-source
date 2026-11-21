@@ -1,0 +1,875 @@
+{
+  "root": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+  "groups": {
+    "AdminPluginsPanel.tsx": [
+      "AdminPluginsPanel"
+    ],
+    "plugins/pluginModel.tsx": [
+      "PluginDep",
+      "VersionMismatch",
+      "DependencyStatus",
+      "PluginDependencies",
+      "DependencyIssues",
+      "PluginRow",
+      "RegistryItem",
+      "RegistryDetail",
+      "ActivateErr",
+      "errBody",
+      "RETRUSTABLE",
+      "SIGNATURE_CODES",
+      "SigSubject",
+      "blockIsCurrent",
+      "T",
+      "TypeFilter",
+      "StatusFilter",
+      "SortKey",
+      "HEALTH",
+      "PERM_KEYS",
+      "KNOWN_TYPES",
+      "isNewer",
+      "parseJson",
+      "Cap",
+      "deriveCaps",
+      "DepChip",
+      "deriveDeps",
+      "installOffer",
+      "isRegistrySourced",
+      "statusLabel",
+      "sortLabel",
+      "formatCompactCount",
+      "fingerprint"
+    ],
+    "plugins/PluginBadges.tsx": [
+      "ReviewedBadge",
+      "SideloadedBadge",
+      "TrustBadge",
+      "DevLinkBadge",
+      "TypeBadge",
+      "PermLabel"
+    ],
+    "plugins/PluginInstalledList.tsx": [
+      "SegBtn",
+      "FilterMenu",
+      "EmptyState",
+      "InstalledRow",
+      "ROW_MENU_MAX_H",
+      "anchorMenu",
+      "MenuItem",
+      "SecurityInfo"
+    ],
+    "plugins/PluginRegistry.tsx": [
+      "Screenshot",
+      "RegistryGrid",
+      "PluginDetailModal",
+      "Meta"
+    ],
+    "plugins/PluginTrustDialogs.tsx": [
+      "SignatureBlockDialog",
+      "KeyRow",
+      "UpdateConsentDialog",
+      "DependencyResolveDialog"
+    ]
+  },
+  "deps": {
+    "PluginDep": [],
+    "VersionMismatch": [],
+    "DependencyStatus": [],
+    "PluginDependencies": [
+      "PluginDep"
+    ],
+    "DependencyIssues": [
+      "PluginDep",
+      "VersionMismatch"
+    ],
+    "PluginRow": [
+      "PluginDependencies",
+      "DependencyStatus",
+      "DependencyIssues"
+    ],
+    "RegistryItem": [
+      "PluginDep"
+    ],
+    "RegistryDetail": [
+      "RegistryItem",
+      "PluginDep"
+    ],
+    "ActivateErr": [
+      "PluginDep",
+      "VersionMismatch"
+    ],
+    "errBody": [],
+    "RETRUSTABLE": [],
+    "SIGNATURE_CODES": [
+      "RETRUSTABLE"
+    ],
+    "SigSubject": [],
+    "blockIsCurrent": [
+      "PluginRow",
+      "isRegistrySourced"
+    ],
+    "T": [],
+    "TypeFilter": [],
+    "StatusFilter": [],
+    "SortKey": [],
+    "HEALTH": [],
+    "PERM_KEYS": [],
+    "KNOWN_TYPES": [],
+    "isNewer": [],
+    "parseJson": [],
+    "Cap": [],
+    "deriveCaps": [
+      "T",
+      "Cap",
+      "Database",
+      "Users",
+      "Wallet",
+      "Luggage",
+      "FileText",
+      "MapPin",
+      "CalendarDays",
+      "ListChecks",
+      "Pencil",
+      "Tag",
+      "LayoutDashboard",
+      "Radio",
+      "Image",
+      "AlertTriangle",
+      "Bell",
+      "ArrowRight"
+    ],
+    "DepChip": [],
+    "deriveDeps": [
+      "PluginRow",
+      "T",
+      "DepChip",
+      "AlertTriangle",
+      "Blocks",
+      "Puzzle"
+    ],
+    "installOffer": [
+      "RegistryItem",
+      "T"
+    ],
+    "ReviewedBadge": [
+      "T",
+      "ShieldCheck"
+    ],
+    "SideloadedBadge": [
+      "T",
+      "UploadCloud"
+    ],
+    "isRegistrySourced": [],
+    "TrustBadge": [
+      "T",
+      "KeyRound",
+      "ShieldAlert"
+    ],
+    "DevLinkBadge": [
+      "T",
+      "Link2"
+    ],
+    "TypeBadge": [
+      "T",
+      "KNOWN_TYPES"
+    ],
+    "AdminPluginsPanel": [
+      "useTranslation",
+      "useToast",
+      "useState",
+      "PluginRow",
+      "RegistryItem",
+      "SigSubject",
+      "PluginDep",
+      "VersionMismatch",
+      "TypeFilter",
+      "StatusFilter",
+      "SortKey",
+      "useEffect",
+      "useRef",
+      "usePluginStore",
+      "adminApi",
+      "SIGNATURE_CODES",
+      "errBody",
+      "DragEvent",
+      "isNewer",
+      "ActivateErr",
+      "useMemo",
+      "UploadCloud",
+      "AlertTriangle",
+      "Link2",
+      "SegBtn",
+      "RefreshCw",
+      "Search",
+      "FilterMenu",
+      "SlidersHorizontal",
+      "CircleDot",
+      "statusLabel",
+      "ArrowUpDown",
+      "sortLabel",
+      "RegistryGrid",
+      "EmptyState",
+      "ArrowUpCircle",
+      "InstalledRow",
+      "blockIsCurrent",
+      "SecurityInfo",
+      "PluginDetailModal",
+      "Bug",
+      "X",
+      "Globe",
+      "Trash2",
+      "ConfirmDialog",
+      "SignatureBlockDialog",
+      "UpdateConsentDialog",
+      "isRegistrySourced",
+      "DependencyResolveDialog"
+    ],
+    "statusLabel": [
+      "StatusFilter",
+      "T"
+    ],
+    "sortLabel": [
+      "SortKey",
+      "T"
+    ],
+    "SegBtn": [],
+    "FilterMenu": [
+      "ChevronDown",
+      "Check"
+    ],
+    "EmptyState": [
+      "T",
+      "PackageOpen",
+      "Download"
+    ],
+    "InstalledRow": [
+      "PluginRow",
+      "T",
+      "deriveCaps",
+      "parseJson",
+      "deriveDeps",
+      "useRef",
+      "useState",
+      "useEffect",
+      "PluginIcon",
+      "HEALTH",
+      "ReviewedBadge",
+      "SideloadedBadge",
+      "DevLinkBadge",
+      "isRegistrySourced",
+      "TrustBadge",
+      "ShieldAlert",
+      "AlertTriangle",
+      "Globe",
+      "ArrowUpCircle",
+      "ToggleSwitch",
+      "MoreHorizontal",
+      "createPortal",
+      "anchorMenu",
+      "MenuItem",
+      "RotateCw",
+      "Bug",
+      "Github",
+      "CircleDot",
+      "Trash2"
+    ],
+    "ROW_MENU_MAX_H": [],
+    "anchorMenu": [
+      "CSSProperties",
+      "withPhysicalLeft",
+      "ROW_MENU_MAX_H",
+      "inlineEndPhysicalLeft"
+    ],
+    "MenuItem": [],
+    "Screenshot": [
+      "useState",
+      "Blocks"
+    ],
+    "RegistryGrid": [
+      "RegistryItem",
+      "T",
+      "Search",
+      "installOffer",
+      "Screenshot",
+      "ShieldCheck",
+      "PluginIcon",
+      "TypeBadge",
+      "TrustBadge",
+      "Download",
+      "formatCompactCount"
+    ],
+    "formatCompactCount": [],
+    "PermLabel": [
+      "T",
+      "PERM_KEYS"
+    ],
+    "PluginDetailModal": [
+      "RegistryItem",
+      "T",
+      "useState",
+      "RegistryDetail",
+      "useEffect",
+      "adminApi",
+      "deriveCaps",
+      "installOffer",
+      "Screenshot",
+      "X",
+      "PluginIcon",
+      "ReviewedBadge",
+      "AlertTriangle",
+      "Database",
+      "Globe",
+      "Meta",
+      "Github",
+      "CircleDot",
+      "ExternalLink"
+    ],
+    "Meta": [],
+    "SignatureBlockDialog": [
+      "SigSubject",
+      "RegistryItem",
+      "T",
+      "RETRUSTABLE",
+      "ShieldAlert",
+      "KeyRow",
+      "fingerprint"
+    ],
+    "KeyRow": [],
+    "fingerprint": [],
+    "UpdateConsentDialog": [
+      "PluginRow",
+      "T",
+      "ShieldCheck",
+      "ShieldAlert",
+      "Check",
+      "PermLabel"
+    ],
+    "DependencyResolveDialog": [
+      "PluginRow",
+      "PluginDep",
+      "VersionMismatch",
+      "T",
+      "Puzzle",
+      "Download"
+    ],
+    "SecurityInfo": [
+      "T",
+      "useState",
+      "ShieldCheck",
+      "Lock",
+      "ChevronDown"
+    ]
+  },
+  "exported": [
+    "T",
+    "KNOWN_TYPES",
+    "PluginRow",
+    "RegistryItem",
+    "SigSubject",
+    "PluginDep",
+    "VersionMismatch",
+    "TypeFilter",
+    "StatusFilter",
+    "SortKey",
+    "SIGNATURE_CODES",
+    "errBody",
+    "isNewer",
+    "ActivateErr",
+    "SegBtn",
+    "FilterMenu",
+    "statusLabel",
+    "sortLabel",
+    "RegistryGrid",
+    "EmptyState",
+    "InstalledRow",
+    "blockIsCurrent",
+    "SecurityInfo",
+    "PluginDetailModal",
+    "SignatureBlockDialog",
+    "UpdateConsentDialog",
+    "isRegistrySourced",
+    "DependencyResolveDialog",
+    "deriveCaps",
+    "parseJson",
+    "deriveDeps",
+    "HEALTH",
+    "ReviewedBadge",
+    "SideloadedBadge",
+    "DevLinkBadge",
+    "TrustBadge",
+    "installOffer",
+    "TypeBadge",
+    "formatCompactCount",
+    "PERM_KEYS",
+    "RegistryDetail",
+    "RETRUSTABLE",
+    "fingerprint",
+    "PermLabel"
+  ],
+  "original_imports": [
+    [
+      "AlertTriangle",
+      {
+        "specifier": "lucide-react",
+        "original": "AlertTriangle",
+        "type": false
+      }
+    ],
+    [
+      "ArrowRight",
+      {
+        "specifier": "lucide-react",
+        "original": "ArrowRight",
+        "type": false
+      }
+    ],
+    [
+      "ArrowUpCircle",
+      {
+        "specifier": "lucide-react",
+        "original": "ArrowUpCircle",
+        "type": false
+      }
+    ],
+    [
+      "ArrowUpDown",
+      {
+        "specifier": "lucide-react",
+        "original": "ArrowUpDown",
+        "type": false
+      }
+    ],
+    [
+      "Bell",
+      {
+        "specifier": "lucide-react",
+        "original": "Bell",
+        "type": false
+      }
+    ],
+    [
+      "Blocks",
+      {
+        "specifier": "lucide-react",
+        "original": "Blocks",
+        "type": false
+      }
+    ],
+    [
+      "Bug",
+      {
+        "specifier": "lucide-react",
+        "original": "Bug",
+        "type": false
+      }
+    ],
+    [
+      "CalendarDays",
+      {
+        "specifier": "lucide-react",
+        "original": "CalendarDays",
+        "type": false
+      }
+    ],
+    [
+      "Check",
+      {
+        "specifier": "lucide-react",
+        "original": "Check",
+        "type": false
+      }
+    ],
+    [
+      "ChevronDown",
+      {
+        "specifier": "lucide-react",
+        "original": "ChevronDown",
+        "type": false
+      }
+    ],
+    [
+      "CircleDot",
+      {
+        "specifier": "lucide-react",
+        "original": "CircleDot",
+        "type": false
+      }
+    ],
+    [
+      "Database",
+      {
+        "specifier": "lucide-react",
+        "original": "Database",
+        "type": false
+      }
+    ],
+    [
+      "Download",
+      {
+        "specifier": "lucide-react",
+        "original": "Download",
+        "type": false
+      }
+    ],
+    [
+      "ExternalLink",
+      {
+        "specifier": "lucide-react",
+        "original": "ExternalLink",
+        "type": false
+      }
+    ],
+    [
+      "FileText",
+      {
+        "specifier": "lucide-react",
+        "original": "FileText",
+        "type": false
+      }
+    ],
+    [
+      "Github",
+      {
+        "specifier": "lucide-react",
+        "original": "Github",
+        "type": false
+      }
+    ],
+    [
+      "Globe",
+      {
+        "specifier": "lucide-react",
+        "original": "Globe",
+        "type": false
+      }
+    ],
+    [
+      "Image",
+      {
+        "specifier": "lucide-react",
+        "original": "Image",
+        "type": false
+      }
+    ],
+    [
+      "KeyRound",
+      {
+        "specifier": "lucide-react",
+        "original": "KeyRound",
+        "type": false
+      }
+    ],
+    [
+      "LayoutDashboard",
+      {
+        "specifier": "lucide-react",
+        "original": "LayoutDashboard",
+        "type": false
+      }
+    ],
+    [
+      "Link2",
+      {
+        "specifier": "lucide-react",
+        "original": "Link2",
+        "type": false
+      }
+    ],
+    [
+      "ListChecks",
+      {
+        "specifier": "lucide-react",
+        "original": "ListChecks",
+        "type": false
+      }
+    ],
+    [
+      "Lock",
+      {
+        "specifier": "lucide-react",
+        "original": "Lock",
+        "type": false
+      }
+    ],
+    [
+      "Luggage",
+      {
+        "specifier": "lucide-react",
+        "original": "Luggage",
+        "type": false
+      }
+    ],
+    [
+      "MapPin",
+      {
+        "specifier": "lucide-react",
+        "original": "MapPin",
+        "type": false
+      }
+    ],
+    [
+      "MoreHorizontal",
+      {
+        "specifier": "lucide-react",
+        "original": "MoreHorizontal",
+        "type": false
+      }
+    ],
+    [
+      "PackageOpen",
+      {
+        "specifier": "lucide-react",
+        "original": "PackageOpen",
+        "type": false
+      }
+    ],
+    [
+      "Pencil",
+      {
+        "specifier": "lucide-react",
+        "original": "Pencil",
+        "type": false
+      }
+    ],
+    [
+      "Puzzle",
+      {
+        "specifier": "lucide-react",
+        "original": "Puzzle",
+        "type": false
+      }
+    ],
+    [
+      "Radio",
+      {
+        "specifier": "lucide-react",
+        "original": "Radio",
+        "type": false
+      }
+    ],
+    [
+      "RefreshCw",
+      {
+        "specifier": "lucide-react",
+        "original": "RefreshCw",
+        "type": false
+      }
+    ],
+    [
+      "RotateCw",
+      {
+        "specifier": "lucide-react",
+        "original": "RotateCw",
+        "type": false
+      }
+    ],
+    [
+      "Search",
+      {
+        "specifier": "lucide-react",
+        "original": "Search",
+        "type": false
+      }
+    ],
+    [
+      "ShieldAlert",
+      {
+        "specifier": "lucide-react",
+        "original": "ShieldAlert",
+        "type": false
+      }
+    ],
+    [
+      "ShieldCheck",
+      {
+        "specifier": "lucide-react",
+        "original": "ShieldCheck",
+        "type": false
+      }
+    ],
+    [
+      "SlidersHorizontal",
+      {
+        "specifier": "lucide-react",
+        "original": "SlidersHorizontal",
+        "type": false
+      }
+    ],
+    [
+      "Tag",
+      {
+        "specifier": "lucide-react",
+        "original": "Tag",
+        "type": false
+      }
+    ],
+    [
+      "Trash2",
+      {
+        "specifier": "lucide-react",
+        "original": "Trash2",
+        "type": false
+      }
+    ],
+    [
+      "UploadCloud",
+      {
+        "specifier": "lucide-react",
+        "original": "UploadCloud",
+        "type": false
+      }
+    ],
+    [
+      "Users",
+      {
+        "specifier": "lucide-react",
+        "original": "Users",
+        "type": false
+      }
+    ],
+    [
+      "Wallet",
+      {
+        "specifier": "lucide-react",
+        "original": "Wallet",
+        "type": false
+      }
+    ],
+    [
+      "X",
+      {
+        "specifier": "lucide-react",
+        "original": "X",
+        "type": false
+      }
+    ],
+    [
+      "useEffect",
+      {
+        "specifier": "react",
+        "original": "useEffect",
+        "type": false
+      }
+    ],
+    [
+      "useMemo",
+      {
+        "specifier": "react",
+        "original": "useMemo",
+        "type": false
+      }
+    ],
+    [
+      "useRef",
+      {
+        "specifier": "react",
+        "original": "useRef",
+        "type": false
+      }
+    ],
+    [
+      "useState",
+      {
+        "specifier": "react",
+        "original": "useState",
+        "type": false
+      }
+    ],
+    [
+      "CSSProperties",
+      {
+        "specifier": "react",
+        "original": "CSSProperties",
+        "type": true
+      }
+    ],
+    [
+      "DragEvent",
+      {
+        "specifier": "react",
+        "original": "DragEvent",
+        "type": true
+      }
+    ],
+    [
+      "createPortal",
+      {
+        "specifier": "react-dom",
+        "original": "createPortal",
+        "type": false
+      }
+    ],
+    [
+      "inlineEndPhysicalLeft",
+      {
+        "specifier": "../../../physicalPosition",
+        "original": "inlineEndPhysicalLeft",
+        "type": false
+      }
+    ],
+    [
+      "withPhysicalLeft",
+      {
+        "specifier": "../../../physicalPosition",
+        "original": "withPhysicalLeft",
+        "type": false
+      }
+    ],
+    [
+      "adminApi",
+      {
+        "specifier": "../../api/client",
+        "original": "adminApi",
+        "type": false
+      }
+    ],
+    [
+      "useTranslation",
+      {
+        "specifier": "../../i18n",
+        "original": "useTranslation",
+        "type": false
+      }
+    ],
+    [
+      "usePluginStore",
+      {
+        "specifier": "../../store/pluginStore",
+        "original": "usePluginStore",
+        "type": false
+      }
+    ],
+    [
+      "ToggleSwitch",
+      {
+        "specifier": "../Settings/ToggleSwitch",
+        "default": true,
+        "type": false
+      }
+    ],
+    [
+      "ConfirmDialog",
+      {
+        "specifier": "../shared/ConfirmDialog",
+        "default": true,
+        "type": false
+      }
+    ],
+    [
+      "PluginIcon",
+      {
+        "specifier": "../shared/PluginIcon",
+        "default": true,
+        "type": false
+      }
+    ],
+    [
+      "useToast",
+      {
+        "specifier": "../shared/Toast",
+        "original": "useToast",
+        "type": false
+      }
+    ]
+  ],
+  "profile": "Family Supabase hides plugins; retained alternative profile only. Static import remains."
+}

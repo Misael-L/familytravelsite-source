@@ -1,7 +1,10 @@
 import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { useAuthStore } from '../../../src/store/authStore';
 import { useInAppNotificationStore } from '../../../src/store/inAppNotificationStore';
 import { resetAllStores } from '../../helpers/store';
+import { useSettingsStore } from '../../../src/store/settingsStore';
+import { useTripStore } from '../../../src/store/tripStore';
 
 // Capture the listener registered via addListener so we can simulate WS events
 let capturedListener: ((event: Record<string, unknown>) => void) | null = null;
@@ -37,6 +40,10 @@ describe('useInAppNotificationListener', () => {
   });
 
   it('FE-HOOK-NOTIFLISTENER-001: on mount, addListener is called once', () => {
+    // Signed out, as resetAllStores leaves it: only the bell listener. Signed in, the
+    // settings and tags pings add theirs (FE-BCAST-013), and capturedListener below
+    // would hold the last of them instead.
+    expect(useAuthStore.getState().isAuthenticated).toBe(false);
     const { unmount } = renderHook(() => useInAppNotificationListener());
     expect(wsMock.addListener).toHaveBeenCalledTimes(1);
     unmount();
@@ -222,5 +229,35 @@ describe('useInAppNotificationListener', () => {
     // The removeListener was called — the actual implementation would have unregistered it
     // We verify removeListener was called (the cleanup ran)
     expect(wsMock.removeListener).toHaveBeenCalled();
+  });
+  it('does not reload account data from pings before validation becomes ready', async () => {
+    vi.useFakeTimers();
+    const settings = vi.fn(async () => {}),
+      tags = vi.fn(async () => {});
+    useAuthStore.setState({ isAuthenticated: true });
+    useSettingsStore.setState({ loadSettings: settings });
+    useTripStore.setState({ reloadTags: tags });
+    const view = renderHook(({ ready }) => useInAppNotificationListener(ready), { initialProps: { ready: false } });
+    const ping = async () => {
+      await act(async () => {
+        for (const [listener] of vi.mocked(wsMock.addListener).mock.calls) {
+          listener({ type: 'settings:updated' });
+          listener({ type: 'tags:changed' });
+        }
+        await vi.advanceTimersByTimeAsync(300);
+      });
+    };
+    try {
+      await ping();
+      expect(settings).not.toHaveBeenCalled();
+      expect(tags).not.toHaveBeenCalled();
+      view.rerender({ ready: true });
+      await ping();
+      expect(settings).toHaveBeenCalledOnce();
+      expect(tags).toHaveBeenCalledOnce();
+    } finally {
+      view.unmount();
+      vi.useRealTimers();
+    }
   });
 });

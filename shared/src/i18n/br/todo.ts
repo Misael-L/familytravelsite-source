@@ -1,6 +1,7 @@
 import type { TranslationStrings } from '../types';
 
 const todo: TranslationStrings = {
+  'todo.emptyFiltered': 'Nenhuma tarefa corresponde a este filtro',
   'todo.subtab.packing': 'Lista de bagagem',
   'todo.subtab.todo': 'A fazer',
   'todo.completed': 'concluído(s)',
@@ -10,6 +11,7 @@ const todo: TranslationStrings = {
   'todo.uncategorized': 'Sem lista',
   'todo.namePlaceholder': 'Nome da tarefa',
   'todo.descriptionPlaceholder': 'Descrição (opcional)',
+  'todo.editDescription': 'Clique para editar, os links abrem direto',
   'todo.unassigned': 'Não atribuído',
   'todo.noCategory': 'Sem lista',
   'todo.hasDescription': 'Com descrição',

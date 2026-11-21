@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "before_build": "ec6d56328a274ef7bc0088788138dc9e2a81b576",
+  "after_build": "4e1ab46ae2bfc799ed71f2b4b826905fd7263fed",
+  "all_paths": 3793,
+  "added": [],
+  "removed": [],
+  "changed": [
+    "family-public-config.json"
+  ],
+  "public_configuration_other_fields_exact": true,
+  "JavaScript_CSS_files": 421,
+  "CSS_files": 14,
+  "all_JavaScript_CSS_exact": true
+}

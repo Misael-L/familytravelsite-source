@@ -7,13 +7,31 @@
  *   - disable() tears the child down.
  * The child runs its own process — its crash/throw can never reach this test.
  */
-import { describe, it, expect, beforeAll, afterAll, afterEach } from 'vitest';
+import { createTestPluginRegistry } from '../../../src/nest-rpc/rpc-kit/testing';
+import { PluginDataDb } from '../../../src/nest/plugins/host/plugin-data.service';
+import { PluginRpcHost, type HostDeps } from '../../../src/nest/plugins/host/rpc-host';
+import { DbRpc } from '../../../src/nest/plugins/host/rpc/db.rpc';
+import type { PluginUserSettingsService } from '../../../src/nest/plugins/plugin-user-settings.service';
+import {
+  PluginSupervisor,
+  type SupervisorHooks,
+  type SupervisorTuning,
+} from '../../../src/nest/plugins/supervisor/plugin-supervisor';
+import { createTestOrm, type TestOrm } from '../../helpers/test-orm';
+
+import Database from 'better-sqlite3';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { PluginSupervisor, type SupervisorHooks, type SupervisorTuning } from '../../../src/nest/plugins/supervisor/plugin-supervisor';
-import { PluginRpcHost, type HostDeps } from '../../../src/nest/plugins/host/rpc-host';
-import { PluginDataDb } from '../../../src/nest/plugins/host/plugin-data.service';
+import { describe, it, expect, beforeAll, afterAll, afterEach } from 'vitest';
+
+/**
+ * DbRpc also carries `settings.get`, which needs the per-user settings store. No
+ * fixture below calls it, and none of these plugins has a stored setting anyway, so
+ * the stub is the one read DbRpc makes, typed off the real signature and answering
+ * "nothing stored" exactly as the real service would.
+ */
+const stubUserSettings: Pick<PluginUserSettingsService, 'readOne'> = { readOne: () => undefined };
 
 let codeRoot: string;
 let dataRoot: string;
@@ -27,22 +45,37 @@ function writePlugin(id: string, source: string): void {
   fs.writeFileSync(path.join(dir, 'index.js'), source);
 }
 
-function makeSupervisor(events: Array<{ topic: string; data: unknown }>, tuning: SupervisorTuning = {}): PluginSupervisor {
+function makeSupervisor(
+  events: Array<{ topic: string; data: unknown }>,
+  tuning: SupervisorTuning = {},
+): PluginSupervisor {
   const createRpcHost = (id: string, granted: ReadonlySet<string>): PluginRpcHost => {
     const deps: HostDeps = {
       data: new PluginDataDb(id),
-      db: { prepare: () => ({ all: () => [], get: () => null }) },
-      canAccessTrip: () => undefined,
-      broadcastToTrip: (tripId, event, payload) => broadcasts.push({ tripId, event, payload }),
-      broadcastToUser: () => {},
+      callPlugin: async () => undefined,
+      emitPluginEvent: async (event, payload) => {
+        broadcasts.push({ id, event, payload });
+      },
     };
-    return new PluginRpcHost(id, granted, deps);
+    // Only db.* is exercised from a child here; the rest of the surface has its own
+    // unit suites and would drag every domain service into this integration test.
+    return new PluginRpcHost(
+      id,
+      granted,
+      deps,
+      createTestPluginRegistry([new DbRpc(stubUserSettings as PluginUserSettingsService)]),
+    );
   };
   const hooks: SupervisorHooks = {
     onEvent: (_id, topic, data) => events.push({ topic, data }),
     onLog: (_id, level, msg, meta) => events.push({ topic: '__log', data: { level, msg, meta } }),
   };
-  return new PluginSupervisor(createRpcHost, hooks, tuning);
+  // task-6-fix-brief.md item 1: every real `ctx.*` round-trip below dispatches
+  // through PluginSupervisor.onMessage's 'req' branch over real child-process
+  // IPC, which now THROWS without a resolveOrm thunk rather than dispatching
+  // unwrapped — so this double needs a real (if otherwise unused) ORM, even
+  // though PluginDataDb/DbRpc here are raw better-sqlite3, not MikroORM.
+  return new PluginSupervisor(createRpcHost, hooks, tuning, () => ormHandle.orm);
 }
 
 /**
@@ -55,17 +88,23 @@ function logMeta<T = Record<string, unknown>>(events: Array<{ topic: string; dat
   return (hit && (hit.data as { meta?: unknown }).meta) as T;
 }
 
-beforeAll(() => {
+const ormDb = new Database(':memory:');
+let ormHandle: TestOrm;
+
+beforeAll(async () => {
   codeRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'trekplug-code-'));
   dataRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'trekplug-pdata-'));
   process.env.TREK_PLUGINS_DIR = codeRoot;
   process.env.TREK_PLUGINS_DATA_DIR = dataRoot;
+  ormHandle = await createTestOrm(ormDb);
 });
 afterAll(async () => {
   delete process.env.TREK_PLUGINS_DIR;
   delete process.env.TREK_PLUGINS_DATA_DIR;
   fs.rmSync(codeRoot, { recursive: true, force: true });
   fs.rmSync(dataRoot, { recursive: true, force: true });
+  await ormHandle.close();
+  ormDb.close();
 });
 afterEach(async () => {
   await sup?.shutdownAll();
@@ -120,13 +159,96 @@ describe('PluginSupervisor — isolated runtime', () => {
     await sup.activate('provider', new Set(['hook:place-detail-provider', 'events:subscribe']), {});
 
     // host->plugin hook: the child runs getDetails(7, ctx) and returns its result
-    const hookRes = await sup.invoke('provider', 'invoke.hook', { hook: 'placeDetailProvider', fn: 'getDetails', args: [7] }, { actingUserId: 5 });
+    const hookRes = await sup.invoke(
+      'provider',
+      'invoke.hook',
+      { hook: 'placeDetailProvider', fn: 'getDetails', args: [7] },
+      { actingUserId: 5 },
+    );
     expect(hookRes).toEqual([{ label: 'placeId', value: '7' }]);
 
     // host->plugin event: ONLY the matching subscription runs (the 'other:thing' one throws if hit)
     await sup.invoke('provider', 'invoke.event', { event: 'place:created', tripId: 3 }, { actingUserId: undefined });
     const got = logMeta<{ event: string; tripId: number }>(events, 'got-event');
     expect(got).toEqual({ event: 'place:created', tripId: 3 });
+  });
+
+  it('reports its MCP tools at load and dispatches a tool call as the requesting user', async () => {
+    // plugin-host-entry.ts is excluded from coverage (it runs in a forked
+    // subprocess), so this is the only thing proving the loaded payload and the
+    // invoke path for mcpToolProvider.
+    const events: Array<{ topic: string; data: unknown }> = [];
+    sup = makeSupervisor(events);
+    writePlugin(
+      'toolbox',
+      `module.exports = {
+        hooks: {
+          mcpToolProvider: {
+            tools: ['echo', 'whoami'],
+            async callTool(call, ctx) { return { name: call.name, args: call.args }; },
+          },
+        },
+      };`,
+    );
+    await sup.activate('toolbox', new Set(['mcp:tools']), {});
+
+    expect(sup.mcpToolsOf('toolbox')).toEqual(['echo', 'whoami']);
+    expect(sup.providersOf('mcpToolProvider')).toContain('toolbox');
+    expect([...sup.grantsOf('toolbox')]).toContain('mcp:tools');
+
+    const res = await sup.invoke(
+      'toolbox',
+      'invoke.hook',
+      { hook: 'mcpToolProvider', fn: 'callTool', args: [{ name: 'echo', args: { v: 1 } }] },
+      { actingUserId: 5 },
+    );
+    expect(res).toEqual({ name: 'echo', args: { v: 1 } });
+  });
+
+  it('reports the functions each hook carries at load, class methods included (#2221)', async () => {
+    // Only the forked child knows whether searchProvider has the optional suggest, and
+    // plugin-host-entry.ts is excluded from coverage, so this is the proof that the
+    // report reaches the host for a literal and for a class instance alike.
+    const events: Array<{ topic: string; data: unknown }> = [];
+    sup = makeSupervisor(events);
+    writePlugin(
+      'typeahead',
+      `class LocalIndex {
+        async search() { return []; }
+        async suggest(request) { return [{ id: 'x', name: request.query, lat: 1, lng: 2 }]; }
+        // Reading the hook's functions must not run a getter, let alone fail the load on one.
+        get broken() { throw new Error('getter ran at load'); }
+      }
+      module.exports = { hooks: { searchProvider: new LocalIndex() } };`,
+    );
+    writePlugin('search-only', `module.exports = { hooks: { searchProvider: { async search() { return []; } } } };`);
+    await sup.activate('typeahead', new Set(['hook:search-provider']), {});
+    await sup.activate('search-only', new Set(['hook:search-provider']), {});
+
+    expect(sup.providersOf('searchProvider').sort()).toEqual(['search-only', 'typeahead']);
+    expect(sup.providersOf('searchProvider', 'suggest')).toEqual(['typeahead']);
+    const res = await sup.invoke(
+      'typeahead',
+      'invoke.hook',
+      { hook: 'searchProvider', fn: 'suggest', args: [{ query: 'ic', limit: 3 }] },
+      { actingUserId: 5 },
+    );
+    expect(res).toEqual([{ id: 'x', name: 'ic', lat: 1, lng: 2 }]);
+  });
+
+  it('stops reporting MCP tools once the plugin is no longer active', async () => {
+    const events: Array<{ topic: string; data: unknown }> = [];
+    sup = makeSupervisor(events);
+    writePlugin(
+      'toolbox2',
+      `module.exports = { hooks: { mcpToolProvider: { tools: ['echo'], async callTool() { return 1; } } } };`,
+    );
+    await sup.activate('toolbox2', new Set(['mcp:tools']), {});
+    expect(sup.mcpToolsOf('toolbox2')).toEqual(['echo']);
+
+    await sup.disable('toolbox2');
+    expect(sup.mcpToolsOf('toolbox2')).toEqual([]);
+    expect(sup.providersOf('mcpToolProvider')).not.toContain('toolbox2');
   });
 
   it('seals the raw IPC surface: a plugin cannot forge/sniff over process.send/on(message), and a forged init cannot reopen egress', async () => {

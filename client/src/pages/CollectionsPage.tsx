@@ -1,8 +1,11 @@
+import {useFamilyCollectionUI}from '../integrations/family/collectionRuntime'
+import {FamilyCollectionTools}from '../integrations/family/FamilyCollectionTools'
 import React from 'react'
-import { List as ListIcon, Map as MapIcon, Search, Bookmark, CheckCheck, X, Trash2, Copy, CopyPlus, FolderInput, Plus, Tags } from 'lucide-react'
+import { List as ListIcon, Map as MapIcon, Search, Bookmark, CheckCheck, X, Trash2, Copy, CopyPlus, FolderInput, Plus, Tags, DownloadCloud } from 'lucide-react'
 import Navbar from '../components/Layout/Navbar'
-import Modal from '../components/shared/Modal'
+import ConfirmDialog from '../components/shared/ConfirmDialog'
 import ListsRail from '../components/Collections/ListsRail'
+import CollectionInviteCard from '../components/Collections/CollectionInviteCard'
 import ListEditorModal from '../components/Collections/ListEditorModal'
 import CollectionHero from '../components/Collections/CollectionHero'
 import CollectionList from '../components/Collections/CollectionList'
@@ -12,39 +15,37 @@ import CopyToTripModal from '../components/Collections/CopyToTripModal'
 import MoveToListModal from '../components/Collections/MoveToListModal'
 import ShareCollectionModal from '../components/Collections/ShareCollectionModal'
 import AddPlaceToCollectionModal from '../components/Collections/AddPlaceToCollectionModal'
-import FamilyCatalogListItemPicker from '../components/Collections/FamilyCatalogListItemPicker'
+import ImportFromTripModal from '../components/Collections/ImportFromTripModal'
+import ImportCollectionModal from '../components/Collections/ImportCollectionModal'
 import CollectionPlaceDetail from '../components/Collections/CollectionPlaceDetail'
 import LabelManager from '../components/Collections/LabelManager'
 import BulkAssignLabelModal from '../components/Collections/BulkAssignLabelModal'
+import { ActiveCollectionTours } from '../components/Tours/collection/CollectionToursSection'
 import { useCollections } from './collections/useCollections'
-import { isRealCollectionId } from './collections/collectionsModel'
+import EmptyState from '../components/shared/EmptyState'
 import '../styles/dashboard.css'
+import HelpAnchor from '../components/Help/HelpAnchor'
 import '../styles/collections.css'
 
-function EmptyState({ icon, title, text, action }: { icon: React.ReactNode; title: string; text: string; action?: React.ReactNode }): React.ReactElement {
+export default function CollectionsPage(): React.ReactElement {
+  // ViewportRoute in App.tsx picks the branch now, so the phone screen is a
+  // chunk of its own instead of a dead limb in this one.
   return (
-    <div className="col-emptystate">
-      <div className="ic">{icon}</div>
-      <h3>{title}</h3>
-      <p>{text}</p>
-      {action && <div style={{ marginTop: 18 }}>{action}</div>}
-    </div>
+    <>
+      <HelpAnchor id="collections" />
+      <CollectionsPageDesktop />
+    </>
   )
 }
 
-export default function CollectionsPage(): React.ReactElement {
+function CollectionsPageDesktop(): React.ReactElement {
+  const familyUI=useFamilyCollectionUI()
   const c = useCollections()
   const { t } = c
 
   const title = c.isAllSaved ? t('collections.allSaved') : (c.activeCollection?.name ?? t('collections.title'))
-  const familyChrome = Boolean(c.familyChrome)
   const isShared = c.activeCollection?.is_owner === false
-  const familyVisible = (c.activeCollection as { visibility?: string } | null)?.visibility === 'family'
-  const eyebrow = c.isAllSaved
-    ? t('collections.hero.all')
-    : (familyChrome && familyVisible
-      ? t('collections.hero.family')
-      : (isShared ? t('collections.hero.shared') : t('collections.hero.mine')))
+  const eyebrow = c.isAllSaved ? t('collections.hero.all') : (isShared ? t('collections.hero.shared') : t('collections.hero.mine'))
   const heroColor = c.activeCollection?.color || '#6366f1'
   const heroCover = c.activeCollection?.cover_image ?? null
 
@@ -52,15 +53,23 @@ export default function CollectionsPage(): React.ReactElement {
   const noLists = !c.loading && c.collections.length === 0
   const showSelect = c.isAllSaved || c.activeCollection != null
   // Labels are per-collection, so only on a real (non "All saved") list.
-  const isRealList = !c.isAllSaved && isRealCollectionId(c.activeId)
-  const canManageLabels = isRealList && c.canEdit && !familyChrome
+  const isRealList = !c.isAllSaved && typeof c.activeId === 'number'
+  const canManageLabels = !familyUI.family && isRealList && c.canEdit
+  // Invites also sit at the top of the body: with no lists of one's own the
+  // body is all there is (and the rail is hidden below 1080px), and the invite
+  // notification links to a list that is still an invite (#2645).
+  const bodyInvites = noLists ? c.orderedInvites : (c.routeInvite ? [c.routeInvite] : [])
 
-  // Selecting a place toggles it, so clicking it again — or the map background —
-  // clears it. Below the desktop breakpoint the list and map are separate views;
-  // above it the list view is a split with a persistent map that pans to the
-  // selection (the map stays mounted across the list↔map toggle so it animates).
+  // Selecting a place from the list toggles it, so clicking the row again clears
+  // it, as does the map background. A marker click always shows the place: a second
+  // click on the marker of the place that is open read as "the details do not open"
+  // rather than as "close them" (#2431). Below the desktop breakpoint the list and
+  // map are separate views; above it the list view is a split with a persistent map
+  // that pans to the selection (the map stays mounted across the list↔map toggle so
+  // it animates).
   const mappable = c.mappable
-  const openPlace = (id: string | number) => c.setSelectedPlaceId(c.selectedPlaceId === id ? null : id)
+  const openPlace = (id: number) => c.setSelectedPlaceId(c.selectedPlaceId === id ? null : id)
+  const showPlace = (id: number) => c.setSelectedPlaceId(id)
   const deselect = () => c.setSelectedPlaceId(null)
   const toggleView = () => {
     // Going to the full-map view closes the (list-docked) detail sheet.
@@ -69,12 +78,12 @@ export default function CollectionsPage(): React.ReactElement {
   }
   // Clicking a marker in the full-map view drops back to the split so the list
   // + detail come into view alongside the map.
-  const onMapSelect = (id: string | number) => { openPlace(id); if (c.view === 'map') c.setView('list') }
+  const onMapSelect = (id: number) => { showPlace(id); if (c.view === 'map') c.setView('list') }
 
-  const desktopSplit = c.isWide && mappable.length > 0
-  const mapShown = mappable.length > 0 && (c.view === 'map' || c.isWide)
+  const desktopSplit = c.isWide && c.hasMappable
+  const mapShown = c.hasMappable && (c.view === 'map' || c.isWide)
   const mapOverlay = c.isWide && mapShown // the map carries the toggle + search
-  const canAddPlace = isRealList && c.canEdit // a real list you can edit
+  const canAddPlace = typeof c.activeId === 'number' && c.canEdit // a real list you can edit
 
   const listEl = (
     <CollectionList
@@ -91,6 +100,11 @@ export default function CollectionsPage(): React.ReactElement {
   )
   const mapPanel = (overlay: boolean) => (
     <CollectionMapPanel
+      labelOptions={isRealList ? c.labelOptions : []}
+      labelFilter={c.labelFilter}
+      onLabelFilter={isRealList ? c.setLabelFilter : undefined}
+      canManageLabels={canManageLabels}
+      onManageLabels={() => c.setShowLabelManager(true)}
       places={mappable}
       selectedPlaceId={c.selectedPlaceId}
       onSelect={onMapSelect}
@@ -113,26 +127,37 @@ export default function CollectionsPage(): React.ReactElement {
       counts={c.counts}
       categoryFilter={c.categoryFilter}
       categoryOptions={c.categoryOptions}
+      ratingFilter={c.ratingFilter}
+      sortMode={c.sortMode}
       onStatusFilter={c.setStatusFilter}
       onCategoryFilter={c.setCategoryFilter}
-      showLabels={isRealList && !familyChrome}
+      onRatingFilter={c.setRatingFilter}
+      onSortMode={c.setSortMode}
+      canAddPlace={canAddPlace}
+      onAddPlace={() => c.setShowAddPlace(true)}
+      showLabels={isRealList && !mapShown}
       labelOptions={c.labelOptions}
       labelFilter={c.labelFilter}
       onLabelFilter={c.setLabelFilter}
       canManageLabels={canManageLabels}
       onManageLabels={() => c.setShowLabelManager(true)}
+      canImport={canAddPlace}
+      onImport={() => c.setShowImport(true)}
       showSelect={showSelect}
       selectMode={c.selectMode}
       onToggleSelect={() => c.setSelectMode(!c.selectMode)}
       t={t}
     />
   ) : null
+  // The whole tours the list keeps (LIB-03) open its list, as rows like its places.
+  const tourRows = isRealList ? <ActiveCollectionTours search={c.search} /> : null
   const listColumn = (
     <>
       {filterBar}
+      {tourRows}
       {c.visiblePlaces.length > 0
         ? listEl
-        : <EmptyState icon={<Search size={26} />} title={t('collections.empty.noMatchTitle')} text={t('collections.empty.noMatchText')} />}
+        : <EmptyState scene="search" title={t('collections.empty.noMatchTitle')} />}
     </>
   )
 
@@ -140,7 +165,24 @@ export default function CollectionsPage(): React.ReactElement {
   if (c.placesLoading && !hasPlaces) {
     body = <div className="col-loading"><div className="col-spinner" /></div>
   } else if (!hasPlaces) {
-    body = <EmptyState icon={<Bookmark size={26} />} title={t('collections.empty.title')} text={t('collections.empty.text')} />
+    body = (
+      <div className="flex flex-col items-center">
+        {tourRows && <div className="w-full pb-2">{tourRows}</div>}
+        <EmptyState scene="collections" title={t('collections.empty.title')} className={canAddPlace ? 'pb-4' : undefined} />
+        {canAddPlace && (
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <button type="button" onClick={() => c.setShowAddPlace(true)} className="col-cta">
+              <Plus size={16} /> {t('collections.addPlace')}
+            </button>
+            {/* An empty list is exactly where a trip import saves the most typing,
+                so it gets the same billing as adding one place by hand. */}
+            <button type="button" onClick={() => c.setShowImport(true)} className="col-cta col-cta-ghost">
+              <DownloadCloud size={16} /> {t('collections.importFromTrip')}
+            </button>
+          </div>
+        )}
+      </div>
+    )
   } else if (desktopSplit) {
     body = (
       <div className={`col-split${c.view === 'map' ? ' map-full' : ''}`}>
@@ -148,7 +190,7 @@ export default function CollectionsPage(): React.ReactElement {
         <div className="col-split-map">{mapPanel(true)}</div>
       </div>
     )
-  } else if (c.view === 'map' && mappable.length > 0) {
+  } else if (c.view === 'map' && c.hasMappable) {
     body = <div className="col-mapwrap">{mapPanel(false)}</div>
   } else {
     body = listColumn
@@ -162,6 +204,7 @@ export default function CollectionsPage(): React.ReactElement {
       incomingInvites={c.incomingInvites}
       onSelect={c.handleSelectList}
       onNewList={() => { c.setMobileRailOpen(false); c.setEditorTarget('new') }}
+      onImportList={() => { c.setMobileRailOpen(false); c.setShowImportFile(true) }}
       onAcceptInvite={c.handleAcceptInvite}
       onDeclineInvite={c.handleDeclineInvite}
       t={t}
@@ -171,22 +214,30 @@ export default function CollectionsPage(): React.ReactElement {
   return (
     <>
       <Navbar />
+      <FamilyCollectionTools/>
       <div className="trek-dash col-root">
         <div className="col-page">
           <aside className="col-rail" style={{ minHeight: c.heroHeight || undefined }}>{rail}</aside>
 
           <div className="col-body">
+            {bodyInvites.length > 0 && (
+              <section className="col-invites-main" aria-label={t('collections.invites.title')}>
+                <div className="col-rail-label">
+                  {t('collections.invites.title')}
+                  <span className="badge">{bodyInvites.length}</span>
+                </div>
+                {bodyInvites.map(inv => (
+                  <CollectionInviteCard key={inv.collection_id} invite={inv} onAccept={c.handleAcceptInvite} onDecline={c.handleDeclineInvite} t={t} />
+                ))}
+              </section>
+            )}
             {noLists ? (
-              <EmptyState
-                icon={<Bookmark size={26} />}
-                title={t('collections.empty.firstTitle')}
-                text={t('collections.empty.firstText')}
-                action={
-                  <button type="button" onClick={() => c.setEditorTarget('new')} className="col-cta">
-                    <Bookmark size={16} /> {t('collections.newList')}
-                  </button>
-                }
-              />
+              <div className="flex flex-col items-center">
+                <EmptyState scene="collections" title={t('collections.empty.firstTitle')} className="pb-4" />
+                <button type="button" onClick={() => c.setEditorTarget('new')} className="col-cta">
+                  <Bookmark size={16} /> {t('collections.newList')}
+                </button>
+              </div>
             ) : (
               <>
                 <div ref={c.heroRef}>
@@ -198,22 +249,24 @@ export default function CollectionsPage(): React.ReactElement {
                     description={c.isAllSaved ? null : (c.activeCollection?.description ?? null)}
                     links={c.isAllSaved ? undefined : c.activeCollection?.links}
                     members={c.members}
-                    canShare={c.canShare && !familyChrome}
+                    canShare={c.canShare}
                     isOwner={c.isOwner}
-                    canEdit={!c.isAllSaved && (familyChrome ? c.canAdminList : c.isOwner) && c.activeCollection != null}
+                    canEdit={!familyUI.family && !c.isAllSaved && c.isOwner && c.activeCollection != null}
                     onEdit={() => { if (c.activeCollection) c.setEditorTarget(c.activeCollection) }}
                     shareMemberCount={c.shareMemberCount}
                     onShare={() => c.setShowShare(true)}
+                    onExport={familyUI.family || c.isAllSaved || !c.activeCollection ? undefined : c.handleExportList}
+                    exporting={c.exporting}
                     t={t}
                   />
                 </div>
 
-                {(!mapOverlay || canAddPlace) && (
+                {!mapOverlay && (
                   <div className="col-toolbar">
                     <button type="button" className="col-rail-toggle" onClick={() => c.setMobileRailOpen(true)}>
                       <Bookmark size={15} /> {t('collections.title')}
                     </button>
-                    {!c.isWide && mappable.length > 0 && (
+                    {!c.isWide && c.hasMappable && (
                       <div className="col-viewseg" role="group" aria-label={t('collections.title')}>
                         <button type="button" aria-pressed={c.view === 'list'} onClick={() => c.setView('list')} aria-label={t('collections.view.list')} title={t('collections.view.list')} className={c.view === 'list' ? 'on' : ''}>
                           <ListIcon size={16} />
@@ -222,11 +275,6 @@ export default function CollectionsPage(): React.ReactElement {
                           <MapIcon size={16} />
                         </button>
                       </div>
-                    )}
-                    {canAddPlace && (
-                      <button type="button" onClick={() => c.setShowAddPlace(true)} className="col-iconbtn" aria-label={t('collections.addPlace')} title={t('collections.addPlace')}>
-                        <Plus size={16} />
-                      </button>
                     )}
                     <div className="col-toolbar-spacer" />
                     {!mapOverlay && (
@@ -249,27 +297,25 @@ export default function CollectionsPage(): React.ReactElement {
                     </button>
                     <span className="lbl">{t('collections.selectedCount', { count: c.selectedIds.length })}</span>
                     <div className="col-toolbar-spacer" />
-                    {c.canEdit && isRealList && !familyChrome && (
-                      <button type="button" onClick={() => c.setLabelPickerOpen(true)} disabled={c.selectedIds.length === 0} className="col-selbar-btn">
-                        <Tags size={14} /> {t('collections.labels.assign')}
+                    {c.canEdit && isRealList && (
+                      <button type="button" onClick={() => c.setLabelPickerOpen(true)} disabled={c.selectedIds.length === 0} className="col-selbar-btn act" title={t('collections.labels.assign')}>
+                        <Tags size={14} /> <span className="col-selbar-txt">{t('collections.labels.assign')}</span>
                       </button>
                     )}
-                    {c.canEdit && !familyChrome && (
-                      <button type="button" onClick={() => c.setListPickerMode('move')} disabled={c.selectedIds.length === 0} className="col-selbar-btn">
-                        <FolderInput size={14} /> {t('collections.moveToList')}
+                    {c.canDelete && (
+                      <button type="button" onClick={() => c.setListPickerMode('move')} disabled={c.selectedIds.length === 0} className="col-selbar-btn act" title={t('collections.moveToList')}>
+                        <FolderInput size={14} /> <span className="col-selbar-txt">{t('collections.moveToList')}</span>
                       </button>
                     )}
-                    {!familyChrome && (
-                    <button type="button" onClick={() => c.setListPickerMode('copy')} disabled={c.selectedIds.length === 0} className="col-selbar-btn">
-                      <CopyPlus size={14} /> {t('collections.duplicateToList')}
+                    <button type="button" onClick={() => c.setListPickerMode('copy')} disabled={c.selectedIds.length === 0} className="col-selbar-btn act" title={t('collections.duplicateToList')}>
+                      <CopyPlus size={14} /> <span className="col-selbar-txt">{t('collections.duplicateToList')}</span>
                     </button>
-                    )}
-                    <button type="button" onClick={c.openCopyForSelection} disabled={c.selectedIds.length === 0} className="col-selbar-btn">
-                      <Copy size={14} /> {t('collections.copyToTrip')}
+                    <button type="button" onClick={c.openCopyForSelection} disabled={c.selectedIds.length === 0} className="col-selbar-btn act" title={t('collections.copyToTrip')}>
+                      <Copy size={14} /> <span className="col-selbar-txt">{t('collections.copyToTrip')}</span>
                     </button>
                     {c.canDelete && (
-                      <button type="button" onClick={c.handleDeleteSelected} disabled={c.selectedIds.length === 0} className="col-selbar-btn danger">
-                        <Trash2 size={14} /> {t('common.delete')}
+                      <button type="button" onClick={c.handleDeleteSelected} disabled={c.selectedIds.length === 0} className="col-selbar-btn act danger" title={t('common.delete')}>
+                        <Trash2 size={14} /> <span className="col-selbar-txt">{t('common.delete')}</span>
                       </button>
                     )}
                     <button type="button" onClick={() => c.setSelectMode(false)} className="col-selbar-btn" aria-label={t('common.cancel')}>
@@ -287,7 +333,7 @@ export default function CollectionsPage(): React.ReactElement {
         {/* Mobile rail drawer */}
         {c.mobileRailOpen && (
           <>
-            <div className="col-drawer-backdrop" onClick={() => c.setMobileRailOpen(false)} />
+            <div role="presentation" className="col-drawer-backdrop" onClick={() => c.setMobileRailOpen(false)} />
             <div className="col-drawer">
               <div className="col-drawer-head">
                 <button type="button" onClick={() => c.setMobileRailOpen(false)} aria-label={t('common.close')}><X size={18} /></button>
@@ -302,7 +348,7 @@ export default function CollectionsPage(): React.ReactElement {
             column so the map stays clear; otherwise it's a full-width sheet.
             Clicking another place / the map background re-points the selection. */}
         {c.selectedPlace && c.view !== 'map' && (
-          <CollectionPlaceDetail
+          <CollectionPlaceDetail key={familyUI.family?familyUI.lifetime:undefined}
             place={c.selectedPlace}
             canEdit={c.canEdit}
             canDelete={c.canDelete}
@@ -312,24 +358,17 @@ export default function CollectionsPage(): React.ReactElement {
             onClose={c.handleCloseDetail}
             onSetStatus={c.handleDetailStatus}
             onSave={patch => c.updatePlace(c.selectedPlace!.id, patch)}
+            onUploadImage={familyUI.family?undefined:file => c.uploadPlaceImage(c.selectedPlace!.id, file)}
             onCopyToTrip={c.openCopyForSelectedPlace}
             onRemove={c.handleDetailRemove}
-            familyChrome={familyChrome}
+            onRate={familyUI.family?undefined:r => c.handleRatePlace(c.selectedPlace!.id, r)}
             t={t}
           />
         )}
       </div>
 
       {/* Add a place to the current list */}
-      {familyChrome && isRealList && c.activeCollection && (
-        <FamilyCatalogListItemPicker
-          open={c.showAddPlace}
-          excludeByKind={c.excludeByKind}
-          onClose={() => c.setShowAddPlace(false)}
-          onPick={(kind, entityId) => { void c.handleCatalogPick?.(kind, entityId) }}
-        />
-      )}
-      {!familyChrome && typeof c.activeId === 'number' && c.activeCollection && (
+      {typeof c.activeId === 'number' && c.activeCollection && (
         <AddPlaceToCollectionModal
           isOpen={c.showAddPlace}
           collectionId={c.activeId}
@@ -341,7 +380,33 @@ export default function CollectionsPage(): React.ReactElement {
         />
       )}
 
-      {/* Copy to trip — Family Phase 4 uses the same TREK picker; Nest numeric path unchanged. */}
+      {/* A list file as a new list, or added to one that is already there (#2198, #2301) */}
+      {c.showImportFile && (
+        <ImportCollectionModal
+          onImport={c.handleImportFile}
+          onImportInto={c.handleImportFileInto}
+          lists={c.writableLists}
+          defaultListId={typeof c.activeId === 'number' ? c.activeId : null}
+          onReadGpx={c.handleReadGpx}
+          onClose={() => c.setShowImportFile(false)}
+          t={t}
+        />
+      )}
+
+      {/* Bulk import of a trip's places into the current list */}
+      {typeof c.activeId === 'number' && c.activeCollection && (
+        <ImportFromTripModal
+          isOpen={c.showImport}
+          collectionId={c.activeId}
+          collectionName={c.activeCollection.name}
+          categories={c.categories}
+          onClose={() => c.setShowImport(false)}
+          onImported={c.handlePlaceAdded}
+          t={t}
+        />
+      )}
+
+      {/* Copy to trip */}
       <CopyToTripModal
         isOpen={c.copyIds != null}
         onClose={c.closeCopy}
@@ -351,10 +416,10 @@ export default function CollectionsPage(): React.ReactElement {
       />
 
       {/* Move / duplicate the selection into another list */}
-      {!familyChrome && c.listPickerMode && (
+      {c.listPickerMode && (
         <MoveToListModal
           mode={c.listPickerMode}
-          lists={c.ownedLists.filter(l => l.id !== c.activeId)}
+          lists={c.writableLists.filter(l => l.id !== c.activeId)}
           count={c.selectedIds.length}
           onPick={c.listPickerMode === 'move' ? c.handleMoveToList : c.handleDuplicateToList}
           onClose={() => c.setListPickerMode(null)}
@@ -363,7 +428,7 @@ export default function CollectionsPage(): React.ReactElement {
       )}
 
       {/* Share / fusion */}
-      {!familyChrome && c.canShare && typeof c.activeId === 'number' && c.activeCollection && (
+      {c.canShare && typeof c.activeId === 'number' && c.activeCollection && (
         <ShareCollectionModal
           isOpen={c.showShare}
           onClose={() => c.setShowShare(false)}
@@ -377,17 +442,7 @@ export default function CollectionsPage(): React.ReactElement {
       )}
 
       {/* Create / edit a list — name, colour, cover, description, links */}
-      <ListEditorModal
-        target={c.editorTarget}
-        onClose={() => c.setEditorTarget(null)}
-        onCreated={c.handleEditorCreated}
-        onRequestDelete={c.setConfirmDeleteList}
-        t={t}
-        familyChrome={familyChrome}
-        adapter={familyChrome ? c.listEditorAdapter : undefined}
-        canSetFamilyVisible={Boolean(c.canSetFamilyVisible)}
-        canDeleteList={familyChrome ? Boolean(c.canAdminList) : undefined}
-      />
+      <ListEditorModal target={c.editorTarget} onClose={() => c.setEditorTarget(null)} onCreated={c.handleEditorCreated} onRequestDelete={c.setConfirmDeleteList} t={t} />
 
       {/* Manage the list's custom labels (editor+) */}
       {canManageLabels && (
@@ -416,24 +471,15 @@ export default function CollectionsPage(): React.ReactElement {
       )}
 
       {/* Delete-list confirm */}
-      <Modal
+      <ConfirmDialog
         isOpen={c.confirmDeleteList != null}
         onClose={() => c.setConfirmDeleteList(null)}
+        onConfirm={c.handleDeleteList}
         title={t('collections.deleteList')}
-        size="sm"
-        footer={
-          <div className="flex justify-end gap-2">
-            <button type="button" onClick={() => c.setConfirmDeleteList(null)} className="px-3 py-1.5 rounded-lg border border-edge text-content-secondary text-[13px] hover:bg-surface-hover">
-              {t('common.cancel')}
-            </button>
-            <button type="button" onClick={c.handleDeleteList} className="px-3 py-1.5 rounded-lg bg-danger text-white text-[13px] font-semibold hover:opacity-90">
-              {t('common.delete')}
-            </button>
-          </div>
-        }
-      >
-        <p className="text-[13px] text-content-secondary">{familyChrome ? t('collections.archiveListConfirm') : t('collections.deleteListConfirm')}</p>
-      </Modal>
+        message={t('collections.deleteListConfirm')}
+        confirmLabel={t('common.delete')}
+        cancelLabel={t('common.cancel')}
+      />
     </>
   )
 }

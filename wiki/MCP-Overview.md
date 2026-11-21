@@ -14,9 +14,23 @@ Once connected, an AI assistant can work with your TREK data in a single convers
 - Send collab messages and notes to other trip members
 - Mark countries and regions as visited in Atlas
 - Log vacation days in Vacay
-- Write journey entries across multiple trips
+- Write journey entries across multiple trips, and show a journal inside a trip
+- Plan, edit and check off tours: hikes, bike, paddle, ski and winter tours, rides and city walks
+- Plan road trips: route, hazards, charging stops and places along the way
+- Import flights from AirTrail and visits and routes from Dawarich
+- Import places from links and tracks from GPX files
+- Switch calendar feeds and trip invite links on or off
+- Keep school holiday regions up to date for Vacay
+- Upload documents to a trip, read them and link them to bookings, places or expenses
+- Look up how a TREK feature works in the bundled help
 
 Changes made through MCP are broadcast to all connected clients in real-time — exactly like changes made in the web UI.
+
+Many of these tools belong to an addon and only appear while an administrator has enabled it. See [MCP-Addon-Tools](MCP-Addon-Tools).
+
+### MCP and the built-in AI Assistant
+
+The **AI Assistant** addon is a chat inside TREK itself. It works on the same tools as an external MCP client and the same permission checks apply, but it does not connect through `/mcp`: its AI provider is set up inside TREK, not through OAuth clients. Changes it suggests wait for your confirmation. MCP is the way to let a different AI app, such as Claude.ai or Cursor, use TREK.
 
 ## Authentication options
 
@@ -31,7 +45,7 @@ See [MCP-Setup](MCP-Setup) for step-by-step instructions for each method.
 ## Requirements
 
 - **MCP addon enabled** — an administrator must enable the MCP addon (`mcp`) from the Admin Panel before the `/mcp` endpoint becomes available and the MCP section appears in user settings.
-- **`APP_URL` set** — the `APP_URL` environment variable must be configured to your TREK instance's public URL so that OAuth discovery works correctly. Without it, clients that use OAuth 2.1 cannot complete authentication.
+- **`APP_URL` set** — set the `APP_URL` environment variable to your TREK instance's public URL so OAuth discovery advertises the right issuer and endpoints. If it is unset or not a valid URL, TREK falls back to the first entry of `ALLOWED_ORIGINS`, and then to `http://localhost:{PORT}`. Only an `https://` origin or `localhost` / `127.0.0.1` is accepted as the issuer — anything else is replaced by `http://localhost:{PORT}`, which remote OAuth clients cannot reach.
 
 ## Rate limits and session limits
 
@@ -58,7 +72,7 @@ https://<your-trek-instance>/mcp
 
 If the MCP addon is not enabled, this endpoint returns `403`. If authentication fails, it returns `401`.
 
-> **Admin:** Enable the MCP addon in [Admin-Addons](Admin-Addons). Set `APP_URL` for OAuth discovery. Revoke tokens and manage OAuth clients from [Admin-MCP-Tokens](Admin-MCP-Tokens). Adjust rate and session limits with `MCP_RATE_LIMIT` and `MCP_MAX_SESSION_PER_USER` — see [Environment-Variables](Environment-Variables).
+> **Admin:** Enable the MCP addon in [Admin-Addons](Admin-Addons). Set `APP_URL` for OAuth discovery. Revoke OAuth sessions and delete API tokens of any user under **Admin → MCP Access** ([Admin-MCP-Tokens](Admin-MCP-Tokens)). Adjust rate and session limits with `MCP_RATE_LIMIT` and `MCP_MAX_SESSION_PER_USER`, see [Environment-Variables](Environment-Variables).
 
 ## Next steps
 

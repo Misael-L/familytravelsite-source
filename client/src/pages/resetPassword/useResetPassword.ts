@@ -1,13 +1,11 @@
 import { useState, useEffect, type FormEvent } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router'
 import { authApi } from '../../api/client'
+import { getSupabaseSession } from '../../integrations/family/legacy/data/supabase/auth'
+import { isFamilyFrontendActive } from '../../integrations/family/runtime'
 import { getApiErrorMessage } from '../../types'
 import { useTranslation } from '../../i18n'
-import {
-  getSupabaseSession,
-  isSupabaseDataPlane,
-  updateRecoveredPassword,
-} from '../../data/supabase/auth'
+import { passwordErrorKey } from '../../utils/passwordError'
 
 /**
  * Reset-password data hook — owns the token lookup, the form state, the
@@ -20,7 +18,7 @@ export function useResetPassword() {
   const navigate = useNavigate()
   const [params] = useSearchParams()
   const token = params.get('token') || ''
-  const supabasePlane = isSupabaseDataPlane()
+  const family = isFamilyFrontendActive()
 
   const [pw, setPw] = useState('')
   const [pw2, setPw2] = useState('')
@@ -30,40 +28,54 @@ export function useResetPassword() {
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [hasRecoverySession, setHasRecoverySession] = useState(supabasePlane)
+  const [familyReady, setFamilyReady] = useState<boolean | null>(family ? null : false)
 
   useEffect(() => {
-    if (supabasePlane) {
-      void getSupabaseSession().then(session => {
-        setHasRecoverySession(!!session)
-        if (!session) setError(t('login.resetPasswordInvalidLink'))
-      }).catch(() => setError(t('login.resetPasswordInvalidLink')))
+    if (!family) {
+      setFamilyReady(false)
+      if (!token) setError(t('login.resetPasswordInvalidLink'))
       return
     }
-    if (!token) setError(t('login.resetPasswordInvalidLink'))
-  }, [token, t, supabasePlane])
+    let cancelled = false
+    setFamilyReady(null)
+    setError('')
+    void (async () => {
+      const hold = (globalThis as { __familyRecoveryHold?: boolean }).__familyRecoveryHold
+      if (hold) {
+        await new Promise<void>((resolve) => {
+          addEventListener('family-recovery-release', () => resolve(), { once: true })
+        })
+      }
+      if (cancelled) return
+      try {
+        const session = await getSupabaseSession()
+        if (cancelled) return
+        const ready = session != null
+        setFamilyReady(ready)
+        if (!ready) setError(t('login.resetPasswordInvalidLink'))
+      } catch {
+        if (cancelled) return
+        setFamilyReady(false)
+        setError(t('login.resetPasswordInvalidLink'))
+      }
+    })()
+    return () => { cancelled = true }
+  }, [family, token])
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     if (isLoading) return
     setError('')
-    if (supabasePlane) {
-      if (!hasRecoverySession) return
-    } else if (!token) {
-      return
-    }
-    if (pw.length < 8) { setError(t('login.passwordMinLength')); return }
+    if (family) {
+      if (familyReady !== true) return
+    } else if (!token) return
+    const weak = passwordErrorKey(pw)
+    if (weak) { setError(t(weak)); return }
     if (pw !== pw2) { setError(t('login.passwordsDontMatch')); return }
     setIsLoading(true)
     try {
-      if (supabasePlane) {
-        await updateRecoveredPassword(pw)
-        setSuccess(true)
-        setIsLoading(false)
-        return
-      }
       const res = await authApi.resetPassword({
-        token,
+        token: family ? '' : token,
         new_password: pw,
         ...(mfaRequired && mfaCode ? { mfa_code: mfaCode.trim() } : {}),
       })
@@ -82,7 +94,9 @@ export function useResetPassword() {
   }
 
   return {
-    navigate, token: supabasePlane || token,
+    navigate, token,
+    familyRecoveryPending: family && familyReady === null,
+    familyRecoveryReady: family && familyReady === true,
     pw, setPw, pw2, setPw2, showPw, setShowPw,
     mfaCode, setMfaCode, mfaRequired, error, success, isLoading,
     handleSubmit,

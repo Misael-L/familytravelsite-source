@@ -2,8 +2,8 @@
 // attach after authentication. Replaces the per-site casts
 // (`(req as AuthRequest).user`, `getRequest<Request & { user?: User }>()`) with
 // a single source of truth so downstream code can read `req.user` directly.
-
 import type { User } from '../types';
+import type { PublicApiGrant } from '@trek/shared';
 
 declare module 'express-serve-static-core' {
   interface Request {
@@ -13,6 +13,16 @@ declare module 'express-serve-static-core' {
      * `optionalAuthenticate` to signal "checked, but unauthenticated".
      */
     user?: User | null;
+    /**
+     * What the `/api/v1` integration key presented on this request may read.
+     * Set by `ApiTokenGuard`, and only there.
+     *
+     * Its own field rather than something folded into `user`: the grant belongs
+     * to the credential, not to the person, and a cookie session has no grant at
+     * all. Putting it on `user` would leak a token's restrictions into every
+     * other auth path that happens to read the same object.
+     */
+    apiToken?: PublicApiGrant;
   }
 }
 

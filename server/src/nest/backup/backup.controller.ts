@@ -1,3 +1,16 @@
+import { readEnv } from '../../app-config';
+import type { User } from '../../types';
+import { RuntimeEnvService } from '../app-config/runtime-env.service';
+import { AuditService } from '../audit/audit.service';
+import { getClientIp } from '../audit/client-ip';
+import { AdminGuard } from '../auth-core/admin.guard';
+import { CurrentUser } from '../auth-core/current-user.decorator';
+import { JwtAuthGuard } from '../auth-core/jwt-auth.guard';
+import { ManagedForbidden, isManagedBlocked, MANAGED_FORBIDDEN_ERROR } from '../common/managed';
+import { StorageNotFoundError } from '../storage/storage.types';
+import { AutoBackupJob } from './auto-backup.job';
+import { AutoBackupSettingsDto } from './backup.dto';
+import { BackupService } from './backup.service';
 import {
   Body,
   Controller,
@@ -15,24 +28,9 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+
 import type { Request, Response } from 'express';
 import fs from 'fs';
-import type { User } from '../../types';
-import { BackupService } from './backup.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { AdminGuard } from '../auth/admin.guard';
-import { CurrentUser } from '../auth/current-user.decorator';
-import { writeAudit, getClientIp } from '../../services/auditLog';
-import { getUploadTmpDir, MAX_BACKUP_UPLOAD_SIZE } from '../../services/backupService';
-
-const UPLOAD = {
-  dest: getUploadTmpDir(),
-  fileFilter: (_req: unknown, file: Express.Multer.File, cb: (err: Error | null, accept: boolean) => void) => {
-    if (file.originalname.endsWith('.zip')) return cb(null, true);
-    cb(new Error('Only ZIP files allowed'), false);
-  },
-  limits: { fileSize: MAX_BACKUP_UPLOAD_SIZE },
-};
 
 /**
  * /api/backup — admin-only database backup management (list, create, download,
@@ -46,12 +44,17 @@ const UPLOAD = {
 @Controller('api/backup')
 @UseGuards(JwtAuthGuard, AdminGuard)
 export class BackupController {
-  constructor(private readonly backup: BackupService) {}
+  constructor(
+    private readonly backup: BackupService,
+    private readonly audit: AuditService,
+    private readonly autoBackup: AutoBackupJob,
+    private readonly env: RuntimeEnvService,
+  ) {}
 
   @Get('list')
-  list() {
+  async list() {
     try {
-      return { backups: this.backup.listBackups() };
+      return { backups: await this.backup.listBackups() };
     } catch {
       throw new HttpException({ error: 'Error loading backups' }, 500);
     }
@@ -65,7 +68,13 @@ export class BackupController {
     }
     try {
       const backup = await this.backup.createBackup();
-      writeAudit({ userId: user.id, action: 'backup.create', resource: backup.filename, ip: getClientIp(req), details: { size: backup.size } });
+      await this.audit.writeAudit({
+        userId: user.id,
+        action: 'backup.create',
+        resource: backup.filename,
+        ip: getClientIp(req),
+        details: { size: backup.size },
+      });
       return { success: true, backup };
     } catch {
       throw new HttpException({ error: 'Error creating backup' }, 500);
@@ -73,31 +82,46 @@ export class BackupController {
   }
 
   @Get('download/:filename')
-  download(@Param('filename') filename: string, @Res() res: Response): void {
+  async download(@Param('filename') filename: string, @Res() res: Response): Promise<void> {
     if (!this.backup.isValidBackupFilename(filename)) {
       throw new HttpException({ error: 'Invalid filename' }, 400);
     }
-    if (!this.backup.backupFileExists(filename)) {
+    if (!(await this.backup.backupFileExists(filename))) {
       throw new HttpException({ error: 'Backup not found' }, 404);
     }
-    res.download(this.backup.backupFilePath(filename), filename);
+    try {
+      await this.backup.sendBackupToResponse(filename, res);
+    } catch (err) {
+      // The pre-check above owns the normal miss; this only covers a delete
+      // racing between the check and the send.
+      if (err instanceof StorageNotFoundError) {
+        throw new HttpException({ error: 'Backup not found' }, 404);
+      }
+      throw err;
+    }
   }
 
+  @ManagedForbidden('a restore replaces database and uploads, and the operator owns the recovery point')
   @Post('restore/:filename')
   @HttpCode(200) // Express answers restore with res.json (200).
   async restore(@CurrentUser() user: User, @Param('filename') filename: string, @Req() req: Request) {
     if (!this.backup.isValidBackupFilename(filename)) {
       throw new HttpException({ error: 'Invalid filename' }, 400);
     }
-    if (!this.backup.backupFileExists(filename)) {
+    if (!(await this.backup.backupFileExists(filename))) {
       throw new HttpException({ error: 'Backup not found' }, 404);
     }
     try {
-      const result = await this.backup.restoreFromZip(this.backup.backupFilePath(filename));
+      const result = await this.backup.restoreBackup(filename);
       if (!result.success) {
         throw new HttpException({ error: result.error }, result.status || 400);
       }
-      writeAudit({ userId: user.id, action: 'backup.restore', resource: filename, ip: getClientIp(req) });
+      await this.audit.writeAudit({
+        userId: user.id,
+        action: 'backup.restore',
+        resource: filename,
+        ip: getClientIp(req),
+      });
       return { success: true };
     } catch (err) {
       if (err instanceof HttpException) throw err;
@@ -105,10 +129,24 @@ export class BackupController {
     }
   }
 
+  @ManagedForbidden('restoring from an uploaded archive replaces the database and the encryption key', {
+    enforcedInHandler: true,
+  })
   @Post('upload-restore')
   @HttpCode(200) // Express answers upload-restore with res.json (200).
-  @UseInterceptors(FileInterceptor('backup', UPLOAD))
-  async uploadRestore(@CurrentUser() user: User, @UploadedFile() file: Express.Multer.File | undefined, @Req() req: Request) {
+  @UseInterceptors(FileInterceptor('backup'))
+  async uploadRestore(
+    @CurrentUser() user: User,
+    @UploadedFile() file: Express.Multer.File | undefined,
+    @Req() req: Request,
+  ) {
+    // Checked here rather than in the guard: a guard runs before the multipart
+    // parser, so throwing there leaves the body unread and the client sees an
+    // ECONNRESET instead of this 403 (PROFILE-015). The marker above still puts
+    // the route in the boot-gate inventory.
+    if (isManagedBlocked(this.env)) {
+      throw new HttpException(MANAGED_FORBIDDEN_ERROR, 403);
+    }
     if (!file) {
       throw new HttpException({ error: 'No file uploaded' }, 400);
     }
@@ -119,7 +157,12 @@ export class BackupController {
       if (!result.success) {
         throw new HttpException({ error: result.error }, result.status || 400);
       }
-      writeAudit({ userId: user.id, action: 'backup.upload_restore', resource: origName, ip: getClientIp(req) });
+      await this.audit.writeAudit({
+        userId: user.id,
+        action: 'backup.upload_restore',
+        resource: origName,
+        ip: getClientIp(req),
+      });
       return { success: true };
     } catch (err) {
       if (err instanceof HttpException) throw err;
@@ -132,36 +175,45 @@ export class BackupController {
   @Get('auto-settings')
   autoSettings() {
     try {
-      return this.backup.getAutoSettings();
+      return this.autoBackup.getAutoSettings();
     } catch (err) {
       console.error('[backup] GET auto-settings:', err);
       throw new HttpException({ error: 'Could not load backup settings' }, 500);
     }
   }
 
+  @ManagedForbidden('the operator schedules backups off-volume; a second schedule inside it is not one')
   @Put('auto-settings')
-  updateAutoSettings(@CurrentUser() user: User, @Body() body: Record<string, unknown>, @Req() req: Request) {
+  async updateAutoSettings(@CurrentUser() user: User, @Body() body: AutoBackupSettingsDto, @Req() req: Request) {
     try {
-      const settings = this.backup.updateAutoSettings(body || {});
-      writeAudit({ userId: user.id, action: 'backup.auto_settings', ip: getClientIp(req), details: { enabled: settings.enabled, interval: settings.interval, keep_days: settings.keep_days } });
+      const settings = this.autoBackup.updateAutoSettings(body || {});
+      await this.audit.writeAudit({
+        userId: user.id,
+        action: 'backup.auto_settings',
+        ip: getClientIp(req),
+        details: { enabled: settings.enabled, interval: settings.interval, keep_days: settings.keep_days },
+      });
       return { settings };
     } catch (err) {
       console.error('[backup] PUT auto-settings:', err);
       const msg = err instanceof Error ? err.message : String(err);
-      throw new HttpException({ error: 'Could not save auto-backup settings', detail: process.env.NODE_ENV?.toLowerCase() !== 'production' ? msg : undefined }, 500);
+      throw new HttpException(
+        { error: 'Could not save auto-backup settings', detail: !readEnv().app.isProduction ? msg : undefined },
+        500,
+      );
     }
   }
 
   @Delete(':filename')
-  remove(@CurrentUser() user: User, @Param('filename') filename: string, @Req() req: Request) {
+  async remove(@CurrentUser() user: User, @Param('filename') filename: string, @Req() req: Request) {
     if (!this.backup.isValidBackupFilename(filename)) {
       throw new HttpException({ error: 'Invalid filename' }, 400);
     }
-    if (!this.backup.backupFileExists(filename)) {
+    if (!(await this.backup.backupFileExists(filename))) {
       throw new HttpException({ error: 'Backup not found' }, 404);
     }
-    this.backup.deleteBackup(filename);
-    writeAudit({ userId: user.id, action: 'backup.delete', resource: filename, ip: getClientIp(req) });
+    await this.backup.deleteBackup(filename);
+    await this.audit.writeAudit({ userId: user.id, action: 'backup.delete', resource: filename, ip: getClientIp(req) });
     return { success: true };
   }
 }

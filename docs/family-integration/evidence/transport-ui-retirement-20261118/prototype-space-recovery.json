@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "only_verified_disposable_source_prototype_removed": "/private/tmp/trek-core-transport-ui-retirement-20261118/candidate-checkout",
+  "pinned_original_source": "a7d27e34891b5522fd72dfe2021e3abad934f199",
+  "explicit_candidate_deletions": [
+    "client/src/integrations/family/legacy/components/Planner/TransitSearchPanel.tsx",
+    "client/src/integrations/family/legacy/components/Planner/TransportModal.tsx"
+  ],
+  "all_other_tracked_bytes_verified": 18190,
+  "dependency_links_unlinked_without_following": true,
+  "test_logs_evidence_compiled_artifacts_source_checkouts_backups_ETL_media_preserved": true,
+  "free_bytes_before": 2441216000,
+  "free_bytes_after": 2846720000
+}

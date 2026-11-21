@@ -1,6 +1,7 @@
 import type { TranslationStrings } from '../types';
 
 const todo: TranslationStrings = {
+  'todo.emptyFiltered': 'Geen taken komen overeen met dit filter',
   'todo.subtab.packing': 'Inpaklijst',
   'todo.subtab.todo': 'Taken',
   'todo.completed': 'voltooid',
@@ -10,6 +11,7 @@ const todo: TranslationStrings = {
   'todo.uncategorized': 'Geen lijst',
   'todo.namePlaceholder': 'Taaknaam',
   'todo.descriptionPlaceholder': 'Beschrijving (optioneel)',
+  'todo.editDescription': 'Klik om te bewerken, links openen direct',
   'todo.unassigned': 'Niet toegewezen',
   'todo.noCategory': 'Geen lijst',
   'todo.hasDescription': 'Heeft beschrijving',

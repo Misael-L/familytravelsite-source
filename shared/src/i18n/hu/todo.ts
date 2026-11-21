@@ -1,6 +1,7 @@
 import type { TranslationStrings } from '../types';
 
 const todo: TranslationStrings = {
+  'todo.emptyFiltered': 'Nincs a szűrőnek megfelelő feladat',
   'todo.subtab.packing': 'Csomagolási lista',
   'todo.subtab.todo': 'Teendők',
   'todo.completed': 'kész',
@@ -10,6 +11,7 @@ const todo: TranslationStrings = {
   'todo.uncategorized': 'Nincs lista',
   'todo.namePlaceholder': 'Feladat neve',
   'todo.descriptionPlaceholder': 'Leírás (opcionális)',
+  'todo.editDescription': 'Kattintson a szerkesztéshez, a linkek közvetlenül megnyílnak',
   'todo.unassigned': 'Nem hozzárendelt',
   'todo.noCategory': 'Nincs lista',
   'todo.hasDescription': 'Van leírás',

@@ -1,29 +1,24 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { DEFAULT_SETTINGS, useSettingsStore } from './settingsStore'
-import { useAuthStore } from './authStore'
-import { resetAllStores, seedStore } from '../../tests/helpers/store'
-import { buildUser } from '../../tests/helpers/factories'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { DEFAULT_SETTINGS, forgetServerLanguage, useSettingsStore } from './settingsStore'
+import { settingsApi } from '../api/client'
+import { clearTileCache } from '../sync/tilePrefetcher'
 
-const { getEffective, updateMine } = vi.hoisted(() => ({
-  getEffective: vi.fn(),
-  updateMine: vi.fn(),
+vi.mock('../api/client', () => ({
+  settingsApi: {
+    get: vi.fn(),
+    set: vi.fn().mockResolvedValue(undefined),
+    setBulk: vi.fn().mockResolvedValue(undefined),
+  },
 }))
 
-vi.mock('../data/supabase/familyPreferences', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../data/supabase/familyPreferences')>()
-  return {
-    ...actual,
-    getMyEffectivePreferences: getEffective,
-    updateMyFamilyPreferences: updateMine,
-  }
-})
+vi.mock('../sync/tilePrefetcher', () => ({
+  clearTileCache: vi.fn().mockResolvedValue(undefined),
+}))
 
-beforeEach(() => {
-  resetAllStores()
-  getEffective.mockReset()
-  updateMine.mockReset()
-})
-
+// A fresh instance sends no value for a setting an admin hasn't defaulted, so DEFAULT_SETTINGS
+// is what a brand-new user actually sees. These guard against the two regressions in the
+// original bug: unit defaults that mix measurement systems (°F alongside kilometres), and a
+// store default that silently disagrees with DisplaySettingsTab's fallback.
 describe('settings defaults', () => {
   it('SETTINGS-DEFAULTS-001: the shipped unit defaults belong to one consistent system', () => {
     expect(DEFAULT_SETTINGS.temperature_unit).toBe('celsius')
@@ -37,103 +32,179 @@ describe('settings defaults', () => {
     expect(settings.distance_unit).toBe(DEFAULT_SETTINGS.distance_unit)
     expect(settings.time_format).toBe(DEFAULT_SETTINGS.time_format)
   })
+
+  it('SETTINGS-DEFAULTS-003: no CARTO key is shipped, so the field starts empty instead of undefined', () => {
+    expect(DEFAULT_SETTINGS.carto_api_key).toBe('')
+  })
 })
 
-describe('family preference inheritance', () => {
+// The CARTO key lives in its own setting and is appended at render time (#2054). Two things
+// have to hold on the way out to the server: the key never gets frozen into the saved
+// template, and a key change invalidates the tile cache, which is keyed by the full URL.
+describe('settings tile template hygiene', () => {
+  const initialState = useSettingsStore.getState()
+
   beforeEach(() => {
-    vi.stubEnv('VITE_DATA_PLANE', 'supabase')
-    seedStore(useAuthStore, {
-      familyId: 'fam-1',
-      isAuthenticated: true,
-      user: buildUser(),
-    })
+    vi.clearAllMocks()
+    useSettingsStore.setState(initialState, true)
   })
 
+  it('SETTINGS-TILE-001: a key pasted into the template is stripped before the template is stored', async () => {
+    await useSettingsStore.getState().updateSetting(
+      'map_tile_url',
+      'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png?key=pasted-secret',
+    )
+    const stored = useSettingsStore.getState().settings.map_tile_url
+    expect(stored).toBe('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png')
+    expect(stored).not.toContain('pasted-secret')
+    expect(settingsApi.set).toHaveBeenCalledWith('map_tile_url', stored)
+  })
+
+  it('SETTINGS-TILE-002: a bulk save strips the key and normalizes the retired OSM shard host', async () => {
+    await useSettingsStore.getState().updateSettings({
+      map_tile_url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png?key=pasted-secret',
+    })
+    const stored = useSettingsStore.getState().settings.map_tile_url
+    expect(stored).toBe('https://tile.openstreetmap.org/{z}/{x}/{y}.png')
+    expect(settingsApi.setBulk).toHaveBeenCalledWith({ map_tile_url: stored })
+  })
+
+  it('SETTINGS-TILE-003: changing the CARTO key drops the tile cache', async () => {
+    await useSettingsStore.getState().updateSetting('carto_api_key', 'fresh-key')
+    expect(clearTileCache).toHaveBeenCalledTimes(1)
+  })
+
+  it('SETTINGS-TILE-004: re-saving the same key leaves the cache alone', async () => {
+    await useSettingsStore.getState().updateSetting('carto_api_key', 'fresh-key')
+    vi.mocked(clearTileCache).mockClear()
+    await useSettingsStore.getState().updateSetting('carto_api_key', 'fresh-key')
+    expect(clearTileCache).not.toHaveBeenCalled()
+  })
+
+  it('SETTINGS-TILE-005: a bulk save clears the cache only when the key actually moves', async () => {
+    await useSettingsStore.getState().updateSettings({ carto_api_key: 'fresh-key' })
+    expect(clearTileCache).toHaveBeenCalledTimes(1)
+
+    vi.mocked(clearTileCache).mockClear()
+    await useSettingsStore.getState().updateSettings({ map_tile_url: '' })
+    expect(clearTileCache).not.toHaveBeenCalled()
+  })
+})
+
+// The account's language lives on the server; the store boots from localStorage. Without a
+// mirror of the server value, a cold start with no network (PWA in airplane mode) booted in
+// English even though every online session ran in the user's language — the same stranding
+// #1618 fixed for currency and units. 'app_language' stays reserved for an explicit in-app
+// choice (the login page's detection chain keys off it), so the mirror gets its own key.
+describe('offline language fallback', () => {
+  beforeEach(() => {
+    localStorage.removeItem('app_language')
+    localStorage.removeItem('app_language_server')
+  })
+
+  it('SETTINGS-LANG-001: loadSettings mirrors the account language for the next launch', async () => {
+    vi.mocked(settingsApi.get).mockResolvedValue({ settings: { language: 'fr' } } as never)
+    await useSettingsStore.getState().loadSettings()
+    expect(localStorage.getItem('app_language_server')).toBe('fr')
+  })
+
+  it('SETTINGS-LANG-002: the mirror never claims to be an explicit choice', async () => {
+    vi.mocked(settingsApi.get).mockResolvedValue({ settings: { language: 'fr' } } as never)
+    await useSettingsStore.getState().loadSettings()
+    expect(localStorage.getItem('app_language')).toBeNull()
+  })
+
+  it('SETTINGS-LANG-003: a cold start with no explicit choice boots in the mirrored language', async () => {
+    localStorage.setItem('app_language_server', 'fr')
+    vi.resetModules()
+    const fresh = await import('./settingsStore')
+    expect(fresh.DEFAULT_SETTINGS.language).toBe('fr')
+  })
+
+  it('SETTINGS-LANG-004: an explicit in-app choice outranks the mirror', async () => {
+    localStorage.setItem('app_language', 'de')
+    localStorage.setItem('app_language_server', 'fr')
+    vi.resetModules()
+    const fresh = await import('./settingsStore')
+    expect(fresh.DEFAULT_SETTINGS.language).toBe('de')
+  })
+
+  // The account of the user who just signed in decides, and an account without a
+  // language of its own sends no language key at all. Leaving the previous
+  // account's mirror standing is what stranded the next user on a shared browser.
+  it('SETTINGS-LANG-005: an account with no language of its own clears the mirror', async () => {
+    localStorage.setItem('app_language_server', 'ja')
+    vi.mocked(settingsApi.get).mockResolvedValue({ settings: { default_currency: 'EUR' } } as never)
+
+    await useSettingsStore.getState().loadSettings()
+
+    expect(localStorage.getItem('app_language_server')).toBeNull()
+  })
+
+  it('SETTINGS-LANG-006: a language TREK does not ship never reaches the mirror', async () => {
+    localStorage.setItem('app_language_server', 'ja')
+    vi.mocked(settingsApi.get).mockResolvedValue({ settings: { language: 'kl' } } as never)
+
+    await useSettingsStore.getState().loadSettings()
+
+    expect(localStorage.getItem('app_language_server')).toBeNull()
+  })
+
+  it('SETTINGS-LANG-007: forgetServerLanguage drops the mirror and leaves the explicit choice alone', () => {
+    localStorage.setItem('app_language', 'de')
+    localStorage.setItem('app_language_server', 'ja')
+
+    forgetServerLanguage()
+
+    expect(localStorage.getItem('app_language_server')).toBeNull()
+    expect(localStorage.getItem('app_language')).toBe('de')
+  })
+})
+
+// wiki/Languages.md: the account's language, then the browser's, then English
+// (the server default is the login page's, as before). The browser step only ran there,
+// so opening a trip with a live session in a fresh browser started in English (#2604).
+describe('language detection with a session', () => {
+  const languages = Object.getOwnPropertyDescriptor(window.navigator, 'languages')
+  const speak = (...langs: string[]) =>
+    Object.defineProperty(window.navigator, 'languages', { value: langs, configurable: true })
+
+  beforeEach(() => {
+    localStorage.removeItem('app_language')
+    localStorage.removeItem('app_language_server')
+    useSettingsStore.setState({ settings: { ...DEFAULT_SETTINGS, language: 'en' } })
+  })
   afterEach(() => {
-    vi.stubEnv('VITE_DATA_PLANE', 'nest')
+    if (languages) Object.defineProperty(window.navigator, 'languages', languages)
+    else delete (window.navigator as { languages?: unknown }).languages
   })
 
-  it('hydrates effective values and sources', async () => {
-    getEffective.mockResolvedValue({
-      familyId: 'fam-1',
-      personId: 'p-1',
-      family: { temperatureUnit: 'fahrenheit', distanceUnit: null, timeFormat: null, displayCurrency: 'EUR' },
-      overrides: { temperatureUnit: null, distanceUnit: 'imperial', timeFormat: null, displayCurrency: null },
-      effective: { temperatureUnit: 'fahrenheit', distanceUnit: 'imperial', timeFormat: '24h', displayCurrency: 'EUR' },
-      sources: {
-        temperatureUnit: 'family',
-        distanceUnit: 'member',
-        timeFormat: 'builtin',
-        displayCurrency: 'family',
-      },
-    })
-    await useSettingsStore.getState().hydrateFamilyPreferences('fam-1')
-    const state = useSettingsStore.getState()
-    expect(state.settings.temperature_unit).toBe('fahrenheit')
-    expect(state.settings.distance_unit).toBe('imperial')
-    expect(state.settings.default_currency).toBe('EUR')
-    expect(state.preferenceSources.temperature_unit).toBe('family')
+  it('SETTINGS-LANG-008: a cold start with nothing stored boots in the browser language', async () => {
+    speak('ko-KR', 'en')
+    vi.resetModules()
+    const fresh = await import('./settingsStore')
+    expect(fresh.DEFAULT_SETTINGS.language).toBe('ko')
   })
 
-  it('rolls back a portable override when the member RPC fails', async () => {
-    useSettingsStore.setState({
-      settings: { ...useSettingsStore.getState().settings, temperature_unit: 'celsius' },
-    })
-    updateMine.mockRejectedValue(new Error('denied'))
-    await expect(
-      useSettingsStore.getState().updateSetting('temperature_unit', 'fahrenheit'),
-    ).rejects.toThrow()
-    expect(useSettingsStore.getState().settings.temperature_unit).toBe('celsius')
+  it('SETTINGS-LANG-009: an account without a language takes the browser language, nothing is saved', async () => {
+    speak('ko-KR')
+    vi.mocked(settingsApi.get).mockResolvedValue({ settings: {} } as never)
+    await useSettingsStore.getState().loadSettings()
+    expect(useSettingsStore.getState().settings.language).toBe('ko')
+    expect(localStorage.getItem('app_language')).toBeNull()
+    expect(settingsApi.set).not.toHaveBeenCalledWith('language', expect.anything())
   })
 
-  it('persists an override then applies the RPC effective payload', async () => {
-    updateMine.mockResolvedValue({
-      familyId: 'fam-1',
-      personId: 'p-1',
-      family: { temperatureUnit: 'celsius', distanceUnit: null, timeFormat: null, displayCurrency: null },
-      overrides: { temperatureUnit: 'fahrenheit', distanceUnit: null, timeFormat: null, displayCurrency: null },
-      effective: { temperatureUnit: 'fahrenheit', distanceUnit: 'metric', timeFormat: '24h', displayCurrency: null },
-      sources: {
-        temperatureUnit: 'member',
-        distanceUnit: 'builtin',
-        timeFormat: 'builtin',
-        displayCurrency: 'builtin',
-      },
-    })
-    await useSettingsStore.getState().updateSetting('temperature_unit', 'fahrenheit')
-    expect(updateMine).toHaveBeenCalledWith('fam-1', { temperatureUnit: 'fahrenheit' })
-    expect(useSettingsStore.getState().preferenceSources.temperature_unit).toBe('member')
-    expect(useSettingsStore.getState().settings.default_currency).toBe('')
-  })
+  it('SETTINGS-LANG-011: the account language and an explicit choice both outrank the browser', async () => {
+    speak('ko-KR')
+    vi.mocked(settingsApi.get).mockResolvedValue({ settings: { language: 'fr' } } as never)
+    await useSettingsStore.getState().loadSettings()
+    expect(useSettingsStore.getState().settings.language).toBe('fr')
 
-  it('ignores a late preference hydrate from a previous family', async () => {
-    let finishFirst: ((value: unknown) => void) | undefined
-    const fam2 = {
-      familyId: 'fam-2',
-      personId: 'p-2',
-      family: { temperatureUnit: 'celsius', distanceUnit: null, timeFormat: null, displayCurrency: null },
-      overrides: { temperatureUnit: null, distanceUnit: null, timeFormat: null, displayCurrency: null },
-      effective: { temperatureUnit: 'celsius', distanceUnit: 'metric', timeFormat: '24h', displayCurrency: null },
-      sources: {
-        temperatureUnit: 'builtin',
-        distanceUnit: 'builtin',
-        timeFormat: 'builtin',
-        displayCurrency: 'builtin',
-      },
-    }
-    getEffective
-      .mockImplementationOnce(() => new Promise(resolve => { finishFirst = resolve }))
-      .mockResolvedValueOnce(fam2)
-    const first = useSettingsStore.getState().hydrateFamilyPreferences('fam-1')
-    useAuthStore.setState({ familyId: 'fam-2' })
-    const second = useSettingsStore.getState().hydrateFamilyPreferences('fam-2')
-    finishFirst?.({
-      ...fam2,
-      familyId: 'fam-1',
-      effective: { temperatureUnit: 'fahrenheit', distanceUnit: 'imperial', timeFormat: '12h', displayCurrency: 'USD' },
-    })
-    await Promise.all([first, second])
-    expect(useSettingsStore.getState().settings.temperature_unit).toBe('celsius')
-    expect(useSettingsStore.getState().settings.distance_unit).toBe('metric')
+    localStorage.setItem('app_language', 'de')
+    useSettingsStore.setState({ settings: { ...DEFAULT_SETTINGS, language: 'de' } })
+    vi.mocked(settingsApi.get).mockResolvedValue({ settings: {} } as never)
+    await useSettingsStore.getState().loadSettings()
+    expect(useSettingsStore.getState().settings.language).toBe('de')
   })
 })

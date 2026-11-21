@@ -1,4 +1,6 @@
-import { Request } from 'express';
+import type { TripsTable } from './db/kysely/Trips.table';
+
+import type { Selectable } from 'kysely';
 
 export interface User {
   id: number;
@@ -8,6 +10,8 @@ export interface User {
   password_hash?: string;
   maps_api_key?: string | null;
   unsplash_api_key?: string | null;
+  /** Amap (高德) web-service key — the per-user fallback for the Amap provider. */
+  amap_api_key?: string | null;
   openweather_api_key?: string | null;
   avatar?: string | null;
   oidc_sub?: string | null;
@@ -26,20 +30,12 @@ export interface User {
   updated_at?: string;
 }
 
-export interface Trip {
-  id: number;
-  user_id: number;
-  title: string;
-  description?: string | null;
-  start_date?: string | null;
-  end_date?: string | null;
-  currency: string;
-  cover_image?: string | null;
-  is_archived: number;
-  reminder_days: number;
-  created_at?: string;
-  updated_at?: string;
-}
+/**
+ * A trips row as the database holds it, derived from the generated table type
+ * so it cannot drift from the schema (currency, is_archived and reminder_days
+ * are nullable columns, and feed_token and reminder_sent_for exist).
+ */
+export type Trip = Selectable<TripsTable>;
 
 export interface Day {
   id: number;
@@ -48,6 +44,7 @@ export interface Day {
   date?: string | null;
   notes?: string | null;
   title?: string | null;
+  default_transport_mode?: string | null;
 }
 
 export interface Place {
@@ -72,20 +69,22 @@ export interface Place {
   google_place_id?: string | null;
   google_ftid?: string | null;
   osm_id?: string | null;
+  amap_poi_id?: string | null;
+  route_geometry?: string | null;
+  route_color?: string | null;
   website?: string | null;
   phone?: string | null;
+  /** Typed in by hand (#2472). */
+  email?: string | null;
+  /** Hand-kept opening hours as JSON text, seven days Monday first (#2472). */
+  opening_hours?: string | null;
   transport_mode?: string;
+  /** What kind of stop this is on a drive (#1797); null for an ordinary place. */
+  stop_type?: string | null;
+  /** How full this stop fills the tank, 1-100; null follows the traveller's own setting. */
+  fill_percent?: number | null;
   created_at?: string;
   updated_at?: string;
-}
-
-export interface Category {
-  id: number;
-  name: string;
-  color: string;
-  icon: string;
-  user_id?: number | null;
-  created_at?: string;
 }
 
 export interface Tag {
@@ -96,28 +95,13 @@ export interface Tag {
   created_at?: string;
 }
 
-export interface DayAssignment {
+export interface BudgetItemReceipt {
   id: number;
-  day_id: number;
-  place_id: number;
-  order_index: number;
-  notes?: string | null;
-  reservation_status?: string;
-  reservation_notes?: string | null;
-  reservation_datetime?: string | null;
-  assignment_time?: string | null;
-  assignment_end_time?: string | null;
-  created_at?: string;
-}
-
-export interface PackingItem {
-  id: number;
-  trip_id: number;
-  name: string;
-  checked: number;
-  category?: string | null;
-  sort_order: number;
-  created_at?: string;
+  filename: string;
+  original_name: string;
+  file_size?: number | null;
+  mime_type?: string | null;
+  url: string;
 }
 
 export interface BudgetItem {
@@ -131,13 +115,19 @@ export interface BudgetItem {
   persons?: number | null;
   days?: number | null;
   note?: string | null;
+  /** Itemized receipt for a per-item split, as JSON. Its own column since #1658. */
+  ticket_json?: string | null;
   reservation_id?: number | null;
+  /** Set when the expense was created from a place (#1298) — the other side of
+   *  the same link reservation_id is for a booking. */
+  place_id?: number | null;
   paid_by_user_id?: number | null;
   expense_date?: string | null;
   sort_order: number;
   created_at?: string;
   members?: BudgetItemMember[];
   payers?: BudgetItemPayer[];
+  receipts?: BudgetItemReceipt[];
 }
 
 export interface BudgetItemMember {
@@ -159,7 +149,7 @@ export interface BudgetItemPayer {
   budget_item_id?: number;
 }
 
-export interface ReservationEndpoint {
+interface ReservationEndpoint {
   id: number;
   reservation_id: number;
   role: 'from' | 'to' | 'stop';
@@ -188,41 +178,20 @@ export interface Reservation {
   notes?: string | null;
   status: string;
   type: string;
-  accommodation_id?: number | null;
+  /**
+   * TEXT at the DB, not INTEGER (Plan 3d inventory §18.1 — no FK, some rows
+   * read back as `"14.0"`): every reader normalises it, so this stays a
+   * string here rather than the genuine INTEGER shape of
+   * `day_assignments.accommodation_id`. Do not "fix" this to `number`: that
+   * is a different column on a different table.
+   */
+  accommodation_id?: string | null;
   metadata?: string | null;
   needs_review?: number;
   endpoints?: ReservationEndpoint[];
   created_at?: string;
   day_number?: number;
   place_name?: string;
-}
-
-export interface TripFile {
-  id: number;
-  trip_id: number;
-  place_id?: number | null;
-  reservation_id?: number | null;
-  note_id?: number | null;
-  uploaded_by?: number | null;
-  uploaded_by_name?: string | null;
-  filename: string;
-  original_name: string;
-  file_size?: number | null;
-  mime_type?: string | null;
-  description?: string | null;
-  starred?: number;
-  deleted_at?: string | null;
-  created_at?: string;
-  reservation_title?: string;
-  url?: string;
-}
-
-export interface TripMember {
-  id: number;
-  trip_id: number;
-  user_id: number;
-  invited_by?: number | null;
-  added_at?: string;
 }
 
 export interface DayNote {
@@ -232,108 +201,10 @@ export interface DayNote {
   text: string;
   time?: string | null;
   icon: string;
+  /** One of NOTE_COLORS, or null for the neutral card (#1629). */
+  color?: string | null;
   sort_order: number;
   created_at?: string;
-}
-
-export interface CollabNote {
-  id: number;
-  trip_id: number;
-  user_id: number;
-  category: string;
-  title: string;
-  content?: string | null;
-  color: string;
-  pinned: number;
-  website?: string | null;
-  username?: string;
-  avatar?: string | null;
-  created_at?: string;
-  updated_at?: string;
-}
-
-export interface CollabPoll {
-  id: number;
-  trip_id: number;
-  user_id: number;
-  question: string;
-  options: string;
-  multiple: number;
-  closed: number;
-  deadline?: string | null;
-  username?: string;
-  avatar?: string | null;
-  created_at?: string;
-}
-
-export interface CollabMessage {
-  id: number;
-  trip_id: number;
-  user_id: number;
-  text: string;
-  reply_to?: number | null;
-  deleted?: number;
-  username?: string;
-  avatar?: string | null;
-  reply_text?: string | null;
-  reply_username?: string | null;
-  created_at?: string;
-}
-
-export interface Addon {
-  id: string;
-  name: string;
-  description?: string | null;
-  type: string;
-  icon: string;
-  enabled: number;
-  config: string;
-  sort_order: number;
-}
-
-export interface AppSetting {
-  key: string;
-  value?: string | null;
-}
-
-export interface Setting {
-  id: number;
-  user_id: number;
-  key: string;
-  value?: string | null;
-}
-
-export interface AuthRequest extends Request {
-  user: User;
-  trip?: { id: number; user_id: number };
-}
-
-export interface OptionalAuthRequest extends Request {
-  user: User | null;
-}
-
-export interface AssignmentRow extends DayAssignment {
-  place_name: string;
-  place_description: string | null;
-  lat: number | null;
-  lng: number | null;
-  address: string | null;
-  category_id: number | null;
-  price: number | null;
-  place_currency: string | null;
-  place_time: string | null;
-  end_time: string | null;
-  duration_minutes: number;
-  place_notes: string | null;
-  image_url: string | null;
-  transport_mode: string;
-  google_place_id: string | null;
-  google_ftid: string | null;
-  website: string | null;
-  phone: string | null;
-  category_name: string | null;
-  category_color: string | null;
-  category_icon: string | null;
 }
 
 export interface Participant {
@@ -352,6 +223,14 @@ export interface Journey {
   cover_gradient?: string | null;
   cover_image?: string | null;
   status: 'draft' | 'active' | 'completed' | 'archived';
+  /** Draw the linked trips' GPX tracks on this journey's map (#2194). 0 by default. */
+  show_trip_tracks?: number;
+  /** The state the owner set by hand (#762); null follows the trip dates. */
+  status_override?: 'draft' | 'live' | 'completed' | null;
+  /** Entries without a place take the spot of their first geotagged photo (#1003). 0 by default. */
+  photo_location?: number;
+  /** The Dawarich sync prepares the recorded days of the linked trips (JRN-03). 0 by default. */
+  auto_prepare_recordings?: number;
   created_at: number;
   updated_at: number;
 }
@@ -361,6 +240,12 @@ export interface JourneyEntry {
   journey_id: number;
   source_trip_id?: number | null;
   source_place_id?: number | null;
+  /**
+   * The `day_assignments` row this entry was derived from (#2329). A place standing
+   * on two days is two entries, and only this tells them apart. May dangle: an
+   * unassigned stop keeps the id so reconciliation can see the assignment is gone.
+   */
+  source_assignment_id?: number | null;
   author_id: number;
   type: 'entry' | 'checkin' | 'skeleton';
   title?: string | null;
@@ -376,6 +261,21 @@ export interface JourneyEntry {
   pros_cons?: string | null;
   visibility: 'private' | 'shared' | 'public';
   sort_order: number;
+  /** ISO 3166-1 alpha-2, resolved from the coordinates when the entry was written. */
+  country_code?: string | null;
+  /**
+   * 0/1 as the row holds it. A suggestion the traveller waved away: the row stays,
+   * so the trip sync does not create it again, and every read leaves it out.
+   */
+  dismissed: number;
+  /**
+   * 0/1 as the row holds it. Switched on, the entry stays in the journal but
+   * is left out of the route and the figures Studio prints (discussion #2064).
+   * The wire carries a boolean; journey-entry-row.ts is where the two meet.
+   */
+  stats_excluded: number;
+  /** 1 while the entry is a draft (#696), kept off the public share page. */
+  is_draft?: number;
   created_at: number;
   updated_at: number;
 }
@@ -394,6 +294,11 @@ export interface TrekPhoto {
   media_type?: string | null;
   /** Optional video duration in milliseconds. */
   duration_ms?: number | null;
+  /** When the picture was taken, as the provider or its EXIF reported it (#1614). */
+  taken_at?: string | null;
+  /** Capture coordinates. Stored as a pair or not at all. */
+  lat?: number | null;
+  lng?: number | null;
   created_at: string;
 }
 
@@ -431,12 +336,6 @@ export interface GalleryPhoto {
   thumbnail_path?: string | null;
   width?: number | null;
   height?: number | null;
-}
-
-export interface JourneyTrip {
-  journey_id: number;
-  trip_id: number;
-  added_at: number;
 }
 
 export interface JourneyContributor {

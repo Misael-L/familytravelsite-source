@@ -1,6 +1,9 @@
+import { vacaySetColorRequestSchema, vacayUpdatePlanRequestSchema } from '@trek/shared';
 import { http, HttpResponse } from 'msw';
+import { contractHandler } from '../contract';
 
 export const vacayHandlers = [
+  http.get('/api/school-holiday-catalog', () => HttpResponse.json({ countries: [], regions: [] })),
   http.get('/api/addons/vacay/plan', () => {
     return HttpResponse.json({
       plan: {
@@ -20,7 +23,8 @@ export const vacayHandlers = [
     });
   }),
 
-  http.put('/api/addons/vacay/plan', () => {
+  // Only the request has a schema: the plan answer is open in @trek/shared.
+  contractHandler('put', '/api/addons/vacay/plan', { request: vacayUpdatePlanRequestSchema }, () => {
     return HttpResponse.json({
       plan: {
         id: 1,
@@ -31,6 +35,19 @@ export const vacayHandlers = [
         carry_over_enabled: false,
         company_holidays_enabled: false,
       },
+    });
+  }),
+
+  http.get('/api/addons/vacay/year-settings', () => {
+    return HttpResponse.json({
+      settings: { year_type: 'calendar', year_start_month: 1, year_start_day: 1, hire_date: null },
+    });
+  }),
+
+  http.put('/api/addons/vacay/year-settings', async ({ request }) => {
+    const body = (await request.json()) as Record<string, unknown>;
+    return HttpResponse.json({
+      settings: { year_type: 'calendar', year_start_month: 1, year_start_day: 1, hire_date: null, ...body },
     });
   }),
 
@@ -85,9 +102,20 @@ export const vacayHandlers = [
     ]);
   }),
 
-  http.put('/api/addons/vacay/color', () => {
-    return HttpResponse.json({ success: true });
+  http.get('/api/addons/vacay/school-holidays/regions/:country', () => {
+    return HttpResponse.json({
+      groups: [
+        { code: 'NL-NO', shortName: 'NO', name: [{ language: 'EN', text: 'Northern Region' }] },
+        { code: 'NL-MI', shortName: 'MI', name: [{ language: 'EN', text: 'Central Region' }] },
+        { code: 'NL-ZU', shortName: 'ZU', name: [{ language: 'EN', text: 'Southern Region' }] },
+      ],
+      subdivisions: [],
+    });
   }),
+
+  contractHandler('put', '/api/addons/vacay/color', { request: vacaySetColorRequestSchema }, () =>
+    HttpResponse.json({ success: true })
+  ),
 
   http.post('/api/addons/vacay/invite', () => {
     return HttpResponse.json({ success: true });
@@ -122,6 +150,30 @@ export const vacayHandlers = [
   }),
 
   http.delete('/api/addons/vacay/plan/holiday-calendars/:id', () => {
+    return HttpResponse.json({ success: true });
+  }),
+
+  http.get('/api/addons/vacay/shares', () => {
+    return HttpResponse.json({ outgoing: [], incoming: [] });
+  }),
+
+  http.post('/api/addons/vacay/shares', () => {
+    return HttpResponse.json({ success: true });
+  }),
+
+  http.get('/api/addons/vacay/shares/available-users', () => {
+    return HttpResponse.json({ users: [] });
+  }),
+
+  http.get('/api/addons/vacay/shares/calendars/:year', () => {
+    return HttpResponse.json({ calendars: [] });
+  }),
+
+  http.put('/api/addons/vacay/shares/:id', () => {
+    return HttpResponse.json({ success: true });
+  }),
+
+  http.delete('/api/addons/vacay/shares/:id', () => {
     return HttpResponse.json({ success: true });
   }),
 ];

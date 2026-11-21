@@ -1,0 +1,24 @@
+{
+  "plan_id": "FTS-PARALLEL-20261118-v1",
+  "lane": "worker-b",
+  "status": "ready",
+  "next_packet": "PB-01",
+  "packets": {
+    "PB-01": {
+      "status": "ready",
+      "implementation_commit": null,
+      "report": null
+    },
+    "PB-02": {
+      "status": "ready",
+      "implementation_commit": null,
+      "report": null
+    },
+    "PB-03": {
+      "status": "ready",
+      "implementation_commit": null,
+      "report": null
+    }
+  },
+  "queue_extension_requires_coordinator_assignment": true
+}

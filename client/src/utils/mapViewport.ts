@@ -146,6 +146,18 @@ function lngExtent(lngs: number[], wrapsWorld: boolean): { west: number; east: n
   return { west, east, span: east - west }
 }
 
+/**
+ * `[lat, lng]` points with their longitudes laid along the narrowest arc that holds them all
+ * (lngExtent), for a renderer that wraps the world: a point past the antimeridian goes on
+ * beyond 180 instead of starting over at -180. A bounding box built from them by plain min and max (MapLibre's and Mapbox's
+ * extend) then spans the few degrees from Fiji to Samoa, not the rest of the world.
+ */
+export function alongShortestArc(points: readonly [number, number][]): [number, number][] {
+  if (points.length === 0) return []
+  const { west } = lngExtent(points.map(([, lng]) => lng), true)
+  return points.map(([lat, lng]) => [lat, lng < west ? lng + 360 : lng])
+}
+
 /** Zoom at which a span covering `fraction` of the world fills `px` pixels. */
 function zoomForFraction(px: number, tileSize: number, fraction: number, maxZoom: number): number {
   // A zero fraction (identical coordinates) would divide by zero and yield Infinity.
@@ -215,8 +227,14 @@ export function computeMapViewport(
   const wrapsWorld = options.wrapsWorld ?? isGl
 
   const padding: ViewportPadding = { ...NO_PADDING, ...options.padding }
-  const width = Math.max(1, (options.width ?? defaultWidth()) - padding.left - padding.right)
-  const height = Math.max(1, (options.height ?? defaultHeight()) - padding.top - padding.bottom)
+  const rawWidth = options.width ?? defaultWidth()
+  const rawHeight = options.height ?? defaultHeight()
+  // Padding wider than the box leaves a sliver, and the camera is then framed for
+  // THAT — a continent instead of the trip. Two 300px planner panels on an 860px
+  // foldable did exactly this (#2247). Never surrender more than two thirds; the
+  // centre offset still uses the real padding, so the framing stays where it was.
+  const width = Math.max(1, rawWidth / 3, rawWidth - padding.left - padding.right)
+  const height = Math.max(1, rawHeight / 3, rawHeight - padding.top - padding.bottom)
 
   const lats = pts.map(p => p[0])
   const south = Math.min(...lats)

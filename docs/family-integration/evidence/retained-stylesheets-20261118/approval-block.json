@@ -1,0 +1,10 @@
+{
+  "action_rejected": "Edit tracked client/scripts/theme-baseline.json in original and candidate trees",
+  "automatic_review_reason": "Persistent quality-control baseline changes are prohibited by standing instructions, even with unchanged aggregate allowance.",
+  "baseline_in_both_trees_confirmed_unchanged": true,
+  "no_indirect_application_or_workaround": true,
+  "proposed_correction_only": "proposed-theme-ownership.patch",
+  "source_history_and_budget_proof": "theme-budget-ownership-proof.json",
+  "theme_gate_remains_failed_and_reported": true,
+  "explicit_user_approval_required_before_any_baseline_edit": true
+}

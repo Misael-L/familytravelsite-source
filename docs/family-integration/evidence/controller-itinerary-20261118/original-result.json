@@ -1,0 +1,33 @@
+{
+  "exit": 0,
+  "seconds": 7.12,
+  "files": [
+    "src/integrations/family/FamilyTripBoundary.test.tsx",
+    "src/integrations/family/FamilyPlannerBoundary.test.tsx",
+    "src/integrations/family/FamilyGenericMapBridge.test.tsx",
+    "src/integrations/family/FamilyExploreHost.test.tsx",
+    "src/integrations/family/legacy/components/Planner/family/familyDayTimeline.test.ts"
+  ],
+  "command": [
+    "/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/node_modules/.bin/vitest",
+    "run",
+    "src/integrations/family/FamilyTripBoundary.test.tsx",
+    "src/integrations/family/FamilyPlannerBoundary.test.tsx",
+    "src/integrations/family/FamilyGenericMapBridge.test.tsx",
+    "src/integrations/family/FamilyExploreHost.test.tsx",
+    "src/integrations/family/legacy/components/Planner/family/familyDayTimeline.test.ts",
+    "--maxWorkers=2",
+    "--reporter=default",
+    "--reporter=json",
+    "--outputFile=/private/tmp/trek-core-controller-actions-source-20261118/original-tests.json",
+    "--coverage.include=src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+    "--coverage.reporter=json",
+    "--coverage.reporter=json-summary",
+    "--coverage.reporter=text",
+    "--coverage.reportsDirectory=/private/tmp/trek-core-controller-actions-source-20261118/original-coverage"
+  ],
+  "thresholds_unchanged": 85,
+  "numPassedTests": 49,
+  "numFailedTests": 0,
+  "numTotalTests": 49
+}

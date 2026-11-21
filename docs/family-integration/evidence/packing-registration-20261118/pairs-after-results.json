@@ -1,0 +1,12 @@
+[
+  {
+    "cwd": "client",
+    "command": "npm run lint:pairs",
+    "exit": 0
+  },
+  {
+    "cwd": "scripts",
+    "command": "node pairs-lint.mjs",
+    "exit": 0
+  }
+]

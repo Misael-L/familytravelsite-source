@@ -1,0 +1,106 @@
+{
+  "passed": true,
+  "packet": "Q95",
+  "incoming": "b99fa21f457e6ec715c04b71d7295fd27787d978",
+  "implementation": "79df88d34ea954ee39ff6cf83c3fa6a15b41b3fb",
+  "build_source": "c2676698c57587f331683b0200b39f5465e55ab2",
+  "date": "2026-11-18",
+  "runtime_files_changed": 1,
+  "new_product_test_files": 1,
+  "existing_cases": 182,
+  "new_hook_consumer_cases": 25,
+  "original_passed": 207,
+  "candidate_passed": 207,
+  "functional_behavior_change": null,
+  "entire_original_module_AST_restored_by_inlining_private_cleanup_helper": true,
+  "coverage": {
+    "total": {
+      "lines": {
+        "total": 61,
+        "covered": 61,
+        "skipped": 0,
+        "pct": 100
+      },
+      "statements": {
+        "total": 71,
+        "covered": 71,
+        "skipped": 0,
+        "pct": 100
+      },
+      "functions": {
+        "total": 13,
+        "covered": 13,
+        "skipped": 0,
+        "pct": 100
+      },
+      "branches": {
+        "total": 61,
+        "covered": 61,
+        "skipped": 0,
+        "pct": 100
+      },
+      "branchesTrue": {
+        "total": 0,
+        "covered": 0,
+        "skipped": 0,
+        "pct": "Unknown"
+      }
+    },
+    "/private/tmp/trek-core-planner-page-source-20261118/candidate-checkout/client/src/pages/tripPlanner/useTripPlannerPage.ts": {
+      "lines": {
+        "total": 61,
+        "covered": 61,
+        "skipped": 0,
+        "pct": 100
+      },
+      "functions": {
+        "total": 13,
+        "covered": 13,
+        "skipped": 0,
+        "pct": 100
+      },
+      "statements": {
+        "total": 71,
+        "covered": 71,
+        "skipped": 0,
+        "pct": 100
+      },
+      "branches": {
+        "total": 61,
+        "covered": 61,
+        "skipped": 0,
+        "pct": 100
+      }
+    }
+  },
+  "hook_counted_lines": [
+    122,
+    117
+  ],
+  "hook_limit": 120,
+  "cleanup_helper": {
+    "lines": 14,
+    "complexity": 2,
+    "parameters": 5
+  },
+  "existing_root_complexity_unchanged": 23,
+  "new_test_warnings": 0,
+  "new_async_boundaries": 0,
+  "typecheck_passed": true,
+  "fixture_build_passed": true,
+  "source_guards_passed": 4,
+  "artifact_binding_controls_passed": 3,
+  "source_complexity_actual_limit": [
+    218,
+    218
+  ],
+  "source_length_actual_limit": [
+    131,
+    130
+  ],
+  "size_findings_unchanged": 32,
+  "all_policies_baselines_suppressions_unchanged": true,
+  "global_quality_gate_pass": false,
+  "live_device_backend_or_hosted_acceptance": false,
+  "next": "Q96 complete useCollectionSharing hook review,125/120 lines; qualify desktop/phone actions and async lifetimes before any behavior-preserving extraction or demonstrated repair"
+}

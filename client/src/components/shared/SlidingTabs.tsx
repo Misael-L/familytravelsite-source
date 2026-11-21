@@ -3,7 +3,18 @@ import React, { useLayoutEffect, useRef, useState, type CSSProperties } from 're
 export interface SlidingTab<T extends string> {
   id: T
   label: React.ReactNode
+  /**
+   * Native tooltip. Opt-in and never derived from the label: a tooltip that only
+   * repeats the text next to the cursor is noise, so a caller sets this solely
+   * when the tab shows something the label does not spell out.
+   */
   title?: string
+  /**
+   * Accessible name, for a tab whose visible label is an abbreviation. Silent on
+   * screen, unlike `title`, so it carries the full name without putting a
+   * tooltip under the cursor.
+   */
+  ariaLabel?: string
   icon?: React.ComponentType<{ size?: number; className?: string }>
   count?: number
 }
@@ -50,7 +61,7 @@ export function SlidingTabs<T extends string>({
     // Re-measure once web fonts settle — on a reload the first measure runs against
     // fallback-font metrics, so the (bold) active label reflows and the pill drifts.
     let cancelled = false
-    document.fonts?.ready?.then(() => {
+    void document.fonts?.ready?.then(() => {
       if (!cancelled) measure()
     })
 
@@ -125,12 +136,13 @@ export function SlidingTabs<T extends string>({
           whiteSpace: 'nowrap',
         }
         return (
-          <button
+          <button type="button"
             key={tab.id}
             ref={el => { tabRefs.current.set(tab.id, el) }}
             onClick={() => onChange(tab.id)}
             style={btnStyle}
-            title={tab.title ?? (typeof tab.label === 'string' ? tab.label : undefined)}
+            title={tab.title}
+            aria-label={tab.ariaLabel}
           >
             {Icon && <Icon size={size === 'sm' ? 13 : 15} />}
             {tab.label}
@@ -147,6 +159,21 @@ export function SlidingTabs<T extends string>({
         )
       })}
     </div>
+  )
+}
+
+/**
+ * A tab label that also has a short form: icon only on a phone, the short form
+ * where the bar is tight, the full name from xl up. A wide window has the room,
+ * and an abbreviation there ("Book" for Bookings) read as cut off (#2604).
+ */
+export function TabLabel({ label, short }: { label: string; short?: string }): React.ReactElement {
+  if (!short || short === label) return <span className="hidden sm:inline">{label}</span>
+  return (
+    <>
+      <span className="hidden sm:inline xl:hidden">{short}</span>
+      <span className="hidden xl:inline">{label}</span>
+    </>
   )
 }
 

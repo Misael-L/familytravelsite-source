@@ -1,4 +1,5 @@
 import type { NotificationLocale } from '../externalNotifications/types';
+import { pluralForm } from '../plural';
 
 const cs: NotificationLocale = {
   email: {
@@ -28,13 +29,25 @@ const cs: NotificationLocale = {
       title: 'Pozvánka Vacay Fusion',
       body: `${p.actor} vás pozval ke spojení dovolenkových plánů. Otevřete TREK pro přijetí nebo odmítnutí.`,
     }),
+    vacay_share: (p) => ({
+      title: 'Kalendář Vacay sdílen',
+      body: `${p.actor} s vámi sdílel svůj kalendář dovolených. Otevřete TREK pro zobrazení.`,
+    }),
     collection_invite: (p) => ({
       title: 'Pozvánka do sbírky',
       body: `${p.actor} vás pozval ke sdílení sbírky. Otevřete TREK pro přijetí nebo odmítnutí.`,
     }),
     photos_shared: (p) => ({
-      title: `${p.count} sdílených fotek`,
-      body: `${p.actor} sdílel ${p.count} foto v "${p.trip}".`,
+      title: pluralForm(p.count, 'cs', {
+        one: `${p.count} sdílená fotka`,
+        few: `${p.count} sdílené fotky`,
+        other: `${p.count} sdílených fotek`,
+      }),
+      body: pluralForm(p.count, 'cs', {
+        one: `${p.actor} sdílel ${p.count} fotku v "${p.trip}".`,
+        few: `${p.actor} sdílel ${p.count} fotky v "${p.trip}".`,
+        other: `${p.actor} sdílel ${p.count} fotek v "${p.trip}".`,
+      }),
     }),
     collab_message: (p) => ({
       title: `Nová zpráva v "${p.trip}"`,
@@ -48,9 +61,34 @@ const cs: NotificationLocale = {
       title: 'Nová verze TREK dostupná',
       body: `TREK ${p.version} je nyní dostupný. Navštivte administrátorský panel pro aktualizaci.`,
     }),
+    replica_failure: (p) => ({
+      title: 'Selhání repliky úložiště',
+      body:
+        `Zápis do repliky '${p.backend}' selhal: ${p.op} u ${p.key} — ${p.error}.` +
+        (p.suppressed !== '0'
+          ? pluralForm(p.suppressed, 'cs', {
+              one: ` Od poslední notifikace bylo potlačeno ${p.suppressed} další selhání.`,
+              few: ` Od poslední notifikace byla potlačena ${p.suppressed} další selhání.`,
+              other: ` Od poslední notifikace bylo potlačeno ${p.suppressed} dalších selhání.`,
+            })
+          : ''),
+    }),
+    paddle_region_requested: (p) => ({
+      title: 'Vyžádán vodácký region',
+      body: `${p.actor} plánuje vodáckou trasu v regionu ${p.region}. Načti nebo zamítni jeho vodní data v administraci v části Doplňky.`,
+    }),
     synology_session_cleared: () => ({
       title: 'Relace Synology byla zrušena',
       body: 'Váš účet nebo URL Synology se změnil. Byli jste odhlášeni ze Synology Photos.',
+    }),
+    wanderer_source_hint: (p) => ({
+      title: `Trasa wanderer: ${p.tour}`,
+      body:
+        p.state === 'changed'
+          ? `„${p.tour}“ v „${p.trip}“ byla ve wanderer změněna. Otevřete túru a zkontrolujte její zdroj, abyste viděli všechny změny. V cestě se nic nezmění samo.`
+          : p.state === 'unverifiable'
+            ? `„${p.tour}“ v „${p.trip}“ už nelze ve wanderer ověřit. Túra ve vaší cestě zůstává, jak je.`
+            : `„${p.tour}“ v „${p.trip}“ se ve wanderer možná změnila. Otevřete túru a zkontrolujte její zdroj. V cestě se nic nezmění samo.`,
     }),
     plugin_notification: (p) => ({ title: p.title ?? '', body: p.body ?? '' }),
   },

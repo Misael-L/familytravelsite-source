@@ -30,18 +30,23 @@ export default function OfflineBanner(): React.ReactElement | null {
   useEffect(() => {
     let cancelled = false
     async function poll() {
-      const [n, failed, conflicts] = await Promise.all([
-        mutationQueue.pendingCount(),
-        mutationQueue.failedCount(),
-        mutationQueue.conflictCount(),
-      ])
-      if (!cancelled) {
-        setPendingCount(n)
-        setFailedCount(failed)
-        setConflictCount(conflicts)
+      try {
+        const [n, failed, conflicts] = await Promise.all([
+          mutationQueue.pendingCount(),
+          mutationQueue.failedCount(),
+          mutationQueue.conflictCount(),
+        ])
+        if (!cancelled) {
+          setPendingCount(n)
+          setFailedCount(failed)
+          setConflictCount(conflicts)
+        }
+      } catch {
+        // Unavailable storage is not an empty queue. Keep the last observed
+        // counts and let the next poll retry; admission/recovery owns access.
       }
     }
-    poll()
+    void poll()
     const id = setInterval(poll, POLL_MS)
     return () => { cancelled = true; clearInterval(id) }
   }, [])

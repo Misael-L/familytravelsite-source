@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "all_non_documentation_tracked_text_files_inspected": 14725,
+  "binary_files_not_treated_as_source_loaders": 2165,
+  "no_candidate_specific_tool_configuration_or_script_reference": true,
+  "candidate_specific_tokens": [
+    "legacy/pages/tripPlanner/useTripPlanner",
+    "integrations/family/legacy/pages/tripPlanner"
+  ],
+  "outside_references": [],
+  "includes_Python_shell_HTML_CSS_JSON_and_nonstandard_text_extensions": true,
+  "historical_documentation_and_native_same_name_paths_not_asserted_absent": true
+}

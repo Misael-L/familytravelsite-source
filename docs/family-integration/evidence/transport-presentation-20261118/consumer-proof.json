@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "same_expanded_cases_before_after": 1290,
+  "same_names_files_status_multiplicity_after_one_proved_generated_UUID_label_normalization": true,
+  "exact_raw_title_cases": 1289,
+  "one_generated_label_review": "generated-test-label-review.json",
+  "expanded_cases_sha256": "965fb91d9486739614955b36f14e0bef53aff35e89ba30813aad5cb12281c664",
+  "same_existing_tests_and_only_selected_presentation_plus_new_test_paths": true,
+  "all_other_candidate_tracked_files_byte_exact": 18332,
+  "assertions_fixtures_config_timeouts_coverage_skips_unchanged": true,
+  "no_live_backend_browser_or_writer_admission": true,
+  "final_candidate_checked_on_committed_checkout_after_formatter": true,
+  "metadata_only_qualification_pointer_paths_excluded_from_source_byte_comparison": [
+    ".github/family-release.json",
+    "docs/family-integration/qualified-source.json"
+  ]
+}

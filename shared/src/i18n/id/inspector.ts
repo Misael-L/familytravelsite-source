@@ -13,6 +13,9 @@ const inspector: TranslationStrings = {
   'inspector.confirmedRes': 'Reservasi Dikonfirmasi',
   'inspector.pendingRes': 'Reservasi Menunggu',
   'inspector.google': 'Google Maps',
+  'inspector.navigation': 'Navigasi',
+  'inspector.otherMapApp': 'Aplikasi peta lain',
+  'inspector.openWith': 'Buka dengan',
   'inspector.openStreetMap': 'OpenStreetMap',
   'inspector.saveToCollection': 'Simpan ke Koleksi',
   'inspector.savedToCollection': 'Tersimpan',
@@ -21,5 +24,8 @@ const inspector: TranslationStrings = {
   'inspector.editRes': 'Edit Reservasi',
   'inspector.participants': 'Peserta',
   'inspector.trackStats': 'Statistik Jalur',
+  'inspector.trackColor': 'Warna jalur',
+  'inspector.trackColorAuto': 'Warna otomatis',
+  'inspector.trackColorCustom': 'Pilih warna kustom',
 };
 export default inspector;

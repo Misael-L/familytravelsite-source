@@ -8,11 +8,11 @@ import {
   Globe, Compass, Flag, Navigation, Map,
   Church, Library, Store, Home, Cross,
   Heart, Star, CreditCard, Wifi,
-  Luggage, Backpack, Zap,
+  Luggage, Backpack, Zap, Croissant, ShoppingBasket,
   LucideIcon,
 } from 'lucide-react'
 
-export const CATEGORY_ICON_MAP: Record<string, LucideIcon> = {
+export const COMMON_CATEGORY_ICON_MAP: Readonly<Record<string, LucideIcon>> = {
   MapPin, Building2, BedDouble, UtensilsCrossed, Landmark, ShoppingBag,
   Bus, Train, Car, Plane, Ship, Bike,
   Activity, Dumbbell, Mountain, Tent, Anchor,
@@ -25,7 +25,7 @@ export const CATEGORY_ICON_MAP: Record<string, LucideIcon> = {
   Luggage, Backpack, Zap,
 }
 
-export const ICON_LABELS: Record<string, string> = {
+export const COMMON_ICON_LABELS: Readonly<Record<string, string>> = {
   MapPin: 'Pin', Building2: 'Building', BedDouble: 'Hotel', UtensilsCrossed: 'Restaurant',
   Landmark: 'Attraction', ShoppingBag: 'Shopping', Bus: 'Bus', Train: 'Train',
   Car: 'Car', Plane: 'Plane', Ship: 'Ship', Bike: 'Bicycle',
@@ -39,6 +39,26 @@ export const ICON_LABELS: Record<string, string> = {
   Luggage: 'Luggage', Backpack: 'Backpack', Zap: 'Adventure',
 }
 
+export const CATEGORY_ICON_MAP: Record<string, LucideIcon> = {
+  ...COMMON_CATEGORY_ICON_MAP,
+  Croissant,
+  ShoppingBasket,
+}
+
+export const ICON_LABELS: Record<string, string> = {
+  ...COMMON_ICON_LABELS,
+  Croissant: 'Bakery',
+  ShoppingBasket: 'Groceries',
+}
+
+export function resolveCategoryIcon(
+  icons: Readonly<Record<string, LucideIcon>>,
+  iconName: string | null | undefined,
+): LucideIcon {
+  if (iconName && Object.prototype.hasOwnProperty.call(icons, iconName)) return icons[iconName] || MapPin
+  return MapPin
+}
+
 export function getCategoryIcon(iconName: string | null | undefined): LucideIcon {
-  return (iconName && CATEGORY_ICON_MAP[iconName]) || MapPin
+  return resolveCategoryIcon(CATEGORY_ICON_MAP, iconName)
 }

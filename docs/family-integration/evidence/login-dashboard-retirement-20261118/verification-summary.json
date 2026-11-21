@@ -1,0 +1,55 @@
+{
+  "passed": true,
+  "packet": "Q103",
+  "incoming": "5df399b23f8d2c2f4d1f1aee9170f67452bb4a4b",
+  "implementation": "cecbb8eb596339149a6b4e5c1687985c1ac68ccd",
+  "build_source": "2637422d4ff152fe93782dc3d6bb5825df81f249",
+  "date": "2026-11-18",
+  "removed_paths": [
+    "client/src/integrations/family/legacy/pages/LoginPage.tsx",
+    "client/src/integrations/family/legacy/pages/DashboardPage.tsx"
+  ],
+  "new_or_modified_runtime_source_files": 0,
+  "candidate_passed": 603,
+  "same_expanded_cases_before_after": 603,
+  "raw_sources_reviewed": 14064,
+  "application_modules_reviewed": 7500,
+  "current_reachable_nodes_preserved": 6091,
+  "literal_glob_locale_modules": 28,
+  "literal_glob_video_assets": 98,
+  "no_outside_runtime_type_test_importer": true,
+  "historical_scanner_labels_and_controls_preserved": true,
+  "native_presentation_files_exact": 12,
+  "all_3793_dist_paths_exact": true,
+  "all_421_JavaScript_CSS_files_exact": true,
+  "only_public_sourceCommit_changed": true,
+  "fresh_typecheck_and_build_passed": true,
+  "fresh_declarations_fixed_at_current_compiler_generation": 128,
+  "source_guards_passed": 4,
+  "artifact_binding_controls_passed": 3,
+  "warning_gate_pass": true,
+  "source_warnings_actual_limit": [
+    3418,
+    3418
+  ],
+  "source_complexity_actual_limit": [
+    218,
+    218
+  ],
+  "source_length_actual_limit": [
+    130,
+    130
+  ],
+  "size_findings_before_after": [
+    26,
+    24
+  ],
+  "all_other_size_failure_lines_exact": true,
+  "format_gate_pass": true,
+  "unlisted_format_failures": 0,
+  "format_baseline_unchanged_entries": 2134,
+  "rules_baselines_exclusions_suppressions_unchanged": true,
+  "global_release_gate_pass": false,
+  "live_database_browser_or_writer_admission_acceptance": false,
+  "next": "Q104 bounded old SharedTripPage review; retain native sharing, session/auth/recovery, hooks and historical evidence"
+}

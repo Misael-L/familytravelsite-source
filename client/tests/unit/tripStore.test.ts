@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { http, HttpResponse } from 'msw';
 import { useTripStore } from '../../src/store/tripStore';
+import { placesApi } from '../../src/api/client';
 import { resetAllStores } from '../helpers/store';
 import { buildTrip, buildDay, buildPlace, buildPackingItem, buildTodoItem, buildTag, buildCategory, buildAssignment, buildDayNote, buildBudgetItem, buildReservation, buildTripFile } from '../helpers/factories';
 import { server } from '../helpers/msw/server';
@@ -353,6 +354,32 @@ describe('tripStore', () => {
     });
   });
 
+  describe('places filters', () => {
+    it('FE-TRIP-PF-001: the rating floor starts at "all" and is shared through the store', () => {
+      expect(useTripStore.getState().placesRatingFilter).toBe('all');
+      useTripStore.getState().setPlacesRatingFilter(4);
+      expect(useTripStore.getState().placesRatingFilter).toBe(4);
+    });
+
+    it('FE-TRIP-PF-002: resetPlacesFilters lifts the pool, the categories and the rating at once', () => {
+      const s = useTripStore.getState();
+      s.setPlacesFilter('unplanned');
+      s.setPlacesCategoryFilter(new Set(['3', 'uncategorized']));
+      s.setPlacesRatingFilter(5);
+      useTripStore.getState().resetPlacesFilters();
+      const after = useTripStore.getState();
+      expect(after.placesFilter).toBe('all');
+      expect(after.placesCategoryFilter.size).toBe(0);
+      expect(after.placesRatingFilter).toBe('all');
+    });
+
+    it('FE-TRIP-PF-003: resetTrip drops the rating floor of the previous trip', () => {
+      useTripStore.getState().setPlacesRatingFilter(3);
+      useTripStore.getState().resetTrip();
+      expect(useTripStore.getState().placesRatingFilter).toBe('all');
+    });
+  });
+
   describe('addTag', () => {
     it('FE-TRIP-010: addTag creates tag and appends to tags', async () => {
       const existingTag = buildTag();
@@ -366,6 +393,39 @@ describe('tripStore', () => {
       const tags = useTripStore.getState().tags;
       expect(tags).toHaveLength(2);
       expect(tags[tags.length - 1].name).toBe('New Tag');
+    });
+  });
+
+  describe('uploadPlaceImage', () => {
+    it('FE-TRIP-012: uploads the file and applies the returned place to places + embedded assignment', async () => {
+      const original = buildPlace({ id: 5, trip_id: 1, image_url: null });
+      const assignment = buildAssignment({ id: 30, day_id: 40, place: original });
+      useTripStore.setState({ places: [original], assignments: { '40': [assignment] } });
+
+      const updated = { ...original, image_url: '/uploads/places/mock.jpg' };
+      const spy = vi.spyOn(placesApi, 'uploadImage').mockResolvedValue({ place: updated });
+
+      const file = new File(['x'], 'photo.jpg', { type: 'image/jpeg' });
+      const result = await useTripStore.getState().uploadPlaceImage(1, 5, file);
+
+      expect(spy).toHaveBeenCalledWith(1, 5, file);
+      expect(result).toEqual(updated);
+
+      const state = useTripStore.getState();
+      expect(state.places.find(p => p.id === 5)?.image_url).toBe('/uploads/places/mock.jpg');
+      expect(state.assignments['40'][0].place.image_url).toBe('/uploads/places/mock.jpg');
+
+      spy.mockRestore();
+    });
+
+    it('FE-TRIP-013: propagates an error when the upload fails', async () => {
+      useTripStore.setState({ places: [buildPlace({ id: 6, trip_id: 1 })] });
+      const spy = vi.spyOn(placesApi, 'uploadImage').mockRejectedValue(new Error('boom'));
+
+      const file = new File(['x'], 'photo.jpg', { type: 'image/jpeg' });
+      await expect(useTripStore.getState().uploadPlaceImage(1, 6, file)).rejects.toThrow();
+
+      spy.mockRestore();
     });
   });
 

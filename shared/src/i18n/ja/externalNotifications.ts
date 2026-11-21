@@ -28,6 +28,10 @@ const ja: NotificationLocale = {
       title: 'Vacay Fusion招待',
       body: `${p.actor}が休暇プランの統合に招待しています。TREKを開いて承認または拒否してください。`,
     }),
+    vacay_share: (p) => ({
+      title: 'Vacayカレンダーが共有されました',
+      body: `${p.actor}が休暇カレンダーを共有しました。TREKを開いて確認してください。`,
+    }),
     collection_invite: (p) => ({
       title: 'コレクション招待',
       body: `${p.actor}がコレクションの共有に招待しています。TREKを開いて承認または拒否してください。`,
@@ -48,9 +52,28 @@ const ja: NotificationLocale = {
       title: '新しいTREKバージョンが利用可能',
       body: `TREK ${p.version}が利用可能になりました。管理パネルからアップデートしてください。`,
     }),
+    replica_failure: (p) => ({
+      title: 'ストレージレプリカの障害',
+      body:
+        `レプリカ '${p.backend}' への書き込みに失敗しました：${p.op} / ${p.key} — ${p.error}。` +
+        (p.suppressed !== '0' ? `前回の通知以降、${p.suppressed}件の追加の失敗が抑制されました。` : ''),
+    }),
+    paddle_region_requested: (p) => ({
+      title: 'パドル地域のリクエスト',
+      body: `${p.actor}が${p.region}でパドルツアーを計画しています。管理画面のアドオンで水域データを読み込むか却下してください。`,
+    }),
     synology_session_cleared: () => ({
       title: 'Synologyセッションがクリアされました',
       body: 'SynologyアカウントまたはURLが変更されました。Synology Photosからログアウトされました。',
+    }),
+    wanderer_source_hint: (p) => ({
+      title: `wanderer のトレイル: ${p.tour}`,
+      body:
+        p.state === 'changed'
+          ? `「${p.trip}」の「${p.tour}」が wanderer で変更されました。ツアーを開いてソースを確認すると、すべての変更を確認できます。旅行の内容が勝手に変わることはありません。`
+          : p.state === 'unverifiable'
+            ? `「${p.trip}」の「${p.tour}」は wanderer で確認できなくなりました。旅行内のツアーはそのまま残ります。`
+            : `「${p.trip}」の「${p.tour}」が wanderer で変更された可能性があります。ツアーを開いてソースを確認してください。旅行の内容が勝手に変わることはありません。`,
     }),
     plugin_notification: (p) => ({ title: p.title ?? '', body: p.body ?? '' }),
   },

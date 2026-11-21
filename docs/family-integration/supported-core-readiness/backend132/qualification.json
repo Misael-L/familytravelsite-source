@@ -1,0 +1,170 @@
+{
+  "packet": "U05-B2b3a",
+  "status": "Typed stay adapters/owned original-operation outcomes qualified locally; native/saved/shared/timing activation gated",
+  "schema_version": 132,
+  "migration_sha256": "595829734fa870e398098a378193f030f61fcf4a06e6e8629ea7bb94910c754c",
+  "runtime_parent_commit": "9a4f811c9f99ec19a19141756ff6e72f4935f643",
+  "source_adoption_still": "5.1.2",
+  "SQL_distinct_methods": 101,
+  "outcome_methods": 19,
+  "foundation_methods": 33,
+  "command_methods": 49,
+  "clean_replay_all101_pass": true,
+  "client_regression_tests": 318,
+  "backend_SDK_tests": 16,
+  "actual_signed_SDK_handler_tests": 7,
+  "isolation_guard_refusals": 23,
+  "source_adversarial_tests": 92,
+  "typechecks_lint_no_growth_seven_quality_gates_build_secret_scan_passed": true,
+  "quality": [
+    {
+      "name": "carryover",
+      "exit": 0
+    },
+    {
+      "name": "source-guard-tests",
+      "exit": 0
+    },
+    {
+      "name": "pages",
+      "exit": 0
+    },
+    {
+      "name": "layers",
+      "exit": 0
+    },
+    {
+      "name": "offline",
+      "exit": 0
+    },
+    {
+      "name": "pairs",
+      "exit": 0
+    },
+    {
+      "name": "format",
+      "exit": 0
+    },
+    {
+      "name": "i18n",
+      "exit": 0
+    },
+    {
+      "name": "rtl",
+      "exit": 0
+    },
+    {
+      "name": "qualified-source",
+      "exit": 1,
+      "preexisting_release_gate": true
+    },
+    {
+      "name": "native-pin",
+      "exit": 1,
+      "preexisting_release_gate": true
+    },
+    {
+      "name": "history-pin",
+      "exit": 1,
+      "preexisting_release_gate": true
+    }
+  ],
+  "row_preservation": {
+    "baseline": "qualified source131 dump captured before current synthetic fixtures",
+    "source_projections": 240,
+    "source_rows_preserved": 324419,
+    "source_rows_missing_or_changed": 0,
+    "missing_projections": [],
+    "new_synthetic_rows": 14516,
+    "method": "SHA256 multiset with multiplicity for every complete COPY row; includes all original131 migration ledger arrays and both added NULL booking fields. Raw values/digests remain private."
+  },
+  "security_audit": {
+    "passed": true,
+    "new_functions": [
+      {
+        "anon": false,
+        "auth": true,
+        "path": [
+          "search_path=\"\""
+        ],
+        "public": false,
+        "definer": true,
+        "service": false,
+        "function": "public.cancel_family_stay_command_v1"
+      },
+      {
+        "anon": false,
+        "auth": true,
+        "path": [
+          "search_path=\"\""
+        ],
+        "public": false,
+        "definer": true,
+        "service": false,
+        "function": "public.get_family_stay_command_outcome_v1"
+      },
+      {
+        "anon": false,
+        "auth": false,
+        "path": [
+          "search_path=\"\""
+        ],
+        "public": false,
+        "definer": true,
+        "service": false,
+        "function": "family_auth.stay_original_outcome"
+      },
+      {
+        "anon": false,
+        "auth": false,
+        "path": [
+          "search_path=\"\""
+        ],
+        "public": false,
+        "definer": true,
+        "service": false,
+        "function": "family_auth.stay_outcome_access"
+      }
+    ],
+    "private_ledger_RLS_no_client_service_rights": true,
+    "immutable_trigger": true,
+    "indexes": [
+      "CREATE INDEX stay_cancellation_actor_idx ON family_auth.stay_command_cancellations USING btree (actor_user_id)",
+      "CREATE INDEX stay_cancellation_family_idx ON family_auth.stay_command_cancellations USING btree (family_id)",
+      "CREATE INDEX stay_cancellation_person_idx ON family_auth.stay_command_cancellations USING btree (actor_person_id, family_id)",
+      "CREATE UNIQUE INDEX stay_command_cancellations_pkey ON family_auth.stay_command_cancellations USING btree (trip_id, actor_user_id, operation_id)"
+    ],
+    "prior_functions_exact": 20,
+    "executor131_exact_except_terminal_guard": true,
+    "all_prior_function_ACLs_owners_preserved": 21,
+    "original_source131_empty_stays": true,
+    "scope": "Actual local system catalog, no hosted advisor",
+    "new_function_bodies_exact_between_candidate_and_clean_replay": 4
+  },
+  "source_preservation": {
+    "canonical_mixed_index_exact": true,
+    "historical131_sources_and_all_prior_tests_exact": 302,
+    "new_migration": 132,
+    "prior_tracked_files_checked": 16947,
+    "unrelated_website_files_exact": true,
+    "native_layouts_exact514": 12,
+    "old512_clean_tracked_files": 16885,
+    "prior_evidence_seals": 86,
+    "prior_evidence_members": 6211,
+    "prior_carryover_manifest_records_exact": true,
+    "review_copies_exact": 3,
+    "source_adoption_unchanged512": true,
+    "original_backup_media_ETL_not_accessed": true
+  },
+  "new_private_cancellation_ledger_no_content_mutation": true,
+  "original_scope_body_operation_retained": true,
+  "fresh_session_only_inspects_or_cancels_original": true,
+  "unknown_outcome_retains_request": true,
+  "receipt_not_current_record": true,
+  "native_controls_snapshot_v4_booking_view_v2_activated": false,
+  "hosted_preview_production_main_push_publication": false,
+  "GoTrue_browser_device_Storage_independent_recovery_proven_here": false,
+  "local_only": true,
+  "next": "/Users/Misael/Desktop/FamilyTravelApp/docs/backend-modernization/u05b2b3b-stay-projection-packet.md",
+  "commit_binding": "The sealed commit.json binds this report and every reviewed path to the actual local commit."
+}

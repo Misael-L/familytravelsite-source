@@ -3,7 +3,7 @@
  *
  * Usage:
  *   import http from 'http';
- *   import { setupWebSocket } from '../../src/websocket';
+ *   import { getHttpServer } from '../../src/bootstrap';
  *   import { WsTestClient, getWsToken } from '../helpers/ws-client';
  *
  *   let server: http.Server;
@@ -12,7 +12,7 @@
  *   beforeAll(async () => {
  *     const app = createApp();
  *     server = http.createServer(app);
- *     setupWebSocket(server);
+ *     const server = getHttpServer();
  *     await new Promise<void>(res => server.listen(0, res));
  *   });
  *
@@ -26,7 +26,6 @@
  *     expect(msg.type).toBe('welcome');
  *   });
  */
-
 import WebSocket from 'ws';
 
 export interface WsMessage {
@@ -44,35 +43,40 @@ export class WsTestClient {
     this.ws.on('message', (data: WebSocket.RawData) => {
       try {
         const msg = JSON.parse(data.toString()) as WsMessage;
-        const waiterIdx = this.waiters.findIndex(w => w.type === msg.type || w.type === '*');
+        const waiterIdx = this.waiters.findIndex((w) => w.type === msg.type || w.type === '*');
         if (waiterIdx >= 0) {
           const waiter = this.waiters.splice(waiterIdx, 1)[0];
           waiter.resolve(msg);
         } else {
           this.messageQueue.push(msg);
         }
-      } catch { /* ignore malformed messages */ }
+      } catch {
+        /* ignore malformed messages */
+      }
     });
   }
 
   /** Wait for a message of the given type (or '*' for any). */
   waitForMessage(type: string, timeoutMs = 5000): Promise<WsMessage> {
     // Check if already in queue
-    const idx = this.messageQueue.findIndex(m => type === '*' || m.type === type);
+    const idx = this.messageQueue.findIndex((m) => type === '*' || m.type === type);
     if (idx >= 0) {
       return Promise.resolve(this.messageQueue.splice(idx, 1)[0]);
     }
 
     return new Promise((resolve, reject) => {
       const timer = setTimeout(() => {
-        const waiterIdx = this.waiters.findIndex(w => w.resolve === resolve);
+        const waiterIdx = this.waiters.findIndex((w) => w.resolve === resolve);
         if (waiterIdx >= 0) this.waiters.splice(waiterIdx, 1);
         reject(new Error(`Timed out waiting for WS message type="${type}" after ${timeoutMs}ms`));
       }, timeoutMs);
 
       this.waiters.push({
         type,
-        resolve: (msg) => { clearTimeout(timer); resolve(msg); },
+        resolve: (msg) => {
+          clearTimeout(timer);
+          resolve(msg);
+        },
         reject,
       });
     });
@@ -93,8 +97,14 @@ export class WsTestClient {
     if (this.ws.readyState === WebSocket.OPEN) return Promise.resolve();
     return new Promise((resolve, reject) => {
       const timer = setTimeout(() => reject(new Error('WS open timed out')), timeoutMs);
-      this.ws.once('open', () => { clearTimeout(timer); resolve(); });
-      this.ws.once('error', (err) => { clearTimeout(timer); reject(err); });
+      this.ws.once('open', () => {
+        clearTimeout(timer);
+        resolve();
+      });
+      this.ws.once('error', (err) => {
+        clearTimeout(timer);
+        reject(err);
+      });
     });
   }
 
@@ -103,7 +113,10 @@ export class WsTestClient {
     if (this.ws.readyState === WebSocket.CLOSED) return Promise.resolve(1000);
     return new Promise((resolve, reject) => {
       const timer = setTimeout(() => reject(new Error('WS close timed out')), timeoutMs);
-      this.ws.once('close', (code) => { clearTimeout(timer); resolve(code); });
+      this.ws.once('close', (code) => {
+        clearTimeout(timer);
+        resolve(code);
+      });
     });
   }
 }

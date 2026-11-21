@@ -4,12 +4,17 @@
  * audit log are mocked; this focuses on auth (401), the admin gate (403 for a
  * non-admin), the rate-limit 429, filename guards and status codes.
  */
-import { describe, it, expect, beforeAll, afterAll, beforeEach, vi } from 'vitest';
-import request from 'supertest';
+import { BackupModule } from '../../src/nest/backup/backup.module';
+import { TrekExceptionFilter } from '../../src/nest/common/trek-exception.filter';
+import { createTestMikroOrmModule } from '../helpers/test-orm';
+import { TestUnitOfWorkModule } from '../helpers/test-uow';
+import { seedUser, sessionCookie } from './harness';
+import { Test } from '@nestjs/testing';
+
 import cookieParser from 'cookie-parser';
 import type { Server } from 'http';
-import { Test } from '@nestjs/testing';
-import { seedUser, sessionCookie } from './harness';
+import request from 'supertest';
+import { describe, it, expect, beforeAll, afterAll, beforeEach, vi } from 'vitest';
 
 const { db } = vi.hoisted(() => {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -18,31 +23,54 @@ const { db } = vi.hoisted(() => {
   tmp.exec('PRAGMA journal_mode = WAL');
   tmp.exec(`CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL,
     email TEXT NOT NULL UNIQUE, role TEXT NOT NULL DEFAULT 'user', password_version INTEGER NOT NULL DEFAULT 0);`);
+  // AuditService now runs its real INSERT (DI-injected, no mock) — slim
+  // audit_log mirror (no FKs), same shape as plugin-runtime.test.ts.
+  tmp.exec(`CREATE TABLE audit_log (
+    id INTEGER PRIMARY KEY AUTOINCREMENT, created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    user_id INTEGER, action TEXT NOT NULL, resource TEXT, details TEXT, ip TEXT);`);
+  // StorageRegistryService (behind StorageModule, now in this module chain) reads
+  // this at onModuleInit.
+  tmp.exec('CREATE TABLE app_settings (key TEXT PRIMARY KEY, value TEXT);');
   return { db: tmp };
 });
 
 vi.mock('../../src/db/database', () => ({ db, closeDb: () => {}, reinitialize: () => {} }));
-vi.mock('../../src/services/auditLog', () => ({ writeAudit: vi.fn(), getClientIp: vi.fn(() => '1.2.3.4') }));
+// The audit domain is DI-native now: writeAudit runs for real against the temp
+// db's audit_log table; only the file logger is silenced.
+vi.mock('../../src/nest/audit/audit-log.logger', () => ({
+  LOG_LEVEL: 'error',
+  logInfo: vi.fn(),
+  logDebug: vi.fn(),
+  logError: vi.fn(),
+  logWarn: vi.fn(),
+}));
 
 const { backupSvc } = vi.hoisted(() => ({
   backupSvc: {
-    listBackups: vi.fn(), createBackup: vi.fn(), restoreFromZip: vi.fn(), getAutoSettings: vi.fn(),
-    updateAutoSettings: vi.fn(), deleteBackup: vi.fn(), isValidBackupFilename: vi.fn(), backupFilePath: vi.fn(),
-    backupFileExists: vi.fn(), checkRateLimit: vi.fn(), getUploadTmpDir: () => '/tmp', BACKUP_RATE_WINDOW: 3600000,
+    listBackups: vi.fn(),
+    createBackup: vi.fn(),
+    restoreFromZip: vi.fn(),
+    restoreBackup: vi.fn(),
+    parseAutoBackupBody: vi.fn(),
+    deleteBackup: vi.fn(),
+    isValidBackupFilename: vi.fn(),
+    backupFileExists: vi.fn(),
+    sendBackupToResponse: vi.fn(),
+    checkRateLimit: vi.fn(),
+    BACKUP_RATE_WINDOW: 3600000,
     MAX_BACKUP_UPLOAD_SIZE: 1024,
   },
 }));
-vi.mock('../../src/services/backupService', () => backupSvc);
-
-import { BackupModule } from '../../src/nest/backup/backup.module';
-import { TrekExceptionFilter } from '../../src/nest/common/trek-exception.filter';
+vi.mock('../../src/nest/backup/backup.impl', () => backupSvc);
 
 describe('Backup e2e (real auth + admin guard + temp SQLite)', () => {
   let server: Server;
   let app: Awaited<ReturnType<typeof build>>;
 
   async function build() {
-    const moduleRef = await Test.createTestingModule({ imports: [BackupModule] }).compile();
+    const moduleRef = await Test.createTestingModule({
+      imports: [await TestUnitOfWorkModule.forRoot(db), await createTestMikroOrmModule(db), BackupModule],
+    }).compile();
     const nest = moduleRef.createNestApplication();
     nest.use(cookieParser());
     nest.useGlobalFilters(new TrekExceptionFilter());

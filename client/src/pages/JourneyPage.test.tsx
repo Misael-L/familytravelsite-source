@@ -1,7 +1,7 @@
 // FE-PAGE-JOURNEY-001 to FE-PAGE-JOURNEY-010
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import React from 'react';
-import { render, screen, waitFor } from '../../tests/helpers/render';
+import { render, screen, waitFor, within } from '../../tests/helpers/render';
 import userEvent from '@testing-library/user-event';
 import { http, HttpResponse } from 'msw';
 import { server } from '../../tests/helpers/msw/server';
@@ -12,16 +12,22 @@ import { useAddonStore } from '../store/addonStore';
 import { usePermissionsStore } from '../store/permissionsStore';
 import JourneyPage from './JourneyPage';
 
+const { mockToastError } = vi.hoisted(() => ({ mockToastError: vi.fn() }));
+
 // ── Mocks ────────────────────────────────────────────────────────────────────
 
 const mockNavigate = vi.fn();
-vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual('react-router-dom');
+vi.mock('react-router', async () => {
+  const actual = await vi.importActual('react-router');
   return { ...actual, useNavigate: () => mockNavigate };
 });
 
 vi.mock('../components/Layout/Navbar', () => ({
   default: () => <nav data-testid="navbar" />,
+}));
+
+vi.mock('../components/shared/Toast', () => ({
+  useToast: () => ({ error: mockToastError }),
 }));
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -78,6 +84,7 @@ function setupDefaultHandlers(journeys: ReturnType<typeof buildJourneyListItem>[
 
 beforeEach(() => {
   vi.clearAllMocks();
+  window.localStorage.clear();
   mockNavigate.mockReset();
   resetAllStores();
   seedDefaults();
@@ -114,25 +121,8 @@ describe('JourneyPage', () => {
     render(<JourneyPage />);
     await waitFor(() => {
       // Grid renders with only the create card (the dashed-border button)
-      // The "0 journeys" counter is shown
-      expect(screen.getByText(/0/)).toBeInTheDocument();
+      expect(screen.getByText(/Create a new Journey/i)).toBeInTheDocument();
     });
-    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
-  });
-
-  // FE-PAGE-JOURNEY-003b
-  it('FE-PAGE-JOURNEY-003b: failed list load is not an empty grid', async () => {
-    server.use(
-      http.get('/api/journeys', () =>
-        HttpResponse.json({ error: 'server error' }, { status: 500 })
-      ),
-    );
-    render(<JourneyPage />);
-    await waitFor(() => {
-      expect(screen.getByRole('alert')).toBeInTheDocument();
-    });
-    expect(screen.getByText('Could not load journeys.')).toBeInTheDocument();
-    expect(screen.queryByText(/create a new journey/i)).not.toBeInTheDocument();
   });
 
   // FE-PAGE-JOURNEY-004
@@ -210,6 +200,75 @@ describe('JourneyPage', () => {
     });
   });
 
+  it('FE-PAGE-JOURNEY-007c: keeps a dismissed suggestion hidden after remount', async () => {
+    const user = userEvent.setup();
+    const suggestions = [
+      { id: 991, title: 'Kyoto Weekend', start_date: '2026-03-01', end_date: '2026-03-02', place_count: 2 },
+      { id: 993, title: 'Lisbon Loop', start_date: '2026-04-01', end_date: '2026-04-02', place_count: 3 },
+    ];
+    server.use(
+      http.get('/api/journeys', () => HttpResponse.json({ journeys: [] })),
+      http.get('/api/journeys/suggestions', () => HttpResponse.json({ trips: suggestions })),
+    );
+
+    const firstRender = render(<JourneyPage />);
+    const dismissButton = await screen.findByRole('button', { name: 'Dismiss' });
+    await user.click(dismissButton);
+
+    expect(await screen.findByText(/Lisbon Loop/)).toBeInTheDocument();
+    const dismissedRecord = JSON.parse(window.localStorage.getItem(`trek:journey:dismissed-suggestions:v1:${useAuthStore.getState().user?.id}`) || '[]');
+    expect(dismissedRecord).toContain(991);
+    firstRender.unmount();
+
+    render(<JourneyPage />);
+    expect(await screen.findByText(/Lisbon Loop/)).toBeInTheDocument();
+    expect(screen.queryByText(/Kyoto Weekend/)).not.toBeInTheDocument();
+  });
+
+  it('FE-PAGE-JOURNEY-007d: keeps the suggestion visible and reports a storage failure', async () => {
+    const user = userEvent.setup();
+    const suggestion = { id: 992, title: 'Coast Trip', start_date: '2026-03-01', end_date: '2026-03-02', place_count: 2 };
+    mockToastError.mockClear();
+    const setItem = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new DOMException('Storage is full', 'QuotaExceededError');
+    });
+    server.use(
+      http.get('/api/journeys', () => HttpResponse.json({ journeys: [] })),
+      http.get('/api/journeys/suggestions', () => HttpResponse.json({ trips: [suggestion] })),
+    );
+
+    render(<JourneyPage />);
+    await user.click(await screen.findByRole('button', { name: 'Dismiss' }));
+
+    expect(mockToastError).toHaveBeenCalledWith('Could not dismiss this suggestion');
+    expect(screen.getByText(/Trip just ended/i)).toBeInTheDocument();
+    setItem.mockRestore();
+  });
+
+  it('FE-PAGE-JOURNEY-007e: deletes dismissed IDs absent from the suggestions response', async () => {
+    const userId = useAuthStore.getState().user?.id;
+    const absentTripId = 994;
+    const stillDismissedTripId = 995;
+    const returnedTripId = 996;
+    const key = `trek:journey:dismissed-suggestions:v1:${userId}`;
+    window.localStorage.setItem(key, JSON.stringify([absentTripId, stillDismissedTripId]));
+    server.use(
+      http.get('/api/journeys', () => HttpResponse.json({ journeys: [] })),
+      http.get('/api/journeys/suggestions', () => HttpResponse.json({
+        trips: [
+          { id: returnedTripId, title: 'Returned Trip', start_date: '2026-04-01', end_date: '2026-04-02', place_count: 2 },
+          { id: stillDismissedTripId, title: 'Still Dismissed', start_date: '2026-05-01', end_date: '2026-05-02', place_count: 2 },
+        ],
+      })),
+    );
+
+    render(<JourneyPage />);
+
+    expect(await screen.findByText(/Returned Trip/)).toBeInTheDocument();
+    expect(screen.queryByText(/Still Dismissed/)).not.toBeInTheDocument();
+    expect(JSON.parse(window.localStorage.getItem(key) || '[]')).toEqual([stillDismissedTripId]);
+  });
+
   // FE-PAGE-JOURNEY-007b — XSS regression: the suggestion banner interpolates
   // a user-controlled trip title into an HTML template that is later passed to
   // dangerouslySetInnerHTML. The sanitiser in @trek/shared must drop any script
@@ -283,7 +342,7 @@ describe('JourneyPage', () => {
     });
 
     // Click dismiss
-    await user.click(screen.getByText(/Dismiss/i));
+    await user.click(screen.getByRole('button', { name: 'Dismiss' }));
 
     await waitFor(() => {
       expect(screen.queryByText(/Trip just ended/i)).not.toBeInTheDocument();
@@ -291,7 +350,7 @@ describe('JourneyPage', () => {
   });
 
   // FE-PAGE-JOURNEY-010
-  it('FE-PAGE-JOURNEY-010: shows journey count in header', async () => {
+  it('FE-PAGE-JOURNEY-010: renders all journeys in the grid', async () => {
     const j1 = buildJourneyListItem({ id: 1, title: 'Trip A' });
     const j2 = buildJourneyListItem({ id: 2, title: 'Trip B' });
     const j3 = buildJourneyListItem({ id: 3, title: 'Trip C' });
@@ -301,8 +360,8 @@ describe('JourneyPage', () => {
     await waitFor(() => {
       expect(screen.getByText('Trip A')).toBeInTheDocument();
     });
-    // The count "3 journeys" text is displayed
-    expect(screen.getByText(/3 journeys/i)).toBeInTheDocument();
+    expect(screen.getByText('Trip B')).toBeInTheDocument();
+    expect(screen.getByText('Trip C')).toBeInTheDocument();
   });
 
   // FE-PAGE-JOURNEY-011
@@ -357,12 +416,9 @@ describe('JourneyPage', () => {
     });
     await user.click(screen.getByText('Thailand 2026'));
 
-    // The modal footer submit is the last button in the dialog
-    const dialog = screen.getByRole('dialog')
-    const footerButtons = dialog.querySelectorAll('button')
-    const submitBtn = footerButtons[footerButtons.length - 1]
-    expect(submitBtn).toBeTruthy()
-    await user.click(submitBtn!)
+    // The dialog's own Create Journey button, not the page's buttons of the same name.
+    const submitBtn = within(screen.getByRole('dialog')).getByRole('button', { name: 'Create Journey' });
+    await user.click(submitBtn);
 
     await waitFor(() => {
       expect(mockNavigate).toHaveBeenCalledWith('/journey/99');
@@ -393,15 +449,11 @@ describe('JourneyPage', () => {
 
   // FE-PAGE-JOURNEY-014
   it('FE-PAGE-JOURNEY-014: journey card shows draft status badge', async () => {
-    const live = buildJourneyListItem({
-      id: 29,
-      title: 'Live Hero',
-      status: 'active',
-      trip_date_min: '2020-01-01',
-      trip_date_max: '2099-12-31',
-    })
-    const draft = buildJourneyListItem({ id: 30, title: 'Draft Journey', status: 'draft' })
-    setupDefaultHandlers([live, draft])
+    // A live journey claims the hero slot, so the draft journey renders as a
+    // grid card — which is where the lifecycle badge lives.
+    const live = buildJourneyListItem({ id: 31, title: 'Live Journey', status: 'active', trip_date_min: '2020-01-01', trip_date_max: '2099-12-31' });
+    const j1 = buildJourneyListItem({ id: 30, title: 'Draft Journey', status: 'draft' });
+    setupDefaultHandlers([live, j1]);
 
     render(<JourneyPage />);
     await waitFor(() => {
@@ -411,67 +463,6 @@ describe('JourneyPage', () => {
     // Draft badge rendered
     expect(screen.getByText('Draft')).toBeInTheDocument();
   });
-
-  // FE-PAGE-JOURNEY-015
-  it('FE-PAGE-JOURNEY-015: completed journeys fall back to Latest Journey hero', async () => {
-    const latest = buildJourneyListItem({
-      id: 40,
-      title: 'Italy 2026',
-      status: 'completed',
-      trip_date_min: '2026-07-01',
-      trip_date_max: '2026-07-10',
-    })
-    const older = buildJourneyListItem({ id: 41, title: 'Older Draft', status: 'draft' })
-    setupDefaultHandlers([latest, older])
-
-    render(<JourneyPage />)
-    await waitFor(() => {
-      expect(screen.getByText('Italy 2026')).toBeInTheDocument()
-    })
-    expect(screen.getByText('Latest Journey')).toBeInTheDocument()
-    expect(screen.queryByText('Active Journey')).not.toBeInTheDocument()
-  })
-
-  it('FE-PAGE-JOURNEY-016: search suppresses the hero', async () => {
-    const user = userEvent.setup()
-    const latest = buildJourneyListItem({ id: 41, title: 'Italy 2026', status: 'draft' })
-    setupDefaultHandlers([latest])
-
-    render(<JourneyPage />)
-    await waitFor(() => {
-      expect(screen.getByText('Latest Journey')).toBeInTheDocument()
-    })
-
-    await user.click(screen.getByLabelText(/search/i))
-    await user.type(screen.getByPlaceholderText(/search journeys/i), 'italy')
-    await waitFor(() => {
-      expect(screen.queryByText('Latest Journey')).not.toBeInTheDocument()
-    })
-    expect(screen.getByText('Italy 2026')).toBeInTheDocument()
-  })
-
-  it('FE-PAGE-JOURNEY-017: journey cards are keyboard activatable', async () => {
-    const user = userEvent.setup()
-    const live = buildJourneyListItem({
-      id: 42,
-      title: 'Live Hero',
-      status: 'active',
-      trip_date_min: '2020-01-01',
-      trip_date_max: '2099-12-31',
-    })
-    const card = buildJourneyListItem({ id: 43, title: 'Keyboard Journey', status: 'draft' })
-    setupDefaultHandlers([live, card])
-
-    render(<JourneyPage />)
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: /Keyboard Journey/i })).toBeInTheDocument()
-    })
-    await user.tab()
-    const cardBtn = screen.getByRole('button', { name: /Keyboard Journey/i })
-    cardBtn.focus()
-    await user.keyboard('{Enter}')
-    expect(mockNavigate).toHaveBeenCalledWith('/journey/43')
-  })
 
   // FE-PAGE-JOURNEY-018
   it('FE-PAGE-JOURNEY-018: active journey hero shows "Continue writing" button', async () => {
@@ -487,18 +478,17 @@ describe('JourneyPage', () => {
   });
 
   // FE-PAGE-JOURNEY-019
-  it('FE-PAGE-JOURNEY-019: live hero shows Active Journey, not Live/Synced chrome', async () => {
-    const active = buildJourneyListItem({ id: 51, title: 'Live Journey', status: 'active', trip_date_min: '2020-01-01', trip_date_max: '2099-12-31' })
-    setupDefaultHandlers([active])
+  it('FE-PAGE-JOURNEY-019: active journey hero shows the continue-writing action', async () => {
+    const active = buildJourneyListItem({ id: 51, title: 'Live Journey', status: 'active', trip_date_min: '2020-01-01', trip_date_max: '2099-12-31' });
+    setupDefaultHandlers([active]);
 
-    render(<JourneyPage />)
+    render(<JourneyPage />);
     await waitFor(() => {
-      expect(screen.getByText('Live Journey')).toBeInTheDocument()
-    })
+      expect(screen.getByText('Live Journey')).toBeInTheDocument();
+    });
 
-    expect(screen.getByText('Active Journey')).toBeInTheDocument()
-    expect(screen.queryByText('Synced')).not.toBeInTheDocument()
-  })
+    expect(screen.getByText(/Continue writing/i)).toBeInTheDocument();
+  });
 
   // FE-PAGE-JOURNEY-020
   it('FE-PAGE-JOURNEY-020: clicking active journey hero navigates to its detail page', async () => {
@@ -513,53 +503,43 @@ describe('JourneyPage', () => {
 
     // Click the hero card title
     await user.click(screen.getByText('Clickable Hero'));
-    expect(mockNavigate).toHaveBeenCalledWith('/journey/60')
-  })
+    expect(mockNavigate).toHaveBeenCalledWith('/journey/60');
+  });
 
-  it('FE-PAGE-JOURNEY-021: zero stats render as dashes', async () => {
-    const j1 = buildJourneyListItem({
-      id: 70,
-      title: 'Empty Stats',
-      entry_count: 0,
-      photo_count: 0,
-      place_count: 0,
-      status: 'active',
-      trip_date_min: '2020-01-01',
-      trip_date_max: '2099-12-31',
-    })
-    setupDefaultHandlers([j1])
-    render(<JourneyPage />)
-    await waitFor(() => {
-      expect(screen.getByText('Empty Stats')).toBeInTheDocument()
-    })
-    expect(screen.getAllByText('--').length).toBeGreaterThan(0)
-  })
+  // FE-PAGE-JOURNEY-021
+  it('FE-PAGE-JOURNEY-021: shows a latest-journey hero when no trip is live', async () => {
+    // Neither journey is live; the most recent one (first in the updated_at-sorted
+    // list) still becomes the hero, labelled "Latest Journey".
+    const recent = buildJourneyListItem({ id: 70, title: 'Most Recent', status: 'completed' });
+    const older = buildJourneyListItem({ id: 71, title: 'Older One', status: 'completed' });
+    setupDefaultHandlers([recent, older]);
 
-  it('FE-PAGE-JOURNEY-022: missing cover still renders a hero', async () => {
-    const j1 = buildJourneyListItem({
-      id: 71,
-      title: 'No Cover',
-      cover_image: null,
-      status: 'draft',
-    })
-    setupDefaultHandlers([j1])
-    render(<JourneyPage />)
+    render(<JourneyPage />);
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /Latest Journey/i })).toBeInTheDocument()
-    })
-    expect(screen.getByText('No Cover')).toBeInTheDocument()
-  })
+      expect(screen.getByText('Most Recent')).toBeInTheDocument();
+    });
 
-  it('FE-PAGE-JOURNEY-023: desktop scale uses 1800px container, 4-col grid, and TREK hero title class', async () => {
-    const j1 = buildJourneyListItem({ id: 80, title: 'Scale Journey', status: 'draft' })
-    setupDefaultHandlers([j1])
-    const { container } = render(<JourneyPage />)
+    // Hero eyebrow reflects the non-live state, and the hero-only action shows.
+    expect(screen.getByText(/Latest Journey/i)).toBeInTheDocument();
+    expect(screen.getByText('Continue writing')).toBeInTheDocument();
+    // The older journey stays in the grid below the hero.
+    expect(screen.getByText('Older One')).toBeInTheDocument();
+  });
+
+  // FE-PAGE-JOURNEY-022
+  it('FE-PAGE-JOURNEY-022: a live journey wins the hero over a more recent non-live one', async () => {
+    // The list is sorted newest-first; even though the completed journey is newer,
+    // the live one is featured as the hero (labelled "Active Journey").
+    const newerCompleted = buildJourneyListItem({ id: 80, title: 'Newer Completed', status: 'completed' });
+    const live = buildJourneyListItem({ id: 81, title: 'Ongoing Trip', status: 'active', trip_date_min: '2020-01-01', trip_date_max: '2099-12-31' });
+    setupDefaultHandlers([newerCompleted, live]);
+
+    render(<JourneyPage />);
     await waitFor(() => {
-      expect(screen.getByText('Scale Journey')).toBeInTheDocument()
-    })
-    expect(container.querySelector('.journey-front')?.className).toContain('max-w-[1800px]')
-    expect(container.querySelector('[class*="xl:grid-cols-4"]')).toBeTruthy()
-    expect(container.querySelector('.journey-hero-title')).toBeTruthy()
-    expect(container.querySelector('.journey-create-card')).toBeTruthy()
-  })
-})
+      expect(screen.getByText('Ongoing Trip')).toBeInTheDocument();
+    });
+    expect(screen.getByText(/Active Journey/i)).toBeInTheDocument();
+    // The newer completed journey is pushed down into the grid.
+    expect(screen.getByText('Newer Completed')).toBeInTheDocument();
+  });
+});

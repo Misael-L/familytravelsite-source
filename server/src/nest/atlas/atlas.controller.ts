@@ -1,9 +1,18 @@
+import type { User } from '../../types';
+import { CurrentUser } from '../auth-core/current-user.decorator';
+import { JwtAuthGuard } from '../auth-core/jwt-auth.guard';
+import { ZodValidationPipe } from '../common/zod-validation.pipe';
+import { getRegionGeoGz, getRegionGeoJson } from './atlas-geo';
+import { AtlasWritesService } from './atlas-writes.service';
+import { AtlasMarkRegionDto, AtlasCreateBucketItemDto, AtlasUpdateBucketItemDto } from './atlas.dto';
+import { AtlasService, BucketItemExistsError } from './atlas.service';
 import {
   Body,
   Controller,
   Delete,
   Get,
   Header,
+  Headers,
   HttpCode,
   HttpException,
   Param,
@@ -13,12 +22,11 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
+import { regionGeoParamsSchema } from '@trek/shared';
+import type { AtlasLocateResponse, RegionGeoParams } from '@trek/shared';
+
 import type { Response } from 'express';
-import type { RegionGeo } from '@trek/shared';
-import type { User } from '../../types';
-import { AtlasService } from './atlas.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { CurrentUser } from '../auth/current-user.decorator';
+import path from 'node:path';
 
 /**
  * /api/addons/atlas — visited countries/regions, region GeoJSON, bucket list.
@@ -26,50 +34,103 @@ import { CurrentUser } from '../auth/current-user.decorator';
  * Byte-identical to the legacy Express route (server/src/routes/atlas.ts): all
  * endpoints require auth; country/region codes are upper-cased; /regions is
  * always no-store while /regions/geo is cached for a day only on a non-empty
- * result; the mark POSTs answer 200 (not Nest's default 201); and the bespoke
- * 400/404 bodies are reproduced exactly. No addon gate — the legacy route has
- * none, so adding one would break clients when the addon is off.
+ * result; the mark POSTs answer 200 (not Nest's default 201); the bespoke 404
+ * bodies are reproduced exactly. Bodies validate via @trek/shared DTOs, so a
+ * missing/invalid field 400s in the ZodValidationPipe envelope (the former
+ * hand-rolled 'name and country_code are required' — the todo/places trade);
+ * the whitespace-only bucket name keeps its legacy 'Name is required' 400.
+ * No addon gate — the legacy route has none, so adding one would break
+ * clients when the addon is off. The one status the legacy route never sent is
+ * the bucket-list 409: adding the same wish twice used to append a second row
+ * (#1898). The writes go through AtlasWritesService, which tells the user's
+ * other tabs (`atlas:changed`); X-Socket-Id leaves out the tab that asked.
  */
 @Controller('api/addons/atlas')
 @UseGuards(JwtAuthGuard)
 export class AtlasController {
-  constructor(private readonly atlas: AtlasService) {}
+  constructor(
+    private readonly atlas: AtlasService,
+    private readonly writes: AtlasWritesService,
+  ) {}
 
   @Get('stats')
-  stats(@CurrentUser() user: User) {
+  async stats(@CurrentUser() user: User) {
     return this.atlas.stats(user.id);
   }
 
   @Get('regions')
   @Header('Cache-Control', 'no-cache, no-store')
-  regions(@CurrentUser() user: User) {
+  async regions(@CurrentUser() user: User) {
     return this.atlas.visitedRegions(user.id);
   }
 
+  /**
+   * Which country and admin1 region a coordinate falls in (#1115). The Atlas search
+   * used to know country names only, so finding Milan meant knowing it is in Lombardy
+   * first. The client geocodes the term through /maps/search as everywhere else and
+   * sends the winning coordinate here; resolution runs against the same bundled
+   * polygons the visited-region colouring uses, so the answer is always a feature the
+   * map can actually highlight.
+   */
+  @Get('locate')
+  async locate(@Query('lat') lat: string, @Query('lng') lng: string): Promise<AtlasLocateResponse> {
+    const latNum = Number(lat);
+    const lngNum = Number(lng);
+    if (!Number.isFinite(latNum) || !Number.isFinite(lngNum) || Math.abs(latNum) > 90 || Math.abs(lngNum) > 180) {
+      throw new HttpException({ error: 'Valid lat and lng are required' }, 400);
+    }
+    return this.atlas.locate(latNum, lngNum);
+  }
+
+  // Kept for clients from before the map asked for one country at a time (below). They
+  // get the same FeatureCollection as before, joined from the per-country files without
+  // a parse; drop it once those clients are gone.
   @Get('regions/geo')
-  async regionGeo(
-    @Query('countries') countries: string | undefined,
-    @Res({ passthrough: true }) res: Response,
-  ): Promise<RegionGeo> {
+  regionGeo(@Query('countries') countries: string | undefined, @Res() res: Response): void {
     const list = (countries || '').split(',').filter(Boolean);
     if (list.length === 0) {
-      return { type: 'FeatureCollection', features: [] };
+      res.json({ type: 'FeatureCollection', features: [] });
+      return;
     }
-    const geo = await this.atlas.regionGeo(list);
+    const json = getRegionGeoJson(list);
     // Cache only a non-empty result, matching the legacy route (the empty
     // short-circuit above sends no Cache-Control header).
     res.setHeader('Cache-Control', 'public, max-age=86400');
-    return geo;
+    res.type('application/json').send(json);
+  }
+
+  // response-contract-exempt: sends a gzipped file through @Res() as it is, there is no JSON body to check.
+  @Get('regions/geo/:code')
+  async regionGeoForCountry(
+    @Param(new ZodValidationPipe(regionGeoParamsSchema)) params: RegionGeoParams,
+    @Res() res: Response,
+  ): Promise<void> {
+    // One country's pre-gzipped admin-1 file, served the way countries/geo is: the server
+    // never parses or holds it (#1576), and the browser caches every country on its own. A
+    // country the bundle has no regions for gets an empty FeatureCollection, cached the
+    // same, so it is not asked again; a code that is not two letters is a 400.
+    const gz = await getRegionGeoGz(params.code);
+    res.setHeader('Cache-Control', 'public, max-age=86400');
+    if (!gz) {
+      res.json({ type: 'FeatureCollection', features: [] });
+      return;
+    }
+    res.setHeader('Content-Type', 'application/json; charset=utf-8');
+    res.setHeader('Content-Encoding', 'gzip');
+    res.send(gz);
   }
 
   @Get('countries/geo')
   countryGeo(@Res() res: Response): void {
     // Serve the pre-gzipped admin-0 bundle straight from disk. The browser decompresses
     // transparently, so the wire shape is identical to before, but the server never parses
-    // or holds the ~145MB FeatureCollection (#1576). Content-Encoding is set explicitly, so
-    // the compression middleware leaves the body untouched.
-    const gz = this.atlas.countryGeoGz();
-    if (!gz) {
+    // or holds the ~145MB FeatureCollection (#1576), nor the 4MB file itself. Content-Encoding
+    // is set explicitly, so the compression middleware leaves the body untouched, and
+    // send() keeps the Content-Type and Cache-Control set here. Without Accept-Ranges and
+    // Last-Modified the headers are the ones res.send(buffer) gave. Root + basename, not the
+    // absolute path: see plugin-frame.controller.ts.
+    const file = this.atlas.countryGeoFile();
+    if (!file) {
       res.setHeader('Cache-Control', 'no-store');
       res.json({ type: 'FeatureCollection', features: [] });
       return;
@@ -77,73 +138,112 @@ export class AtlasController {
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
     res.setHeader('Content-Encoding', 'gzip');
     res.setHeader('Cache-Control', 'public, max-age=86400');
-    res.send(gz);
+    res.sendFile(path.basename(file), { root: path.dirname(file), acceptRanges: false, lastModified: false });
   }
 
   @Get('country/:code')
-  countryPlaces(@CurrentUser() user: User, @Param('code') code: string) {
+  async countryPlaces(@CurrentUser() user: User, @Param('code') code: string) {
     return this.atlas.countryPlaces(user.id, code.toUpperCase());
   }
 
   @Post('country/:code/mark')
   @HttpCode(200)
-  markCountry(@CurrentUser() user: User, @Param('code') code: string): { success: boolean } {
-    this.atlas.markCountry(user.id, code.toUpperCase());
+  async markCountry(
+    @CurrentUser() user: User,
+    @Param('code') code: string,
+    @Headers('x-socket-id') socketId?: string,
+  ): Promise<{ success: boolean }> {
+    await this.writes.markCountry(user.id, code.toUpperCase(), socketId);
     return { success: true };
   }
 
   @Delete('country/:code/mark')
-  unmarkCountry(@CurrentUser() user: User, @Param('code') code: string): { success: boolean } {
-    this.atlas.unmarkCountry(user.id, code.toUpperCase());
+  async unmarkCountry(
+    @CurrentUser() user: User,
+    @Param('code') code: string,
+    @Headers('x-socket-id') socketId?: string,
+  ): Promise<{ success: boolean }> {
+    await this.writes.unmarkCountry(user.id, code.toUpperCase(), socketId);
     return { success: true };
   }
 
   @Post('region/:code/mark')
   @HttpCode(200)
-  markRegion(
+  async markRegion(
     @CurrentUser() user: User,
     @Param('code') code: string,
-    @Body('name') name?: string,
-    @Body('country_code') countryCode?: string,
-  ): { success: boolean } {
-    if (!name || !countryCode) {
-      throw new HttpException({ error: 'name and country_code are required' }, 400);
-    }
-    this.atlas.markRegion(user.id, code.toUpperCase(), name, countryCode.toUpperCase());
+    @Body() body: AtlasMarkRegionDto,
+    @Headers('x-socket-id') socketId?: string,
+  ): Promise<{ success: boolean }> {
+    await this.writes.markRegion(user.id, code.toUpperCase(), body.name, body.country_code.toUpperCase(), socketId);
     return { success: true };
   }
 
   @Delete('region/:code/mark')
-  unmarkRegion(@CurrentUser() user: User, @Param('code') code: string): { success: boolean } {
-    this.atlas.unmarkRegion(user.id, code.toUpperCase());
+  async unmarkRegion(
+    @CurrentUser() user: User,
+    @Param('code') code: string,
+    @Headers('x-socket-id') socketId?: string,
+  ): Promise<{ success: boolean }> {
+    await this.writes.unmarkRegion(user.id, code.toUpperCase(), socketId);
     return { success: true };
   }
 
   @Get('bucket-list')
-  bucketList(@CurrentUser() user: User) {
-    return { items: this.atlas.bucketList(user.id) };
+  async bucketList(@CurrentUser() user: User) {
+    return { items: await this.atlas.bucketList(user.id) };
   }
 
   @Post('bucket-list')
-  createBucketItem(
+  async createBucketItem(
     @CurrentUser() user: User,
-    @Body() body: { name?: string; lat?: number | null; lng?: number | null; country_code?: string | null; notes?: string | null; target_date?: string | null },
-  ): { item: unknown } {
+    @Body() body: AtlasCreateBucketItemDto,
+    @Headers('x-socket-id') socketId?: string,
+  ): Promise<{ item: unknown }> {
+    // The schema's min(1) admits whitespace-only names — this trim guard keeps
+    // the legacy 400 for those (missing/empty names 400 in the pipe envelope).
     if (!body.name?.trim()) {
       throw new HttpException({ error: 'Name is required' }, 400);
     }
-    const { name, lat, lng, country_code, notes, target_date } = body;
-    return { item: this.atlas.createBucketItem(user.id, { name, lat, lng, country_code, notes, target_date }) };
+    const { name, lat, lng, country_code, notes, target_date, region_code } = body;
+    try {
+      return {
+        item: await this.writes.createBucketItem(
+          user.id,
+          { name, lat, lng, country_code, notes, target_date, region_code },
+          socketId,
+        ),
+      };
+    } catch (err) {
+      // #1898: the same wish twice is a conflict, not a server error. Bespoke
+      // { error } body like the neighbouring 400/404s.
+      if (err instanceof BucketItemExistsError) {
+        throw new HttpException({ error: 'Already on your bucket list' }, 409);
+      }
+      throw err;
+    }
   }
 
   @Put('bucket-list/:id')
-  updateBucketItem(
+  async updateBucketItem(
     @CurrentUser() user: User,
     @Param('id') id: string,
-    @Body() body: { name?: string; notes?: string; lat?: number | null; lng?: number | null; country_code?: string | null; target_date?: string | null },
-  ): { item: unknown } {
+    @Body() body: AtlasUpdateBucketItemDto,
+    @Headers('x-socket-id') socketId?: string,
+  ): Promise<{ item: unknown }> {
     const { name, notes, lat, lng, country_code, target_date } = body;
-    const item = this.atlas.updateBucketItem(user.id, id, { name, notes, lat, lng, country_code, target_date });
+    let item: unknown;
+    try {
+      const data = { name, notes, lat, lng, country_code, target_date };
+      item = await this.writes.updateBucketItem(user.id, id, data, socketId);
+    } catch (err) {
+      // #1898: editing a wish onto an existing one conflicts the same way a
+      // duplicate create does.
+      if (err instanceof BucketItemExistsError) {
+        throw new HttpException({ error: 'Already on your bucket list' }, 409);
+      }
+      throw err;
+    }
     if (!item) {
       throw new HttpException({ error: 'Item not found' }, 404);
     }
@@ -151,8 +251,12 @@ export class AtlasController {
   }
 
   @Delete('bucket-list/:id')
-  deleteBucketItem(@CurrentUser() user: User, @Param('id') id: string): { success: boolean } {
-    if (!this.atlas.deleteBucketItem(user.id, id)) {
+  async deleteBucketItem(
+    @CurrentUser() user: User,
+    @Param('id') id: string,
+    @Headers('x-socket-id') socketId?: string,
+  ): Promise<{ success: boolean }> {
+    if (!(await this.writes.deleteBucketItem(user.id, id, socketId))) {
       throw new HttpException({ error: 'Item not found' }, 404);
     }
     return { success: true };

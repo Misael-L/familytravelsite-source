@@ -1,225 +1,194 @@
-import { useMemo, useState, useCallback, useEffect } from 'react'
+import { useState, useCallback } from 'react'
+import { useVacayStore } from '../../store/vacayStore'
 import { useTranslation } from '../../i18n'
-import { isWeekend, formatDate } from './holidays'
-import { tripsApi } from '../../api/client'
+import { windowMonths } from '../../vacay/yearWindow'
 import VacayMonthCard from './VacayMonthCard'
-import { Building2, GraduationCap, MousePointer2, Search } from 'lucide-react'
-import Modal from '../shared/Modal'
-import { useVacayChrome } from '../../pages/vacay/vacaySession'
-import { personKindsOnDate, resolvePersonPaintClick, travelerHasAway, tripsOnDate } from '../../pages/vacay/vacayModel'
-import { useToast } from '../shared/Toast'
+import { Building2, MousePointer2 } from 'lucide-react'
+import { useVacayCalendarLogic } from './useVacayCalendarLogic'
 
-type PaintMode = 'away' | 'school' | 'family' | 'inspect'
+type HoverTip = { date: string; top: number; left: number }
 
 export default function VacayCalendar() {
   const { t, locale } = useTranslation()
-  const toast = useToast()
+  const { selectedYear, plan, holidays, yearSettings } = useVacayStore()
   const {
-    familyChrome, selectedYear, selectedUserId, entries, companyHolidays, toggleEntry,
-    toggleCompanyHoliday, plan, users, holidays, approvedTripDates, proposedTripDates, tripWindows,
-  } = useVacayChrome()
-  const [paintMode, setPaintMode] = useState<PaintMode>('away')
-  const [inspectDate, setInspectDate] = useState<string | null>(null)
-  const [nestTripDates, setNestTripDates] = useState<Set<string>>(new Set())
+    mode, setMode, halfDay, setHalfDay, compDay, setCompDay, tripDates, entryMap, sharedMap,
+    companyHolidaySet, companyHalfSet, blockWeekends, weekendDays, companyHolidaysEnabled, selectedUser,
+    logDay: handleCellClick,
+  } = useVacayCalendarLogic({ selectedYear, plan })
+  const companyMode = mode === 'company'
+  const [tip, setTip] = useState<HoverTip | null>(null)
 
-  const companyMode = paintMode === 'family'
+  // Cells with a half day or a shared overlay report a hover, so the tooltip
+  // appears exactly when there's something to explain. Fixed-positioned at the
+  // root so no card clips it.
+  const handleCellHover = useCallback((dateStr: string | null, el: HTMLElement | null) => {
+    if (!dateStr || !el) { setTip(null); return }
+    const r = el.getBoundingClientRect()
+    setTip({ date: dateStr, top: r.top, left: r.left + r.width / 2 })
+  }, [])
 
-  useEffect(() => {
-    if (familyChrome) return
-    let cancelled = false
-    ;(async () => {
-      try {
-        const data = await tripsApi.list()
-        const dates = new Set<string>()
-        for (const trip of data.trips || []) {
-          if (!trip.start_date || !trip.end_date) continue
-          const start = new Date(trip.start_date + 'T00:00:00')
-          const end = new Date(trip.end_date + 'T00:00:00')
-          for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
-            const y = d.getFullYear()
-            if (y === selectedYear) {
-              dates.add(`${y}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`)
-            }
-          }
-        }
-        if (!cancelled) setNestTripDates(dates)
-      } catch { /* ignore */ }
-    })()
-    return () => { cancelled = true }
-  }, [selectedYear, familyChrome])
+  // The toolbar modifiers preview what a click will put on the day, so the comp
+  // hatch carries the selected person's colour just like the grid segment does.
+  const markerColor = selectedUser?.color || '#6366f1'
+  const tipEntries = tip ? entryMap[tip.date] : undefined
+  const tipShared = tip ? sharedMap[tip.date] : undefined
+  const tipHolidayRaw = tip ? holidays[tip.date] : undefined
+  const tipSchool = (Array.isArray(tipHolidayRaw) ? tipHolidayRaw : tipHolidayRaw ? [tipHolidayRaw] : []).filter(h => h.type === 'school_holiday')
+  const tipDate = tip ? new Intl.DateTimeFormat(locale, { weekday: 'short', day: 'numeric', month: 'long' }).format(new Date(tip.date + 'T00:00:00')) : ''
 
-  const companyHolidaySet = useMemo(() => {
-    const s = new Set<string>()
-    companyHolidays.forEach(h => s.add(h.date))
-    return s
-  }, [companyHolidays])
-
-  const entryMap = useMemo(() => {
-    const map: Record<string, typeof entries> = {}
-    entries.forEach(e => {
-      if (!map[e.date]) map[e.date] = []
-      map[e.date].push(e)
-    })
-    return map
-  }, [entries])
-
-  const blockWeekends = plan?.block_weekends !== false
-  const weekendDays: number[] = plan?.weekend_days ? String(plan.weekend_days).split(',').map(Number) : [0, 6]
-  const companyHolidaysEnabled = plan?.company_holidays_enabled !== false
-
-  const handleCellClick = useCallback(async (dateStr: string) => {
-    if (paintMode === 'inspect') {
-      setInspectDate(dateStr)
-      return
-    }
-    if (paintMode === 'family') {
-      if (!companyHolidaysEnabled) return
-      await toggleCompanyHoliday(dateStr)
-      return
-    }
-    if (blockWeekends && isWeekend(dateStr, weekendDays)) return
-    if (companyHolidaysEnabled && companyHolidaySet.has(dateStr)) return
-    if (familyChrome && (paintMode === 'away' || paintMode === 'school')) {
-      const kinds = personKindsOnDate(entries, selectedUserId, dateStr)
-      if (resolvePersonPaintClick(paintMode, kinds) === 'blocked-other-kind') {
-        const other = paintMode === 'away' ? t('vacay.modeSchool') : t('vacay.modeAway')
-        toast.info(t('vacay.paintUseOtherKind', { kind: other }))
-        return
-      }
-    }
-    if (paintMode === 'school') {
-      await toggleEntry(dateStr, selectedUserId || undefined, 'school_break')
-      return
-    }
-    await toggleEntry(dateStr, selectedUserId || undefined)
-  }, [paintMode, toggleEntry, toggleCompanyHoliday, companyHolidaySet, blockWeekends, companyHolidaysEnabled, selectedUserId, weekendDays, familyChrome, entries, toast, t])
-
-  const selectedUser = users.find(u => u.id === selectedUserId)
-  const tripDates = familyChrome ? approvedTripDates : nestTripDates
-  const inspectWindows = inspectDate ? tripsOnDate(tripWindows, inspectDate) : []
-  const inspectEntries = inspectDate ? (entryMap[inspectDate] || []) : []
+  // Label for a day's leave type + fraction (#552/#1074): full/half vacation or comp/flex.
+  const dayTypeLabel = (fraction: number | undefined, kind: string | undefined) => {
+    const half = (fraction ?? 1) === 0.5
+    if (kind === 'comp') return half ? t('vacay.compHalf') : t('vacay.modeComp')
+    return half ? t('vacay.modeHalf') : t('vacay.fullDay')
+  }
 
   return (
     <div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3" style={{ paddingBottom: 'calc(var(--bottom-nav-h, 0px) + 80px)' }}>
-        {Array.from({ length: 12 }, (_, i) => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[18px]" style={{ paddingBottom: 'calc(var(--bottom-nav-h, 0px) + 80px)' }}>
+        {/* Twelve months from the window start (#737), rolling over the calendar
+            year when the leave year is shifted — Jul 2026 – Jun 2027 and so on. */}
+        {windowMonths(selectedYear, yearSettings).map(({ year, month }) => (
           <VacayMonthCard
-            key={i}
-            year={selectedYear}
-            month={i}
+            key={`${year}-${month}`}
+            year={year}
+            month={month}
             holidays={holidays}
             companyHolidaySet={companyHolidaySet}
+            companyHalfSet={companyHalfSet}
             companyHolidaysEnabled={companyHolidaysEnabled}
             entryMap={entryMap}
+            sharedMap={sharedMap}
             onCellClick={handleCellClick}
+            onCellHover={handleCellHover}
             companyMode={companyMode}
             blockWeekends={blockWeekends}
             weekendDays={weekendDays}
             tripDates={tripDates}
-            proposedTripDates={familyChrome ? proposedTripDates : undefined}
             weekStart={plan?.week_start ?? 1}
           />
         ))}
       </div>
 
+      {/* Custom day tooltip — who is off on this date and how much (own members
+          with half days, plus shared read-only calendars). Rendered fixed at the
+          root (not inside a month card) so backdrop-filter stacking contexts
+          can't clip or occlude it. */}
+      {tip && ((tipEntries && tipEntries.length > 0) || (tipShared && tipShared.length > 0) || tipSchool.length > 0) && (
+        <div
+          className="vg-card rounded-xl"
+          style={{ position: 'fixed', top: tip.top - 9, left: tip.left, transform: 'translate(-50%, -100%)', zIndex: 80, pointerEvents: 'none' }}
+        >
+          <div style={{ padding: '8px 11px', minWidth: 132 }}>
+            <div className="capitalize" style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.02em', color: 'var(--vg-ink3)', marginBottom: 5 }}>{tipDate}</div>
+            {(tipEntries ?? []).map((e, i) => {
+              const emphasized = (e.fraction ?? 1) === 0.5 || e.kind === 'comp'
+              return (
+                <div key={i} className="flex items-center gap-2" style={{ marginTop: i ? 4 : 0 }}>
+                  <span className="w-2 h-2 rounded-full shrink-0" style={{ background: e.person_color || '#6366f1' }} />
+                  <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--vg-ink)' }}>{e.person_name}</span>
+                  <span style={{ marginInlineStart: 'auto', paddingInlineStart: 12, fontSize: 11, fontWeight: 700, color: emphasized ? 'var(--vg-ink)' : 'var(--vg-ink3)' }}>
+                    {dayTypeLabel(e.fraction, e.kind)}
+                  </span>
+                </div>
+              )
+            })}
+            {/* Shared calendars: ring dot instead of a filled one, like the grid. */}
+            {(tipShared ?? []).map((m, i) => (
+              <div key={`s${i}`} className="flex items-center gap-2" style={{ marginTop: (tipEntries?.length || i) ? 4 : 0 }}>
+                <span className="w-2 h-2 rounded-full shrink-0" style={{ border: `2px solid ${m.color}` }} />
+                <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--vg-ink)' }}>{m.name}</span>
+                <span style={{ marginInlineStart: 'auto', paddingInlineStart: 12, fontSize: 11, fontWeight: 700, color: 'var(--vg-ink3)' }}>
+                  {m.company ? t('vacay.companyHoliday') : dayTypeLabel(m.fraction, m.kind)}
+                </span>
+              </div>
+            ))}
+            {/* School holidays fold into this tooltip under a divider instead of a
+                separate native title, so a half/full day and the school break read together. */}
+            {tipSchool.length > 0 && (
+              <>
+                {((tipEntries?.length ?? 0) > 0 || (tipShared?.length ?? 0) > 0) && (
+                  <div style={{ height: 1, background: 'var(--vg-line)', margin: '7px 0 6px' }} />
+                )}
+                <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--vg-ink3)', marginBottom: 4 }}>
+                  {t('vacay.schoolHolidays')}
+                </div>
+                {tipSchool.map((h, i) => (
+                  <div key={`sch${i}`} className="flex items-center gap-2" style={{ marginTop: i ? 3 : 0 }}>
+                    <span className="w-2 h-2 rounded-full shrink-0" style={{ background: h.color }} />
+                    <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--vg-ink)' }}>{h.label ? `${h.label}: ${h.localName}` : h.localName}</span>
+                  </div>
+                ))}
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Floating toolbar — lift above the mobile bottom nav (z-60). On desktop --bottom-nav-h is 0px. */}
       <div className="sticky mt-3 sm:mt-4 flex items-center justify-center px-2" style={{ bottom: 'calc(var(--bottom-nav-h, 0px) + 12px)', zIndex: 61 }}>
-        <div className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-xl border bg-surface-card border-edge" style={{ boxShadow: '0 8px 32px rgba(0,0,0,0.12)' }}>
-          <button
-            onClick={() => setPaintMode('away')}
-            className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-medium transition-[background-color,color,border-color] duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] border ${paintMode === 'away' ? 'bg-content text-surface-card border-transparent' : 'bg-transparent text-content-muted border-edge'}`}>
+        <div className="vg-card flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-full">
+          <button type="button"
+            onClick={() => setMode('vacation')}
+            className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-full text-[11px] sm:text-xs font-semibold transition-[background-color,color] duration-150 ease-[cubic-bezier(0.23,1,0.32,1)]"
+            style={mode === 'vacation'
+              ? { background: 'var(--vg-ink)', color: 'var(--vg-bg)' }
+              : { background: 'transparent', color: 'var(--vg-ink2)' }}>
             <MousePointer2 size={13} />
             {selectedUser && <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: selectedUser.color }} />}
-            {selectedUser ? selectedUser.username : (familyChrome ? t('vacay.modeAway') : t('vacay.modeVacation'))}
+            {selectedUser ? selectedUser.username : t('vacay.modeVacation')}
           </button>
-          {familyChrome && (
-            <button
-              onClick={() => setPaintMode('school')}
-              className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-medium transition-[background-color,color,border-color] duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] border ${paintMode === 'school' ? 'bg-content text-surface-card border-transparent' : 'bg-transparent text-content-muted border-edge'}`}>
-              <GraduationCap size={13} />
-              {t('vacay.modeSchool')}
-            </button>
-          )}
           {companyHolidaysEnabled && (
-            <button
-              onClick={() => setPaintMode('family')}
-              className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-medium transition-[background-color,color,border-color] duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] border ${paintMode === 'family' ? 'bg-[#d97706] text-[#fff] border-transparent' : 'bg-transparent text-content-muted border-edge'}`}>
+            <button type="button"
+              onClick={() => setMode('company')}
+              className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-full text-[11px] sm:text-xs font-semibold transition-[background-color,color] duration-150 ease-[cubic-bezier(0.23,1,0.32,1)]"
+              style={companyMode
+                ? { background: '#d97706', color: '#fff' }
+                : { background: 'transparent', color: 'var(--vg-ink2)' }}>
               <Building2 size={13} />
-              {familyChrome ? t('vacay.modeFamilyDay') : t('vacay.modeCompany')}
+              {t('vacay.modeCompany')}
             </button>
           )}
-          {familyChrome && (
-            <button
-              onClick={() => setPaintMode('inspect')}
-              className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-medium transition-[background-color,color,border-color] duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] border ${paintMode === 'inspect' ? 'bg-content text-surface-card border-transparent' : 'bg-transparent text-content-muted border-edge'}`}>
-              <Search size={13} />
-              {t('vacay.modeInspect')}
-            </button>
-          )}
+
+          {/* Divider — comp/flex and half-day are modifiers, not modes. */}
+          <span className="w-px self-stretch my-0.5" style={{ background: 'var(--vg-line)' }} aria-hidden />
+
+          <button type="button"
+            onClick={() => setCompDay(v => !v)}
+            title={t('vacay.modeCompHint')}
+            aria-pressed={compDay}
+            className="flex items-center gap-1.5 ps-2 pe-2.5 sm:ps-2.5 sm:pe-3 py-1.5 rounded-full text-[11px] sm:text-xs font-semibold transition-[background-color,color] duration-150 ease-[cubic-bezier(0.23,1,0.32,1)]"
+            style={compDay
+              ? { background: 'var(--vg-ink)', color: 'var(--vg-bg)' }
+              : { background: 'transparent', color: 'var(--vg-ink3)' }}>
+            {/* A hatched disc in the person's colour — the same diagonal fill a comp
+                day gets in the grid (#1074), so the toolbar previews the marker. */}
+            <span className="rounded-full shrink-0"
+              style={{
+                width: 12, height: 12,
+                background: `repeating-linear-gradient(45deg, ${markerColor} 0 2px, transparent 2px 4px)`,
+                boxShadow: `inset 0 0 0 1px ${markerColor}`,
+              }} aria-hidden />
+            {t('vacay.modeComp')}
+          </button>
+
+          <button type="button"
+            onClick={() => setHalfDay(v => !v)}
+            title={t('vacay.modeHalfHint')}
+            aria-pressed={halfDay}
+            className="flex items-center gap-1.5 ps-2 pe-2.5 sm:ps-2.5 sm:pe-3 py-1.5 rounded-full text-[11px] sm:text-xs font-semibold transition-[background-color,color] duration-150 ease-[cubic-bezier(0.23,1,0.32,1)]"
+            style={halfDay
+              ? { background: 'var(--vg-ink)', color: 'var(--vg-bg)' }
+              : { background: 'transparent', color: 'var(--vg-ink3)' }}>
+            {/* The same orange dot a half day carries in the grid (#552) — the
+                toolbar showing the marker you are about to place reads quicker
+                than a ½ glyph that appears nowhere on the calendar. */}
+            <span className="rounded-full shrink-0 bg-[#f97316]" style={{ width: 12, height: 12 }} aria-hidden />
+            {t('vacay.modeHalf')}
+          </button>
         </div>
       </div>
-
-      <Modal
-        isOpen={inspectDate != null}
-        onClose={() => setInspectDate(null)}
-        title={inspectDate ? formatDate(inspectDate, locale) : t('vacay.modeInspect')}
-        size="md"
-      >
-        {inspectDate && (
-          <div className="space-y-4">
-            <div>
-              <p className="text-[11px] font-medium uppercase tracking-wider text-content-faint mb-2">{t('vacay.traveling')}</p>
-              {inspectWindows.length === 0 ? (
-                <p className="text-xs text-content-faint">{t('vacay.noTravel')}</p>
-              ) : (
-                <div className="space-y-2">
-                  {inspectWindows.map(w => (
-                    <div key={w.tripId} className="rounded-lg border border-edge-secondary p-2.5">
-                      <div className="flex items-center gap-2">
-                        <span className={`w-2 h-2 rounded-full ${w.overlay === 'proposed' ? 'bg-[#f59e0b]' : 'bg-[#3b82f6]'}`} />
-                        <span className="text-sm font-medium text-content flex-1 truncate">{w.name}</span>
-                        <span className="text-[10px] text-content-faint">
-                          {w.overlay === 'proposed' ? t('vacay.proposedTrip') : t('vacay.approvedTrip')}
-                        </span>
-                      </div>
-                      {w.travelerIds.some(id => travelerHasAway(inspectEntries, id, inspectDate)) && (
-                        <p className="text-[11px] text-[#d97706] mt-1">{t('vacay.conflictAway')}</p>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-            <div>
-              <p className="text-[11px] font-medium uppercase tracking-wider text-content-faint mb-2">{t('vacay.persons')}</p>
-              <div className="space-y-1">
-                {users.map(u => {
-                  const away = inspectEntries.some(e => String(e.user_id) === String(u.id) && (e.kind ?? 'away') === 'away')
-                  const school = inspectEntries.some(e => String(e.user_id) === String(u.id) && e.kind === 'school_break')
-                  return (
-                    <div key={String(u.id)} className="flex items-center gap-2 px-1 py-1">
-                      <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: u.color || '#6366f1' }} />
-                      <span className="text-xs flex-1 truncate text-content">{u.username}</span>
-                      <button
-                        onClick={() => void toggleEntry(inspectDate, u.id, 'away')}
-                        className={`text-[10px] px-2 py-0.5 rounded-full border ${away ? 'bg-content text-surface-card border-transparent' : 'text-content-muted border-edge'}`}
-                      >
-                        {t('vacay.away')}
-                      </button>
-                      <button
-                        onClick={() => void toggleEntry(inspectDate, u.id, 'school_break')}
-                        className={`text-[10px] px-2 py-0.5 rounded-full border ${school ? 'bg-content text-surface-card border-transparent' : 'text-content-muted border-edge'}`}
-                      >
-                        {t('vacay.school')}
-                      </button>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-          </div>
-        )}
-      </Modal>
     </div>
   )
 }

@@ -1,3 +1,23 @@
+import type { User } from '../../types';
+import { CurrentUser } from '../auth-core/current-user.decorator';
+import { JwtAuthGuard } from '../auth-core/jwt-auth.guard';
+import { toRowId } from '../common/row-id';
+import { RequirePermission, TripAccessGuard } from '../permissions/trip-access.guard';
+import { PackingWritesService } from './packing-writes.service';
+import {
+  PackingApplyTemplateDto,
+  PackingBagMembersDto,
+  PackingCategoryAssigneesDto,
+  PackingCreateBagDto,
+  PackingCreateItemDto,
+  PackingImportDto,
+  PackingReorderDto,
+  PackingSaveTemplateDto,
+  PackingSetSharingDto,
+  PackingUpdateBagDto,
+  PackingUpdateItemDto,
+} from './packing.dto';
+import { PackingService } from './packing.service';
 import {
   Body,
   Controller,
@@ -11,14 +31,7 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import type { User } from '../../types';
-import { PackingService } from './packing.service';
-import { isUpdateConflict } from '../../services/conflictResult';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { CurrentUser } from '../auth/current-user.decorator';
-
-/** A packing item row carrying the privacy fields (#858) used to scope broadcasts. */
-type PackingItemRow = { is_private?: number; owner_id?: number | null; recipients?: { user_id: number }[]; [key: string]: unknown };
+import type { TrekWsPayload, TrekWsTripEventName } from '@trek/shared';
 
 /**
  * /api/trips/:tripId/packing — trip-scoped packing list (items, bags, templates,
@@ -30,226 +43,222 @@ type PackingItemRow = { is_private?: number; owner_id?: number | null; recipient
  * creates, 200 elsewhere — note POST /apply-template stays 200); and the bespoke
  * 400/404 bodies are reproduced. Mutations broadcast over WebSocket with the
  * forwarded X-Socket-Id. /reorder is declared before /:id so it wins over the param.
+ *
+ * Bodies validate via the @trek/shared Zod contracts (packing.dto.ts + the
+ * global ZodValidationPipe). The pipe's 400 envelope replaced the legacy
+ * bespoke name checks that the schemas now enforce (missing item name, invalid
+ * visibility); checks the schemas cannot express (whitespace-only names, empty
+ * import arrays, the admin template gate) keep their exact legacy strings.
  */
 @Controller('api/trips/:tripId/packing')
-@UseGuards(JwtAuthGuard)
+// TripAccessGuard resolves :tripId and 404s a trip the user cannot reach; mutations
+// add @RequirePermission('packing_edit'), the same action string the service's canEdit
+// passes, so the HTTP and MCP paths cannot demand different rights.
+@UseGuards(JwtAuthGuard, TripAccessGuard)
 export class PackingController {
-  constructor(private readonly packing: PackingService) {}
+  constructor(
+    private readonly packing: PackingService,
+    private readonly writes: PackingWritesService,
+  ) {}
 
   /** Loads the trip or throws the legacy 404; returns it for the permission check. */
-  private requireTrip(tripId: string, user: User) {
-    const trip = this.packing.verifyTripAccess(tripId, user.id);
-    if (!trip) {
-      throw new HttpException({ error: 'Trip not found' }, 404);
-    }
-    return trip;
-  }
-
-  private requireEdit(trip: ReturnType<PackingService['verifyTripAccess']>, user: User): void {
-    if (!this.packing.canEdit(trip!, user)) {
-      throw new HttpException({ error: 'No permission' }, 403);
-    }
-  }
 
   @Get()
-  list(@CurrentUser() user: User, @Param('tripId') tripId: string) {
-    this.requireTrip(tripId, user);
+  async list(@CurrentUser() user: User, @Param('tripId') tripId: string) {
     // Pass the viewer so private items (#858) owned by other members are hidden.
-    return { items: this.packing.listItems(tripId, user.id) };
+    return { items: await this.packing.listItems(tripId, user.id) };
   }
 
+  @RequirePermission('packing_edit')
   @Post('import')
-  importItems(
+  async importItems(
     @CurrentUser() user: User,
     @Param('tripId') tripId: string,
-    @Body('items') items: unknown,
+    @Body() body: PackingImportDto,
     @Headers('x-socket-id') socketId?: string,
   ) {
-    const trip = this.requireTrip(tripId, user);
-    this.requireEdit(trip, user);
-    if (!Array.isArray(items) || items.length === 0) {
+    // The schema guarantees an array; the empty-array rejection stays a bespoke 400.
+    if (body.items.length === 0) {
       throw new HttpException({ error: 'items must be a non-empty array' }, 400);
     }
-    const created = this.packing.bulkImport(tripId, items, user.id);
+    const created = await this.packing.bulkImport(tripId, body.items, user.id);
     for (const item of created) {
       this.packing.broadcastItem(tripId, 'packing:created', { item }, item, socketId);
     }
+    this.packing.broadcastBagTotals(tripId);
     return { items: created, count: created.length };
   }
 
+  @RequirePermission('packing_edit')
   @Post()
-  create(
+  async create(
     @CurrentUser() user: User,
     @Param('tripId') tripId: string,
-    @Body() body: { name?: string; category?: string; checked?: boolean; is_private?: boolean; visibility?: 'common' | 'personal' | 'shared'; recipient_ids?: number[] },
+    @Body() body: PackingCreateItemDto,
     @Headers('x-socket-id') socketId?: string,
   ) {
-    const trip = this.requireTrip(tripId, user);
-    this.requireEdit(trip, user);
-    if (!body.name) {
-      throw new HttpException({ error: 'Item name is required' }, 400);
-    }
-    const item = this.packing.createItem(tripId, { name: body.name, category: body.category, checked: body.checked, is_private: body.is_private, visibility: body.visibility, recipient_ids: body.recipient_ids }, user.id);
-    this.emitToViewers(tripId, 'packing:created', { item }, item, socketId);
+    // checked arrives as boolean or legacy 0/1 — the service coerces by truthiness.
+    // A bag the body names must exist on this trip (#2154); the use case answers
+    // that 400, the 404 'Bag not found' stays with the path routes.
+    const item = await this.writes.createItem(
+      tripId,
+      {
+        name: body.name,
+        category: body.category,
+        checked: body.checked === undefined ? undefined : !!body.checked,
+        weight_grams: body.weight_grams,
+        bag_id: body.bag_id,
+        quantity: body.quantity,
+        is_private: body.is_private,
+        visibility: body.visibility,
+        recipient_ids: body.recipient_ids,
+      },
+      this.writes.restWriter(tripId, user, socketId),
+    );
     return { item };
   }
 
-  /** Deliver an item event to exactly the people who can see it (#858): the whole
-   *  room for a Common item, or owner + recipients for a restricted one. */
-  private emitToViewers(tripId: string, event: string, payload: Record<string, unknown>, item: PackingItemRow, socketId: string | undefined): void {
-    const viewers = this.packing.viewersOf(item);
-    if (viewers === null) {
-      this.packing.broadcast(tripId, event, payload, socketId);
-    } else {
-      this.packing.broadcastToViewers(tripId, event, payload, viewers, socketId);
-    }
-  }
-
+  @RequirePermission('packing_edit')
   @Put('reorder')
-  reorder(
+  async reorder(
     @CurrentUser() user: User,
     @Param('tripId') tripId: string,
-    @Body('orderedIds') orderedIds: number[],
-    @Headers('x-socket-id') _socketId?: string,
+    @Body() body: PackingReorderDto,
+    @Headers('x-socket-id') socketId?: string,
   ) {
-    const trip = this.requireTrip(tripId, user);
-    this.requireEdit(trip, user);
-    this.packing.reorderItems(tripId, orderedIds);
+    await this.writes.reorder(tripId, body.orderedIds, this.writes.restWriter(tripId, user, socketId));
     return { success: true };
   }
 
+  @RequirePermission('packing_edit')
   @Put(':id')
-  update(
+  async update(
     @CurrentUser() user: User,
     @Param('tripId') tripId: string,
     @Param('id') id: string,
-    @Body() body: Record<string, unknown>,
+    @Body() body: PackingUpdateItemDto,
     @Headers('x-socket-id') socketId?: string,
     @Headers('x-base-updated-at') ifMatch?: string,
   ) {
-    const trip = this.requireTrip(tripId, user);
-    this.requireEdit(trip, user);
-    // Privacy state before the change, so a public↔private toggle (#858) can route
-    // the broadcast correctly instead of leaking a freshly-privatized item.
-    const before = this.packing.getItemPrivacy(tripId, id);
-    const { name, checked, category, weight_grams, bag_id, quantity, is_private } = body as Record<string, never>;
-    const updated = this.packing.updateItem(tripId, id, { name, checked, category, weight_grams, bag_id, quantity, is_private }, Object.keys(body), ifMatch, user.id);
-    if (!updated) {
+    // Plan 4 Task 8b (U6) — :id is parsed ONCE here (toRowId, not Number():
+    // rule 15's NaN-into-SQL trap), and the parsed number is what flows into
+    // the service instead of the raw route string reaching the repository.
+    // A malformed id never matched under the legacy affinity CAST either,
+    // so it 404s with the same body this handler's own not-found branch
+    // already produces below.
+    const itemId = toRowId(id);
+    if (itemId === null) {
       throw new HttpException({ error: 'Item not found' }, 404);
     }
-    // Stale offline overwrite — surface the conflict for client-side resolution (#1135).
-    if (isUpdateConflict(updated)) {
-      throw new HttpException({ error: 'conflict', server: updated.server }, 409);
-    }
-    this.broadcastUpdate(tripId, id, updated as PackingItemRow, !!before?.is_private, socketId);
+    const { name, checked, category, weight_grams, bag_id, quantity, packed_quantity, is_private } = body;
+    // bodyKeys carries which keys the request actually provided (the presence-
+    // sentinel protocol); the parsed body only ever holds known schema keys.
+    // checked arrives as boolean or legacy 0/1 — normalize to the 0/1 the SQL binds.
+    // The use case answers 404, the 409 conflict (#1135) and the 400 bag (#2154).
+    const updated = await this.writes.updateItem(
+      tripId,
+      itemId,
+      {
+        name,
+        checked: checked === undefined ? undefined : checked ? 1 : 0,
+        category,
+        weight_grams,
+        bag_id,
+        quantity,
+        packed_quantity,
+        is_private,
+      },
+      Object.keys(body),
+      this.writes.restWriter(tripId, user, socketId),
+      ifMatch,
+    );
     return { item: updated };
   }
 
-  /**
-   * Routes a packing-item update over WebSocket so private items (#858) stay
-   * scoped to their owner across the four public↔private transitions:
-   *  - stays private  → owner-only update
-   *  - public→private → drop it from the whole room, re-add for the owner
-   *  - private→public → create for members who lacked it, then update for all
-   *  - stays public   → plain update to all
-   */
-  private broadcastUpdate(
-    tripId: string,
-    id: string,
-    item: PackingItemRow,
-    wasPrivate: boolean,
-    socketId: string | undefined,
-  ): void {
-    const nowPrivate = !!item.is_private;
-    if (nowPrivate) {
-      if (wasPrivate) {
-        this.packing.broadcastItem(tripId, 'packing:updated', { item }, item, socketId);
-      } else {
-        this.packing.broadcast(tripId, 'packing:deleted', { itemId: Number(id) }, socketId);
-        this.packing.broadcastItem(tripId, 'packing:created', { item }, item, socketId);
-      }
-    } else {
-      if (wasPrivate) {
-        this.packing.broadcast(tripId, 'packing:created', { item }, socketId);
-      }
-      this.packing.broadcast(tripId, 'packing:updated', { item }, socketId);
-    }
-  }
-
+  @RequirePermission('packing_edit')
   @Delete(':id')
-  remove(
+  async remove(
     @CurrentUser() user: User,
     @Param('tripId') tripId: string,
     @Param('id') id: string,
     @Headers('x-socket-id') socketId?: string,
   ) {
-    const trip = this.requireTrip(tripId, user);
-    this.requireEdit(trip, user);
-    const deleted = this.packing.deleteItem(tripId, id);
-    if (!deleted) {
+    // Plan 4 Task 8b (U6) — same single gate-level parse as update above.
+    const itemId = toRowId(id);
+    if (itemId === null) {
       throw new HttpException({ error: 'Item not found' }, 404);
     }
-    // Scope the delete to the people who could see it (owner + recipients, #858).
-    this.emitToViewers(tripId, 'packing:deleted', { itemId: Number(id) }, deleted as PackingItemRow, socketId);
+    await this.writes.deleteItem(tripId, itemId, this.writes.restWriter(tripId, user, socketId));
     return { success: true };
   }
 
+  @RequirePermission('packing_edit')
   @Put(':id/sharing')
-  setSharing(
+  async setSharing(
     @CurrentUser() user: User,
     @Param('tripId') tripId: string,
     @Param('id') id: string,
-    @Body() body: { visibility?: 'common' | 'personal' | 'shared'; recipient_ids?: number[] },
+    @Body() body: PackingSetSharingDto,
     @Headers('x-socket-id') socketId?: string,
   ) {
-    const trip = this.requireTrip(tripId, user);
-    this.requireEdit(trip, user);
-    if (body.visibility !== 'common' && body.visibility !== 'personal' && body.visibility !== 'shared') {
-      throw new HttpException({ error: 'Invalid visibility' }, 400);
-    }
-    const updated = this.packing.setItemSharing(tripId, id, user.id, body.visibility, Array.isArray(body.recipient_ids) ? body.recipient_ids : []);
-    if (!updated) {
+    // Plan 4 Task 8b (U6) — same single gate-level parse as update above.
+    const itemId = toRowId(id);
+    if (itemId === null) {
       throw new HttpException({ error: 'Item not found' }, 404);
     }
-    if ((updated as { forbidden?: boolean }).forbidden) {
-      throw new HttpException({ error: 'Only the owner can change sharing' }, 403);
-    }
-    // The viewer set just changed: drop the item from the whole room, then re-add
-    // it for whoever can now see it (owner + recipients, or everyone if Common).
-    this.packing.broadcast(tripId, 'packing:deleted', { itemId: Number(id) }, socketId);
-    this.emitToViewers(tripId, 'packing:created', { item: updated }, updated as PackingItemRow, socketId);
+    // The use case answers the 404, the owner-only 403 and both events.
+    const updated = await this.writes.setSharing(
+      tripId,
+      itemId,
+      body.visibility,
+      Array.isArray(body.recipient_ids) ? body.recipient_ids : [],
+      this.writes.restWriter(tripId, user, socketId),
+    );
     return { item: updated };
   }
 
+  @RequirePermission('packing_edit')
   @Post(':id/clone')
   @HttpCode(201)
-  clone(
+  async clone(
     @CurrentUser() user: User,
     @Param('tripId') tripId: string,
     @Param('id') id: string,
     @Headers('x-socket-id') socketId?: string,
   ) {
-    const trip = this.requireTrip(tripId, user);
-    this.requireEdit(trip, user);
-    const item = this.packing.cloneItem(tripId, id, user.id);
+    // Plan 4 Task 8b (U6) — same single gate-level parse as update above.
+    const itemId = toRowId(id);
+    if (itemId === null) {
+      throw new HttpException({ error: 'Item not found' }, 404);
+    }
+    const item = await this.packing.cloneItem(tripId, itemId, user.id);
     if (!item) {
       throw new HttpException({ error: 'Item not found' }, 404);
     }
     // The clone is personal to the caller — only their sockets need it.
-    this.emitToViewers(tripId, 'packing:created', { item }, item, socketId);
+    this.packing.emitToViewers(tripId, 'packing:created', { item }, item, socketId);
+    this.packing.broadcastBagTotals(tripId);
     return { item };
   }
 
+  @RequirePermission('packing_edit')
   @Post(':id/contributors')
-  addContributor(
+  async addContributor(
     @CurrentUser() user: User,
     @Param('tripId') tripId: string,
     @Param('id') id: string,
     @Headers('x-socket-id') socketId?: string,
   ) {
-    const trip = this.requireTrip(tripId, user);
-    this.requireEdit(trip, user);
-    const item = this.packing.addContributor(tripId, id, user.id);
+    // Plan 4 Task 8b (U6) — :id parsed ONCE here (toRowId). #858's
+    // contributors/sharing routes are native Nest code with no pre-ORM
+    // Express precedent (introduced in 7eabf6066, after the migration), so
+    // there is no legacy affinity-seam behavior to match — a malformed id
+    // just 404s the same way an unknown one already does below.
+    const itemId = toRowId(id);
+    if (itemId === null) {
+      throw new HttpException({ error: 'Item not found or not a shared list item' }, 404);
+    }
+    const item = await this.packing.addContributor(tripId, itemId, user.id);
     if (!item) {
       throw new HttpException({ error: 'Item not found or not a shared list item' }, 404);
     }
@@ -258,19 +267,26 @@ export class PackingController {
     return { item };
   }
 
+  @RequirePermission('packing_edit')
   @Delete(':id/contributors/:userId')
-  removeContributor(
+  async removeContributor(
     @CurrentUser() user: User,
     @Param('tripId') tripId: string,
     @Param('id') id: string,
     @Param('userId') userId: string,
     @Headers('x-socket-id') socketId?: string,
   ) {
-    const trip = this.requireTrip(tripId, user);
-    this.requireEdit(trip, user);
+    // Plan 4 Task 8b (U6) — :id/:userId both parsed ONCE here (toRowId, not
+    // Number.parseInt(): the NaN-into-SQL trap row-id.ts documents — a
+    // malformed userId used to reach contributorsRepo.deleteOne as a bare
+    // NaN parameter). Same "no legacy precedent" note as addContributor above.
+    const itemId = toRowId(id);
+    const target = toRowId(userId);
+    if (itemId === null || target === null) {
+      throw new HttpException({ error: 'Item not found' }, 404);
+    }
     // You can drop your own pledge; the owner can remove anyone's.
-    const target = parseInt(userId);
-    const item = this.packing.removeContributor(tripId, id, target);
+    const item = await this.packing.removeContributor(tripId, itemId, target);
     if (!item) {
       throw new HttpException({ error: 'Item not found' }, 404);
     }
@@ -279,40 +295,60 @@ export class PackingController {
   }
 
   @Get('bags')
-  listBags(@CurrentUser() user: User, @Param('tripId') tripId: string) {
-    this.requireTrip(tripId, user);
-    return { bags: this.packing.listBags(tripId) };
+  async listBags(@CurrentUser() user: User, @Param('tripId') tripId: string) {
+    // unassigned_weight_grams rides along so the "no bag" pile and the grand
+    // total follow the same rule as the bags themselves (#2191) — a screen
+    // mixing true totals with per-viewer ones would be worse than either.
+    return await this.packing.listBagsWithWeights(tripId);
   }
 
+  @RequirePermission('packing_edit')
   @Post('bags')
-  createBag(
+  async createBag(
     @CurrentUser() user: User,
     @Param('tripId') tripId: string,
-    @Body() body: { name?: string; color?: string },
+    @Body() body: PackingCreateBagDto,
     @Headers('x-socket-id') socketId?: string,
   ) {
-    const trip = this.requireTrip(tripId, user);
-    this.requireEdit(trip, user);
-    if (!body.name?.trim()) {
+    // The schema requires a non-empty name; whitespace-only still 400s here.
+    if (!body.name.trim()) {
       throw new HttpException({ error: 'Name is required' }, 400);
     }
-    const bag = this.packing.createBag(tripId, { name: body.name, color: body.color });
+    const bag = await this.packing.createBag(tripId, {
+      name: body.name,
+      color: body.color,
+      weight_limit_grams: body.weight_limit_grams,
+    });
     this.packing.broadcast(tripId, 'packing:bag-created', { bag }, socketId);
     return { bag };
   }
 
+  @RequirePermission('packing_edit')
   @Put('bags/:bagId')
-  updateBag(
+  async updateBag(
     @CurrentUser() user: User,
     @Param('tripId') tripId: string,
     @Param('bagId') bagId: string,
-    @Body() body: Record<string, unknown>,
+    @Body() body: PackingUpdateBagDto,
     @Headers('x-socket-id') socketId?: string,
   ) {
-    const trip = this.requireTrip(tripId, user);
-    this.requireEdit(trip, user);
-    const { name, color, weight_limit_grams, user_id } = body as Record<string, never>;
-    const updated = this.packing.updateBag(tripId, bagId, { name, color, weight_limit_grams, user_id }, Object.keys(body));
+    // Plan 4 Task 8b (U6) — :bagId is parsed ONCE here (toRowId, not
+    // Number(): rule 15's NaN-into-SQL trap). A malformed id never matched
+    // under the legacy affinity CAST either, so it 404s with the same body
+    // this handler's own not-found branch already produces below.
+    const bagIdNum = toRowId(bagId);
+    if (bagIdNum === null) {
+      throw new HttpException({ error: 'Bag not found' }, 404);
+    }
+    const { name, color, weight_limit_grams, user_id } = body;
+    // bodyKeys carries which keys the request actually provided (the presence-
+    // sentinel protocol); the parsed body only ever holds known schema keys.
+    const updated = await this.packing.updateBag(
+      tripId,
+      bagIdNum,
+      { name, color, weight_limit_grams, user_id },
+      Object.keys(body),
+    );
     if (!updated) {
       throw new HttpException({ error: 'Bag not found' }, 404);
     }
@@ -320,80 +356,94 @@ export class PackingController {
     return { bag: updated };
   }
 
+  @RequirePermission('packing_edit')
   @Delete('bags/:bagId')
-  deleteBag(
+  async deleteBag(
     @CurrentUser() user: User,
     @Param('tripId') tripId: string,
     @Param('bagId') bagId: string,
     @Headers('x-socket-id') socketId?: string,
   ) {
-    const trip = this.requireTrip(tripId, user);
-    this.requireEdit(trip, user);
-    if (!this.packing.deleteBag(tripId, bagId)) {
+    // Plan 4 Task 8b (U6) — same single gate-level parse as updateBag above.
+    const bagIdNum = toRowId(bagId);
+    if (bagIdNum === null) {
       throw new HttpException({ error: 'Bag not found' }, 404);
     }
-    this.packing.broadcast(tripId, 'packing:bag-deleted', { bagId: Number(bagId) }, socketId);
+    // The use case answers an unknown bag with the same 404 and sends nothing then.
+    await this.writes.deleteBag(tripId, bagIdNum, this.writes.restWriter(tripId, user, socketId));
     return { success: true };
   }
 
   @Get('templates')
-  listTemplates(@CurrentUser() user: User, @Param('tripId') tripId: string) {
-    this.requireTrip(tripId, user);
-    return { templates: this.packing.listTemplates() };
+  async listTemplates(@CurrentUser() user: User, @Param('tripId') tripId: string) {
+    return { templates: await this.packing.listTemplates() };
   }
 
+  @RequirePermission('packing_edit')
   @Post('apply-template/:templateId')
   @HttpCode(200)
-  applyTemplate(
+  async applyTemplate(
     @CurrentUser() user: User,
     @Param('tripId') tripId: string,
     @Param('templateId') templateId: string,
-    @Body() body: { visibility?: 'common' | 'personal' },
+    @Body() body: PackingApplyTemplateDto,
     @Headers('x-socket-id') socketId?: string,
   ) {
-    const trip = this.requireTrip(tripId, user);
-    this.requireEdit(trip, user);
-    const visibility = body?.visibility === 'personal' ? 'personal' : 'common';
-    const added = this.packing.applyTemplate(tripId, templateId, visibility, user.id);
-    if (!added) {
+    // Plan 4 Task 8b (U6) — :templateId is parsed ONCE here (toRowId, not
+    // Number(): rule 15's NaN-into-SQL trap). A malformed id never matched
+    // under the legacy affinity CAST either, so it 404s with the same body
+    // the use case's own not-found refusal produces below.
+    const templateIdNum = toRowId(templateId);
+    if (templateIdNum === null) {
       throw new HttpException({ error: 'Template not found or empty' }, 404);
     }
-    this.packing.broadcastItem(tripId, 'packing:template-applied', { items: added }, added[0], socketId);
+    const visibility = body?.visibility === 'personal' ? 'personal' : 'common';
+    const added = await this.writes.applyTemplate(
+      tripId,
+      templateIdNum,
+      visibility,
+      this.writes.restWriter(tripId, user, socketId),
+    );
     return { items: added, count: added.length };
   }
 
+  @RequirePermission('packing_edit')
   @Put('bags/:bagId/members')
-  setBagMembers(
+  async setBagMembers(
     @CurrentUser() user: User,
     @Param('tripId') tripId: string,
     @Param('bagId') bagId: string,
-    @Body('user_ids') userIds: unknown,
+    @Body() body: PackingBagMembersDto,
     @Headers('x-socket-id') socketId?: string,
   ) {
-    const trip = this.requireTrip(tripId, user);
-    this.requireEdit(trip, user);
-    const members = this.packing.setBagMembers(tripId, bagId, Array.isArray(userIds) ? userIds : []);
+    // Plan 4 Task 8b (U6) — same single gate-level parse as updateBag above.
+    const bagIdNum = toRowId(bagId);
+    if (bagIdNum === null) {
+      throw new HttpException({ error: 'Bag not found' }, 404);
+    }
+    const members = await this.packing.setBagMembers(tripId, bagIdNum, body.user_ids);
     if (!members) {
       throw new HttpException({ error: 'Bag not found' }, 404);
     }
-    this.packing.broadcast(tripId, 'packing:bag-members-updated', { bagId: Number(bagId), members }, socketId);
+    this.packing.broadcast(tripId, 'packing:bag-members-updated', { bagId: bagIdNum, members }, socketId);
     return { members };
   }
 
+  @RequirePermission('packing_edit')
   @Post('save-as-template')
-  saveAsTemplate(
+  async saveAsTemplate(
     @CurrentUser() user: User,
     @Param('tripId') tripId: string,
-    @Body('name') name?: string,
+    @Body() body: PackingSaveTemplateDto,
   ) {
-    this.requireTrip(tripId, user);
     if (user.role !== 'admin') {
       throw new HttpException({ error: 'Admin access required' }, 403);
     }
-    if (!name?.trim()) {
+    // The schema requires a non-empty name; whitespace-only still 400s here.
+    if (!body.name.trim()) {
       throw new HttpException({ error: 'Template name is required' }, 400);
     }
-    const template = this.packing.saveAsTemplate(tripId, user.id, name.trim());
+    const template = await this.packing.saveAsTemplate(tripId, user.id, body.name.trim());
     if (!template) {
       throw new HttpException({ error: 'No items to save' }, 400);
     }
@@ -401,25 +451,26 @@ export class PackingController {
   }
 
   @Get('category-assignees')
-  categoryAssignees(@CurrentUser() user: User, @Param('tripId') tripId: string) {
-    this.requireTrip(tripId, user);
-    return { assignees: this.packing.getCategoryAssignees(tripId) };
+  async categoryAssignees(@CurrentUser() user: User, @Param('tripId') tripId: string) {
+    return { assignees: await this.packing.getCategoryAssignees(tripId) };
   }
 
+  @RequirePermission('packing_edit')
   @Put('category-assignees/:categoryName')
-  updateCategoryAssignees(
+  async updateCategoryAssignees(
     @CurrentUser() user: User,
     @Param('tripId') tripId: string,
     @Param('categoryName') categoryName: string,
-    @Body('user_ids') userIds: number[],
+    @Body() body: PackingCategoryAssigneesDto,
     @Headers('x-socket-id') socketId?: string,
   ) {
-    const trip = this.requireTrip(tripId, user);
-    this.requireEdit(trip, user);
     const category = decodeURIComponent(categoryName);
-    const rows = this.packing.updateCategoryAssignees(tripId, category, userIds);
-    this.packing.broadcast(tripId, 'packing:assignees', { category, assignees: rows }, socketId);
-    this.packing.notifyTagged(tripId, user, category, userIds);
+    const rows = await this.writes.setCategoryAssignees(
+      tripId,
+      category,
+      body.user_ids,
+      this.writes.restWriter(tripId, user, socketId),
+    );
     return { assignees: rows };
   }
 }

@@ -1,6 +1,7 @@
 import type { TranslationStrings } from '../types';
 
 const todo: TranslationStrings = {
+  'todo.emptyFiltered': '沒有符合此篩選條件的任務',
   'todo.subtab.packing': '行李清單',
   'todo.subtab.todo': '待辦事項',
   'todo.completed': '已完成',
@@ -10,6 +11,7 @@ const todo: TranslationStrings = {
   'todo.uncategorized': '無清單',
   'todo.namePlaceholder': '任務名稱',
   'todo.descriptionPlaceholder': '說明（可選）',
+  'todo.editDescription': '點擊即可編輯，連結可直接開啟',
   'todo.unassigned': '未指派',
   'todo.noCategory': '無清單',
   'todo.hasDescription': '有說明',

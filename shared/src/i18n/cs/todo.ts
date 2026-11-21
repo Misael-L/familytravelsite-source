@@ -1,6 +1,7 @@
 import type { TranslationStrings } from '../types';
 
 const todo: TranslationStrings = {
+  'todo.emptyFiltered': 'Žádné úkoly neodpovídají tomuto filtru',
   'todo.subtab.packing': 'Balicí seznam',
   'todo.subtab.todo': 'Úkoly',
   'todo.completed': 'dokončeno',
@@ -10,6 +11,7 @@ const todo: TranslationStrings = {
   'todo.uncategorized': 'Bez seznamu',
   'todo.namePlaceholder': 'Název úkolu',
   'todo.descriptionPlaceholder': 'Popis (volitelné)',
+  'todo.editDescription': 'Kliknutím upravíte, odkazy se otevřou přímo',
   'todo.unassigned': 'Nepřiřazeno',
   'todo.noCategory': 'Bez seznamu',
   'todo.hasDescription': 'Má popis',

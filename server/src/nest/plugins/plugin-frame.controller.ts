@@ -1,10 +1,12 @@
+import { Public } from '../auth-core/public.decorator';
+import { pluginsEnabled } from './kill-switch';
+import { pluginCodeDir } from './paths';
+import { PluginRuntimeService } from './plugin-runtime.service';
 import { Controller, Get, Param, Req, Res } from '@nestjs/common';
+
 import type { Request, Response } from 'express';
 import fs from 'node:fs';
 import path from 'node:path';
-import { pluginsEnabled } from './kill-switch';
-import { PluginRuntimeService } from './plugin-runtime.service';
-import { pluginCodeDir } from './paths';
 
 /**
  * Serves a page/widget plugin's static client from /plugin-frame/:id/* (#plugins,
@@ -32,12 +34,13 @@ const MIME: Record<string, string> = {
   '.ico': 'image/x-icon',
 };
 
+@Public('serves the sandboxed iframe document itself; the RPC inside it is authenticated')
 @Controller('plugin-frame/:pluginId')
 export class PluginFrameController {
   constructor(private readonly runtime: PluginRuntimeService) {}
 
   @Get('*path')
-  serve(@Param('pluginId') pluginId: string, @Req() req: Request, @Res() res: Response): void {
+  async serve(@Param('pluginId') pluginId: string, @Req() req: Request, @Res() res: Response): Promise<void> {
     if (!pluginsEnabled() || !this.runtime.isActive(pluginId)) {
       res.status(404).send('Plugin not available');
       return;
@@ -57,6 +60,23 @@ export class PluginFrameController {
       res.status(404).send('Not found');
       return;
     }
+    // The check above is lexical, and statSync follows links, so a symlink inside
+    // client/ still reads whatever it points at. Re-check both sides resolved:
+    // a dev-linked plugin is a symlinked tree, so comparing against the raw root
+    // would reject it.
+    let realRoot: string;
+    let realFile: string;
+    try {
+      realRoot = fs.realpathSync(path.resolve(clientDir));
+      realFile = fs.realpathSync(resolved);
+    } catch {
+      res.status(404).send('Not found');
+      return;
+    }
+    if (realFile !== realRoot && !realFile.startsWith(realRoot + path.sep)) {
+      res.status(403).send('Forbidden');
+      return;
+    }
 
     const ext = path.extname(resolved).toLowerCase();
     res.setHeader('Content-Type', MIME[ext] ?? 'application/octet-stream');
@@ -68,7 +88,7 @@ export class PluginFrameController {
     // The sandbox + per-plugin CSP are the isolation boundary here, not CORP:
     // these files are the plugin's own public client code.
     res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
-    res.setHeader('Content-Security-Policy', this.frameCsp(pluginId, req.get('host')));
+    res.setHeader('Content-Security-Policy', await this.frameCsp(pluginId, req.get('host')));
     // Explicit { root } + basename, not the absolute path: under the Nest
     // ExpressAdapter, res.sendFile(absolutePath) resolves against the rewritten
     // req.url and 404s spuriously (same trap as files-download.controller.ts).
@@ -76,7 +96,7 @@ export class PluginFrameController {
   }
 
   /** Per-plugin, locked-down CSP for the sandboxed frame document. */
-  private frameCsp(pluginId: string, host: string | undefined): string {
+  private async frameCsp(pluginId: string, host: string | undefined): Promise<string> {
     // The frame must be able to reach exactly what the CHILD may reach. The child's egress
     // guard is the union of the manifest's http:outbound:<host> grants AND the hosts an admin
     // added post-install for an operatorEgress plugin (plugin-runtime.service: activate()).
@@ -89,7 +109,10 @@ export class PluginFrameController {
     // admin writer's EGRESS_HOST_RE), but never interpolate anything that isn't a clean
     // host/wildcard into connect-src — a stray space or `*` would inject an extra CSP source.
     const outbound = [
-      ...new Set([...this.runtime.outboundHostsOf(pluginId), ...this.runtime.operatorEgressHosts(pluginId)]),
+      ...new Set([
+        ...(await this.runtime.outboundHostsOf(pluginId)),
+        ...(await this.runtime.operatorEgressHosts(pluginId)),
+      ]),
     ].filter((h) => /^(\*\.[a-z0-9-]+(\.[a-z0-9-]+)+|[a-z0-9-]+(\.[a-z0-9-]+)*)$/i.test(h));
     // The frame runs at an OPAQUE origin (sandbox without allow-same-origin), so
     // 'self' matches nothing and the plugin's own <script src>/<link> files would

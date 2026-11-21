@@ -3,6 +3,7 @@ import type { TranslationStrings } from '../types';
 const oauth: TranslationStrings = {
   'oauth.scope.group.trips': '旅行',
   'oauth.scope.group.places': '場所',
+  'oauth.scope.group.collections': 'コレクション',
   'oauth.scope.group.atlas': '地図',
   'oauth.scope.group.packing': '持ち物',
   'oauth.scope.group.todos': 'ToDo',
@@ -26,6 +27,12 @@ const oauth: TranslationStrings = {
   'oauth.scope.places:read.description': '場所、日への割り当て、タグ、カテゴリを閲覧',
   'oauth.scope.places:write.label': '場所を管理',
   'oauth.scope.places:write.description': '場所、割り当て、タグの作成・更新・削除',
+  'oauth.scope.collections:read.label': 'コレクションを表示',
+  'oauth.scope.collections:read.description':
+    '保存した場所のコレクションと、その中の場所、評価、ラベル、メンバーを読み取る',
+  'oauth.scope.collections:write.label': 'コレクションを管理',
+  'oauth.scope.collections:write.description':
+    'コレクションの作成・編集、場所の保存・評価・ラベル付け・コピー、リストの共有',
   'oauth.scope.atlas:read.label': '地図を表示',
   'oauth.scope.atlas:read.description': '訪問した国・地域、バケットリストを閲覧',
   'oauth.scope.atlas:write.label': '地図を管理',
@@ -68,24 +75,43 @@ const oauth: TranslationStrings = {
   'oauth.scope.journey:write.description': '日記やエントリーの作成・編集・削除',
   'oauth.scope.journey:share.label': '日記共有を管理',
   'oauth.scope.journey:share.description': '公開共有リンクの作成・更新・無効化',
-  'oauth.authorize.authorizing': 'Authorizing…', // en-fallback
-  'oauth.authorize.loading': 'Loading…', // en-fallback
-  'oauth.authorize.errorTitle': 'Authorization Error', // en-fallback
-  'oauth.authorize.loginTitle': 'Sign in to continue', // en-fallback
-  'oauth.authorize.loginDescription': '{client} wants access to your TREK account. Please sign in first.', // en-fallback
-  'oauth.authorize.loginButton': 'Sign in to TREK', // en-fallback
-  'oauth.authorize.requestLabel': 'Authorization Request', // en-fallback
-  'oauth.authorize.requestDescription': 'This application is requesting access to your TREK account.', // en-fallback
-  'oauth.authorize.trustNote': 'Only grant access to applications you trust. Your data stays on your server.', // en-fallback
-  'oauth.authorize.selectScope': 'Select at least one scope', // en-fallback
-  'oauth.authorize.approveOneScope': 'Approve ({count} scope)', // en-fallback
-  'oauth.authorize.approveManyScopes': 'Approve ({count} scopes)', // en-fallback
-  'oauth.authorize.approveAccess': 'Approve Access', // en-fallback
-  'oauth.authorize.deny': 'Deny', // en-fallback
-  'oauth.authorize.choosePermissions': 'Choose which permissions to grant', // en-fallback
-  'oauth.authorize.permissionsRequested': 'Permissions requested', // en-fallback
-  'oauth.authorize.alwaysIncluded': 'Always included', // en-fallback
-  'oauth.authorize.alwaysTool.listTrips': 'List your trips so the AI can discover trip IDs', // en-fallback
-  'oauth.authorize.alwaysTool.getTripSummary': 'Read a trip overview needed to use any other tool', // en-fallback
+  'oauth.authorize.authorizing': '認可中…',
+  'oauth.authorize.loading': '読み込み中…',
+  'oauth.authorize.errorTitle': '認可エラー',
+  'oauth.authorize.loginTitle': '続行するにはサインインしてください',
+  'oauth.authorize.loginDescription':
+    '{client} が TREK アカウントへのアクセスを求めています。先にサインインしてください。',
+  'oauth.authorize.loginButton': 'TREK にサインイン',
+  'oauth.authorize.requestLabel': '認可リクエスト',
+  'oauth.authorize.requestDescription': 'このアプリケーションが TREK アカウントへのアクセスを求めています。',
+  'oauth.authorize.verifiedHost': '確認済みのドメイン: {host}',
+  'oauth.authorize.trustNote':
+    '信頼できるアプリケーションにのみアクセスを許可してください。データはお使いのサーバーに保管されたままです。',
+  'oauth.authorize.selectScope': 'スコープを1つ以上選択してください',
+  'oauth.authorize.approveScopes': '承認（スコープ {count} 件）',
+  'oauth.authorize.approveAccess': 'アクセスを許可',
+  'oauth.authorize.deny': '拒否',
+  'oauth.authorize.choosePermissions': '許可する権限を選択してください',
+  'oauth.authorize.permissionsRequested': '要求されている権限',
+  'oauth.authorize.alwaysIncluded': '常に含まれます',
+  'oauth.authorize.alwaysTool.listTrips': 'AI が旅行 ID を見つけられるよう、旅行の一覧を取得します',
+  'oauth.authorize.alwaysTool.getTripSummary': 'ほかのツールを使うために必要な旅行の概要を読み取ります',
+  'oauth.scope.group.files': 'ファイル',
+  'oauth.scope.group.settings': '設定',
+  'oauth.scope.files:read.label': '旅行のファイルを表示',
+  'oauth.scope.files:read.description': '旅行の書類を一覧表示します。名前、サイズ、アップロードした人、リンク先',
+  'oauth.scope.files:write.label': '旅行のファイルを管理',
+  'oauth.scope.files:write.description': 'ファイルの名前と説明の変更、予約や場所への紐付け、スターとゴミ箱への移動',
+  'oauth.scope.files:content.label': 'ファイルの中身を読む',
+  'oauth.scope.files:content.description': 'アップロードされた書類の中身を読みます。予約PDFやチケットなど',
+  'oauth.scope.settings:read.label': '環境設定を表示',
+  'oauth.scope.settings:read.description': '単位、時刻表示、言語、既定通貨、開始ページの読み取り',
+  'oauth.scope.settings:write.label': '環境設定を変更',
+  'oauth.scope.settings:write.description':
+    '単位、時刻表示、言語、既定通貨、開始ページの変更。保存されたAPIキーは対象外',
+  'oauth.scope.group.plugins': 'プラグイン',
+  'oauth.scope.plugins:use.label': 'プラグインのツールを実行',
+  'oauth.scope.plugins:use.description':
+    '管理者がインストールして承認したプラグインが公開するツールを、このクライアントから呼び出せるようにします。各プラグインは、このトークンのスコープではなく、すでに付与されている権限で動作します',
 };
 export default oauth;

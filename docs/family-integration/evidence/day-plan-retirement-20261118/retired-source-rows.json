@@ -1,0 +1,30 @@
+{
+  "removed_paths": [
+    "client/src/integrations/family/legacy/components/Planner/DayPlanSidebar.tsx",
+    "client/src/integrations/family/legacy/components/Planner/DayDetailPanel.tsx"
+  ],
+  "previous_rows": [
+    {
+      "path": "client/src/integrations/family/legacy/components/Planner/DayPlanSidebar.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "324359bfbdd226205dd20a5812cfdde5751f24ee",
+        "bytes": 187295
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/components/Planner/DayPlanSidebar.tsx"
+    },
+    {
+      "path": "client/src/integrations/family/legacy/components/Planner/DayDetailPanel.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "9839d6c456aa3ecd9d96963897f9e8090ea50ea1",
+        "bytes": 69636
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/components/Planner/DayDetailPanel.tsx"
+    }
+  ],
+  "new_qualified_commit": "7d1628d09843d187146ad7a927f923b9ac35a61c",
+  "reason": "Actual two-file day-plan sidebar/detail deletion after bounded source/type/test/configuration closure; no guard relaxation or disappearing source row without deletion."
+}

@@ -1,18 +1,25 @@
 import { useState, useRef } from 'react'
-import ReactDOM from 'react-dom'
+import { createPortal } from 'react-dom'
 import { Users, UserRound, Share2, Check, Copy, HandHelping } from 'lucide-react'
 import { useTranslation } from '../../i18n'
-import type { PackingEntityId, PackingListItem } from './packingListOps'
+import type { PackingItem } from '../../types'
 import type { TripMember } from './usePackingListPanel'
 
 interface Props {
-  item: PackingListItem
+  item: PackingItem
   tripMembers: TripMember[]
-  currentUserId?: PackingEntityId
-  onSetSharing: (id: PackingEntityId, visibility: 'common' | 'personal' | 'shared', recipientIds: PackingEntityId[]) => void
-  onClone: (id: PackingEntityId) => void
-  onJoin: (id: PackingEntityId) => void
-  onLeave: (id: PackingEntityId, userId: PackingEntityId) => void
+  currentUserId?: number
+  onSetSharing: (id: number, visibility: 'common' | 'personal' | 'shared', recipientIds: number[]) => void
+  onClone: (id: number) => void
+  onJoin: (id: number) => void
+  onLeave: (id: number, userId: number) => void
+  /**
+   * 'menu' draws the control as full-width rows for an overflow menu, where the
+   * whole line is the target instead of a lone icon. `onAction` then closes that
+   * menu after a pledge or a copy.
+   */
+  variant?: 'icon' | 'menu'
+  onAction?: () => void
 }
 
 /**
@@ -21,7 +28,7 @@ interface Props {
  * a dropdown; everyone else can pledge to co-bring a Common item ("I can bring
  * that too") or clone it onto their own list.
  */
-export default function PackingShareControl({ item, tripMembers, currentUserId, onSetSharing, onClone, onJoin, onLeave }: Props) {
+export default function PackingShareControl({ item, tripMembers, currentUserId, onSetSharing, onClone, onJoin, onLeave, variant = 'icon', onAction }: Props) {
   const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const [pos, setPos] = useState<{ top: number; right: number } | null>(null)
@@ -43,13 +50,13 @@ export default function PackingShareControl({ item, tripMembers, currentUserId, 
   const iAmContributor = (item.contributors || []).some(c => c.user_id === currentUserId)
   const others = tripMembers.filter(m => m.id !== item.owner_id && m.id !== currentUserId)
 
-  const toggleRecipient = (uid: PackingEntityId) => {
+  const toggleRecipient = (uid: number) => {
     const next = recipientIds.includes(uid) ? recipientIds.filter(x => x !== uid) : [...recipientIds, uid]
     onSetSharing(item.id, 'shared', next)
   }
 
   const btn = (onClick: () => void, title: string, active: boolean, node: React.ReactNode) => (
-    <button onClick={onClick} title={title}
+    <button type="button" onClick={onClick} title={title}
       style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '3px 4px', borderRadius: 6, display: 'flex', color: active ? 'var(--accent)' : 'var(--text-faint)' }}
       onMouseEnter={e => { if (!active) e.currentTarget.style.color = 'var(--text-secondary)' }}
       onMouseLeave={e => { if (!active) e.currentTarget.style.color = 'var(--text-faint)' }}>
@@ -57,12 +64,20 @@ export default function PackingShareControl({ item, tripMembers, currentUserId, 
     </button>
   )
 
+  const pledge = () => (iAmContributor ? onLeave(item.id, currentUserId!) : onJoin(item.id))
+  const pledgeLabel = iAmContributor ? t('packing.alsoBringingStop') : t('packing.alsoBring')
+
   // Non-owner on a Common item: pledge to co-bring + clone to personal list.
   if (!isOwner && isCommon) {
+    if (variant === 'menu') return (
+      <>
+        <MenuRow icon={<HandHelping size={13} />} label={pledgeLabel} active={iAmContributor} onClick={() => { pledge(); onAction?.() }} />
+        <MenuRow icon={<Copy size={13} />} label={t('packing.cloneToMine')} onClick={() => { onClone(item.id); onAction?.() }} />
+      </>
+    )
     return (
       <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-        {btn(() => (iAmContributor ? onLeave(item.id, currentUserId!) : onJoin(item.id)),
-          iAmContributor ? t('packing.alsoBringingStop') : t('packing.alsoBring'), iAmContributor, <HandHelping size={14} />)}
+        {btn(pledge, pledgeLabel, iAmContributor, <HandHelping size={14} />)}
         {btn(() => onClone(item.id), t('packing.cloneToMine'), false, <Copy size={13} />)}
       </div>
     )
@@ -70,17 +85,23 @@ export default function PackingShareControl({ item, tripMembers, currentUserId, 
   // A recipient of a shared item has no controls (it's the owner's responsibility).
   if (!isOwner) return null
 
+  const tierLabel = visibility === 'common' ? t('packing.viewCommon') : visibility === 'personal' ? t('packing.tierPersonal') : t('packing.tierShared')
+
   return (
     <div style={{ display: 'flex' }}>
-      <button ref={btnRef} onClick={toggle} title={t('packing.share')}
+      {variant === 'menu' ? (
+        <MenuRow buttonRef={btnRef} icon={<Share2 size={13} />} label={t('packing.share')} hint={tierLabel} active={open} onClick={toggle} />
+      ) : (
+      <button type="button" ref={btnRef} onClick={toggle} title={t('packing.share')}
         style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '3px 4px', borderRadius: 6, display: 'flex', color: visibility !== 'common' ? 'var(--accent)' : 'var(--text-faint)' }}
         onMouseEnter={e => { if (visibility === 'common') e.currentTarget.style.color = 'var(--text-secondary)' }}
         onMouseLeave={e => { if (visibility === 'common') e.currentTarget.style.color = 'var(--text-faint)' }}>
         <Share2 size={14} />
       </button>
-      {open && pos && ReactDOM.createPortal(
+      )}
+      {open && pos && createPortal(
         <>
-          <div style={{ position: 'fixed', inset: 0, zIndex: 1099 }} onClick={() => setOpen(false)} />
+          <div role="presentation" style={{ position: 'fixed', inset: 0, zIndex: 1099 }} onClick={() => setOpen(false)} />
           <div style={{
             position: 'fixed', top: pos.top, right: pos.right, zIndex: 1100,
             background: 'var(--bg-card)', border: '1px solid var(--border-primary)', borderRadius: 10,
@@ -97,12 +118,12 @@ export default function PackingShareControl({ item, tripMembers, currentUserId, 
             ) : others.map(m => {
               const on = recipientIds.includes(m.id)
               return (
-                <button key={m.id} onClick={() => toggleRecipient(m.id)}
+                <button type="button" key={m.id} onClick={() => toggleRecipient(m.id)}
                   style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', padding: '6px 10px', borderRadius: 7, border: 'none', cursor: 'pointer', background: 'none', fontFamily: 'inherit', fontSize: 'calc(12px * var(--fs-scale-body, 1))', color: 'var(--text-primary)' }}
                   onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-tertiary)'}
                   onMouseLeave={e => e.currentTarget.style.background = 'none'}>
-                  <span style={{ width: 18, height: 18, borderRadius: '50%', flexShrink: 0, background: `hsl(${m.username.charCodeAt(0) * 37 % 360}, 55%, 55%)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 'calc(9px * var(--fs-scale-caption, 1))', fontWeight: 700, color: 'white', textTransform: 'uppercase' }}>{m.username[0]}</span>
-                  <span style={{ flex: 1, textAlign: 'left', overflow: 'hidden', textOverflow: 'ellipsis' }}>{m.username}</span>
+                  <span style={{ width: 18, height: 18, borderRadius: '50%', flexShrink: 0, background: `hsl(${(m.username.codePointAt(0) ?? 0) * 37 % 360}, 55%, 55%)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 'calc(9px * var(--fs-scale-caption, 1))', fontWeight: 700, color: 'white', textTransform: 'uppercase' }}>{m.username[0]}</span>
+                  <span style={{ flex: 1, textAlign: 'start', overflow: 'hidden', textOverflow: 'ellipsis' }}>{m.username}</span>
                   {on && <Check size={13} className="text-content-muted" />}
                 </button>
               )
@@ -117,16 +138,33 @@ export default function PackingShareControl({ item, tripMembers, currentUserId, 
 
 function Row({ icon, label, sub, active, onClick }: { icon: React.ReactNode; label: string; sub: string; active: boolean; onClick: () => void }) {
   return (
-    <button onClick={onClick}
-      style={{ display: 'flex', alignItems: 'flex-start', gap: 8, width: '100%', padding: '7px 10px', borderRadius: 7, border: 'none', cursor: 'pointer', background: active ? 'var(--bg-tertiary)' : 'none', fontFamily: 'inherit', textAlign: 'left' }}
+    <button type="button" onClick={onClick}
+      style={{ display: 'flex', alignItems: 'flex-start', gap: 8, width: '100%', padding: '7px 10px', borderRadius: 7, border: 'none', cursor: 'pointer', background: active ? 'var(--bg-tertiary)' : 'none', fontFamily: 'inherit', textAlign: 'start' }}
       onMouseEnter={e => { if (!active) e.currentTarget.style.background = 'var(--bg-tertiary)' }}
-      onMouseLeave={e => { if (!active) e.currentTarget.style.background = active ? 'var(--bg-tertiary)' : 'none' }}>
+      onMouseLeave={e => { if (!active) e.currentTarget.style.background = 'none' }}>
       <span style={{ color: active ? 'var(--accent)' : 'var(--text-muted)', marginTop: 1 }}>{icon}</span>
       <span style={{ flex: 1, minWidth: 0 }}>
         <span style={{ display: 'block', fontSize: 'calc(12.5px * var(--fs-scale-body, 1))', fontWeight: 600, color: 'var(--text-primary)' }}>{label}</span>
         <span style={{ display: 'block', fontSize: 'calc(10.5px * var(--fs-scale-caption, 1))', color: 'var(--text-faint)' }}>{sub}</span>
       </span>
       {active && <Check size={13} className="text-content-muted" style={{ marginTop: 2 }} />}
+    </button>
+  )
+}
+
+/** A full-width line in an overflow menu, shaped like the item menu's own entries. */
+function MenuRow({ icon, label, hint, active = false, onClick, buttonRef }: {
+  icon: React.ReactNode; label: string; hint?: string; active?: boolean; onClick: () => void
+  buttonRef?: React.Ref<HTMLButtonElement>
+}) {
+  return (
+    <button type="button" ref={buttonRef} onClick={onClick}
+      style={{ display: 'flex', alignItems: 'center', gap: 9, width: '100%', padding: '8px 10px', borderRadius: 9, border: 'none', cursor: 'pointer', background: active ? 'var(--bg-tertiary)' : 'none', color: 'var(--text-primary)', fontFamily: 'inherit', fontSize: 'calc(12.5px * var(--fs-scale-body, 1))', fontWeight: 500, textAlign: 'start' }}
+      onMouseEnter={e => { if (!active) e.currentTarget.style.background = 'var(--bg-tertiary)' }}
+      onMouseLeave={e => { if (!active) e.currentTarget.style.background = 'none' }}>
+      <span style={{ width: 16, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: 'var(--text-muted)' }}>{icon}</span>
+      <span style={{ flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{label}</span>
+      {hint && <span style={{ flexShrink: 0, fontSize: 'calc(11px * var(--fs-scale-caption, 1))', color: 'var(--text-faint)' }}>{hint}</span>}
     </button>
   )
 }

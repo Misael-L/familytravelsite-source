@@ -9,12 +9,16 @@
  *   const result = await harness.client.callTool({ name: 'create_trip', arguments: { title: 'Test' } });
  *   await harness.cleanup();
  */
-
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp';
+import { registerTools } from '../../src/mcp/tools';
+import type { McpAttachOptions } from '../../src/nest-mcp';
+import { withRequestContext } from '../../src/nest/database/request-context';
+import type { RealtimeService } from '../../src/nest/realtime/realtime.service';
+import { createMcpTestRegistry } from './mcp-test-controllers';
+import { bootTestApp } from './test-app';
+import { MikroORM } from '@mikro-orm/core';
 import { Client } from '@modelcontextprotocol/sdk/client/index';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory';
-import { registerResources } from '../../src/mcp/resources';
-import { registerTools } from '../../src/mcp/tools';
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp';
 
 export interface McpHarness {
   client: Client;
@@ -24,7 +28,12 @@ export interface McpHarness {
 
 export interface McpHarnessOptions {
   userId: number;
-  /** Register read-only resources (default: true) */
+  /**
+   * Inert since the journey resources moved onto the nest-mcp registry
+   * (src/mcp/resources.ts is gone): every resource now rides `withTools`,
+   * like tools-vacay.test.ts has always documented. Accepted so the ~26
+   * suites passing it keep compiling; remove opportunistically.
+   */
   withResources?: boolean;
   /** Register read-write tools (default: true) */
   withTools?: boolean;
@@ -32,15 +41,60 @@ export interface McpHarnessOptions {
   scopes?: string[] | null;
   /** Whether the session is authenticated via a static API token (default: false) */
   isStaticToken?: boolean;
+  /** Fire-once deprecation-notice closure (default: registerTools' () => null) */
+  getDeprecationNotice?: () => string | null;
+  /**
+   * Host-contributed tools for this session. Passed explicitly so a suite never
+   * has to install the process-level plugin source to exercise the path; left
+   * undefined, registerTools resolves it to that source, which is unset in
+   * every suite that does not register one.
+   */
+  dynamicTools?: McpAttachOptions['dynamicTools'];
+  /**
+   * The RealtimeService every tool broadcasts through. A suite that asserts on
+   * broadcasts hands in a FakeRealtimeService (tests/helpers/fake-realtime.ts);
+   * left out, the tools get a real one, whose transport has no sockets here.
+   */
+  realtime?: RealtimeService;
 }
 
 export async function createMcpHarness(options: McpHarnessOptions): Promise<McpHarness> {
-  const { userId, withResources = true, withTools = true, scopes = null, isStaticToken = false } = options;
+  const {
+    userId,
+    withTools = true,
+    scopes = null,
+    isStaticToken = false,
+    getDeprecationNotice,
+    dynamicTools,
+    realtime,
+  } = options;
 
   const server = new McpServer({ name: 'trek-test', version: '1.0.0' });
 
-  if (withResources) registerResources(server, userId);
-  if (withTools) registerTools(server, userId, scopes ?? null, isStaticToken);
+  if (withTools) {
+    // The registry is the booted container's McpRegistryService, as the
+    // transport service hands it to registerTools. In production every /mcp
+    // request runs inside the request context the ORM middleware forks; the
+    // harness has no HTTP request, so it opens one for the attach and for every
+    // call through the registry's `around` seam, as the transport's requests do.
+    const orm = (await bootTestApp(realtime)).get(MikroORM);
+    const registry = await createMcpTestRegistry(realtime);
+    const around = (_info: { kind: string; name: string }, call: () => unknown): unknown =>
+      withRequestContext(orm, call);
+    await withRequestContext(orm, () =>
+      registerTools(
+        registry,
+        server,
+        userId,
+        scopes ?? null,
+        isStaticToken,
+        getDeprecationNotice,
+        undefined,
+        dynamicTools,
+        around,
+      ),
+    );
+  }
 
   const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
 
@@ -50,16 +104,36 @@ export async function createMcpHarness(options: McpHarnessOptions): Promise<McpH
   await client.connect(clientTransport);
 
   const cleanup = async () => {
-    try { await client.close(); } catch { /* ignore */ }
-    try { await server.close(); } catch { /* ignore */ }
+    try {
+      await client.close();
+    } catch {
+      /* ignore */
+    }
+    try {
+      await server.close();
+    } catch {
+      /* ignore */
+    }
   };
 
   return { client, server, cleanup };
 }
 
+/**
+ * callTool is declared as a union of the current result shape and the legacy
+ * `toolResult` compatibility shape. Reading `content` off the union yields
+ * unknown, because the compatibility branch only has an index signature.
+ */
+type ToolCallResult = Awaited<ReturnType<Client['callTool']>>;
+type ToolCallContentResult = Extract<ToolCallResult, { content: unknown[] }>;
+type ToolTextContent = Extract<ToolCallContentResult['content'][number], { type: 'text' }>;
+
 /** Parse JSON from a callTool result (first text content item). */
-export function parseToolResult(result: Awaited<ReturnType<Client['callTool']>>): unknown {
-  const text = result.content.find((c: { type: string }) => c.type === 'text') as { type: 'text'; text: string } | undefined;
+export function parseToolResult(result: ToolCallResult): unknown {
+  // Our own McpServer always answers with the content shape, never the
+  // compatibility one, so pick that branch of the union.
+  const { content } = result as ToolCallContentResult;
+  const text = content.find((c): c is ToolTextContent => c.type === 'text');
   if (!text) throw new Error('No text content in tool result');
   return JSON.parse(text.text);
 }

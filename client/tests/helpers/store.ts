@@ -1,41 +1,13 @@
-import { useAuthStore } from '../../src/store/authStore';
-import { useTripStore } from '../../src/store/tripStore';
-import { useSettingsStore } from '../../src/store/settingsStore';
-import { useVacayStore } from '../../src/store/vacayStore';
-import { useAddonStore } from '../../src/store/addonStore';
-import { resetFamilyInboxGenerationForTests, useInAppNotificationStore } from '../../src/store/inAppNotificationStore';
-import { resetFamilyRealtimeForTests } from '../../src/data/supabase/familyRealtime'
-import { usePermissionsStore } from '../../src/store/permissionsStore';
-import { useFamilyFeatureStore } from '../../src/store/familyFeatureStore'
-import { resetFamilyMapStoreForTests, useFamilyMapStore } from '../../src/store/familyMapStore'
-import { resetStartupCoordinatorForTests } from '../../src/startup/coordinator';
-// Journey store is reset individually in journey tests to avoid circular import issues
+import type { StoreApi } from 'zustand';
+import { RESET_STORES } from './storeRegistry';
 
-// Capture initial states at import time (before any test modifies them)
-const initialAuthState = useAuthStore.getState();
-const initialTripState = useTripStore.getState();
-const initialSettingsState = useSettingsStore.getState();
-const initialVacayState = useVacayStore.getState();
-const initialAddonState = useAddonStore.getState();
-const initialNotifState = useInAppNotificationStore.getState();
-const initialPermsState = usePermissionsStore.getState();
-const initialFeatureState = useFamilyFeatureStore.getState();
-const initialMapState = useFamilyMapStore.getState();
+// The state of each store in the registry when this module was first imported,
+// before any test modified it.
+const initialStates = Object.entries(RESET_STORES).map(([name, store]) => ({ name, store, state: store.getState() }));
+
+/** Puts every store in RESET_STORES (tests/helpers/storeRegistry.ts) back to its initial state. */
 export function resetAllStores(): void {
-  useAuthStore.setState(initialAuthState, true);
-  useTripStore.setState(initialTripState, true);
-  useSettingsStore.setState(initialSettingsState, true);
-  useVacayStore.setState(initialVacayState, true);
-  useAddonStore.setState(initialAddonState, true);
-  useInAppNotificationStore.setState(initialNotifState, true);
-  usePermissionsStore.setState(initialPermsState, true);
-  useFamilyFeatureStore.getState().reset()
-  useFamilyFeatureStore.setState(initialFeatureState, true)
-  resetFamilyMapStoreForTests()
-  useFamilyMapStore.setState(initialMapState, true)
-  resetStartupCoordinatorForTests()
-  resetFamilyInboxGenerationForTests()
-  resetFamilyRealtimeForTests()
+  for (const { store, state } of initialStates) store.setState(state, true);
 }
 
 /**
@@ -43,12 +15,14 @@ export function resetAllStores(): void {
  * including partial nested objects (e.g. only `settings.time_format`). The
  * store's own setState wants the exact field types, so seeding accepts a
  * deep-partial view and casts at the boundary.
+ *
+ * Typed against zustand's own StoreApi rather than a hand-written
+ * `{ setState: ... }` shape: as of v5 setState is an overload pair (partial +
+ * replace?: false, full state + replace: true), and no single signature is
+ * assignable to it.
  */
 type DeepPartial<T> = T extends object ? { [P in keyof T]?: DeepPartial<T[P]> } : T;
 
-export function seedStore<T extends object>(
-  store: { setState: (partial: Partial<T>, replace?: boolean) => void },
-  state: DeepPartial<T>,
-): void {
+export function seedStore<T extends object>(store: Pick<StoreApi<T>, 'setState'>, state: DeepPartial<T>): void {
   store.setState(state as Partial<T>);
 }

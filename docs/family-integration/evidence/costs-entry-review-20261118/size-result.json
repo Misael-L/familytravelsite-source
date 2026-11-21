@@ -1,0 +1,7 @@
+{
+  "command": "npm run lint:size --workspace=client",
+  "exit": 1,
+  "size_failures": 30,
+  "all_prior_failure_lines_exact": true,
+  "rules_and_baselines_unchanged": true
+}

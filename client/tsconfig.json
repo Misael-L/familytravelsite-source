@@ -11,6 +11,9 @@
     "ignoreDeprecations": "6.0",
     "paths": {
       "@trek/shared": ["../shared/src/index.ts"],
+      "@trek/shared/roadtrip": ["../shared/src/roadtrip/planning.ts"],
+      "@trek/shared/stickers": ["../shared/src/book/stickers/index.ts"],
+      "@trek/shared/sanitize": ["../shared/src/sanitize/sanitize.ts"],
       "@trek/shared/*": ["../shared/src/*"]
     },
     "isolatedModules": true,
@@ -26,5 +29,6 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true
   },
-  "include": ["src", "tests"]
+  "include": ["src", "tests", "native-shell"],
+  "exclude": ["src/integrations/family/legacy"]
 }

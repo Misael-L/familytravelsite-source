@@ -10,6 +10,7 @@ const day: TranslationStrings = {
   'day.climateHint':
     'Promedios históricos: el pronóstico real está disponible dentro de los 16 días previos a la fecha.',
   'day.noWeather': 'No hay datos meteorológicos disponibles. Añade un lugar con coordenadas.',
+  'day.weatherFor': 'Pronóstico para {name}',
   'day.overview': 'Resumen diario',
   'day.accommodation': 'Alojamiento',
   'day.addAccommodation': 'Añadir alojamiento',
@@ -19,6 +20,7 @@ const day: TranslationStrings = {
   'day.checkIn': 'Registro de entrada',
   'day.checkInUntil': 'Hasta',
   'day.checkOut': 'Registro de salida',
+  'day.openStayBooking': 'Abrir reserva',
   'day.confirmation': 'Confirmación',
   'day.editAccommodation': 'Editar alojamiento',
   'day.reservations': 'Reservas',

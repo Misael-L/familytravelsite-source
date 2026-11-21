@@ -1,6 +1,3 @@
-import { isSupabaseDataPlane } from '../data/supabase/auth'
-import { getSupabaseAnonKey, getSupabaseUrl, hasSupabaseEnv } from '../data/supabase/env'
-
 const PROBE_INTERVAL_MS = 30_000
 const PROBE_TIMEOUT_MS = 1_500
 
@@ -11,13 +8,7 @@ const PROBE_TIMEOUT_MS = 1_500
 export type ProbeState = 'online' | 'offline' | 'proxy-wall'
 
 let reachable = true
-let probeState: ProbeState = 'online'
-let started = false
-let intervalId: ReturnType<typeof setInterval> | null = null
-let onOnline: (() => void) | null = null
-let onOffline: (() => void) | null = null
 const listeners = new Set<(v: boolean) => void>()
-const stateListeners = new Set<(v: ProbeState) => void>()
 
 function setReachable(v: boolean): void {
   if (reachable === v) return
@@ -25,112 +16,46 @@ function setReachable(v: boolean): void {
   listeners.forEach(fn => fn(v))
 }
 
-function setProbeState(next: ProbeState): void {
-  if (probeState !== next) {
-    probeState = next
-    stateListeners.forEach(fn => fn(next))
-  }
-  setReachable(next === 'online')
-}
-
-function supabaseHealthTarget(): { url: string; headers: HeadersInit } | null {
-  if (!hasSupabaseEnv()) return null
-  try {
-    const base = getSupabaseUrl().replace(/\/$/, '')
-    return {
-      url: `${base}/auth/v1/health`,
-      headers: { apikey: getSupabaseAnonKey() },
-    }
-  } catch {
-    return null
-  }
-}
-
-async function classifyResponse(res: Response): Promise<ProbeState> {
-  if (res.type === 'opaqueredirect') return 'proxy-wall'
-  const ct = res.headers.get('content-type') || ''
-  if (res.ok && ct.includes('application/json')) return 'online'
-  return 'proxy-wall'
-}
-
 async function probe(): Promise<ProbeState> {
-  if (!navigator.onLine) {
-    setProbeState('offline')
-    return 'offline'
-  }
-
-  const familyPlane = isSupabaseDataPlane()
-  const target = familyPlane
-    ? supabaseHealthTarget()
-    : { url: '/api/health', headers: {} as HeadersInit }
-
-  if (!target) {
-    // Family plane without env cannot probe Nest /api/health. Trust navigator.onLine.
-    setProbeState('online')
-    return 'online'
-  }
-
+  if (!navigator.onLine) { setReachable(false); return 'offline' }
   try {
     const ctrl = new AbortController()
     const t = setTimeout(() => ctrl.abort(), PROBE_TIMEOUT_MS)
-    const res = await fetch(target.url, {
+    const res = await fetch('/api/health', {
       method: 'GET',
-      credentials: familyPlane ? 'omit' : 'include',
+      credentials: 'include',
       cache: 'no-store',
-      headers: target.headers,
+      // Surface a cross-origin auth redirect (CF Access) as an opaque redirect
+      // instead of letting it throw — that's a positive proxy signal, not offline.
       redirect: 'manual',
       signal: ctrl.signal,
     })
     clearTimeout(t)
-    const state = await classifyResponse(res)
-    setProbeState(state)
-    return state
+    if (res.type === 'opaqueredirect') { setReachable(false); return 'proxy-wall' }
+    const ct = res.headers.get('content-type') || ''
+    if (res.ok && ct.includes('application/json')) { setReachable(true); return 'online' }
+    // A real HTTP response that isn't our health JSON (e.g. Pangolin's HTML 200
+    // auth wall, or an edge 401/403) means the proxy is reachable but gating us.
+    setReachable(false)
+    return 'proxy-wall'
   } catch {
     // fetch threw → the request never completed: genuinely offline (or the server
     // is down). Must NOT be treated as a proxy wall — that would unregister the SW.
-    setProbeState('offline')
+    setReachable(false)
     return 'offline'
   }
 }
 
 export function startConnectivityProbe(): void {
-  if (started) return
-  started = true
   void probe()
-  intervalId = setInterval(() => { void probe() }, PROBE_INTERVAL_MS)
-  onOnline = () => { void probe() }
-  onOffline = () => { setProbeState('offline') }
-  window.addEventListener('online', onOnline)
-  window.addEventListener('offline', onOffline)
-}
-
-export function stopConnectivityProbe(): void {
-  if (!started) return
-  started = false
-  if (intervalId != null) {
-    clearInterval(intervalId)
-    intervalId = null
-  }
-  if (onOnline) window.removeEventListener('online', onOnline)
-  if (onOffline) window.removeEventListener('offline', onOffline)
-  onOnline = null
-  onOffline = null
+  setInterval(() => { void probe() }, PROBE_INTERVAL_MS)
+  window.addEventListener('online', () => { void probe() })
+  window.addEventListener('offline', () => setReachable(false))
 }
 
 export function isReachable(): boolean { return reachable }
-export function getProbeState(): ProbeState { return probeState }
 export function probeNow(): Promise<ProbeState> { return probe() }
 export function onChange(fn: (v: boolean) => void): () => void {
   listeners.add(fn)
   return () => listeners.delete(fn)
-}
-export function onProbeStateChange(fn: (v: ProbeState) => void): () => void {
-  stateListeners.add(fn)
-  return () => stateListeners.delete(fn)
-}
-
-if (import.meta.hot) {
-  import.meta.hot.dispose(() => {
-    stopConnectivityProbe()
-  })
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router'
 import { useTripStore } from '../../store/tripStore'
 import { tripRepo } from '../../repo/tripRepo'
 import { placeRepo } from '../../repo/placeRepo'
@@ -22,7 +22,7 @@ export function useFiles() {
   const [isLoading, setIsLoading] = useState<boolean>(true)
 
   useEffect(() => {
-    loadData()
+    void loadData()
   }, [tripId])
 
   const loadData = async (): Promise<void> => {

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { splitReservationDateTime, resolveDayId, formatMoney, formatMoneySum, currencyDecimals } from './formatters'
+import { splitReservationDateTime, resolveDayId, formatMoney, formatMoneySum, formatPriceText, currencyDecimals, localizeAmountInput, amountToInputString, zeroAmountInput } from './formatters'
 import { CURRENCIES, SYMBOLS, currenciesWith } from '../components/Budget/BudgetPanel.constants'
 import type { Day } from '../types'
 
@@ -23,6 +23,55 @@ describe('resolveDayId', () => {
     expect(resolveDayId(days, null)).toBe('')
     expect(resolveDayId(days, 'not a date')).toBe('')
     expect(resolveDayId([], '2026-05-04')).toBe('')
+  })
+})
+
+describe('localizeAmountInput (#1624)', () => {
+  it('shows the amount with the currency comma separator so the field matches the list', () => {
+    expect(localizeAmountInput('12.5', 'EUR')).toBe('12,5')
+    expect(localizeAmountInput('0.00', 'EUR')).toBe('0,00')
+  })
+  it('keeps the dot for dot-separator currencies', () => {
+    expect(localizeAmountInput('12.5', 'USD')).toBe('12.5')
+  })
+  it('passes an empty/nullish value through unchanged', () => {
+    expect(localizeAmountInput('', 'EUR')).toBe('')
+    expect(localizeAmountInput(null, 'EUR')).toBe('')
+  })
+})
+
+describe('zeroAmountInput (#2604)', () => {
+  it('shows an empty amount the way the currency writes it', () => {
+    expect(zeroAmountInput('EUR')).toBe('0,00')
+    expect(zeroAmountInput('USD')).toBe('0.00')
+    expect(zeroAmountInput('KRW')).toBe('0')
+    expect(zeroAmountInput('KWD')).toBe('0.000')
+  })
+})
+
+describe('amountToInputString (#2175)', () => {
+  it('pads a stored number to the currency decimals so the edit form matches the list', () => {
+    expect(amountToInputString(4.9, 'EUR')).toBe('4.90')
+    expect(amountToInputString(5, 'EUR')).toBe('5.00')
+    expect(amountToInputString(163.2, 'USD')).toBe('163.20')
+  })
+  it('gives zero-decimal currencies no fake decimals', () => {
+    expect(amountToInputString(500, 'JPY')).toBe('500')
+    expect(amountToInputString(500, 'HUF')).toBe('500')
+  })
+  it('pads three-decimal currencies to three', () => {
+    expect(amountToInputString(1.5, 'KWD')).toBe('1.500')
+  })
+  it('cent-rounds float noise before padding (#1964)', () => {
+    expect(amountToInputString(163.20999999999998, 'EUR')).toBe('163.21')
+  })
+  it('keeps the sign of a refund (#2176)', () => {
+    expect(amountToInputString(-4.9, 'EUR')).toBe('-4.90')
+  })
+  it('turns nullish and non-finite values into an empty field', () => {
+    expect(amountToInputString(null, 'EUR')).toBe('')
+    expect(amountToInputString(undefined, 'EUR')).toBe('')
+    expect(amountToInputString(Number.NaN, 'EUR')).toBe('')
   })
 })
 
@@ -160,6 +209,35 @@ describe('formatMoneySum (#1561)', () => {
   })
 })
 
+describe('formatPriceText (#2084)', () => {
+  it('formats a numeric price as money in its own currency', () => {
+    expect(formatPriceText(320, 'EUR', 'USD', 'en')).toBe(formatMoney(320, 'EUR', 'en'))
+    expect(formatPriceText('12.5', 'chf', 'EUR', 'en')).toBe(formatMoney(12.5, 'CHF', 'en'))
+  })
+
+  it("takes the trip's currency when the price names none", () => {
+    expect(formatPriceText('45', null, 'jpy', 'en')).toBe(formatMoney(45, 'JPY', 'en'))
+    expect(formatPriceText(45, '', 'CHF', 'en')).toBe(formatMoney(45, 'CHF', 'en'))
+  })
+
+  it('shows nothing for a missing or empty price', () => {
+    expect(formatPriceText(null, 'EUR', 'EUR', 'en')).toBe('')
+    expect(formatPriceText(undefined, 'EUR', 'EUR', 'en')).toBe('')
+    expect(formatPriceText('', 'EUR', 'EUR', 'en')).toBe('')
+  })
+
+  it('passes a price that is not a number through as written, with its own currency', () => {
+    expect(formatPriceText('on request', 'EUR', 'USD', 'en')).toBe('on request EUR')
+    expect(formatPriceText('on request', 'eur', 'USD', 'en')).toBe('on request EUR')
+    expect(formatPriceText('included', null, 'USD', 'en')).toBe('included')
+  })
+
+  it('keeps a bare number bare when neither the price nor the trip names a currency', () => {
+    expect(formatPriceText('99', null, null, 'en')).toBe('99')
+    expect(formatPriceText(12.5, undefined, undefined, 'en')).toBe('12.5')
+  })
+})
+
 describe('splitReservationDateTime', () => {
   it('parses full ISO datetime', () => {
     expect(splitReservationDateTime('2026-06-25T10:00')).toEqual({ date: '2026-06-25', time: '10:00' })
@@ -205,5 +283,17 @@ describe('splitReservationDateTime', () => {
 
   it('returns nulls for unrecognized string', () => {
     expect(splitReservationDateTime('garbage')).toEqual({ date: null, time: null })
+  })
+
+  // #1725 — slicing the time part to five characters used to swallow the meridiem,
+  // so an afternoon booking came back as a morning one.
+  it('converts a meridiem time part instead of cutting it off', () => {
+    expect(splitReservationDateTime('2026-08-01T3:00 PM')).toEqual({ date: '2026-08-01', time: '15:00' })
+    expect(splitReservationDateTime('2026-08-01T12:30 am')).toEqual({ date: '2026-08-01', time: '00:30' })
+  })
+
+  it('converts a bare meridiem time', () => {
+    expect(splitReservationDateTime('3:00 PM')).toEqual({ date: null, time: '15:00' })
+    expect(splitReservationDateTime('3 PM')).toEqual({ date: null, time: '15:00' })
   })
 })

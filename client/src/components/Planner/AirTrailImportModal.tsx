@@ -1,13 +1,16 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
+import { createPortal } from 'react-dom'
 import { useState, useRef, useEffect, useMemo } from 'react'
 import { Plane, X, Check } from 'lucide-react'
 import type { AirtrailFlight, AirtrailImportResult } from '@trek/shared'
 import { useTranslation } from '../../i18n'
 import { useToast } from '../shared/Toast'
-import { airtrailApi, reservationsApi } from '../../api/client'
+import { airtrailApi } from '../../api/client'
 import { useTripStore } from '../../store/tripStore'
+import { isEffectivelyOffline } from '../../sync/networkMode'
 import { parseReservationMetadata } from '../../utils/flightLegs'
+import { useDateFormat } from '../../hooks/useDateFormat'
+import { formatDisplayDate } from '../../utils/dateFormat'
 
 interface AirTrailImportModalProps {
   isOpen: boolean
@@ -51,15 +54,15 @@ export function detectConnections(flights: AirtrailFlight[]): AirtrailFlight[][]
 }
 
 /** Locale-aware date (e.g. de → 13.06.2026, en-US → 06/13/2026). */
-function fmtDate(d: string | null, locale: string): string {
+function fmtDate(d: string | null, locale: string, dateFormat: string): string {
   if (!d) return ''
   try {
-    return new Date(d + 'T00:00:00Z').toLocaleDateString(locale, {
+    return formatDisplayDate(new Date(d + 'T00:00:00Z'), locale, {
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
       timeZone: 'UTC',
-    })
+    }, dateFormat)
   } catch {
     return d
   }
@@ -67,10 +70,12 @@ function fmtDate(d: string | null, locale: string): string {
 
 export default function AirTrailImportModal({ isOpen, onClose, tripId, pushUndo }: AirTrailImportModalProps) {
   const { t, locale } = useTranslation()
+  const dateFormat = useDateFormat()
   const toast = useToast()
   const trip = useTripStore(s => s.trip)
   const reservations = useTripStore(s => s.reservations)
   const loadReservations = useTripStore(s => s.loadReservations)
+  const deleteReservation = useTripStore(s => s.deleteReservation)
   const mouseDownTarget = useRef<EventTarget | null>(null)
 
   const [loading, setLoading] = useState(false)
@@ -117,6 +122,12 @@ export default function AirTrailImportModal({ isOpen, onClose, tripId, pushUndo 
     setError('')
     setSelected(new Set())
     setJoinOff(new Set())
+    // The flights live on the AirTrail server, which only a connection reaches.
+    if (isEffectivelyOffline()) {
+      setFlights([])
+      setError(t('reservations.needsConnection'))
+      return
+    }
     setLoading(true)
     airtrailApi
       .flights()
@@ -196,6 +207,7 @@ export default function AirTrailImportModal({ isOpen, onClose, tripId, pushUndo 
   const handleImport = async () => {
     const ids = [...selected].filter(id => !importedIds.has(id))
     if (ids.length === 0 || importing) return
+    if (isEffectivelyOffline()) { setError(t('reservations.needsConnection')); return }
     setImporting(true)
     setError('')
     try {
@@ -209,7 +221,7 @@ export default function AirTrailImportModal({ isOpen, onClose, tripId, pushUndo 
           const linked = useTripStore.getState().reservations.filter(
             r => r.external_source === 'airtrail' && r.external_id && imported.includes(String(r.external_id)),
           )
-          await Promise.all(linked.map(r => reservationsApi.delete(tripId, r.id).catch(() => {})))
+          await Promise.all(linked.map(r => deleteReservation(tripId, r.id).catch(() => {})))
           await loadReservations(tripId)
         })
         toast.success(t('reservations.airtrail.imported', { count: imported.length }))
@@ -236,13 +248,13 @@ export default function AirTrailImportModal({ isOpen, onClose, tripId, pushUndo 
     const isSelected = selected.has(f.id)
     const label = f.flightNumber ? `${f.airline ? `${f.airline} ` : ''}${f.flightNumber}` : `${f.fromCode ?? '?'} → ${f.toCode ?? '?'}`
     return (
-      <button
+      <button type="button"
         key={f.id}
         onClick={() => !already && toggle(f.id)}
         disabled={already}
         className={already ? 'bg-surface-tertiary' : isSelected ? 'bg-surface-secondary' : 'bg-transparent'}
         style={{
-          width: '100%', textAlign: 'left', borderRadius: 10, padding: '10px 12px', marginBottom: 8,
+          width: '100%', textAlign: 'start', borderRadius: 10, padding: '10px 12px', marginBottom: 8,
           border: `1px solid ${isSelected && !already ? 'var(--accent)' : 'var(--border-primary)'}`,
           opacity: already ? 0.55 : 1, cursor: already ? 'default' : 'pointer',
           display: 'flex', gap: 10, alignItems: 'center', fontFamily: 'inherit',
@@ -261,7 +273,7 @@ export default function AirTrailImportModal({ isOpen, onClose, tripId, pushUndo 
         <span style={{ flex: 1, minWidth: 0 }}>
           <span style={{ display: 'block', fontSize: 'calc(13px * var(--fs-scale-body, 1))', fontWeight: 600, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{label}</span>
           <span style={{ display: 'block', fontSize: 'calc(11px * var(--fs-scale-caption, 1))', color: 'var(--text-muted)' }}>
-            {f.fromCode ?? f.fromName ?? '?'} → {f.toCode ?? f.toName ?? '?'}{f.date ? ` · ${fmtDate(f.date, locale)}` : ''}
+            {f.fromCode ?? f.fromName ?? '?'} → {f.toCode ?? f.toName ?? '?'}{f.date ? ` · ${fmtDate(f.date, locale, dateFormat)}` : ''}
           </span>
         </span>
         {already && (
@@ -279,11 +291,11 @@ export default function AirTrailImportModal({ isOpen, onClose, tripId, pushUndo 
     return (
       <div key={chainKey(chain)} style={{ border: '1px solid var(--border-primary)', borderRadius: 12, padding: '8px 8px 0', marginBottom: 8 }}>
         {chain.map(renderFlight)}
-        <button
+        <button type="button"
           onClick={() => toggleJoin(chain)}
           className="bg-transparent"
           style={{
-            display: 'flex', alignItems: 'center', gap: 10, width: '100%', textAlign: 'left',
+            display: 'flex', alignItems: 'center', gap: 10, width: '100%', textAlign: 'start',
             border: 'none', borderTop: '1px solid var(--border-faint)', borderRadius: 0,
             padding: '9px 4px 10px', cursor: 'pointer', fontFamily: 'inherit',
           }}
@@ -307,10 +319,11 @@ export default function AirTrailImportModal({ isOpen, onClose, tripId, pushUndo 
   const renderItem = (item: { chain?: AirtrailFlight[]; flight?: AirtrailFlight }) =>
     item.chain ? renderChain(item.chain) : renderFlight(item.flight!)
 
-  return ReactDOM.createPortal(
+  return createPortal(
     <div
       className="bg-[rgba(0,0,0,0.4)]"
       style={{ position: 'fixed', inset: 0, zIndex: 99999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}
+      role="presentation"
       onMouseDown={e => { mouseDownTarget.current = e.target }}
       onClick={e => {
         if (e.target === e.currentTarget && mouseDownTarget.current === e.currentTarget) handleClose()
@@ -318,6 +331,7 @@ export default function AirTrailImportModal({ isOpen, onClose, tripId, pushUndo 
       }}
     >
       <div
+        role="presentation"
         onClick={e => e.stopPropagation()}
         className="bg-surface-card"
         style={{ borderRadius: 16, width: '100%', maxWidth: 540, padding: 24, boxShadow: '0 8px 32px rgba(0,0,0,0.2)', fontFamily: 'var(--font-system)', maxHeight: '90vh', display: 'flex', flexDirection: 'column' }}
@@ -327,7 +341,7 @@ export default function AirTrailImportModal({ isOpen, onClose, tripId, pushUndo 
           <div style={{ flex: 1, fontSize: 'calc(15px * var(--fs-scale-subtitle, 1))', fontWeight: 700, color: 'var(--text-primary)' }}>
             {t('reservations.airtrail.title')}
           </div>
-          <button onClick={handleClose} className="bg-transparent text-content-faint" style={{ border: 'none', cursor: 'pointer', padding: 4, borderRadius: 6, display: 'flex', alignItems: 'center' }}>
+          <button type="button" onClick={handleClose} className="bg-transparent text-content-faint" style={{ border: 'none', cursor: 'pointer', padding: 4, borderRadius: 6, display: 'flex', alignItems: 'center' }}>
             <X size={16} />
           </button>
         </div>
@@ -371,13 +385,13 @@ export default function AirTrailImportModal({ isOpen, onClose, tripId, pushUndo 
         </div>
 
         <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 14, paddingTop: 14, borderTop: '1px solid var(--border-faint)' }}>
-          <button
+          <button type="button"
             onClick={handleClose}
             style={{ padding: '8px 16px', borderRadius: 10, border: '1px solid var(--border-primary)', background: 'none', color: 'var(--text-primary)', fontSize: 'calc(13px * var(--fs-scale-body, 1))', fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit' }}
           >
             {t('common.cancel')}
           </button>
-          <button
+          <button type="button"
             onClick={handleImport}
             disabled={selectableCount === 0 || importing}
             className={selectableCount > 0 && !importing ? 'bg-accent text-accent-text' : 'bg-surface-tertiary text-content-faint'}

@@ -90,6 +90,11 @@ function ensureBrowserListeners(): void {
   _browserListenersBound = true
   window.addEventListener('online', notify)
   window.addEventListener('offline', notify)
+  window.addEventListener('storage', event => {
+    if (event.storageArea !== localStorage || (event.key !== null && event.key !== STORAGE_KEY)) return
+    const next = readPersisted()
+    if (next !== _forced) { _forced = next; notify() }
+  })
 }
 
 /** Reset state — test helper only. */

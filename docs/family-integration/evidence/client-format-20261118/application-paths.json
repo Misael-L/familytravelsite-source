@@ -1,0 +1,13 @@
+[
+  "client/src/integrations/family/creationIntentQueue.ts",
+  "client/src/integrations/family/creationTerminalSettlement.ts",
+  "client/src/integrations/family/legacy/components/Admin/plugins/PluginBadges.tsx",
+  "client/src/integrations/family/legacy/components/Admin/plugins/PluginInstalledList.tsx",
+  "client/src/integrations/family/legacy/components/Admin/plugins/PluginRegistry.tsx",
+  "client/src/integrations/family/legacy/components/Admin/plugins/PluginTrustDialogs.tsx",
+  "client/src/integrations/family/plannerReadGuard.ts",
+  "client/src/integrations/family/plannerTaskRecovery.ts",
+  "client/src/sync/originalWorkExport.ts",
+  "client/src/sync/queueStatus.ts",
+  "client/src/sync/retainedRecovery.ts"
+]

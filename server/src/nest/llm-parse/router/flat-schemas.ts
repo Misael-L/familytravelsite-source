@@ -23,6 +23,13 @@ export const FLAT_TYPES: FlatType[] = ['flight', 'train', 'bus', 'ferry', 'car',
  *  are the ones the router reads directly; the index signature carries the rest unchanged. */
 export interface FlatLike {
   type: FlatType;
+  /**
+   * The type was not read from the document, it was filled in because neither the
+   * keyword table nor the model produced a valid one. The extractor still uses the
+   * hotel shape so the item survives mapping, but the flag rides along so the
+   * importer opens the form the user was actually importing into (#2076).
+   */
+  type_guessed?: boolean;
   booking_reference?: string;
   vehicle_number?: string;
   from_code?: string;
@@ -54,32 +61,100 @@ function flat(fields: string[], required: string[]): JsonSchema {
  */
 export const FLAT_SCHEMA_BY_TYPE: Record<FlatType, JsonSchema> = {
   flight: flat(
-    ['booking_reference', 'operator', 'vehicle_number', 'from_code', 'from_name', 'to_code', 'to_name', 'departure_time', 'arrival_time', 'seat', 'travel_class', 'price', 'currency'],
+    [
+      'booking_reference',
+      'operator',
+      'vehicle_number',
+      'from_code',
+      'from_name',
+      'to_code',
+      'to_name',
+      'departure_time',
+      'arrival_time',
+      'seat',
+      'travel_class',
+      'price',
+      'currency',
+    ],
     // booking_reference (PNR) is REQUIRED: the mapper groups legs into one booking by
     // shared reservationNumber, so a missing PNR would split a round-trip into loose legs.
     // Enforcing it makes the small model actually copy it instead of leaving it null.
     ['vehicle_number', 'from_code', 'to_code', 'departure_time', 'booking_reference'],
   ),
   train: flat(
-    ['booking_reference', 'operator', 'vehicle_number', 'from_name', 'to_name', 'departure_time', 'arrival_time', 'seat', 'travel_class', 'platform', 'price', 'currency'],
+    [
+      'booking_reference',
+      'operator',
+      'vehicle_number',
+      'from_name',
+      'to_name',
+      'departure_time',
+      'arrival_time',
+      'seat',
+      'travel_class',
+      'platform',
+      'price',
+      'currency',
+    ],
     ['from_name', 'to_name', 'departure_time'],
   ),
   bus: flat(
-    ['booking_reference', 'operator', 'vehicle_number', 'from_name', 'to_name', 'departure_time', 'arrival_time', 'seat', 'price', 'currency'],
+    [
+      'booking_reference',
+      'operator',
+      'vehicle_number',
+      'from_name',
+      'to_name',
+      'departure_time',
+      'arrival_time',
+      'seat',
+      'price',
+      'currency',
+    ],
     ['from_name', 'to_name', 'departure_time'],
   ),
   ferry: flat(
-    ['booking_reference', 'operator', 'name', 'from_name', 'to_name', 'departure_time', 'arrival_time', 'price', 'currency'],
+    [
+      'booking_reference',
+      'operator',
+      'name',
+      'from_name',
+      'to_name',
+      'departure_time',
+      'arrival_time',
+      'price',
+      'currency',
+    ],
     ['from_name', 'to_name', 'departure_time'],
   ),
   car: flat(
-    ['booking_reference', 'operator', 'name', 'from_name', 'to_name', 'departure_time', 'arrival_time', 'price', 'currency'],
+    [
+      'booking_reference',
+      'operator',
+      'name',
+      'from_name',
+      'to_name',
+      'departure_time',
+      'arrival_time',
+      'price',
+      'currency',
+    ],
     // `operator` (rental company) is REQUIRED so the booking gets a real title instead of the
     // generic "Rental Car" fallback.
     ['operator', 'from_name', 'departure_time', 'arrival_time'],
   ),
   hotel: flat(
-    ['name', 'booking_reference', 'address', 'checkin_time', 'checkout_time', 'telephone', 'website', 'price', 'currency'],
+    [
+      'name',
+      'booking_reference',
+      'address',
+      'checkin_time',
+      'checkout_time',
+      'telephone',
+      'website',
+      'price',
+      'currency',
+    ],
     // `address` is REQUIRED so the model actually emits the (often unlabeled) street address line
     // — without it small models skip it and the booking loses its location/place.
     ['name', 'address', 'checkin_time', 'checkout_time'],
@@ -105,7 +180,18 @@ export const FLIGHTS_ARRAY_SCHEMA: JsonSchema = {
     flights: {
       type: 'array',
       items: flat(
-        ['vehicle_number', 'operator', 'from_code', 'from_name', 'to_code', 'to_name', 'departure_time', 'arrival_time', 'seat', 'travel_class'],
+        [
+          'vehicle_number',
+          'operator',
+          'from_code',
+          'from_name',
+          'to_code',
+          'to_name',
+          'departure_time',
+          'arrival_time',
+          'seat',
+          'travel_class',
+        ],
         ['vehicle_number', 'from_code', 'to_code', 'departure_time'],
       ),
     },
@@ -122,11 +208,25 @@ export const UNION_SINGLE_SCHEMA: JsonSchema = {
   type: 'object',
   properties: {
     type: { type: 'string', enum: FLAT_TYPES },
-    name: STR, booking_reference: STR, operator: STR, vehicle_number: STR,
-    from_name: STR, from_code: STR, to_name: STR, to_code: STR,
-    departure_time: STR, arrival_time: STR, address: STR,
-    checkin_time: STR, checkout_time: STR, start_time: STR, end_time: STR,
-    telephone: STR, website: STR, price: STR, currency: STR,
+    name: STR,
+    booking_reference: STR,
+    operator: STR,
+    vehicle_number: STR,
+    from_name: STR,
+    from_code: STR,
+    to_name: STR,
+    to_code: STR,
+    departure_time: STR,
+    arrival_time: STR,
+    address: STR,
+    checkin_time: STR,
+    checkout_time: STR,
+    start_time: STR,
+    end_time: STR,
+    telephone: STR,
+    website: STR,
+    price: STR,
+    currency: STR,
   },
   required: ['type'],
 };

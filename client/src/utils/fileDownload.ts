@@ -1,5 +1,9 @@
 import { getCachedBlob } from '../db/offlineDb'
 import { isEffectivelyOffline } from '../sync/networkMode'
+import { isIosStandalone } from './iosDevice'
+import { isNativeApp } from '../native/platform'
+import { fileNameFromUrl, openNativeFile, shareFile } from '../native/nativeFiles'
+import { reportNativeFailure } from '../native/reportFailure'
 
 // MIME types safe to open inline (will not execute script in any browser).
 // Everything else (text/html, image/svg+xml, text/javascript, …) is forced to
@@ -14,11 +18,6 @@ const SAFE_INLINE_TYPES = new Set([
   'image/bmp',
   'image/tiff',
 ])
-
-/** Nest cookie-auth paths are relative; Family Storage uses already-signed https URLs. */
-function isDirectFileUrl(url: string): boolean {
-  return /^(https?:|blob:|data:)/i.test(url)
-}
 
 /**
  * Asserts that `url` is a relative same-origin path so that
@@ -40,13 +39,6 @@ function triggerAnchorDownload(blobUrl: string, filename?: string): void {
   setTimeout(() => { URL.revokeObjectURL(blobUrl); a.remove() }, 100)
 }
 
-// navigator.standalone is true only on iOS when running as an
-// add-to-home-screen PWA. In that context, target="_blank" hands off to
-// Safari, which cannot access blob URLs sandboxed to the WebView.
-function isIosStandalone(): boolean {
-  return (navigator as any).standalone === true
-}
-
 /**
  * Resolves a protected file to a Blob, preferring the live server but falling
  * back to the offline cache (pre-downloaded by the trip sync manager). This is
@@ -56,19 +48,16 @@ function isIosStandalone(): boolean {
  * still reports true ("sometimes it works, sometimes it doesn't").
  */
 async function getFileBlob(url: string): Promise<Blob> {
-  const direct = isDirectFileUrl(url)
-  if (!direct) assertRelativeUrl(url)
-  if (!direct && typeof navigator !== 'undefined' && isEffectivelyOffline()) {
+  assertRelativeUrl(url)
+  if (typeof navigator !== 'undefined' && isEffectivelyOffline()) {
     const cached = await getCachedBlob(url)
     if (cached) return cached
     throw new Error('File not available offline')
   }
   let resp: Response
   try {
-    // Signed Storage URLs must not ride the TREK session cookie.
-    resp = await fetch(url, { credentials: direct ? 'omit' : 'include' })
+    resp = await fetch(url, { credentials: 'include' })
   } catch (err) {
-    if (direct) throw err
     // Genuine network failure — the fetch itself rejected (offline, or a flaky
     // link even though navigator.onLine is true). Serve the pre-downloaded copy.
     const cached = await getCachedBlob(url)
@@ -82,6 +71,21 @@ async function getFileBlob(url: string): Promise<Blob> {
 }
 
 /**
+ * Triggers a browser download for an in-memory Blob (CSV export, generated
+ * report, …). Use this instead of hand-rolling the anchor: Firefox ignores a
+ * click on an anchor that is not in the document, and revoking the object URL
+ * in the same tick can abort the download in other browsers.
+ */
+export function downloadBlob(blob: Blob, filename: string): void {
+  if (isNativeApp()) {
+    shareFile(blob, filename).catch(reportNativeFailure)
+    return
+  }
+  const blobUrl = URL.createObjectURL(blob)
+  triggerAnchorDownload(blobUrl, filename)
+}
+
+/**
  * Fetches a protected file using cookie auth (credentials: include) and
  * triggers a browser download. Works inside PWA standalone mode because the
  * fetch stays in the PWA's WebView rather than handing off to the system
@@ -90,6 +94,7 @@ async function getFileBlob(url: string): Promise<Blob> {
  */
 export async function downloadFile(url: string, filename?: string): Promise<void> {
   const blob = await getFileBlob(url)
+  if (isNativeApp()) return shareFile(blob, filename ?? fileNameFromUrl(url))
   const blobUrl = URL.createObjectURL(blob)
   triggerAnchorDownload(blobUrl, filename)
 }
@@ -113,6 +118,9 @@ export async function downloadFile(url: string, filename?: string): Promise<void
  */
 export async function openFile(url: string, filename?: string): Promise<void> {
   const blob = await getFileBlob(url)
+  // A blob tab has nowhere to open inside the app: the system's viewer shows it,
+  // or the share sheet where the app has none.
+  if (isNativeApp()) return openNativeFile(blob, filename ?? fileNameFromUrl(url))
   const blobUrl = URL.createObjectURL(blob)
 
   // Force download for MIME types that can execute script when rendered inline
@@ -121,7 +129,8 @@ export async function openFile(url: string, filename?: string): Promise<void> {
     return
   }
 
-  // iOS PWA: target="_blank" would open Safari, which can't access the blob
+  // iOS PWA: target="_blank" hands off to Safari, which cannot reach a blob URL
+  // sandboxed to the installed app's WebView.
   if (isIosStandalone()) {
     triggerAnchorDownload(blobUrl, filename)
     return

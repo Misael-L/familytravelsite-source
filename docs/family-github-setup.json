@@ -1,0 +1,37 @@
+{
+  "recordedDate": "2026-10-29",
+  "repository": "Misael-L/FamilyTravelSite",
+  "integrationBranch": "codex/trek-v5-family-integration",
+  "draftPullRequest": "https://github.com/Misael-L/FamilyTravelSite/pull/1",
+  "productionMainUnchangedAt": "247b76ea94942e511a663f3f840c81821c556fc5",
+  "trekVersion": "5.0.1",
+  "trekCommit": "a0943f8226269bc192c1cda992fbac33333337a1",
+  "importCommit": "06e89f16d2ed9946403243d89d688d535b070265",
+  "baselineTags": [
+    "trek-v5.0.1",
+    "family-before-trek-v5-20261029"
+  ],
+  "githubSettingsVerified": {
+    "mergeCommits": true,
+    "squashMerges": false,
+    "rebaseMerges": false,
+    "mainProtected": true,
+    "pullRequestRequired": true,
+    "requiredChecks": [
+      "Family migration guard",
+      "ci-ok"
+    ],
+    "strictStatusChecks": true,
+    "adminsEnforced": true,
+    "requiredApprovals": 0,
+    "forcePushAllowed": false,
+    "deletionAllowed": false
+  },
+  "preservation": {
+    "headUnchanged": true,
+    "statusUnchanged": true,
+    "dirtyAndUntrackedFilesChecked": 3205,
+    "changedPaths": []
+  },
+  "deployment": "No main merge, production release or deployment performed by this repository setup."
+}

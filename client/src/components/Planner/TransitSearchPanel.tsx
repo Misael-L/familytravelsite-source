@@ -1,13 +1,21 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import tzlookup from 'tz-lookup'
-import { ArrowLeftRight, ArrowRight, Bus, CableCar, ChevronDown, ChevronUp, Clock, Footprints, MapPin, Sailboat, Search, Train, TramFront, TrainFront } from 'lucide-react'
+import { ArrowLeftRight, ArrowRight, Bus, CableCar, ChevronDown, ChevronUp, Clock, Footprints, MapPin, Sailboat, Search, TramFront, TrainFront, TrainFrontTunnel } from 'lucide-react'
 import CustomTimePicker from '../shared/CustomTimePicker'
 import { TransitMetaBadges } from './transitDisplay'
 import { transitApi } from '../../api/client'
 import { useSettingsStore } from '../../store/settingsStore'
 import { useToast } from '../shared/Toast'
 import { useTranslation } from '../../i18n'
-import type { Day, Place, Accommodation } from '../../types'
+import { getDayBookendHotels } from '../../utils/dayOrder'
+import type { Day, Place, Accommodation, Reservation } from '../../types'
+import { useTripStore } from '../../store/tripStore'
+import { isCarrierTransport } from '../../utils/dayMerge'
+import type { TransitProvider } from '@trek/shared'
+import { useIsPhone } from '../../mobile/useIsPhone'
+import { WalkLateLine, WalkTransitNote } from '../Tours/walk/WalkTransitNote'
+import { lateForWalk, type WalkLate, type WalkTransitContext } from '../Tours/walk/walkTransit'
 
 /**
  * Public transit route search (#1065), backed by Transitous (MOTIS) through the
@@ -36,25 +44,35 @@ interface TransitPlaceResult { name: string; lat: number; lng: number; type: str
 
 export interface PickedPlace { name: string; lat: number; lng: number }
 
+// Backend names as they are written, not translated — the empty state says
+// which one answered so "nothing here" can be told apart from "not the one you
+// picked" (#1699).
+const PROVIDER_NAMES: Record<TransitProvider, string> = {
+  transitous: 'Transitous',
+  google: 'Google',
+}
+
 // ── helpers ──────────────────────────────────────────────────────────────────
 
 const MODE_GROUPS: { key: string; labelKey: string; Icon: React.ComponentType<{ size?: number; strokeWidth?: number }>; modes: string }[] = [
-  { key: 'rail', labelKey: 'transit.mode.rail', Icon: Train, modes: 'HIGHSPEED_RAIL,LONG_DISTANCE,NIGHT_RAIL,REGIONAL_RAIL,SUBURBAN' },
-  { key: 'subway', labelKey: 'transit.mode.subway', Icon: TrainFront, modes: 'SUBWAY' },
+  // lucide's `Train` is an alias of TramFront, so rail keeps TrainFront and the
+  // subway takes the tunnel variant — otherwise the chips share a glyph.
+  { key: 'rail', labelKey: 'transit.mode.rail', Icon: TrainFront, modes: 'HIGHSPEED_RAIL,LONG_DISTANCE,NIGHT_RAIL,REGIONAL_RAIL,SUBURBAN' },
+  { key: 'subway', labelKey: 'transit.mode.subway', Icon: TrainFrontTunnel, modes: 'SUBWAY' },
   { key: 'tram', labelKey: 'transit.mode.tram', Icon: TramFront, modes: 'TRAM' },
   { key: 'bus', labelKey: 'transit.mode.bus', Icon: Bus, modes: 'BUS,COACH' },
   { key: 'ferry', labelKey: 'transit.mode.ferry', Icon: Sailboat, modes: 'FERRY' },
   { key: 'cable', labelKey: 'transit.mode.cable', Icon: CableCar, modes: 'FUNICULAR,AERIAL_LIFT' },
 ]
 
+// Only called for non-WALK legs — walking renders its own Footprints inline.
 function legIcon(mode: string) {
-  if (mode === 'WALK') return Footprints
   if (mode === 'BUS' || mode === 'COACH') return Bus
   if (mode === 'TRAM') return TramFront
-  if (mode === 'SUBWAY') return TrainFront
+  if (mode === 'SUBWAY') return TrainFrontTunnel
   if (mode === 'FERRY') return Sailboat
   if (mode === 'FUNICULAR' || mode === 'AERIAL_LIFT') return CableCar
-  return Train
+  return TrainFront
 }
 
 function tzAt(lat: number, lng: number): string {
@@ -90,7 +108,105 @@ function fmtDuration(seconds: number, t: (k: string, p?: Record<string, string |
   return m > 0 ? `${h} h ${m} min` : `${h} h`
 }
 
+// ── quick picks ──────────────────────────────────────────────────────────────
+
+const MAX_QUICK_PICKS = 8
+
+function stayPick(a: Accommodation): PickedPlace | null {
+  return a.place_lat != null && a.place_lng != null && a.place_name ? { name: a.place_name, lat: a.place_lat, lng: a.place_lng } : null
+}
+
+/**
+ * The airports, stations and ports the day's flights, trains, buses and ferries leave
+ * from or arrive at (#1506): the way to the hotel after landing starts at one of them.
+ * An endpoint belongs to the day by its own local date, or, without one, by the leg's
+ * day: departures on the booking's first day, arrivals on its last.
+ */
+export function dayBookingStops(day: Pick<Day, 'id' | 'date'>, reservations: Reservation[]): PickedPlace[] {
+  const stops: PickedPlace[] = []
+  for (const r of reservations) {
+    if (!isCarrierTransport(r)) continue
+    const endDay = r.end_day_id ?? r.day_id
+    for (const ep of r.endpoints ?? []) {
+      if (ep.lat == null || ep.lng == null || !ep.name) continue
+      const onDay = ep.local_date
+        ? !!day.date && ep.local_date.slice(0, 10) === day.date.slice(0, 10)
+        : (ep.role === 'from' && r.day_id === day.id) || (ep.role === 'to' && endDay === day.id)
+      if (onDay) stops.push({ name: ep.name, lat: ep.lat, lng: ep.lng })
+    }
+  }
+  return stops
+}
+
+/**
+ * What the from/to fields offer before anything is typed. The stay the day
+ * starts in and the one it ends in come first and are never cut, since most
+ * connections of a day begin or end there (#2538); the day's airports and
+ * stations follow and are not cut either (#1506); then the day's own located
+ * places and the trip's other stays, up to MAX_QUICK_PICKS.
+ */
+export function buildQuickPicks(day: Day, days: Day[], places: Place[], accommodations: Accommodation[], bookingStops: PickedPlace[] = []): PickedPlace[] {
+  const { morning, evening } = getDayBookendHotels(day, days, accommodations)
+  const dayStays = [morning, evening].filter((a): a is Accommodation => a != null)
+
+  const seen = new Set<string>()
+  const unique = (p: PickedPlace | null): p is PickedPlace => {
+    if (!p) return false
+    const k = `${p.name}:${p.lat}`
+    if (seen.has(k)) return false
+    seen.add(k)
+    return true
+  }
+
+  const stays = dayStays.map(stayPick).filter(unique)
+  const stations = bookingStops.filter(unique)
+  const rest = [
+    ...places.map(p => (p.lat != null && p.lng != null ? { name: p.name, lat: p.lat, lng: p.lng } : null)),
+    ...accommodations.filter(a => !dayStays.includes(a)).map(stayPick),
+  ].filter(unique)
+  return [...stays, ...stations, ...rest.slice(0, MAX_QUICK_PICKS)]
+}
+
 // ── from/to stop picker ──────────────────────────────────────────────────────
+
+const LIST_GAP = 4
+const LIST_MAX = 240
+const VIEW_EDGE = 12
+
+/**
+ * Where the suggestion list sits on screen: under the field, or above it when the
+ * window has no room below. Measured again on scroll and resize while it is open.
+ */
+function useFloatingList(anchorRef: React.RefObject<HTMLElement | null>, open: boolean) {
+  const [pos, setPos] = useState<{ left: number; width: number; top: number; bottom: number; above: boolean; maxHeight: number } | null>(null)
+  useEffect(() => {
+    if (!open) { setPos(null); return }
+    const place = () => {
+      const el = anchorRef.current
+      if (!el) return
+      const r = el.getBoundingClientRect()
+      const below = window.innerHeight - r.bottom - VIEW_EDGE
+      const aboveRoom = r.top - VIEW_EDGE
+      const above = below < 160 && aboveRoom > below
+      setPos({
+        left: r.left,
+        width: r.width,
+        top: r.bottom + LIST_GAP,
+        bottom: window.innerHeight - r.top + LIST_GAP,
+        above,
+        maxHeight: Math.max(120, Math.min(LIST_MAX, (above ? aboveRoom : below) - LIST_GAP)),
+      })
+    }
+    place()
+    window.addEventListener('resize', place)
+    window.addEventListener('scroll', place, true)
+    return () => {
+      window.removeEventListener('resize', place)
+      window.removeEventListener('scroll', place, true)
+    }
+  }, [open, anchorRef])
+  return pos
+}
 
 function StopPicker({ label, value, onPick, quickPicks, near, placeholder }: {
   label: string
@@ -106,9 +222,15 @@ function StopPicker({ label, value, onPick, quickPicks, near, placeholder }: {
   const [open, setOpen] = useState(false)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const rootRef = useRef<HTMLDivElement>(null)
+  const fieldRef = useRef<HTMLDivElement>(null)
+  const listRef = useRef<HTMLDivElement>(null)
+  const listPos = useFloatingList(fieldRef, open)
 
   useEffect(() => {
-    const close = (e: MouseEvent) => { if (!rootRef.current?.contains(e.target as Node)) setOpen(false) }
+    const close = (e: MouseEvent) => {
+      const target = e.target as Node
+      if (!rootRef.current?.contains(target) && !listRef.current?.contains(target)) setOpen(false)
+    }
     document.addEventListener('mousedown', close)
     return () => document.removeEventListener('mousedown', close)
   }, [])
@@ -132,44 +254,49 @@ function StopPicker({ label, value, onPick, quickPicks, near, placeholder }: {
   return (
     <div ref={rootRef} style={{ position: 'relative', flex: 1, minWidth: 0 }}>
       <label className="block text-[11px] font-semibold text-content-faint mb-[5px] uppercase tracking-[0.03em]">{label}</label>
-      <div className="bg-surface-input border border-edge" style={{ display: 'flex', alignItems: 'center', gap: 7, borderRadius: 10, padding: '0 10px', height: 38 }}>
+      <div ref={fieldRef} className="bg-surface-input border border-edge" style={{ display: 'flex', alignItems: 'center', gap: 7, borderRadius: 10, padding: '0 10px', height: 38 }}>
         <MapPin size={14} className="text-content-faint" style={{ flexShrink: 0 }} />
         <input
           value={display}
           onChange={e => search(e.target.value)}
+          // Opens its list on focus, so a dialog must not focus it by itself (#1302).
+          data-no-autofocus
           onFocus={() => setOpen(true)}
           placeholder={placeholder}
           className="text-content"
           style={{ border: 0, background: 'none', outline: 'none', fontSize: 'calc(13px * var(--fs-scale-body, 1))', width: '100%', fontFamily: 'inherit' }}
         />
       </div>
-      {open && (results.length > 0 || (!value && text.trim().length < 2 && quickPicks.length > 0)) && (
-        <div className="bg-surface-card border border-edge" style={{ position: 'absolute', top: '100%', left: 0, right: 0, marginTop: 4, borderRadius: 10, boxShadow: '0 8px 32px rgba(0,0,0,0.14)', zIndex: 30, overflow: 'hidden', maxHeight: 240, overflowY: 'auto' }}>
+      {open && listPos && (results.length > 0 || (!value && text.trim().length < 2 && quickPicks.length > 0)) && createPortal(
+        // On the page rather than inside the dialog, so a dialog that scrolls or clips
+        // its content cannot cut the list off before anything is typed.
+        <div ref={listRef} className="bg-surface-card border border-edge z-[var(--z-toast)]" style={{ position: 'fixed', left: listPos.left, width: listPos.width, ...(listPos.above ? { bottom: listPos.bottom } : { top: listPos.top }), borderRadius: 10, boxShadow: 'var(--shadow-dropdown)', overflow: 'hidden', maxHeight: listPos.maxHeight, overflowY: 'auto' }}>
           {results.length > 0
             ? results.map((r, i) => (
-              <button key={i} onClick={() => { onPick({ name: r.name, lat: r.lat, lng: r.lng }); setText(''); setResults([]); setOpen(false) }}
+              <button type="button" key={i} onClick={() => { onPick({ name: r.name, lat: r.lat, lng: r.lng }); setText(''); setResults([]); setOpen(false) }}
                 className="text-content"
-                style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', textAlign: 'left', padding: '8px 10px', border: 'none', background: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'calc(13px * var(--fs-scale-body, 1))' }}
+                style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', textAlign: 'start', padding: '8px 10px', border: 'none', background: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'calc(13px * var(--fs-scale-body, 1))' }}
                 onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-hover)'}
                 onMouseLeave={e => e.currentTarget.style.background = 'none'}>
                 <MapPin size={13} className="text-content-faint" style={{ flexShrink: 0 }} />
                 <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   {r.name}
-                  {r.area && <span className="text-content-faint"> · {r.area}</span>}
+                  {r.area && <span className="ms-1.5 text-content-faint">{r.area}</span>}
                 </span>
               </button>
             ))
             : quickPicks.map((p, i) => (
-              <button key={i} onClick={() => { onPick(p); setText(''); setOpen(false) }}
+              <button type="button" key={i} onClick={() => { onPick(p); setText(''); setOpen(false) }}
                 className="text-content"
-                style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', textAlign: 'left', padding: '8px 10px', border: 'none', background: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'calc(13px * var(--fs-scale-body, 1))' }}
+                style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', textAlign: 'start', padding: '8px 10px', border: 'none', background: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'calc(13px * var(--fs-scale-body, 1))' }}
                 onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-hover)'}
                 onMouseLeave={e => e.currentTarget.style.background = 'none'}>
                 <MapPin size={13} className="text-content-faint" style={{ flexShrink: 0 }} />
                 <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.name}</span>
               </button>
             ))}
-        </div>
+        </div>,
+        document.body,
       )}
     </div>
   )
@@ -189,7 +316,7 @@ function LineBadge({ leg }: { leg: TransitLeg }) {
   )
 }
 
-function ItineraryCard({ it, tzFrom, tzTo, is12h, expanded, onToggle, onAdd, adding, t }: {
+function ItineraryCard({ it, tzFrom, tzTo, is12h, expanded, onToggle, onAdd, adding, late, t }: {
   it: TransitItinerary
   tzFrom: string
   tzTo: string
@@ -198,19 +325,21 @@ function ItineraryCard({ it, tzFrom, tzTo, is12h, expanded, onToggle, onAdd, add
   onToggle: () => void
   onAdd: () => void
   adding: boolean
+  /** CW-08: the next city walk this connection arrives too late for. */
+  late: WalkLate | null
   t: (k: string, p?: Record<string, string | number>) => string
 }) {
   const transitLegs = it.legs.filter(l => l.mode !== 'WALK')
   const walkMins = Math.round(it.walkSeconds / 60)
   return (
     <div className="bg-surface-card border border-edge" style={{ borderRadius: 14, overflow: 'hidden' }}>
-      <button onClick={onToggle} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '12px 14px', border: 'none', background: 'none', cursor: 'pointer', fontFamily: 'inherit' }}>
+      <button type="button" onClick={onToggle} style={{ display: 'block', width: '100%', textAlign: 'start', padding: '12px 14px', border: 'none', background: 'none', cursor: 'pointer', fontFamily: 'inherit' }}>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, flexWrap: 'wrap' }}>
           <span className="text-content" style={{ fontSize: 'calc(15px * var(--fs-scale-subtitle, 1))', fontWeight: 700, letterSpacing: '-0.01em' }}>
             {fmtTimeInTz(it.startTime, tzFrom, is12h)} – {fmtTimeInTz(it.endTime, tzTo, is12h)}
           </span>
           <span className="text-content-muted" style={{ fontSize: 'calc(13px * var(--fs-scale-body, 1))', fontWeight: 600 }}>{fmtDuration(it.duration, t)}</span>
-          <span className="text-content-faint" style={{ marginLeft: 'auto', fontSize: 'calc(12px * var(--fs-scale-body, 1))', display: 'inline-flex', alignItems: 'center', gap: 10 }}>
+          <span className="text-content-faint" style={{ marginInlineStart: 'auto', fontSize: 'calc(12px * var(--fs-scale-body, 1))', display: 'inline-flex', alignItems: 'center', gap: 10 }}>
             <span>{it.transfers === 0 ? t('transit.direct') : t('transit.transfers', { count: it.transfers })}</span>
             {walkMins > 0 && <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3 }}><Footprints size={12} />{t('transit.min', { count: walkMins })}</span>}
             {expanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
@@ -227,17 +356,34 @@ function ItineraryCard({ it, tzFrom, tzTo, is12h, expanded, onToggle, onAdd, add
             </React.Fragment>
           ))}
         </div>
+        <WalkLateLine late={late} />
       </button>
 
       {expanded && (
         <div style={{ borderTop: '1px solid var(--border-faint)', padding: '10px 14px 12px' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+            {/*
+              Every row is anchored at the leg's START: its time, its stop name and its
+              platform. A leg's arrival shows up as the next row's heading, and the last
+              arrival gets the closing row below.
+
+              The walking legs used to break that and print leg.to.name, which is the stop
+              the NEXT row already names. The stop where you actually get off is a walking
+              leg's from.name, so it had no row of its own and vanished from the card
+              entirely, along with the train's arrival time, which the same branch blanked
+              (#2106). MOTIS brackets every journey in walking legs, so this hit the exit
+              of any real connection.
+
+              The time falls back to scheduledTime for the same reason the save path does
+              (see stopTime below): a feed without realtime data carries only the schedule,
+              and this row is now the one that shows the arrival.
+            */}
             {it.legs.map((leg, i) => {
               const color = leg.mode === 'WALK' ? 'var(--border-primary)' : (leg.lineColor || 'var(--text-muted)')
               return (
                 <div key={i} style={{ display: 'grid', gridTemplateColumns: '44px 18px 1fr', gap: 8, alignItems: 'stretch' }}>
-                  <div className="text-content-muted" style={{ fontSize: 'calc(11.5px * var(--fs-scale-caption, 1))', fontWeight: 600, paddingTop: 2, textAlign: 'right' }}>
-                    {leg.mode === 'WALK' ? '' : fmtTimeInTz(leg.from.time, tzAt(leg.from.lat, leg.from.lng), is12h)}
+                  <div className="text-content-muted" style={{ fontSize: 'calc(11.5px * var(--fs-scale-caption, 1))', fontWeight: 600, paddingTop: 2, textAlign: 'end' }}>
+                    {fmtTimeInTz(leg.from.time ?? leg.from.scheduledTime, tzAt(leg.from.lat, leg.from.lng), is12h)}
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <span style={{ width: 10, height: 10, borderRadius: '50%', border: `2.5px solid ${color}`, background: 'var(--bg-card)', flexShrink: 0, marginTop: 4 }} />
@@ -245,13 +391,14 @@ function ItineraryCard({ it, tzFrom, tzTo, is12h, expanded, onToggle, onAdd, add
                   </div>
                   <div style={{ paddingBottom: 14, minWidth: 0 }}>
                     <div className="text-content" style={{ fontSize: 'calc(13px * var(--fs-scale-body, 1))', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                      {leg.mode === 'WALK' ? t('transit.walkTo', { name: leg.to.name }) : leg.from.name}
-                      {leg.from.track && leg.mode !== 'WALK' && <span className="text-content-faint" style={{ fontWeight: 500 }}> · {t('transit.platform', { track: leg.from.track })}</span>}
+                      {leg.from.name}
+                      {leg.from.track && <span className="text-content-faint" style={{ fontWeight: 500 }}> · {t('transit.platform', { track: leg.from.track })}</span>}
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 4, flexWrap: 'wrap' }}>
                       {leg.mode === 'WALK' ? (
                         <TransitMetaBadges size="sm" items={[
-                          { icon: Footprints, text: fmtDuration(leg.duration, t) },
+                          { icon: Footprints, text: t('transit.walkLabel') },
+                          { text: fmtDuration(leg.duration, t) },
                           { text: leg.distance ? (leg.distance >= 1000 ? `${(leg.distance / 1000).toFixed(1)} km` : `${leg.distance} m`) : '' },
                         ]} />
                       ) : (
@@ -271,7 +418,7 @@ function ItineraryCard({ it, tzFrom, tzTo, is12h, expanded, onToggle, onAdd, add
             })}
             {/* arrival row */}
             <div style={{ display: 'grid', gridTemplateColumns: '44px 18px 1fr', gap: 8, alignItems: 'center' }}>
-              <div className="text-content-muted" style={{ fontSize: 'calc(11.5px * var(--fs-scale-caption, 1))', fontWeight: 600, textAlign: 'right' }}>
+              <div className="text-content-muted" style={{ fontSize: 'calc(11.5px * var(--fs-scale-caption, 1))', fontWeight: 600, textAlign: 'end' }}>
                 {fmtTimeInTz(it.endTime, tzTo, is12h)}
               </div>
               <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -287,7 +434,7 @@ function ItineraryCard({ it, tzFrom, tzTo, is12h, expanded, onToggle, onAdd, add
               {[...new Set(transitLegs.map(l => l.agency).filter(Boolean))].join(' · ')}
             </div>
           )}
-          <button
+          <button type="button"
             onClick={onAdd}
             disabled={adding}
             className="bg-accent text-accent-text"
@@ -316,17 +463,23 @@ interface TransitSearchPanelProps {
   /** Pre-seed from/to — used by "change route" on an existing journey. */
   initialFrom?: PickedPlace | null
   initialTo?: PickedPlace | null
+  /** Pre-seed the departure time ('HH:mm') — used when planning a specific leg. */
+  initialTime?: string | null
+  /** CW-08: the two city walks the leg runs between; said only while the search is for their day. */
+  walk?: WalkTransitContext | null
 }
 
-export default function TransitSearchPanel({ day, days, places, accommodations = [], onAdd, initialFrom = null, initialTo = null }: TransitSearchPanelProps) {
-  const { t } = useTranslation()
+export default function TransitSearchPanel({ day, days, places, accommodations = [], onAdd, initialFrom = null, initialTo = null, initialTime = null, walk = null }: TransitSearchPanelProps) {
+  const { t, language } = useTranslation()
   const toast = useToast()
   const is12h = useSettingsStore(s => s.settings.time_format) === '12h'
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
+  const isMobile = useIsPhone()
 
   const [from, setFrom] = useState<PickedPlace | null>(initialFrom)
   const [to, setTo] = useState<PickedPlace | null>(initialTo)
-  const [time, setTime] = useState('09:00')
+  const walkHere = walk?.dayId === day.id ? walk : null
+  // Between two walks the time is when the first one ends, never one made up: unknown, it is chosen.
+  const [time, setTime] = useState(initialTime || (walkHere ? '' : '09:00'))
   const [arriveBy, setArriveBy] = useState(false)
   const [activeModes, setActiveModes] = useState<Set<string>>(() => new Set(MODE_GROUPS.map(m => m.key)))
   const [pref, setPref] = useState<'best' | 'transfers' | 'walking'>('best')
@@ -334,22 +487,13 @@ export default function TransitSearchPanel({ day, days, places, accommodations =
   const [loading, setLoading] = useState(false)
   const [expandedIdx, setExpandedIdx] = useState<number | null>(null)
   const [addingIdx, setAddingIdx] = useState<number | null>(null)
+  const [provider, setProvider] = useState<TransitProvider | null>(null)
 
-  // Quick picks: the day's located places, plus the trip's located accommodations.
-  const quickPicks = useMemo<PickedPlace[]>(() => {
-    const picks: PickedPlace[] = []
-    for (const p of places) {
-      if (p.lat != null && p.lng != null) picks.push({ name: p.name, lat: p.lat, lng: p.lng })
-    }
-    for (const a of accommodations) {
-      const lat = (a as { place_lat?: number | null }).place_lat
-      const lng = (a as { place_lng?: number | null }).place_lng
-      const name = (a as { place_name?: string | null }).place_name
-      if (lat != null && lng != null && name) picks.push({ name, lat, lng })
-    }
-    const seen = new Set<string>()
-    return picks.filter(p => { const k = `${p.name}:${p.lat}`; if (seen.has(k)) return false; seen.add(k); return true }).slice(0, 8)
-  }, [places, accommodations])
+  const reservations = useTripStore(s => s.reservations)
+  const quickPicks = useMemo(
+    () => buildQuickPicks(day, days, places, accommodations, dayBookingStops(day, reservations)),
+    [day, days, places, accommodations, reservations],
+  )
 
   const near = quickPicks.length > 0 ? `${quickPicks[0].lat},${quickPicks[0].lng}` : null
 
@@ -366,6 +510,7 @@ export default function TransitSearchPanel({ day, days, places, accommodations =
     setLoading(true)
     setItineraries(null)
     setExpandedIdx(null)
+    setProvider(null)
     try {
       const tzFrom = tzAt(from.lat, from.lng)
       const tzTo = tzAt(to.lat, to.lng)
@@ -374,7 +519,11 @@ export default function TransitSearchPanel({ day, days, places, accommodations =
       const timeIso = localToUtcIso(day.date, time, arriveBy ? tzTo : tzFrom)
       const allModes = activeModes.size === MODE_GROUPS.length
       const modes = allModes ? undefined : MODE_GROUPS.filter(m => activeModes.has(m.key)).map(m => m.modes).join(',')
-      const d = await transitApi.plan({ from: `${from.lat},${from.lng}`, to: `${to.lat},${to.lng}`, time: timeIso, arriveBy, modes })
+      const d = await transitApi.plan({ from: `${from.lat},${from.lng}`, to: `${to.lat},${to.lng}`, time: timeIso, arriveBy, modes, lang: language })
+      // Which backend actually answered (#1699). Named in the empty state so
+      // "nothing found" can be told apart from "the provider you picked never
+      // ran" — the fallback to Transitous is silent by design.
+      setProvider(d.provider ?? null)
       // MOTIS names the request coordinates START/END — swap in the places the
       // user actually picked so walks read "Walk to Zoologischer Garten".
       const cleanStop = (n: string) => (n === 'START' ? from.name : n === 'END' ? to.name : n)
@@ -422,6 +571,11 @@ export default function TransitSearchPanel({ day, days, places, accommodations =
       // An after-midnight arrival lands on the next trip day when it exists.
       const endDay = arrDate !== depDate ? days.find(d2 => d2.date === arrDate) : null
 
+      // Realtime time with scheduled fallback — the same `time ?? scheduledTime`
+      // the server's buildTransitReservationParts applies, so a scheduled-only
+      // feed still yields stop times instead of nulls.
+      const stopTime = (s: TransitLegStop) => s.time ?? s.scheduledTime
+
       // Endpoints: origin, each transfer stop, destination — the same shape
       // flights persist, so the map + connectors work unchanged.
       const transitLegs = it.legs.filter(l => l.mode !== 'WALK')
@@ -429,7 +583,8 @@ export default function TransitSearchPanel({ day, days, places, accommodations =
       endpoints.push({ role: 'from', sequence: 0, name: from.name, code: null, lat: from.lat, lng: from.lng, timezone: tzFrom, local_date: depDate, local_time: depTime })
       transitLegs.slice(0, -1).forEach((leg, i) => {
         const s = leg.to
-        endpoints.push({ role: 'stop', sequence: i + 1, name: s.name, code: null, lat: s.lat, lng: s.lng, timezone: tzAt(s.lat, s.lng), local_date: s.time ? dateYMDInTz(s.time, tzAt(s.lat, s.lng)) : null, local_time: s.time ? timeHHmmInTz(s.time, tzAt(s.lat, s.lng)) : null })
+        const t2 = stopTime(s)
+        endpoints.push({ role: 'stop', sequence: i + 1, name: s.name, code: null, lat: s.lat, lng: s.lng, timezone: tzAt(s.lat, s.lng), local_date: t2 ? dateYMDInTz(t2, tzAt(s.lat, s.lng)) : null, local_time: t2 ? timeHHmmInTz(t2, tzAt(s.lat, s.lng)) : null })
       })
       endpoints.push({ role: 'to', sequence: endpoints.length, name: to.name, code: null, lat: to.lat, lng: to.lng, timezone: tzTo, local_date: arrDate, local_time: arrTime })
 
@@ -449,7 +604,7 @@ export default function TransitSearchPanel({ day, days, places, accommodations =
         notes: null,
         metadata: {
           transit: {
-            provider: 'transitous',
+            provider: provider ?? 'transitous',
             duration: it.duration,
             transfers: it.transfers,
             walk_seconds: it.walkSeconds,
@@ -462,8 +617,8 @@ export default function TransitSearchPanel({ day, days, places, accommodations =
               agency: l.agency,
               duration: l.duration,
               stops: l.intermediateStops,
-              from: { name: l.from.name, time: l.from.time ? timeHHmmInTz(l.from.time, tzAt(l.from.lat, l.from.lng)) : null, track: l.from.track },
-              to: { name: l.to.name, time: l.to.time ? timeHHmmInTz(l.to.time, tzAt(l.to.lat, l.to.lng)) : null, track: l.to.track },
+              from: { name: l.from.name, time: stopTime(l.from) ? timeHHmmInTz(stopTime(l.from)!, tzAt(l.from.lat, l.from.lng)) : null, track: l.from.track },
+              to: { name: l.to.name, time: stopTime(l.to) ? timeHHmmInTz(stopTime(l.to)!, tzAt(l.to.lat, l.to.lng)) : null, track: l.to.track },
               geometry: l.geometry || null,
               geometry_precision: l.geometryPrecision ?? 6,
             })),
@@ -483,6 +638,7 @@ export default function TransitSearchPanel({ day, days, places, accommodations =
 
   const tzFrom = from ? tzAt(from.lat, from.lng) : 'UTC'
   const tzTo = to ? tzAt(to.lat, to.lng) : tzFrom
+  const canSearch = !!from && !!to && !!time && !loading
 
   const segBtn = (active: boolean): React.CSSProperties => ({
     padding: isMobile ? '6px 5px' : '6px 11px', fontSize: isMobile ? 'calc(11px * var(--fs-scale-body, 1))' : 'calc(12px * var(--fs-scale-body, 1))', borderRadius: 7, fontWeight: 500,
@@ -493,11 +649,12 @@ export default function TransitSearchPanel({ day, days, places, accommodations =
 
   return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16, fontFamily: 'var(--font-system)' }}>
+        <WalkTransitNote walk={walkHere} />
         {/* from / to — stacked tight on mobile, swap button on desktop only */}
         <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 8, alignItems: isMobile ? 'stretch' : 'flex-end' }}>
           <StopPicker label={t('transit.from')} value={from} onPick={setFrom} quickPicks={quickPicks} near={near} placeholder={t('transit.searchStop')} />
           {!isMobile && (
-            <button
+            <button type="button"
               onClick={() => { const f = from; setFrom(to); setTo(f) }}
               aria-label={t('transit.swap')}
               title={t('transit.swap')}
@@ -515,8 +672,8 @@ export default function TransitSearchPanel({ day, days, places, accommodations =
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
               <div className="bg-surface-secondary" style={{ display: 'flex', borderRadius: 9, padding: 3 }}>
-                <button onClick={() => setArriveBy(false)} style={segBtn(!arriveBy)}>{t('transit.depart')}</button>
-                <button onClick={() => setArriveBy(true)} style={segBtn(arriveBy)}>{t('transit.arrive')}</button>
+                <button type="button" onClick={() => setArriveBy(false)} style={segBtn(!arriveBy)}>{t('transit.depart')}</button>
+                <button type="button" onClick={() => setArriveBy(true)} style={segBtn(arriveBy)}>{t('transit.arrive')}</button>
               </div>
               <div style={{ width: 110 }}>
                 <CustomTimePicker value={time} onChange={setTime} />
@@ -529,9 +686,9 @@ export default function TransitSearchPanel({ day, days, places, accommodations =
               )}
             </div>
             <div className="bg-surface-secondary" style={{ display: 'flex', borderRadius: 9, padding: 3, width: isMobile ? '100%' : undefined }}>
-              <button onClick={() => setPref('best')} style={{ ...segBtn(pref === 'best'), flex: isMobile ? 1 : undefined }}>{t('transit.pref.best')}</button>
-              <button onClick={() => setPref('transfers')} style={{ ...segBtn(pref === 'transfers'), flex: isMobile ? 1 : undefined }}>{t('transit.pref.transfers')}</button>
-              <button onClick={() => setPref('walking')} style={{ ...segBtn(pref === 'walking'), flex: isMobile ? 1 : undefined }}>{t('transit.pref.walking')}</button>
+              <button type="button" onClick={() => setPref('best')} style={{ ...segBtn(pref === 'best'), flex: isMobile ? 1 : undefined }}>{t('transit.pref.best')}</button>
+              <button type="button" onClick={() => setPref('transfers')} style={{ ...segBtn(pref === 'transfers'), flex: isMobile ? 1 : undefined }}>{t('transit.pref.transfers')}</button>
+              <button type="button" onClick={() => setPref('walking')} style={{ ...segBtn(pref === 'walking'), flex: isMobile ? 1 : undefined }}>{t('transit.pref.walking')}</button>
             </div>
           </div>
 
@@ -542,7 +699,7 @@ export default function TransitSearchPanel({ day, days, places, accommodations =
               {MODE_GROUPS.map(m => {
                 const active = activeModes.has(m.key)
                 return (
-                  <button key={m.key} onClick={() => toggleMode(m.key)}
+                  <button type="button" key={m.key} onClick={() => toggleMode(m.key)}
                     className={active ? 'bg-surface-card text-content' : 'text-content-faint'}
                     style={{
                       display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 11px', borderRadius: 99,
@@ -559,11 +716,11 @@ export default function TransitSearchPanel({ day, days, places, accommodations =
                 )
               })}
             </div>
-            <button
+            <button type="button"
               onClick={search}
-              disabled={!from || !to || loading}
+              disabled={!canSearch}
               className="bg-accent text-accent-text"
-              style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6, border: 'none', borderRadius: 10, padding: '9px 18px', fontWeight: 600, fontSize: 'calc(13px * var(--fs-scale-body, 1))', cursor: (!from || !to || loading) ? 'default' : 'pointer', fontFamily: 'inherit', opacity: (!from || !to || loading) ? 0.55 : 1, flexShrink: 0, width: isMobile ? '100%' : undefined }}
+              style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6, border: 'none', borderRadius: 10, padding: '9px 18px', fontWeight: 600, fontSize: 'calc(13px * var(--fs-scale-body, 1))', cursor: canSearch ? 'pointer' : 'default', fontFamily: 'inherit', opacity: canSearch ? 1 : 0.55, flexShrink: 0, width: isMobile ? '100%' : undefined }}
             >
               <Search size={14} strokeWidth={2.2} />
               {loading ? t('transit.searching') : t('transit.search')}
@@ -579,7 +736,9 @@ export default function TransitSearchPanel({ day, days, places, accommodations =
         )}
         {!loading && ranked && ranked.length === 0 && (
           <div className="text-content-faint" style={{ textAlign: 'center', padding: '24px 0', fontSize: 'calc(13px * var(--fs-scale-body, 1))' }}>
-            {t('transit.noResults')}
+            {provider
+              ? t('transit.noResultsVia', { provider: PROVIDER_NAMES[provider] })
+              : t('transit.noResults')}
           </div>
         )}
         {!loading && ranked && ranked.length > 0 && (
@@ -595,12 +754,16 @@ export default function TransitSearchPanel({ day, days, places, accommodations =
                 onToggle={() => setExpandedIdx(expandedIdx === idx ? null : idx)}
                 onAdd={() => addItinerary(it, idx)}
                 adding={addingIdx === idx}
+                late={lateForWalk(walkHere, day.date ?? null, { date: dateYMDInTz(it.endTime, tzTo), time: timeHHmmInTz(it.endTime, tzTo) })}
                 t={t}
               />
             ))}
             <div className="text-content-faint" style={{ fontSize: 'calc(10.5px * var(--fs-scale-caption, 1))', textAlign: 'center', marginTop: 2 }}>
               {t('transit.attribution')}{' '}
-              <a href="https://transitous.org/sources/" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'underline' }}>Transitous</a>
+              {/* Named after the backend that answered; Google's terms want "Google Maps" as written, never translated. */}
+              {provider === 'google'
+                ? <span translate="no">Google Maps</span>
+                : <a href="https://transitous.org/sources/" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'underline' }}>Transitous</a>}
             </div>
           </div>
         )}

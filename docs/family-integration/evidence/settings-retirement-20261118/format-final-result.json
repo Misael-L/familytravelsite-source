@@ -1,0 +1,7 @@
+{
+  "exit": 0,
+  "seconds": 82.38,
+  "command": "npm run lint:format",
+  "installed_rules_and_baselines_unchanged": true,
+  "fixed_declarations": 128
+}

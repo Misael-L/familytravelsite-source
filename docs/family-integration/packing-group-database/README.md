@@ -1,0 +1,5 @@
+# Reviewed U04-C1a database-source snapshot
+
+These are inert, reviewed copies of the canonical FamilyTravelApp migration120 and its76-case test/guard/runner sources. They are not web runtime modules or a production migration directory. The handoff records the exact source hashes. The authoritative edit locations are FamilyTravelApp/supabase/migrations and FamilyTravelApp/supabase/tests. Change them there, test them, then explicitly qualify a new snapshot; do not update these copies to accept untested drift.
+
+The test runner requires the marked disposable stack with the reviewed120 migrations and eight exact function bodies. It refuses another/newer chain, never resets/applies SQL, and creates fresh synthetic fixtures. It also requires the earlier canonical packing_commands.py, task_commands.py, trip_aggregate_recovery.py and journey_entry_recovery.py helpers; their exact hashes and source copies are in the sealed acceptance evidence. No credentials, database row contents, Storage bytes or browser profiles are included in this source snapshot.

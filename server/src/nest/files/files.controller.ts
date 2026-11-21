@@ -1,3 +1,18 @@
+import type { TripAccess } from '../../db/repositories/Trips.repository';
+import type { User } from '../../types';
+import { RuntimeEnvService } from '../app-config/runtime-env.service';
+import { logError } from '../audit/audit-log.logger';
+import { CurrentUser } from '../auth-core/current-user.decorator';
+import { JwtAuthGuard } from '../auth-core/jwt-auth.guard';
+import { isDemoWriteBlocked, DEMO_WRITE_ERROR } from '../common/demo-write';
+import { ResponseContract } from '../common/response-contract';
+import { TripAccessGuard } from '../permissions/trip-access.guard';
+import { Trip } from '../permissions/trip.decorator';
+import { StorageService } from '../storage/storage.service';
+import { AllowedFileTypesService } from './allowed-file-types.service';
+import { MAX_FILE_SIZE, BLOCKED_EXTENSIONS, isUploadTypeAllowed, isVideoExtension } from './files.constants';
+import { FileUploadDto, FileUpdateDto, FileLinkDto } from './files.dto';
+import { FilesService } from './files.service';
 import {
   Body,
   Controller,
@@ -16,42 +31,68 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import path from 'path';
-import fs from 'fs';
-import { v4 as uuidv4 } from 'uuid';
-import type { User } from '../../types';
-import { FilesService } from './files.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { CurrentUser } from '../auth/current-user.decorator';
-import { MAX_FILE_SIZE, MAX_VIDEO_SIZE, BLOCKED_EXTENSIONS, filesDir, getAllowedExtensions, isVideoExtension } from '../../services/fileService';
-import { isDemoEmail } from '../../services/demo';
+import {
+  fileLinkCreateResponseSchema,
+  fileLinksResponseSchema,
+  fileTrashEmptyResponseSchema,
+  successResponseSchema,
+  tripFileResponseSchema,
+  tripFilesResponseSchema,
+} from '@trek/shared';
 
-const UPLOAD = {
-  storage: diskStorage({
-    destination: (_req, _file, cb) => { if (!fs.existsSync(filesDir)) fs.mkdirSync(filesDir, { recursive: true }); cb(null, filesDir); },
-    filename: (_req, file, cb) => cb(null, `${uuidv4()}${path.extname(file.originalname)}`),
-  }),
-  // Allow up to the video cap; non-video files are still held to MAX_FILE_SIZE by
-  // the per-type guard in the upload handler (#823).
-  limits: { fileSize: MAX_VIDEO_SIZE },
-  defParamCharset: 'utf8', // parity with legacy routes/files.ts — preserve non-ASCII original filenames
-  fileFilter: (_req: unknown, file: Express.Multer.File, cb: (err: Error | null, accept: boolean) => void) => {
+import fs from 'fs';
+import type { Options } from 'multer';
+import path from 'path';
+
+/**
+ * Trip-file upload filter, built from the container.
+ *
+ * A factory rather than a module-scope literal because it reads the operator's
+ * allowed-extension list at request time, and that list lives in the database.
+ * The rest of the multer options come from the storage upload factory
+ * (buildStorageUploadOptions in files.module.ts); this closure is passed
+ * through untouched.
+ */
+export function filesUploadFileFilter(allowedTypes: AllowedFileTypesService): Options['fileFilter'] {
+  return (_req, file, cb) => {
     const ext = path.extname(file.originalname).toLowerCase();
     const reject = () => {
       // i18n key — the client resolves it via t() (see translateApiError).
       const err: Error & { statusCode?: number } = new Error('files.uploadErrorType');
       err.statusCode = 400;
-      cb(err, false);
+      cb(err);
     };
     if (BLOCKED_EXTENSIONS.includes(ext) || file.mimetype.includes('svg')) return reject();
-    const allowed = getAllowedExtensions().split(',').map((e) => e.trim().toLowerCase());
-    const fileExt = ext.replace('.', '');
-    // Video is accepted as media regardless of the admin doc-types allowlist (#823).
-    if (allowed.includes(fileExt) || isVideoExtension(fileExt) || (allowed.includes('*') && !BLOCKED_EXTENSIONS.includes(ext))) return cb(null, true);
-    reject();
-  },
-};
+    // R1.5: multer's fileFilter is a callback API that cannot await, and the
+    // allowed-extension list is now an async read. The decision runs in a
+    // detached async function that always answers through `cb` — multer holds
+    // the file stream until it does (make-middleware.js says as much). A
+    // rejection refuses the file, so the filter still fails closed. Only the
+    // await is wrapped in try/catch; a throw from cb() itself lands in the
+    // trailing .catch, which logs it and answers multer one final time.
+    (async () => {
+      let allowedList: string;
+      try {
+        allowedList = await allowedTypes.get();
+      } catch {
+        return reject();
+      }
+      // Shared with the MCP upload tool (#1566): blocked/SVG never, video always (#823).
+      if (isUploadTypeAllowed(file.originalname, file.mimetype, allowedList)) return cb(null, true);
+      reject();
+    })().catch((err: unknown) => {
+      logError(`files upload fileFilter: ${err instanceof Error ? err.message : String(err)}`);
+      // cb() itself is the only thing that can reach here (every await is
+      // inside the try above); answer once more so multer never hangs, but a
+      // second throw from cb() means multer already answered — swallow it.
+      try {
+        cb(err instanceof Error ? err : new Error(String(err)));
+      } catch {
+        /* multer already answered */
+      }
+    });
+  };
+}
 
 /**
  * /api/trips/:tripId/files — trip file manager (upload, metadata, starring,
@@ -64,52 +105,87 @@ const UPLOAD = {
  * the WebSocket broadcasts with the forwarded X-Socket-Id.
  */
 @Controller('api/trips/:tripId/files')
+// TripAccessGuard carries the trip access check, applied PER HANDLER rather than on
+// the class. The per-handler RIGHT stays inline because files use three different ones
+// (file_upload, file_edit, file_delete), which one class-level @RequirePermission could
+// not express.
+//
+// `upload` is deliberately left off the guard and keeps its own check. Guards run
+// before interceptors, so a class-level guard would answer 404 before multer had read
+// the multipart body — and a response sent while the client is still streaming gets the
+// socket destroyed, so the caller sees ECONNRESET instead of the 404. Refusing after
+// the body has been read costs the bandwidth but keeps the answer readable, which is
+// the behaviour every client already handles.
 @UseGuards(JwtAuthGuard)
 export class FilesController {
-  constructor(private readonly files: FilesService) {}
+  constructor(
+    private readonly files: FilesService,
+    private readonly env: RuntimeEnvService,
+    private readonly storage: StorageService,
+  ) {}
 
-  private requireTrip(tripId: string, user: User) {
-    const trip = this.files.verifyTripAccess(tripId, user.id);
-    if (!trip) {
-      throw new HttpException({ error: 'Trip not found' }, 404);
-    }
-    return trip;
-  }
-
-  // A file may only point at reservations/assignments/places from its own trip.
+  // A file may only point at reservations/assignments/places/budget_items from its own trip.
   // Reject cross-trip ids before they are stored — the reservation JOIN would
   // otherwise leak the foreign reservation's title back to the caller.
-  private assertLinkTargets(tripId: string, body: { reservation_id?: string | null; assignment_id?: string | null; place_id?: string | null }) {
-    if (this.files.findForeignLinkTarget(tripId, body)) {
+  private async assertLinkTargets(
+    tripId: string,
+    body: {
+      reservation_id?: string | number | null;
+      assignment_id?: string | number | null;
+      place_id?: string | number | null;
+      budget_item_id?: string | number | null;
+    },
+  ) {
+    if (await this.files.findForeignLinkTarget(tripId, body)) {
       throw new HttpException({ error: 'Linked item does not belong to this trip' }, 400);
     }
   }
 
+  @UseGuards(TripAccessGuard)
   @Get()
-  list(@CurrentUser() user: User, @Param('tripId') tripId: string, @Query('trash') trash?: string) {
-    this.requireTrip(tripId, user);
-    return { files: this.files.listFiles(tripId, trash === 'true') };
+  @ResponseContract(tripFilesResponseSchema)
+  async list(
+    @CurrentUser() user: User,
+    @Trip() trip: TripAccess,
+    @Param('tripId') tripId: string,
+    @Query('trash') trash?: string,
+  ) {
+    return { files: await this.files.listFiles(tripId, trash === 'true') };
   }
 
   @Post()
-  @UseInterceptors(FileInterceptor('file', UPLOAD))
-  upload(
+  @UseInterceptors(FileInterceptor('file'))
+  @ResponseContract(tripFileResponseSchema)
+  async upload(
     @CurrentUser() user: User,
     @Param('tripId') tripId: string,
     @UploadedFile() file: Express.Multer.File | undefined,
-    @Body() body: { place_id?: string; description?: string; reservation_id?: string },
+    @Body() body: FileUploadDto,
     @Headers('x-socket-id') socketId?: string,
   ) {
-    // multer (diskStorage) has already written the upload by the time we get here,
+    // multer (diskStorage) has already spooled the upload by the time we get here,
     // so every rejection below must remove the orphaned bytes — otherwise a 404/403
     // leaves up to the 500 MB video cap on disk (#823).
-    const cleanup = () => { if (file?.path) { try { fs.unlinkSync(file.path); } catch { /* best-effort */ } } };
-    try {
-      const trip = this.requireTrip(tripId, user);
-      if (process.env.DEMO_MODE?.toLowerCase() === 'true' && isDemoEmail(user.email)) {
-        throw new HttpException({ error: 'Uploads are disabled in demo mode. Self-host TREK for full functionality.' }, 403);
+    const cleanup = () => {
+      if (file?.path) {
+        try {
+          fs.unlinkSync(file.path);
+        } catch {
+          /* best-effort */
+        }
       }
-      if (!this.files.can('file_upload', trip, user)) {
+    };
+    try {
+      const trip = await this.files.verifyTripAccess(tripId, user.id);
+      if (!trip) {
+        throw new HttpException({ error: 'Trip not found' }, 404);
+      }
+      // Inline rather than DemoWriteGuard: the 404 above has to come first, so a demo
+      // user still cannot learn which trips exist.
+      if (isDemoWriteBlocked(this.env, user.email)) {
+        throw new HttpException(DEMO_WRITE_ERROR, 403);
+      }
+      if (!(await this.files.can('file_upload', trip, user))) {
         throw new HttpException({ error: 'No permission to upload files' }, 403);
       }
     } catch (err) {
@@ -128,68 +204,113 @@ export class FilesController {
       throw new HttpException({ error: 'File is too large' }, 400);
     }
     try {
-      this.assertLinkTargets(tripId, { reservation_id: body.reservation_id, place_id: body.place_id });
+      await this.assertLinkTargets(tripId, {
+        reservation_id: body.reservation_id,
+        place_id: body.place_id,
+        budget_item_id: body.budget_item_id,
+      });
     } catch (err) {
       cleanup();
       throw err;
     }
-    const created = this.files.createFile(tripId, file, user.id, {
+    // Commit the spooled upload to its final storage location (atomic
+    // same-volume rename) before anything references the final path.
+    try {
+      await this.storage.put('files', file.filename, { tmpPath: file.path });
+    } catch (err) {
+      cleanup();
+      throw err;
+    }
+    const created = await this.files.createFile(tripId, file, user.id, {
       place_id: body.place_id,
       description: body.description,
       reservation_id: body.reservation_id,
+      budget_item_id: body.budget_item_id,
     });
     this.files.broadcast(tripId, 'file:created', { file: created }, socketId);
     return { file: created };
   }
 
+  @UseGuards(TripAccessGuard)
   @Put(':id')
-  update(@CurrentUser() user: User, @Param('tripId') tripId: string, @Param('id') id: string, @Body() body: { description?: string; place_id?: string | null; reservation_id?: string | null }, @Headers('x-socket-id') socketId?: string) {
-    const trip = this.requireTrip(tripId, user);
-    if (!this.files.can('file_edit', trip, user)) {
+  @ResponseContract(tripFileResponseSchema)
+  async update(
+    @CurrentUser() user: User,
+    @Trip() trip: TripAccess,
+    @Param('tripId') tripId: string,
+    @Param('id') id: string,
+    @Body() body: FileUpdateDto,
+    @Headers('x-socket-id') socketId?: string,
+  ) {
+    if (!(await this.files.can('file_edit', trip, user))) {
       throw new HttpException({ error: 'No permission to edit files' }, 403);
     }
-    const file = this.files.getFileById(id, tripId);
+    const file = await this.files.getFileById(id, tripId);
     if (!file) {
       throw new HttpException({ error: 'File not found' }, 404);
     }
-    this.assertLinkTargets(tripId, { reservation_id: body.reservation_id, place_id: body.place_id });
-    const updated = this.files.updateFile(id, file, { description: body.description, place_id: body.place_id, reservation_id: body.reservation_id });
+    await this.assertLinkTargets(tripId, {
+      reservation_id: body.reservation_id,
+      place_id: body.place_id,
+      budget_item_id: body.budget_item_id,
+    });
+    const updated = await this.files.updateFile(id, file, {
+      description: body.description,
+      place_id: body.place_id,
+      reservation_id: body.reservation_id,
+      budget_item_id: body.budget_item_id,
+    });
     this.files.broadcast(tripId, 'file:updated', { file: updated }, socketId);
     return { file: updated };
   }
 
+  @UseGuards(TripAccessGuard)
   @Patch(':id/star')
-  star(@CurrentUser() user: User, @Param('tripId') tripId: string, @Param('id') id: string, @Headers('x-socket-id') socketId?: string) {
-    const trip = this.requireTrip(tripId, user);
-    if (!this.files.can('file_edit', trip, user)) {
+  @ResponseContract(tripFileResponseSchema)
+  async star(
+    @CurrentUser() user: User,
+    @Trip() trip: TripAccess,
+    @Param('tripId') tripId: string,
+    @Param('id') id: string,
+    @Headers('x-socket-id') socketId?: string,
+  ) {
+    if (!(await this.files.can('file_edit', trip, user))) {
       throw new HttpException({ error: 'No permission' }, 403);
     }
-    const file = this.files.getFileById(id, tripId);
+    const file = await this.files.getFileById(id, tripId);
     if (!file) {
       throw new HttpException({ error: 'File not found' }, 404);
     }
-    const updated = this.files.toggleStarred(id, file.starred);
+    const updated = await this.files.toggleStarred(id, file.starred);
     this.files.broadcast(tripId, 'file:updated', { file: updated }, socketId);
     return { file: updated };
   }
 
+  @UseGuards(TripAccessGuard)
   @Delete('trash/empty')
-  async emptyTrash(@CurrentUser() user: User, @Param('tripId') tripId: string) {
-    const trip = this.requireTrip(tripId, user);
-    if (!this.files.can('file_delete', trip, user)) {
+  @ResponseContract(fileTrashEmptyResponseSchema)
+  async emptyTrash(@CurrentUser() user: User, @Trip() trip: TripAccess, @Param('tripId') tripId: string) {
+    if (!(await this.files.can('file_delete', trip, user))) {
       throw new HttpException({ error: 'No permission' }, 403);
     }
     const deleted = await this.files.emptyTrash(tripId);
     return { success: true, deleted };
   }
 
+  @UseGuards(TripAccessGuard)
   @Delete(':id/permanent')
-  async permanent(@CurrentUser() user: User, @Param('tripId') tripId: string, @Param('id') id: string, @Headers('x-socket-id') socketId?: string) {
-    const trip = this.requireTrip(tripId, user);
-    if (!this.files.can('file_delete', trip, user)) {
+  @ResponseContract(successResponseSchema)
+  async permanent(
+    @CurrentUser() user: User,
+    @Trip() trip: TripAccess,
+    @Param('tripId') tripId: string,
+    @Param('id') id: string,
+    @Headers('x-socket-id') socketId?: string,
+  ) {
+    if (!(await this.files.can('file_delete', trip, user))) {
       throw new HttpException({ error: 'No permission' }, 403);
     }
-    const file = this.files.getDeletedFile(id, tripId);
+    const file = await this.files.getDeletedFile(id, tripId);
     if (!file) {
       throw new HttpException({ error: 'File not found in trash' }, 404);
     }
@@ -198,66 +319,127 @@ export class FilesController {
     return { success: true };
   }
 
+  @UseGuards(TripAccessGuard)
   @Delete(':id')
-  remove(@CurrentUser() user: User, @Param('tripId') tripId: string, @Param('id') id: string, @Headers('x-socket-id') socketId?: string) {
-    const trip = this.requireTrip(tripId, user);
-    if (!this.files.can('file_delete', trip, user)) {
+  @ResponseContract(successResponseSchema)
+  async remove(
+    @CurrentUser() user: User,
+    @Trip() trip: TripAccess,
+    @Param('tripId') tripId: string,
+    @Param('id') id: string,
+    @Headers('x-socket-id') socketId?: string,
+  ) {
+    if (!(await this.files.can('file_delete', trip, user))) {
       throw new HttpException({ error: 'No permission to delete files' }, 403);
     }
-    const file = this.files.getFileById(id, tripId);
+    const file = await this.files.getFileById(id, tripId);
     if (!file) {
       throw new HttpException({ error: 'File not found' }, 404);
     }
-    this.files.softDeleteFile(id);
+    await this.files.softDeleteFile(id);
     this.files.broadcast(tripId, 'file:deleted', { fileId: Number(id) }, socketId);
     return { success: true };
   }
 
+  @UseGuards(TripAccessGuard)
   @Post(':id/restore')
   @HttpCode(200) // Express answers restore with res.json (200), not the POST-default 201.
-  restore(@CurrentUser() user: User, @Param('tripId') tripId: string, @Param('id') id: string, @Headers('x-socket-id') socketId?: string) {
-    const trip = this.requireTrip(tripId, user);
-    if (!this.files.can('file_delete', trip, user)) {
+  @ResponseContract(tripFileResponseSchema)
+  async restore(
+    @CurrentUser() user: User,
+    @Trip() trip: TripAccess,
+    @Param('tripId') tripId: string,
+    @Param('id') id: string,
+    @Headers('x-socket-id') socketId?: string,
+  ) {
+    if (!(await this.files.can('file_delete', trip, user))) {
       throw new HttpException({ error: 'No permission' }, 403);
     }
-    const file = this.files.getDeletedFile(id, tripId);
+    const file = await this.files.getDeletedFile(id, tripId);
     if (!file) {
       throw new HttpException({ error: 'File not found in trash' }, 404);
     }
-    const restored = this.files.restoreFile(id);
+    const restored = await this.files.restoreFile(id);
     this.files.broadcast(tripId, 'file:created', { file: restored }, socketId);
     return { file: restored };
   }
 
+  @UseGuards(TripAccessGuard)
   @Post(':id/link')
   @HttpCode(200) // Express answers link with res.json (200).
-  link(@CurrentUser() user: User, @Param('tripId') tripId: string, @Param('id') id: string, @Body() body: { reservation_id?: string | null; assignment_id?: string | null; place_id?: string | null }) {
-    const trip = this.requireTrip(tripId, user);
-    if (!this.files.can('file_edit', trip, user)) {
+  @ResponseContract(fileLinkCreateResponseSchema)
+  async link(
+    @CurrentUser() user: User,
+    @Trip() trip: TripAccess,
+    @Param('tripId') tripId: string,
+    @Param('id') id: string,
+    @Body() body: FileLinkDto,
+    @Headers('x-socket-id') socketId?: string,
+  ) {
+    if (!(await this.files.can('file_edit', trip, user))) {
       throw new HttpException({ error: 'No permission' }, 403);
     }
-    const file = this.files.getFileById(id, tripId);
+    const file = await this.files.getFileById(id, tripId);
     if (!file) {
       throw new HttpException({ error: 'File not found' }, 404);
     }
-    this.assertLinkTargets(tripId, { reservation_id: body.reservation_id, assignment_id: body.assignment_id, place_id: body.place_id });
-    const links = this.files.createFileLink(id, { reservation_id: body.reservation_id, assignment_id: body.assignment_id, place_id: body.place_id });
+    await this.assertLinkTargets(tripId, {
+      reservation_id: body.reservation_id,
+      assignment_id: body.assignment_id,
+      place_id: body.place_id,
+      budget_item_id: body.budget_item_id,
+    });
+    const links = await this.files.linkFile(
+      id,
+      {
+        reservation_id: body.reservation_id,
+        assignment_id: body.assignment_id,
+        place_id: body.place_id,
+        budget_item_id: body.budget_item_id,
+      },
+      this.files.restWriter(tripId, user, socketId),
+    );
     return { success: true, links };
   }
 
+  @UseGuards(TripAccessGuard)
   @Delete(':id/link/:linkId')
-  unlink(@CurrentUser() user: User, @Param('tripId') tripId: string, @Param('id') id: string, @Param('linkId') linkId: string) {
-    const trip = this.requireTrip(tripId, user);
-    if (!this.files.can('file_edit', trip, user)) {
+  @ResponseContract(successResponseSchema)
+  async unlink(
+    @CurrentUser() user: User,
+    @Trip() trip: TripAccess,
+    @Param('tripId') tripId: string,
+    @Param('id') id: string,
+    @Param('linkId') linkId: string,
+    @Headers('x-socket-id') socketId?: string,
+  ) {
+    if (!(await this.files.can('file_edit', trip, user))) {
       throw new HttpException({ error: 'No permission' }, 403);
     }
-    this.files.deleteFileLink(linkId, id);
+    // deleteFileLink scopes by (linkId, fileId) only, so the file itself has to
+    // be resolved against :tripId first. Otherwise a member of any trip could
+    // drop a link row belonging to a foreign trip's file.
+    const file = await this.files.getFileById(id, tripId);
+    if (!file) {
+      throw new HttpException({ error: 'File not found' }, 404);
+    }
+    await this.files.unlinkFile(id, linkId, this.files.restWriter(tripId, user, socketId));
     return { success: true };
   }
 
+  @UseGuards(TripAccessGuard)
   @Get(':id/links')
-  links(@CurrentUser() user: User, @Param('tripId') tripId: string, @Param('id') id: string) {
-    this.requireTrip(tripId, user);
-    return { links: this.files.getFileLinks(id) };
+  @ResponseContract(fileLinksResponseSchema)
+  async links(
+    @CurrentUser() user: User,
+    @Trip() trip: TripAccess,
+    @Param('tripId') tripId: string,
+    @Param('id') id: string,
+  ) {
+    const file = await this.files.getFileById(id, tripId);
+    if (!file) {
+      throw new HttpException({ error: 'File not found' }, 404);
+    }
+    return { links: await this.files.getFileLinks(id) };
   }
 }

@@ -1,52 +1,71 @@
-import type { LlmExtractionClient, LlmExtractionInput } from '../llm-provider.interface';
+import { readEnv } from '../../../app-config';
 import { safeFetchLlm } from '../../../utils/ssrfGuard';
+import { toReservationList } from '../lenient-json';
+import type { LlmExtractionClient, LlmExtractionInput } from '../llm-provider.interface';
+import { isContextOverflow, LlmContextOverflowError } from './context-overflow';
+import { UnreadableLlmResponse } from './openai-compatible.client';
 
-const TIMEOUT_MS = 120_000;
-const MAX_TOKENS = 8192;
+/** The answer cap when LLM_MAX_OUTPUT_TOKENS is unset. */
+const DEFAULT_MAX_TOKENS = 8192;
 const ANTHROPIC_VERSION = '2023-06-01';
-const TOOL_NAME = 'emit_reservations';
 
 /**
- * Anthropic Messages API client. Structured output via forced tool-use: a single
- * `emit_reservations` tool whose `input_schema` is the reservations schema, with
- * `tool_choice` forcing it — the documented, reliable way to get structured JSON.
- * PDFs go as native base64 `document` blocks (Anthropic reads scanned PDFs).
+ * Anthropic Messages API client. Structured output via tool use: a single
+ * `emit_<rootKey>` tool (`emit_reservations` by default) whose `input_schema` is
+ * the caller's schema, which the system prompt asks the model to answer with.
+ * The tool is not forced through `tool_choice`: the current models (Claude
+ * Sonnet 5.5, Opus 5.5, Fable 5.1) refuse `{ type: 'tool' }` and `{ type: 'any' }`
+ * with a 400, while `auto` is accepted by every model and by Messages-compatible
+ * gateways (#2902). A model that answers in text instead is reported as such below.
+ * PDFs go as native base64 `document` blocks (Anthropic reads scanned PDFs), photos
+ * as `image` blocks.
  * Raw fetch (no SDK) to match the codebase's HTTP style.
  */
 export class AnthropicClient implements LlmExtractionClient {
   async extract(input: LlmExtractionInput): Promise<Record<string, unknown>[]> {
-    const base = (input.baseUrl ?? 'https://api.anthropic.com').replace(/\/+$/, '');
+    // The lookbehind pins the run to its own start. Without it `\/+$` restarts at every
+    // slash of a trailing run that turns out not to end the string, rescanning to the
+    // end each time; the assertion only rules out start positions the leftmost match
+    // could never have used, so the trimmed result is unchanged.
+    const base = (input.baseUrl ?? 'https://api.anthropic.com').replace(/(?<!\/)\/+$/, '');
     const url = `${base}/v1/messages`;
 
+    const rootKey = input.rootKey ?? 'reservations';
+    const toolName = `emit_${rootKey}`;
+    const userText = input.userText ?? USER_TEXT;
+
     const content: unknown[] = [];
-    if (input.file) {
+    for (const file of input.file ? [input.file, ...(input.pageImages ?? [])] : []) {
       content.push({
-        type: 'document',
-        source: { type: 'base64', media_type: input.file.mimeType, data: input.file.data.toString('base64') },
+        // A photo is an image block; the document block only takes a PDF.
+        type: file.mimeType.startsWith('image/') ? 'image' : 'document',
+        source: { type: 'base64', media_type: file.mimeType, data: file.data.toString('base64') },
       });
     }
     content.push({
       type: 'text',
-      text: input.text ? `${USER_TEXT}\n\n${input.text}` : USER_TEXT,
+      text: input.text ? `${userText}\n\n${input.text}` : userText,
     });
 
+    const maxTokens = readEnv().integrations.llmMaxOutputTokens ?? DEFAULT_MAX_TOKENS;
     const body = {
       model: input.model,
-      max_tokens: MAX_TOKENS,
-      system: input.prompt,
+      max_tokens: maxTokens,
+      system: `${input.prompt}\n\n${toolInstruction(toolName)}`,
       tools: [
         {
-          name: TOOL_NAME,
-          description: 'Return the travel reservations extracted from the document.',
+          name: toolName,
+          description: `Return the ${rootKey} extracted from the document.`,
           input_schema: input.jsonSchema,
         },
       ],
-      tool_choice: { type: 'tool', name: TOOL_NAME },
+      // At most one call: the whole list goes into it.
+      tool_choice: { type: 'auto', disable_parallel_tool_use: true },
       messages: [{ role: 'user', content }],
     };
 
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+    const timer = setTimeout(() => controller.abort(), readEnv().integrations.llmTimeoutMs);
     let res: Response;
     try {
       // baseUrl is user-configurable — guard it against pointing at the cloud
@@ -67,22 +86,40 @@ export class AnthropicClient implements LlmExtractionClient {
 
     if (!res.ok) {
       const detail = await res.text().catch(() => '');
-      throw new Error(`Anthropic request failed (${res.status}): ${detail.slice(0, 300)}`);
+      const message = `Anthropic request failed (${res.status}): ${detail.slice(0, 300)}`;
+      // A gateway in front of a smaller model can run out of context (#2652, #2655).
+      if (res.status === 400 && isContextOverflow(detail)) throw new LlmContextOverflowError(message);
+      throw new Error(message);
     }
 
     const data = (await res.json()) as {
       stop_reason?: string;
-      content?: { type: string; name?: string; input?: { reservations?: unknown } }[];
+      content?: { type: string; name?: string; input?: Record<string, unknown> }[];
     };
 
     if (data.stop_reason === 'refusal') {
       throw new Error('Anthropic declined to process this document');
     }
+    // A run that hits the cap stops mid-tool-call, so what arrives is a fragment
+    // of the list or nothing at all — and a tool that was not called left
+    // no list either. Neither is "this document holds no booking", but both came
+    // back as [] and reached the person as an empty preview with nothing in the
+    // log: the #2375 symptom, on the provider the dropdown offers first.
+    if (data.stop_reason === 'max_tokens') {
+      throw new UnreadableLlmResponse(
+        `the answer was cut off at the ${maxTokens}-token limit — raise LLM_MAX_OUTPUT_TOKENS or import fewer bookings per document`,
+      );
+    }
 
-    const toolUse = data.content?.find(b => b.type === 'tool_use' && b.name === TOOL_NAME);
-    const reservations = toolUse?.input?.reservations;
-    return Array.isArray(reservations) ? (reservations as Record<string, unknown>[]) : [];
+    const toolUse = data.content?.find((b) => b.type === 'tool_use' && b.name === toolName);
+    if (!toolUse) throw new UnreadableLlmResponse(`the model answered without calling ${toolName}`);
+    return toReservationList(toolUse.input?.[rootKey], rootKey);
   }
 }
 
 const USER_TEXT = 'Extract every travel reservation from the following document as schema.org JSON-LD.';
+
+/** What stands in for the forced tool call: the answer goes through the tool, once, and nowhere else. */
+function toolInstruction(toolName: string): string {
+  return `Answer only by calling the ${toolName} tool, exactly once, with everything you extracted. Call it with an empty list when the document holds nothing to extract. Do not answer in text.`;
+}

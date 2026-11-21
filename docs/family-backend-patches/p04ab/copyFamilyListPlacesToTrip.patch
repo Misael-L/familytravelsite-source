@@ -1,0 +1,49 @@
+--- a/family-backend/src/data/supabase/copyFamilyListPlacesToTrip.ts
++++ b/family-backend/src/data/supabase/copyFamilyListPlacesToTrip.ts
+@@ -1,3 +1,4 @@
++import { captureFamilyOperation } from './operationContext'
+ /**
+  * Copy named-list catalog places onto a trip via W8.5 upserts.
+  * Not Nest collectionsApi.copyToTrip. Not hearts. Not schedule/hotel stays.
+@@ -16,7 +17,9 @@
+   skipped: { id: string; name: string }[]
+ }
+ 
+-export function isFamilyCopyPlaceItem(item: FamilyCopyListItem): item is FamilyCopyListItem & { catalog_entity_id: string } {
++export function isFamilyCopyPlaceItem(
++  item: FamilyCopyListItem
++): item is FamilyCopyListItem & { catalog_entity_id: string } {
+   const id = item.catalog_entity_id?.trim()
+   return item.catalog_kind === 'place' && Boolean(id)
+ }
+@@ -27,6 +30,7 @@
+   canMutate: boolean
+   tripPlaceIds: ReadonlySet<string>
+ }): Promise<FamilyCopyToTripResult> {
++  const operationContext = captureFamilyOperation()
+   if (!opts.canMutate) {
+     const err = new Error('hofOnly')
+     ;(err as { code?: string }).code = 'hofOnly'
+@@ -50,13 +54,15 @@
+     }
+     seen.add(entityId)
+ 
+-    const result = await addCatalogPlaceToTrip({
+-      tripId: opts.tripId,
+-      placeId: entityId,
+-      tripPlaceIds,
+-      canMutate: true,
+-      confirmedOutOfPurview: true,
+-    })
++    const result = await operationContext.perform(async () =>
++      addCatalogPlaceToTrip({
++        tripId: opts.tripId,
++        placeId: entityId,
++        tripPlaceIds,
++        canMutate: true,
++        confirmedOutOfPurview: true,
++      })
++    )
+     if (result.ok && result.outcome === 'added') {
+       copied += 1
+       tripPlaceIds.add(entityId)

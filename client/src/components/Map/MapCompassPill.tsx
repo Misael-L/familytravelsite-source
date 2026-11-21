@@ -3,8 +3,9 @@ import { Navigation } from 'lucide-react'
 
 export interface CompassMap {
   getBearing: () => number
-  on: (type: 'rotate', listener: () => void) => unknown
-  off: (type: 'rotate', listener: () => void) => unknown
+  getPitch: () => number
+  on: (type: 'rotate' | 'pitch', listener: () => void) => unknown
+  off: (type: 'rotate' | 'pitch', listener: () => void) => unknown
   easeTo: (options: { bearing: number; pitch: number; duration: number }) => unknown
 }
 
@@ -15,15 +16,28 @@ export interface CompassMap {
  * (GL only) and built as the SAME frosted shell (padding 4 around a 34px button)
  * so its height and transparency match the POI pill exactly.
  */
-export function MapCompassPill({ map }: { map: CompassMap }) {
+export function MapCompassPill({ map, onlyWhenRotated = false }: {
+  map: CompassMap
+  /** On the phone, hide the reset control while the map is north-facing and flat. */
+  onlyWhenRotated?: boolean
+}) {
   const [bearing, setBearing] = useState(() => map.getBearing())
+  const [pitch, setPitch] = useState(() => map.getPitch())
 
   useEffect(() => {
-    const update = () => setBearing(map.getBearing())
-    update()
-    map.on('rotate', update)
-    return () => { map.off('rotate', update) }
+    const updateBearing = () => setBearing(map.getBearing())
+    const updatePitch = () => setPitch(map.getPitch())
+    updateBearing()
+    updatePitch()
+    map.on('rotate', updateBearing)
+    map.on('pitch', updatePitch)
+    return () => {
+      map.off('rotate', updateBearing)
+      map.off('pitch', updatePitch)
+    }
   }, [map])
+
+  if (onlyWhenRotated && Math.abs(bearing) < 0.5 && Math.abs(pitch) < 0.5) return null
 
   return (
     <div style={{

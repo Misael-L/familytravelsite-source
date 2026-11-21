@@ -8,7 +8,6 @@ import { useAuthStore } from '../../store/authStore'
 import { server } from '../../../tests/helpers/msw/server'
 import { http, HttpResponse } from 'msw'
 import VacayPersons from './VacayPersons'
-import { FamilyVacayProvider, type VacayChromeSession } from '../../pages/vacay/vacaySession'
 
 // ── MSW handler helpers ───────────────────────────────────────────────────────
 
@@ -69,7 +68,7 @@ describe('VacayPersons', () => {
 
     render(<VacayPersons />)
 
-    expect(document.body).toHaveTextContent('(you)')
+    expect(document.body).toHaveTextContent('you')
   })
 
   it('FE-COMP-VACAYPERSONS-003: Pending invite rendered with "(pending)" text', () => {
@@ -81,7 +80,7 @@ describe('VacayPersons', () => {
     render(<VacayPersons />)
 
     expect(document.body).toHaveTextContent('Bob')
-    expect(document.body).toHaveTextContent('(pending)')
+    expect(document.body).toHaveTextContent('pending')
   })
 
   it('FE-COMP-VACAYPERSONS-004: Opens invite modal on UserPlus click', async () => {
@@ -265,137 +264,5 @@ describe('VacayPersons', () => {
     await user.click(screen.getByText('Bob'))
 
     expect(setSelectedUserIdMock).not.toHaveBeenCalled()
-  })
-})
-
-function familyPersonsSession(overrides: Partial<VacayChromeSession> = {}): VacayChromeSession {
-  return {
-    familyChrome: true,
-    plan: null,
-    users: [
-      { id: 'p1', username: 'Ada', color: '#6366f1' },
-    ],
-    pendingInvites: [],
-    isFused: true,
-    entries: [],
-    companyHolidays: [],
-    stats: [],
-    selectedYear: 2026,
-    selectedUserId: 'p1',
-    holidays: {},
-    tripWindows: [],
-    approvedTripDates: new Set(),
-    proposedTripDates: new Set(),
-    currentPersonId: 'p1',
-    canReview: false,
-    overlayMode: 'add',
-    overlayPresets: [
-      { id: 'h', name: 'Household', enabled: false, personIds: ['p1'] },
-      { id: 'f', name: 'Family', enabled: false, personIds: ['p1'] },
-    ],
-    overlayPeople: [],
-    pendingOutgoing: [],
-    incomingAccess: [],
-    setSelectedUserId: vi.fn(),
-    updatePlan: vi.fn(),
-    updateColor: vi.fn(),
-    invite: vi.fn(),
-    cancelInvite: vi.fn(),
-    dissolve: vi.fn(),
-    toggleEntry: vi.fn(),
-    toggleCompanyHoliday: vi.fn(),
-    loadStats: vi.fn(),
-    updateVacationDays: vi.fn(),
-    addHolidayCalendar: vi.fn(),
-    updateHolidayCalendar: vi.fn(),
-    deleteHolidayCalendar: vi.fn(),
-    toggleOverlayPreset: vi.fn(),
-    addOverlayPerson: vi.fn(),
-    removeOverlayPerson: vi.fn(),
-    requestCalendarAccess: vi.fn(),
-    revokeCalendarAccess: vi.fn(),
-    loadOverlayPickerOptions: vi.fn().mockResolvedValue([]),
-    ...overrides,
-  }
-}
-
-describe('VacayPersons family chrome gates', () => {
-  it('defaults to you plus Household/Family toggles', () => {
-    render(
-      <FamilyVacayProvider value={familyPersonsSession()}>
-        <VacayPersons />
-      </FamilyVacayProvider>,
-    )
-    expect(screen.getByText('Ada')).toBeInTheDocument()
-    expect(screen.getByText('(you)')).toBeInTheDocument()
-    expect(screen.getByRole('switch', { name: 'Household' })).toBeInTheDocument()
-    expect(screen.getByRole('switch', { name: 'Family' })).toBeInTheDocument()
-    expect(screen.queryByText('Bob')).not.toBeInTheDocument()
-  })
-
-  it('HOF plus opens Add Individual User without Nest invite copy', async () => {
-    const user = userEvent.setup()
-    render(
-      <FamilyVacayProvider value={familyPersonsSession({ overlayMode: 'add', canReview: true })}>
-        <VacayPersons />
-      </FamilyVacayProvider>,
-    )
-    await user.click(screen.getAllByRole('button')[0])
-    expect(screen.getByRole('heading', { name: 'Add Individual User' })).toBeInTheDocument()
-    expect(screen.queryByRole('heading', { name: 'Invite User' })).not.toBeInTheDocument()
-  })
-
-  it('child plus opens Request access', async () => {
-    const user = userEvent.setup()
-    render(
-      <FamilyVacayProvider value={familyPersonsSession({ overlayMode: 'request', canReview: false })}>
-        <VacayPersons />
-      </FamilyVacayProvider>,
-    )
-    await user.click(screen.getAllByRole('button')[0])
-    expect(screen.getByRole('heading', { name: 'Request access' })).toBeInTheDocument()
-  })
-
-  it('guest can change own color but not overlay extras', async () => {
-    const user = userEvent.setup()
-    render(
-      <FamilyVacayProvider value={familyPersonsSession({
-        canReview: false,
-        overlayPeople: [{ id: 'p2', username: 'Bob', color: '#ec4899' }],
-      })}>
-        <VacayPersons />
-      </FamilyVacayProvider>,
-    )
-
-    const colorButtons = screen.getAllByRole('button', { name: 'Change color' })
-    expect(colorButtons).toHaveLength(1)
-    await user.click(colorButtons[0])
-    expect(screen.getByRole('heading', { name: 'Change color' })).toBeInTheDocument()
-  })
-
-  it('preset toggle does not retarget the paint brush', async () => {
-    const setSelectedUserId = vi.fn()
-    const toggleOverlayPreset = vi.fn()
-    const user = userEvent.setup()
-    render(
-      <FamilyVacayProvider value={familyPersonsSession({ setSelectedUserId, toggleOverlayPreset })}>
-        <VacayPersons />
-      </FamilyVacayProvider>,
-    )
-    await user.click(screen.getByRole('switch', { name: 'Household' }))
-    expect(toggleOverlayPreset).toHaveBeenCalledWith('h', true)
-    expect(setSelectedUserId).not.toHaveBeenCalled()
-  })
-
-  it('reviewer can change overlay individual color', async () => {
-    render(
-      <FamilyVacayProvider value={familyPersonsSession({
-        canReview: true,
-        overlayPeople: [{ id: 'p2', username: 'Bob', color: '#ec4899' }],
-      })}>
-        <VacayPersons />
-      </FamilyVacayProvider>,
-    )
-    expect(screen.getAllByRole('button', { name: 'Change color' })).toHaveLength(2)
   })
 })

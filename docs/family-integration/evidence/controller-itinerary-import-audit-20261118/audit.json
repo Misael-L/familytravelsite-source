@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "scope": "Static audit of the exact direct dependencies added by the Q97 extraction; no dynamic hosted acceptance.",
+  "original_named_runtime_import_relative_order_exact": true,
+  "helper_only_references_modules_in_original_dependency_graph": true,
+  "new_helper_may_initialize_earlier": [
+    "client/src/integrations/family/legacy/pages/familyTripWorkspace/workspacePlaceCategoryModel.ts",
+    "family-backend/src/pages/familyTripWorkspace/workspacePlaceCategoryModel.ts"
+  ],
+  "only_earlier_dependency_is_pure": true,
+  "pure_model_runtime_imports": 0,
+  "pure_model_top_level_effects": 0,
+  "pure_model_top_level_initializers": "one string literal and function declarations",
+  "effectful_dependency_initialization_order_preserved": true,
+  "correction": "The earlier prototype compared original import specifiers after filtering the new helper. Its wording runtime import evaluation order exact was broader than that assertion. This follow-up records the pure marker-model initialization explicitly; no runtime source change is required.",
+  "package_export": "./src/pages/familyTripWorkspace/workspacePlaceCategoryModel.ts",
+  "hashes": {
+    "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx": "da67d49ab3651f2e4286b4c67e7dc66554678102fbbf197669a850bc3ab50be5",
+    "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts": "63b073a7e92f4de19961da09f94fb60d373dc2290fc73d261ba50eaa913e4f6c",
+    "client/src/integrations/family/legacy/pages/familyTripWorkspace/workspacePlaceCategoryModel.ts": "cbbaa307be959a86a0d3205945ad65c68a6c709d4900f804a5b71cde13360736",
+    "family-backend/src/pages/familyTripWorkspace/workspacePlaceCategoryModel.ts": "3f8cc085d913c39b08d82b4f56dcb0f73fbc90d9ef0a2a54901c96909f0bc3aa",
+    "family-backend/package.json": "718b41aeafd14a91842d185c751572a853fe2ac3a75a048a4c0faa8007ad1c99"
+  }
+}

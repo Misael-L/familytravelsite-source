@@ -1,75 +1,151 @@
 /**
  * Unit tests for MCP atlas expanded tools (atlas addon-gated):
- * get_atlas_stats, list_visited_regions, mark_region_visited, unmark_region_visited,
- * get_country_atlas_places, update_bucket_list_item.
+ * get_atlas_stats, list_visited_regions, locate_atlas_region, mark_region_visited,
+ * unmark_region_visited, get_country_atlas_places, update_bucket_list_item.
  * Also covers resources trek://atlas/stats and trek://atlas/regions.
  */
+import { ADDON_IDS } from '../../../src/addons';
+import { db as testDb } from '../../../src/db/database';
+import { BucketList } from '../../../src/db/entities/BucketList.entity';
+import { HiddenRegions } from '../../../src/db/entities/HiddenRegions.entity';
+import { PlaceRegions } from '../../../src/db/entities/PlaceRegions.entity';
+import { Places } from '../../../src/db/entities/Places.entity';
+import { ReservationEndpoints } from '../../../src/db/entities/ReservationEndpoints.entity';
+import { VisitedCountries } from '../../../src/db/entities/VisitedCountries.entity';
+import { VisitedRegions } from '../../../src/db/entities/VisitedRegions.entity';
+import {
+  createUser,
+  createBucketListItem,
+  createVisitedCountry,
+  createTrip,
+  createReservation,
+} from '../../helpers/factories';
+import { markCountryVisited } from '../../helpers/factories/atlas';
+import { makePlace } from '../../helpers/factories/places';
+import { countRows, findRow, insertRow, upsertRow } from '../../helpers/factories/rows';
+import { makeTrip } from '../../helpers/factories/trips';
+import { FakeRealtimeService } from '../../helpers/fake-realtime';
+import { createMcpHarness, parseToolResult, parseResourceResult, type McpHarness } from '../../helpers/mcp-harness';
+import { resetTestDb } from '../../helpers/test-db';
+import { setAddonEnabled } from '../../helpers/test-db';
+import { createTestOrm, type TestOrm } from '../../helpers/test-orm';
+
 import { describe, it, expect, vi, beforeAll, beforeEach, afterAll } from 'vitest';
 
-const { testDb, dbMock } = vi.hoisted(() => {
-  const Database = require('better-sqlite3');
-  const db = new Database(':memory:');
-  db.exec('PRAGMA journal_mode = WAL');
-  db.exec('PRAGMA foreign_keys = ON');
-  db.exec('PRAGMA busy_timeout = 5000');
-  const mock = {
-    db,
-    closeDb: () => {},
-    reinitialize: () => {},
-    getPlaceWithTags: () => null,
-    canAccessTrip: (tripId: any, userId: number) =>
-      db.prepare(`SELECT t.id, t.user_id FROM trips t LEFT JOIN trip_members m ON m.trip_id = t.id AND m.user_id = ? WHERE t.id = ? AND (t.user_id = ? OR m.user_id IS NOT NULL)`).get(userId, tripId, userId),
-    isOwner: (tripId: any, userId: number) =>
-      !!db.prepare('SELECT id FROM trips WHERE id = ? AND user_id = ?').get(tripId, userId),
-  };
-  return { testDb: db, dbMock: mock };
+vi.mock('../../../src/db/database', async () => {
+  const { createSnapshotTestDb, buildDbMock } = await import('../../helpers/db-mock');
+  return buildDbMock(createSnapshotTestDb());
 });
 
-vi.mock('../../../src/db/database', () => dbMock);
-vi.mock('../../../src/config', () => ({
-  JWT_SECRET: 'test-jwt-secret-for-trek-testing-only',
-  ENCRYPTION_KEY: 'a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6a7b8c9d0e1f2a3b4c5d6a7b8c9d0e1f2',
-  updateJwtSecret: () => {},
-}));
-
-const { broadcastMock } = vi.hoisted(() => ({ broadcastMock: vi.fn() }));
-vi.mock('../../../src/websocket', () => ({ broadcast: broadcastMock }));
-
-vi.mock('../../../src/services/adminService', () => ({
-  isAddonEnabled: vi.fn().mockReturnValue(true),
-  getCollabFeatures: vi.fn().mockReturnValue({ chat: true, notes: true, polls: true, whatsnext: true }),
-}));
-
-import { createTables } from '../../../src/db/schema';
-import { runMigrations } from '../../../src/db/migrations';
-import { resetTestDb } from '../../helpers/test-db';
-import { createUser } from '../../helpers/factories';
-import { createMcpHarness, parseToolResult, parseResourceResult, type McpHarness } from '../../helpers/mcp-harness';
-
-beforeAll(() => {
-  createTables(testDb);
-  runMigrations(testDb);
-});
+const realtime = new FakeRealtimeService();
+const broadcastMock = realtime.broadcastMock;
 
 beforeEach(() => {
+  setAddonEnabled(testDb, ADDON_IDS.ATLAS, true);
   resetTestDb(testDb);
   broadcastMock.mockClear();
   delete process.env.DEMO_MODE;
 });
 
-afterAll(() => {
+let orm: TestOrm;
+
+beforeAll(async () => {
+  orm = await createTestOrm(testDb);
+});
+
+afterAll(async () => {
+  await orm.close();
   testDb.close();
 });
 
 async function withHarness(userId: number, fn: (h: McpHarness) => Promise<void>) {
-  const h = await createMcpHarness({ userId, withResources: false });
-  try { await fn(h); } finally { await h.cleanup(); }
+  const h = await createMcpHarness({ realtime, userId, withResources: false });
+  try {
+    await fn(h);
+  } finally {
+    await h.cleanup();
+  }
 }
 
+// The atlas resources register via the nest-mcp registry inside registerTools
+// (AtlasMcp @Resource), so the harness must keep tools on for them to attach
+// (same shape as tools-vacay.test.ts's withResourceHarness).
 async function withResourceHarness(userId: number, fn: (h: McpHarness) => Promise<void>) {
-  const h = await createMcpHarness({ userId, withTools: false, withResources: true });
-  try { await fn(h); } finally { await h.cleanup(); }
+  const h = await createMcpHarness({ realtime, userId, withResources: true });
+  try {
+    await fn(h);
+  } finally {
+    await h.cleanup();
+  }
 }
+
+// A place carrying an address and coordinates, which createPlace does not write.
+async function insertPlace(
+  tripId: number,
+  name: string,
+  address: string | null,
+  lat: number,
+  lng: number,
+): Promise<number> {
+  return (await makePlace(orm, tripId, { name, address, lat, lng, category: null })).id;
+}
+
+// The geocoder's answer for a place, pre-seeded so visitedRegions() reads the cache
+// and never reaches for Nominatim (same trick as ATLAS-UNIT-020).
+async function cacheRegion(
+  placeId: number,
+  countryCode: string,
+  regionCode: string,
+  regionName: string,
+): Promise<void> {
+  await upsertRow(orm, PlaceRegions, {
+    place: placeId,
+    country_code: countryCode,
+    region_code: regionCode,
+    region_name: regionName,
+  });
+}
+
+async function insertEndpoint(
+  reservationId: number,
+  role: 'from' | 'to',
+  sequence: number,
+  lat: number,
+  lng: number,
+): Promise<void> {
+  await insertRow(orm, ReservationEndpoints, {
+    reservation: reservationId,
+    role,
+    sequence,
+    name: `Endpoint ${sequence}`,
+    lat,
+    lng,
+  });
+}
+
+/** Marks a region by hand, the way the region route stores it. */
+async function markRegion(userId: number, regionCode: string, regionName: string, countryCode: string): Promise<void> {
+  await insertRow(orm, VisitedRegions, {
+    user: userId,
+    region_code: regionCode,
+    region_name: regionName,
+    country_code: countryCode,
+  });
+}
+
+/** A wish with no coordinates; returns its id. */
+async function insertWish(userId: number, name: string, targetDate?: string): Promise<number> {
+  return insertRow(orm, BucketList, {
+    user: userId,
+    name,
+    ...(targetDate !== undefined ? { target_date: targetDate } : { lat: null, lng: null }),
+  });
+}
+
+// Trips have to sit in the past for their countries and regions to count as
+// visited rather than planned (#1048).
+const PAST_START = '2023-05-01';
+const PAST_END = '2023-05-10';
 
 // ---------------------------------------------------------------------------
 // get_atlas_stats
@@ -83,6 +159,62 @@ describe('Tool: get_atlas_stats', () => {
       expect(result.isError).toBeFalsy();
       const data = parseToolResult(result) as any;
       expect(data.stats).toBeDefined();
+      expect(data.travel).toEqual({
+        countries: [],
+        cities: [],
+        totalTrips: 0,
+        totalDays: 0,
+        totalPlaces: 0,
+        totalDistanceKm: 0,
+      });
+    });
+  });
+
+  it('carries the passport figures REST answers with: the cities by name and the distance flown', async () => {
+    const { user } = createUser(testDb);
+    const trip = createTrip(testDb, user.id, { title: 'Rome', start_date: PAST_START, end_date: PAST_END });
+    await insertPlace(trip.id, 'Colosseum', 'Colosseum, Rome, Italy', 41.8902, 12.4922);
+    const flight = createReservation(testDb, trip.id, { type: 'flight', title: 'FCO-JFK' });
+    await insertEndpoint(flight.id, 'from', 0, 41.8003, 12.2389);
+    await insertEndpoint(flight.id, 'to', 1, 40.6413, -73.7781);
+
+    await withHarness(user.id, async (h) => {
+      const result = await h.client.callTool({ name: 'get_atlas_stats', arguments: {} });
+      const data = parseToolResult(result) as any;
+      // The count was always there; the names behind it were not.
+      expect(data.stats.stats.totalCities).toBe(1);
+      expect(data.travel.cities).toEqual(['Rome']);
+      expect(data.travel.countries).toContain('IT');
+      expect(data.travel.countries).toContain('US');
+      // Rome to New York, so a four-figure number rather than a rounding artefact.
+      expect(data.travel.totalDistanceKm).toBeGreaterThan(6000);
+      expect(data.travel.totalPlaces).toBe(await countRows(orm, Places, { trip: trip.id }));
+      // Rendering data stays out unless asked for.
+      expect(data.travel.coords).toBeUndefined();
+    });
+  });
+
+  it('include_coords adds the per-place coordinates the dashboard map plots', async () => {
+    const { user } = createUser(testDb);
+    const trip = createTrip(testDb, user.id, { title: 'Rome', start_date: PAST_START, end_date: PAST_END });
+    await insertPlace(trip.id, 'Colosseum', 'Colosseum, Rome, Italy', 41.8902, 12.4922);
+    await insertPlace(trip.id, 'Pantheon', 'Pantheon, Rome, Italy', 41.8986, 12.4769);
+
+    await withHarness(user.id, async (h) => {
+      const result = await h.client.callTool({ name: 'get_atlas_stats', arguments: { include_coords: true } });
+      const data = parseToolResult(result) as any;
+      const withCoords = await countRows(orm, Places, { trip: trip.id, lat: { $ne: null }, lng: { $ne: null } });
+      expect(data.travel.coords).toHaveLength(withCoords);
+      expect(data.travel.coords[0]).toEqual({ lat: 41.8902, lng: 12.4922 });
+    });
+  });
+
+  it('refuses a non-boolean include_coords', async () => {
+    const { user } = createUser(testDb);
+    await withHarness(user.id, async (h) => {
+      const result = await h.client.callTool({ name: 'get_atlas_stats', arguments: { include_coords: 'yes' } });
+      expect(result.isError).toBe(true);
+      expect((result.content[0] as any).text).toContain('include_coords');
     });
   });
 });
@@ -92,25 +224,130 @@ describe('Tool: get_atlas_stats', () => {
 // ---------------------------------------------------------------------------
 
 describe('Tool: list_visited_regions', () => {
-  it('returns empty array initially', async () => {
+  it('returns an empty grouping initially', async () => {
     const { user } = createUser(testDb);
     await withHarness(user.id, async (h) => {
       const result = await h.client.callTool({ name: 'list_visited_regions', arguments: {} });
       const data = parseToolResult(result) as any;
-      expect(data.regions).toEqual([]);
+      expect(data.regions).toEqual({});
     });
   });
 
-  it('returns regions after they have been inserted', async () => {
+  it('groups a manual mark under its country, in the shape the map reads', async () => {
     const { user } = createUser(testDb);
-    testDb.prepare(
-      'INSERT INTO visited_regions (user_id, region_code, region_name, country_code) VALUES (?, ?, ?, ?)'
-    ).run(user.id, 'FR-75', 'Paris', 'FR');
+    await markRegion(user.id, 'FR-75', 'Paris', 'FR');
     await withHarness(user.id, async (h) => {
       const result = await h.client.callTool({ name: 'list_visited_regions', arguments: {} });
       const data = parseToolResult(result) as any;
-      expect(data.regions).toHaveLength(1);
-      expect(data.regions[0].region_code).toBe('FR-75');
+      expect(data.regions.FR).toEqual([
+        { code: 'FR-75', name: 'Paris', placeCount: 0, status: 'visited', manuallyMarked: true },
+      ]);
+    });
+  });
+
+  it('reports regions derived from trip places, which the manual table never held', async () => {
+    const { user } = createUser(testDb);
+    const trip = createTrip(testDb, user.id, { title: 'Rome', start_date: PAST_START, end_date: PAST_END });
+    await cacheRegion(await insertPlace(trip.id, 'Colosseum', null, 41.8902, 12.4922), 'IT', 'IT-62', 'Lazio');
+    await cacheRegion(await insertPlace(trip.id, 'Pantheon', null, 41.8986, 12.4769), 'IT', 'IT-62', 'Lazio');
+
+    await withHarness(user.id, async (h) => {
+      const result = await h.client.callTool({ name: 'list_visited_regions', arguments: {} });
+      const data = parseToolResult(result) as any;
+      expect(data.regions.IT).toEqual([{ code: 'IT-62', name: 'Lazio', placeCount: 2, status: 'visited' }]);
+      // Nothing was ever marked by hand, so the old manual-only read had no row
+      // to answer with at all.
+      expect(await countRows(orm, VisitedRegions, { user: user.id })).toBe(0);
+    });
+  });
+
+  it('drops a region the user dismissed, matching the map', async () => {
+    const { user } = createUser(testDb);
+    const trip = createTrip(testDb, user.id, { title: 'Rome', start_date: PAST_START, end_date: PAST_END });
+    await cacheRegion(await insertPlace(trip.id, 'Colosseum', null, 41.8902, 12.4922), 'IT', 'IT-62', 'Lazio');
+
+    await withHarness(user.id, async (h) => {
+      const unmark = await h.client.callTool({ name: 'unmark_region_visited', arguments: { regionCode: 'IT-62' } });
+      // The places of the trip keep Italy on the map; only the region is gone.
+      expect(parseToolResult(unmark)).toEqual({
+        success: true,
+        after: { country_status: 'visited', countries_visited: 1, regions_visited: 0 },
+      });
+      const tombstone = await findRow(orm, HiddenRegions, { user: user.id, region_code: 'IT-62' });
+      expect(tombstone).toBeTruthy();
+
+      const result = await h.client.callTool({ name: 'list_visited_regions', arguments: {} });
+      const data = parseToolResult(result) as any;
+      expect(data.regions.IT).toBeUndefined();
+    });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// locate_atlas_region
+// ---------------------------------------------------------------------------
+
+describe('Tool: locate_atlas_region', () => {
+  it('resolves a coordinate to the country and the region the map can highlight', async () => {
+    const { user } = createUser(testDb);
+    await withHarness(user.id, async (h) => {
+      const result = await h.client.callTool({
+        name: 'locate_atlas_region',
+        arguments: { lat: 41.9028, lng: 12.4964 },
+      });
+      expect(result.isError).toBeFalsy();
+      const data = parseToolResult(result) as any;
+      // Rome. Italy has admin1 coverage in the bundle, so the region resolves too,
+      // and the code comes back in the form mark_region_visited takes.
+      expect(data.country_code).toBe('IT');
+      expect(typeof data.region_code).toBe('string');
+      expect(typeof data.region_name).toBe('string');
+    });
+  });
+
+  it('feeds mark_region_visited without the caller knowing any codes', async () => {
+    const { user } = createUser(testDb);
+    await withHarness(user.id, async (h) => {
+      const located = parseToolResult(
+        await h.client.callTool({ name: 'locate_atlas_region', arguments: { lat: 41.9028, lng: 12.4964 } }),
+      ) as any;
+      expect(typeof located.region_code).toBe('string');
+
+      await h.client.callTool({
+        name: 'mark_region_visited',
+        arguments: {
+          regionCode: located.region_code,
+          regionName: located.region_name,
+          countryCode: located.country_code,
+        },
+      });
+      const row = await findRow(orm, VisitedRegions, { user: user.id });
+      expect({ region_code: row?.region_code, country_code: row?.country_code }).toEqual({
+        region_code: located.region_code,
+        country_code: 'IT',
+      });
+    });
+  });
+
+  it('answers with nulls out at sea rather than failing', async () => {
+    const { user } = createUser(testDb);
+    await withHarness(user.id, async (h) => {
+      const result = await h.client.callTool({ name: 'locate_atlas_region', arguments: { lat: 0, lng: -140 } });
+      expect(result.isError).toBeFalsy();
+      expect(parseToolResult(result)).toEqual({ country_code: null, region_code: null, region_name: null });
+    });
+  });
+
+  it('refuses an out-of-range coordinate, like the REST route does', async () => {
+    const { user } = createUser(testDb);
+    await withHarness(user.id, async (h) => {
+      const badLat = await h.client.callTool({ name: 'locate_atlas_region', arguments: { lat: 91, lng: 12.5 } });
+      expect(badLat.isError).toBe(true);
+      expect((badLat.content[0] as any).text).toContain('lat');
+
+      const badLng = await h.client.callTool({ name: 'locate_atlas_region', arguments: { lat: 41.9, lng: 181 } });
+      expect(badLng.isError).toBe(true);
+      expect((badLng.content[0] as any).text).toContain('lng');
     });
   });
 });
@@ -120,6 +357,27 @@ describe('Tool: list_visited_regions', () => {
 // ---------------------------------------------------------------------------
 
 describe('Tool: mark_region_visited', () => {
+  it('uppercases both codes like REST does (post-fold quirk fix)', async () => {
+    const { user } = createUser(testDb);
+    await withHarness(user.id, async (h) => {
+      const result = await h.client.callTool({
+        name: 'mark_region_visited',
+        arguments: { regionCode: 'jp-13', regionName: 'Tokyo', countryCode: 'jp' },
+      });
+      const data = parseToolResult(result) as any;
+      // Legacy stored 'jp-13'/'jp' verbatim, creating rows REST's uppercased
+      // unmark could never hit; both codes now normalize.
+      expect(data.region.code).toBe('JP-13');
+      expect(data.region.country_code).toBe('JP');
+      const unmark = await h.client.callTool({
+        name: 'unmark_region_visited',
+        arguments: { regionCode: 'jp-13' },
+      });
+      expect(parseToolResult(unmark)).toMatchObject({ success: true });
+      expect(await findRow(orm, VisitedRegions, { user: user.id })).toBeNull();
+    });
+  });
+
   it('inserts region and returns region object', async () => {
     const { user } = createUser(testDb);
     await withHarness(user.id, async (h) => {
@@ -134,7 +392,9 @@ describe('Tool: mark_region_visited', () => {
       expect(data.region.name).toBe('California');
       expect(data.region.country_code).toBe('US');
       expect(data.region.manuallyMarked).toBe(true);
-      const row = testDb.prepare('SELECT * FROM visited_regions WHERE user_id = ? AND region_code = ?').get(user.id, 'US-CA');
+      // Where the atlas stands now, for the assistant's card: the region brought its country along.
+      expect(data.after).toEqual({ country_status: 'visited', countries_visited: 1, regions_visited: 1 });
+      const row = await findRow(orm, VisitedRegions, { user: user.id, region_code: 'US-CA' });
       expect(row).toBeTruthy();
     });
   });
@@ -159,19 +419,34 @@ describe('Tool: mark_region_visited', () => {
 describe('Tool: unmark_region_visited', () => {
   it('removes region and returns success', async () => {
     const { user } = createUser(testDb);
-    testDb.prepare(
-      'INSERT INTO visited_regions (user_id, region_code, region_name, country_code) VALUES (?, ?, ?, ?)'
-    ).run(user.id, 'IT-LO', 'Lombardy', 'IT');
+    await markRegion(user.id, 'IT-LO', 'Lombardy', 'IT');
     await withHarness(user.id, async (h) => {
       const result = await h.client.callTool({
         name: 'unmark_region_visited',
         arguments: { regionCode: 'IT-LO' },
       });
-      const data = parseToolResult(result) as any;
-      expect(data.success).toBe(true);
-      const row = testDb.prepare('SELECT * FROM visited_regions WHERE user_id = ? AND region_code = ?').get(user.id, 'IT-LO');
-      expect(row).toBeUndefined();
+      // The last region of a country it was never marked for takes the country along.
+      expect(parseToolResult(result)).toEqual({
+        success: true,
+        after: { country_status: null, countries_visited: 0, regions_visited: 0 },
+      });
+      expect(await findRow(orm, VisitedRegions, { user: user.id, region_code: 'IT-LO' })).toBeNull();
     });
+  });
+
+  it('keeps a country the user marked itself when its last region goes, like REST (#2597)', async () => {
+    const { user } = createUser(testDb);
+    await markCountryVisited(orm, user.id, 'NO');
+    await markRegion(user.id, 'NO-03', 'Oslo', 'NO');
+    await insertRow(orm, VisitedCountries, { user: user.id, country_code: 'SE', source: 'region' });
+    await markRegion(user.id, 'SE-AB', 'Stockholm', 'SE');
+    await withHarness(user.id, async (h) => {
+      await h.client.callTool({ name: 'unmark_region_visited', arguments: { regionCode: 'NO-03' } });
+      await h.client.callTool({ name: 'unmark_region_visited', arguments: { regionCode: 'SE-AB' } });
+    });
+    expect(await findRow(orm, VisitedCountries, { user: user.id, country_code: 'NO' })).toBeTruthy();
+    // A country that only came in through its region still goes with it.
+    expect(await findRow(orm, VisitedCountries, { user: user.id, country_code: 'SE' })).toBeNull();
   });
 
   it('succeeds even when region was not marked (no-op)', async () => {
@@ -204,6 +479,22 @@ describe('Tool: get_country_atlas_places', () => {
       expect(Array.isArray(data.places)).toBe(true);
     });
   });
+
+  it('uppercases the country code like REST does (post-fold quirk fix)', async () => {
+    const { user } = createUser(testDb);
+    await markCountryVisited(orm, user.id, 'JP');
+    // A trip so countryPlaces reaches the visited_countries lookup pre-quirk-fix too.
+    await makeTrip(orm, user.id, { title: 'Japan' });
+    await withHarness(user.id, async (h) => {
+      const result = await h.client.callTool({
+        name: 'get_country_atlas_places',
+        arguments: { countryCode: 'jp' },
+      });
+      const data = parseToolResult(result) as any;
+      // Legacy passed 'jp' through verbatim and the lookup matched nothing.
+      expect(data.manually_marked).toBe(true);
+    });
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -213,10 +504,7 @@ describe('Tool: get_country_atlas_places', () => {
 describe('Tool: update_bucket_list_item', () => {
   it('updates notes and returns item', async () => {
     const { user } = createUser(testDb);
-    const r = testDb.prepare(
-      'INSERT INTO bucket_list (user_id, name, lat, lng) VALUES (?, ?, NULL, NULL)'
-    ).run(user.id, 'Visit Tokyo');
-    const itemId = r.lastInsertRowid as number;
+    const itemId = await insertWish(user.id, 'Visit Tokyo');
     await withHarness(user.id, async (h) => {
       const result = await h.client.callTool({
         name: 'update_bucket_list_item',
@@ -230,10 +518,7 @@ describe('Tool: update_bucket_list_item', () => {
 
   it('updates name of existing item', async () => {
     const { user } = createUser(testDb);
-    const r = testDb.prepare(
-      'INSERT INTO bucket_list (user_id, name, lat, lng) VALUES (?, ?, NULL, NULL)'
-    ).run(user.id, 'Old Name');
-    const itemId = r.lastInsertRowid as number;
+    const itemId = await insertWish(user.id, 'Old Name');
     await withHarness(user.id, async (h) => {
       const result = await h.client.callTool({
         name: 'update_bucket_list_item',
@@ -255,13 +540,25 @@ describe('Tool: update_bucket_list_item', () => {
     });
   });
 
+  it('returns isError when the edit would land on another wish (#1898)', async () => {
+    const { user } = createUser(testDb);
+    await insertWish(user.id, 'Japan', '2027-05');
+    const itemId = await insertWish(user.id, 'Japan', '2028-09');
+    await withHarness(user.id, async (h) => {
+      const result = await h.client.callTool({
+        name: 'update_bucket_list_item',
+        arguments: { itemId, target_date: '2027-05' },
+      });
+      expect(result.isError).toBe(true);
+      const row = await findRow(orm, BucketList, { id: itemId });
+      expect(row?.target_date).toBe('2028-09');
+    });
+  });
+
   it('blocks demo user', async () => {
     process.env.DEMO_MODE = 'true';
     const { user } = createUser(testDb, { email: 'demo@nomad.app' });
-    const r = testDb.prepare(
-      'INSERT INTO bucket_list (user_id, name, lat, lng) VALUES (?, ?, NULL, NULL)'
-    ).run(user.id, 'Bucket Item');
-    const itemId = r.lastInsertRowid as number;
+    const itemId = await insertWish(user.id, 'Bucket Item');
     await withHarness(user.id, async (h) => {
       const result = await h.client.callTool({
         name: 'update_bucket_list_item',
@@ -292,25 +589,93 @@ describe('Resource: trek://atlas/stats', () => {
 // ---------------------------------------------------------------------------
 
 describe('Resource: trek://atlas/regions', () => {
-  it('returns regions array', async () => {
+  it('returns the country grouping', async () => {
     const { user } = createUser(testDb);
     await withResourceHarness(user.id, async (h) => {
       const result = await h.client.readResource({ uri: 'trek://atlas/regions' });
       const data = parseResourceResult(result) as any;
-      expect(Array.isArray(data)).toBe(true);
+      expect(data).toEqual({});
     });
   });
 
-  it('returns inserted regions', async () => {
+  it('returns marked and derived regions together, as the tool does', async () => {
     const { user } = createUser(testDb);
-    testDb.prepare(
-      'INSERT INTO visited_regions (user_id, region_code, region_name, country_code) VALUES (?, ?, ?, ?)'
-    ).run(user.id, 'ES-CT', 'Catalonia', 'ES');
+    await markRegion(user.id, 'ES-CT', 'Catalonia', 'ES');
+    const trip = createTrip(testDb, user.id, { title: 'Rome', start_date: PAST_START, end_date: PAST_END });
+    await cacheRegion(await insertPlace(trip.id, 'Colosseum', null, 41.8902, 12.4922), 'IT', 'IT-62', 'Lazio');
+
     await withResourceHarness(user.id, async (h) => {
       const result = await h.client.readResource({ uri: 'trek://atlas/regions' });
       const data = parseResourceResult(result) as any;
-      expect(data).toHaveLength(1);
-      expect(data[0].region_code).toBe('ES-CT');
+      expect(data.ES).toEqual([
+        { code: 'ES-CT', name: 'Catalonia', placeCount: 0, status: 'visited', manuallyMarked: true },
+      ]);
+      expect(data.IT).toEqual([{ code: 'IT-62', name: 'Lazio', placeCount: 1, status: 'visited' }]);
+    });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Resource: trek://bucket-list (moved from resources.test.ts with the fold —
+// that suite's withTools:false harness never attaches registry resources)
+// ---------------------------------------------------------------------------
+
+describe('Resource: trek://bucket-list', () => {
+  it("returns only the current user's bucket list items", async () => {
+    const { user } = createUser(testDb);
+    const { user: other } = createUser(testDb);
+    createBucketListItem(testDb, user.id, { name: 'Tokyo' });
+    createBucketListItem(testDb, other.id, { name: 'Rome' });
+
+    await withResourceHarness(user.id, async (h) => {
+      const result = await h.client.readResource({ uri: 'trek://bucket-list' });
+      const items = parseResourceResult(result) as any[];
+      expect(items).toHaveLength(1);
+      expect(items[0].name).toBe('Tokyo');
+    });
+  });
+
+  it('returns empty array for user with no items', async () => {
+    const { user } = createUser(testDb);
+
+    await withResourceHarness(user.id, async (h) => {
+      const result = await h.client.readResource({ uri: 'trek://bucket-list' });
+      const items = parseResourceResult(result) as any[];
+      expect(items).toEqual([]);
+    });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Resource: trek://visited-countries (moved from resources.test.ts, same reason)
+// ---------------------------------------------------------------------------
+
+describe('Resource: trek://visited-countries', () => {
+  it("returns only the current user's visited countries", async () => {
+    const { user } = createUser(testDb);
+    const { user: other } = createUser(testDb);
+    createVisitedCountry(testDb, user.id, 'FR');
+    createVisitedCountry(testDb, user.id, 'JP');
+    createVisitedCountry(testDb, other.id, 'DE');
+
+    await withResourceHarness(user.id, async (h) => {
+      const result = await h.client.readResource({ uri: 'trek://visited-countries' });
+      const countries = parseResourceResult(result) as any[];
+      expect(countries).toHaveLength(2);
+      const codes = countries.map((c) => c.country_code);
+      expect(codes).toContain('FR');
+      expect(codes).toContain('JP');
+      expect(codes).not.toContain('DE');
+    });
+  });
+
+  it('returns empty array for user with no visited countries', async () => {
+    const { user } = createUser(testDb);
+
+    await withResourceHarness(user.id, async (h) => {
+      const result = await h.client.readResource({ uri: 'trek://visited-countries' });
+      const countries = parseResourceResult(result) as any[];
+      expect(countries).toEqual([]);
     });
   });
 });

@@ -1,0 +1,35 @@
+{
+  "name": "@family/backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Family Supabase adapters with a verified production baseline and recorded integration patches.",
+  "exports": {
+    "./supabase/*": "./src/data/supabase/*.ts",
+    "./booking-import": "./src/data/bookingImport/index.ts",
+    "./lib/*": "./src/lib/*.ts",
+    "./governance": "./src/pages/familyTripWorkspace/workspaceGovernanceModel.ts",
+    "./place-categories": "./src/pages/familyTripWorkspace/workspacePlaceCategoryModel.ts",
+    "./dashboard": "./src/pages/dashboard/familyDashboardModel.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "2.112.2",
+    "heic-to": "1.5.2",
+    "jszip": "3.10.1",
+    "pdfjs-dist": "6.2.108",
+    "react": "19.3.0"
+  },
+  "devDependencies": {
+    "@types/geojson": "7946.0.16",
+    "@types/node": "25.9.8",
+    "@types/react": "19.3.0",
+    "jsdom": "29.1.1",
+    "typescript": "6.0.3",
+    "vite": "8.3.0",
+    "vitest": "4.1.11"
+  }
+}

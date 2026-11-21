@@ -1,6 +1,7 @@
 import type { TranslationStrings } from '../types';
 
 const todo: TranslationStrings = {
+  'todo.emptyFiltered': 'Aucune tâche ne correspond à ce filtre',
   'todo.subtab.packing': 'Liste de bagages',
   'todo.subtab.todo': 'À faire',
   'todo.completed': 'terminé(s)',
@@ -10,6 +11,7 @@ const todo: TranslationStrings = {
   'todo.uncategorized': 'Aucune liste',
   'todo.namePlaceholder': 'Nom de la tâche',
   'todo.descriptionPlaceholder': 'Description (facultative)',
+  'todo.editDescription': 'Cliquez pour modifier, les liens s’ouvrent directement',
   'todo.unassigned': 'Non assigné',
   'todo.noCategory': 'Aucune liste',
   'todo.hasDescription': 'Avec description',
@@ -26,7 +28,7 @@ const todo: TranslationStrings = {
   'todo.sidebar.tasks': 'Tâches',
   'todo.sidebar.categories': 'Listes',
   'todo.detail.title': 'Tâche',
-  'todo.detail.description': 'Description',
+  'todo.detail.description': 'Description', // same-as-en
   'todo.detail.category': 'Liste',
   'todo.detail.dueDate': "Date d'échéance",
   'todo.detail.assignedTo': 'Assigné à',

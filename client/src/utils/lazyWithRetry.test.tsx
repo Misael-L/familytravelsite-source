@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react'
-import { render, screen } from '../../tests/helpers/render'
+import { render, screen } from '@testing-library/react'
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { RouteErrorBoundaryInner } from '../components/Layout/RouteErrorBoundary'
+import ErrorBoundary from '../components/shared/ErrorBoundary'
 import { lazyWithRetry, retryUrlFor } from './lazyWithRetry'
 
 // Every case needs its own URL: the one-shot guard is a module-level Set that
@@ -75,14 +75,14 @@ describe('lazyWithRetry', () => {
     const Page = lazyWithRetry<React.ComponentType>(() => Promise.reject(new Error('boom')))
 
     render(
-      <RouteErrorBoundaryInner>
+      <ErrorBoundary boundaryId="test" fallback={<div>caught</div>}>
         <Suspense fallback={<span>loading</span>}>
           <Page />
         </Suspense>
-      </RouteErrorBoundaryInner>
+      </ErrorBoundary>
     )
 
-    expect(await screen.findByRole('alert')).toBeInTheDocument()
+    expect(await screen.findByText('caught')).toBeInTheDocument()
     // The marker belongs to reloadOnceForChunk; a plain throw must not touch it.
     expect(sessionStorage.getItem('trek:chunk-reload')).toBeNull()
   })

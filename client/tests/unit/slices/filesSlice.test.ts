@@ -41,14 +41,21 @@ describe('filesSlice', () => {
     });
 
     it('FE-FILES-002: loadFiles silently catches errors', async () => {
+      const existing = buildTripFile({ trip_id: 1, filename: 'existing.pdf' });
+      seedStore(useTripStore, { files: [existing] });
+
       server.use(
         http.get('/api/trips/1/files', () =>
           HttpResponse.json({ message: 'Error' }, { status: 500 })
         ),
       );
 
-      // Should not throw
-      await useTripStore.getState().loadFiles(1);
+      // Swallows the failure instead of rejecting, and leaves the list alone
+      await expect(useTripStore.getState().loadFiles(1)).resolves.toBeUndefined();
+
+      const files = useTripStore.getState().files;
+      expect(files).toHaveLength(1);
+      expect(files[0].filename).toBe('existing.pdf');
     });
   });
 
@@ -114,6 +121,45 @@ describe('filesSlice', () => {
 
       // File remains since server-first (only removes after success)
       expect(useTripStore.getState().files).toHaveLength(1);
+    });
+  });
+
+  describe('linkFile', () => {
+    it('FE-FILES-007: linkFile posts the link, then reloads the trip files', async () => {
+      const file = buildTripFile({ id: 30, trip_id: 1 });
+      seedStore(useTripStore, { files: [file] });
+      let body: unknown = null;
+      const linked = { ...file, linked_reservation_ids: [9] };
+      server.use(
+        http.post('/api/trips/1/files/30/link', async ({ request }) => {
+          body = await request.json();
+          return HttpResponse.json({ success: true });
+        }),
+        http.get('/api/trips/1/files', () => HttpResponse.json({ files: [linked] })),
+      );
+
+      await useTripStore.getState().linkFile(1, 30, { reservation_id: 9 });
+
+      expect(body).toEqual({ reservation_id: 9 });
+      expect(useTripStore.getState().files[0].linked_reservation_ids).toEqual([9]);
+    });
+
+    it('FE-FILES-008: linkFile throws the server message and does not reload', async () => {
+      const file = buildTripFile({ id: 31, trip_id: 1, filename: 'kept.pdf' });
+      seedStore(useTripStore, { files: [file] });
+      let reloaded = false;
+      server.use(
+        http.post('/api/trips/1/files/31/link', () => HttpResponse.json({ error: 'Not allowed' }, { status: 403 })),
+        http.get('/api/trips/1/files', () => {
+          reloaded = true;
+          return HttpResponse.json({ files: [] });
+        }),
+      );
+
+      await expect(useTripStore.getState().linkFile(1, 31, { place_id: 4 })).rejects.toThrow('Not allowed');
+
+      expect(reloaded).toBe(false);
+      expect(useTripStore.getState().files[0].filename).toBe('kept.pdf');
     });
   });
 });

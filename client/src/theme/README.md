@@ -27,10 +27,29 @@ free **if they follow the contract below**.
 | Text | `--text-primary/secondary/muted/faint` · `text-content*` |
 | Borders | `--border-primary/secondary/faint` · `border-edge*` |
 | Accent | `--accent` (fill) · `--accent-text` (on fill) · `--accent-on` (on surface) · `--accent-hover` · `--accent-subtle` · `bg-accent` / `text-accent-on` / `bg-accent-subtle` |
-| Status | `--success/-soft`, `--danger/-soft`, `--warning/-soft`, `--info/-soft` · `bg-danger-soft text-danger` etc. |
+| Status | `--success/-soft`, `--danger/-soft`, `--warning/-soft`, `--info/-soft` · `bg-danger-soft text-danger` etc.; `--danger-text` for text on a solid `bg-danger` |
 | Elevation | `--shadow-sm/md/lg/card/elevated/modal/dropdown/popover` · `shadow-modal` etc. |
 | Overlay / inverse | `--overlay` · `--bg-inverse` / `--text-inverse` · `bg-inverse text-inverse-text` |
 | Type tiers | `text-title` / `text-subtitle` / `text-body` / `text-caption` (scale with the user's per-tier multipliers) |
+
+## Layering
+
+Fixed and sticky surfaces read their stacking order from one scale in
+`src/index.css`, so two of them cannot end up in the wrong order by accident.
+
+| Token | Value | For |
+| --- | --- | --- |
+| `--z-bar` | 60 | `BottomNav`, page-bound sticky bars |
+| `--z-nav` | 200 | the desktop navbar |
+| `--z-modal` | 10000 | `shared/Modal`, `ConfirmDialog` |
+| `--z-overlay` | 99990 | page-owned full-screen overlays |
+| `--z-notice` | 99998 | app-wide system and release notices |
+| `--z-toast` | 100000 | toasts, tooltips, context menus |
+
+A new fixed surface docks onto the step it belongs to (`z-[var(--z-modal)]` as a
+class, `z-index: var(--z-modal)` in CSS) instead of inventing a number. Older
+files still carry literal values; the steps are far enough apart that those keep
+their current position until the file gets converted.
 
 ## The contract (enforced by `npm run theme:lint`)
 
@@ -41,7 +60,7 @@ free **if they follow the contract below**.
    (+ `ring-accent`) — never `bg-slate-900` / `bg-black` / `bg-indigo-*`. This
    is what lets a user's accent reach new surfaces automatically.
 3. **Semantic text size** uses the tier utilities `text-title/subtitle/body/caption`
-   — never an inline `fontSize: <px>`, never raw `text-sm`/`text-xs` to *mean* a tier.
+   — never an inline `fontSize: <px>`, never raw `text-sm`/`text-xs` or arbitrary `text-[13px]` to *mean* a tier.
 4. **Translucent/blurred** surfaces consume an alpha/glass token
    (`--bg-elevated`, `--tooltip-bg`, `--glass-*`) or a `backdrop-blur` utility,
    so transparency-off can neutralize them centrally — never inline `rgba()`
@@ -59,3 +78,9 @@ Genuinely dynamic values (data-driven colors like `cat.color`, computed
 geometry/transforms/sizes), and the surfaces CSS variables can't reach: injected
 map popup/marker HTML, Mapbox/MapLibre paint, and the standalone `@react-pdf`
 documents. Mark intentional exceptions with a `theme-lint-disable` line comment.
+
+The markers are counted per file against `client/scripts/theme-disable-baseline.json`,
+like `rtl-lint-disable` in `lint:rtl`, so an exception is a decision a reviewer
+sees rather than a way around the check. `--update` only lowers that file: a new
+marker for a surface the tokens really cannot reach is added by raising (or
+adding) its file's entry by hand in the same change, where review can see it.

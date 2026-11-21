@@ -7,6 +7,7 @@ const common: TranslationStrings = {
   'common.cancel': 'İptal',
   'common.clear': 'Temizle',
   'common.delete': 'Sil',
+  'common.remove': 'Kaldır',
   'common.preview': 'Önizleme',
   'common.edit': 'Düzenle',
   'common.add': 'Ekle',
@@ -16,6 +17,7 @@ const common: TranslationStrings = {
   'common.selectAll': 'Tümünü seç',
   'common.deselectAll': 'Seçimi kaldır',
   'common.error': 'Hata',
+  'common.success': 'Başarılı',
   'common.unknownError': 'Bilinmeyen hata',
   'common.tooManyAttempts': 'Çok fazla deneme. Lütfen daha sonra tekrar deneyin.',
   'common.back': 'Geri',
@@ -34,13 +36,19 @@ const common: TranslationStrings = {
   'common.rename': 'Yeniden adlandır',
   'common.discardChanges': 'Değişiklikleri iptal et',
   'common.discard': 'Vazgeç',
+  'common.unsavedTitle': 'Değişiklikler atılsın mı?',
+  'common.unsavedMessage': 'Buraya girdikleriniz henüz kaydedilmedi.',
+  'common.keepEditing': 'Düzenlemeye devam et',
   'common.name': 'Ad',
+  'common.title': 'Başlık',
   'common.email': 'E-posta',
   'common.password': 'Şifre',
   'common.saving': 'Kaydediliyor...',
   'common.justNow': 'az önce',
   'common.hoursAgo': '{count} sa. önce',
+  'common.hoursAgo.one': '{count} sa. önce',
   'common.daysAgo': '{count} gün önce',
+  'common.daysAgo.one': '{count} gün önce',
   'common.saved': 'Kaydedildi',
   'common.update': 'Güncelle',
   'common.change': 'Değiştir',
@@ -51,17 +59,29 @@ const common: TranslationStrings = {
   'common.collapse': 'Daralt',
   'common.copy': 'Kopyala',
   'common.copied': 'Kopyalandı',
-  'common.datepicker.prevMonth': 'Previous month', // en-fallback
-  'common.datepicker.nextMonth': 'Next month', // en-fallback
-  'common.datepicker.prevYear': 'Previous year', // en-fallback
-  'common.datepicker.nextYear': 'Next year', // en-fallback
-  'common.datepicker.prevYears': 'Previous years', // en-fallback
-  'common.datepicker.nextYears': 'Next years', // en-fallback
-  'common.datepicker.selectMonth': 'Select month', // en-fallback
-  'common.datepicker.selectYear': 'Select year', // en-fallback
-  'common.datepicker.enterManually': 'Enter date manually', // en-fallback
-  'common.datepicker.typeDate': 'Type a date', // en-fallback
-  'common.datepicker.dialog': 'Date picker', // en-fallback
-  'common.datepicker.clearDate': 'Clear date', // en-fallback
+  'common.datepicker.prevMonth': 'Önceki ay',
+  'common.datepicker.nextMonth': 'Sonraki ay',
+  'common.datepicker.prevYear': 'Önceki yıl',
+  'common.datepicker.nextYear': 'Sonraki yıl',
+  'common.datepicker.prevYears': 'Önceki yıllar',
+  'common.datepicker.nextYears': 'Sonraki yıllar',
+  'common.datepicker.selectMonth': 'Ay seç',
+  'common.datepicker.selectYear': 'Yıl seç',
+  'common.datepicker.enterManually': 'Tarihi elle gir',
+  'common.datepicker.typeDate': 'Bir tarih yaz',
+  'common.datepicker.dialog': 'Tarih seçici',
+  'common.datepicker.clearDate': 'Tarihi temizle',
+  'common.errorTitle': 'Bir şeyler ters gitti',
+  'common.errorBody': 'Uygulamanın bu bölümü çalışmayı durdurdu. Verileriniz güvende.',
+  'common.errorPanelTitle': 'Bu bölüm gösterilemedi',
+  'common.errorPanelBody': 'Sayfanın geri kalanı çalışmaya devam ediyor.',
+  'common.errorRetry': 'Yeniden dene',
+  'common.errorReload': 'Sayfayı yenile',
+  'common.errorUpdateTitle': 'Yeni bir sürüm mevcut',
+  'common.errorUpdateBody': 'Bu sekme açıkken TREK güncellendi. Yeni sürümü almak için sayfayı yenileyin.',
+  'common.errorPluginTitle': 'Bu eklenti gösterilemedi',
+  'common.needsConnection': 'Bunun için bağlantı gerekiyor. TREK yeniden çevrimiçi olduğunda tekrar dene.',
+  'common.errorDetails': 'Ayrıntılar',
+  'common.share': 'Paylaş',
 };
 export default common;

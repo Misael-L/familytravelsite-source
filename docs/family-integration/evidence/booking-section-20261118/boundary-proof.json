@@ -1,0 +1,96 @@
+{
+  "passed": true,
+  "current_roots": [
+    "client/public/theme-boot.js",
+    "client/public/family-build-contract.js",
+    "client/public/shell-guard.js",
+    "client/src/main.tsx",
+    "client/src/integrations/family/deviceRecovery/main.ts",
+    "client/native-shell/main.ts",
+    "client/public/sw-push.js"
+  ],
+  "current_nodes": 6091,
+  "current_runtime_nodes_edges_source_bytes_exact": true,
+  "runtime_node_sha256": "707174ae69d72dc9ff465b63c52329ae38ce4b1da3059e71a8d324746033ecac",
+  "runtime_edge_sha256": "4d9503fb398134656b980111ee1767aeb2e72a6c2c78bf259cb8acfadef3926e",
+  "runtime_source_inventory_sha256": "1ad6a99bbeffcca9658159c754a561bf12c6ae6ae269a6be8be4a4813a6d6442",
+  "raw_sources_before_after": [
+    14038,
+    14040
+  ],
+  "application_modules_before_after": [
+    7474,
+    7475
+  ],
+  "before_consumers": [
+    {
+      "from": "client/src/integrations/family/legacy/components/Planner/BookingsPanelFamily.test.tsx",
+      "target": "client/src/integrations/family/legacy/components/Planner/BookingsPanelFamily.tsx",
+      "kind": "ImportDeclaration",
+      "line": 13,
+      "declaration": "import BookingsPanelFamily from './BookingsPanelFamily';"
+    }
+  ],
+  "after_consumers": [
+    {
+      "from": "client/src/integrations/family/legacy/components/Planner/BookingsPanelFamily.sections.test.tsx",
+      "target": "client/src/integrations/family/legacy/components/Planner/BookingsPanelFamily.tsx",
+      "kind": "ImportDeclaration",
+      "line": 12,
+      "declaration": "import BookingsPanelFamily from './BookingsPanelFamily';"
+    },
+    {
+      "from": "client/src/integrations/family/legacy/components/Planner/BookingsPanelFamily.test.tsx",
+      "target": "client/src/integrations/family/legacy/components/Planner/BookingsPanelFamily.tsx",
+      "kind": "ImportDeclaration",
+      "line": 13,
+      "declaration": "import BookingsPanelFamily from './BookingsPanelFamily';"
+    },
+    {
+      "from": "client/src/integrations/family/legacy/components/Planner/BookingsPanelFamily.tsx",
+      "target": "client/src/integrations/family/legacy/components/Planner/FamilyBookingSection.tsx",
+      "kind": "ImportDeclaration",
+      "line": 43,
+      "declaration": "import { BookingSection } from './FamilyBookingSection';"
+    }
+  ],
+  "public_exports_before": [
+    {
+      "file": "client/src/integrations/family/legacy/components/Planner/BookingsPanelFamily.tsx",
+      "kind": "TypeAliasDeclaration",
+      "declaration": "export type BookingsPanelFamilyProps = {\n  tripId: string;\n  canMutate: boolean;\n  familyId: string;\n  mePersonId: string | null;\n  days: FamilyTripDay[];\n  places: FamilyTripPlace[];\n  scheduleItems: FamilyScheduleItem[];\n  currencyCode: string;\n  onOpenCostsPrefill: (prefill: FamilyExpensePrefill) => void;\n  onStageDraft?: (draft: FamilyBookingDraft) => Promise<boolean>;\n  onStageDelete?: (id: string) => Promise<boolean>;\n  onStageStatus?: (id: string, status: 'pending' | 'confirmed') => Promise<boolean>;\n};"
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Planner/BookingsPanelFamily.tsx",
+      "kind": "FunctionDeclaration",
+      "declaration": "BookingsPanelFamily"
+    }
+  ],
+  "public_exports_after": [
+    {
+      "file": "client/src/integrations/family/legacy/components/Planner/BookingsPanelFamily.tsx",
+      "kind": "TypeAliasDeclaration",
+      "declaration": "export type BookingsPanelFamilyProps = {\n  tripId: string;\n  canMutate: boolean;\n  familyId: string;\n  mePersonId: string | null;\n  days: FamilyTripDay[];\n  places: FamilyTripPlace[];\n  scheduleItems: FamilyScheduleItem[];\n  currencyCode: string;\n  onOpenCostsPrefill: (prefill: FamilyExpensePrefill) => void;\n  onStageDraft?: (draft: FamilyBookingDraft) => Promise<boolean>;\n  onStageDelete?: (id: string) => Promise<boolean>;\n  onStageStatus?: (id: string, status: 'pending' | 'confirmed') => Promise<boolean>;\n};"
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Planner/BookingsPanelFamily.tsx",
+      "kind": "FunctionDeclaration",
+      "declaration": "BookingsPanelFamily"
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Planner/FamilyBookingSection.tsx",
+      "kind": "FunctionDeclaration",
+      "declaration": "BookingSection"
+    }
+  ],
+  "boundary_current_entry_membership": {
+    "client/src/integrations/family/legacy/components/Planner/BookingsPanelFamily.tsx": false,
+    "client/src/integrations/family/legacy/components/Planner/FamilyBookingSection.tsx": false
+  },
+  "parent_module_emit_has_only_proved_extraction_and_import_changes": true,
+  "inverse_original_source_reconstruction": "prototype-proof.json",
+  "component_and_test_retained": true,
+  "no_module_or_global_augmentation": true,
+  "configuration_globs_dynamic_roots_unchanged": true,
+  "synthetic_direct_import_control_passed": true
+}

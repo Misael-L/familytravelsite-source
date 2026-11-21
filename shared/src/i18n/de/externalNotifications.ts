@@ -1,4 +1,5 @@
 import type { NotificationLocale } from '../externalNotifications/types';
+import { pluralForm } from '../plural';
 
 const de: NotificationLocale = {
   email: {
@@ -28,13 +29,20 @@ const de: NotificationLocale = {
       title: 'Vacay Fusion-Einladung',
       body: `${p.actor} hat dich eingeladen, Urlaubspläne zu fusionieren. Öffne TREK um anzunehmen oder abzulehnen.`,
     }),
+    vacay_share: (p) => ({
+      title: 'Vacay Kalender geteilt',
+      body: `${p.actor} hat den eigenen Urlaubskalender mit dir geteilt. Öffne TREK um ihn anzusehen.`,
+    }),
     collection_invite: (p) => ({
       title: 'Sammlungs-Einladung',
       body: `${p.actor} hat dich eingeladen, eine Sammlung zu teilen. Öffne TREK um anzunehmen oder abzulehnen.`,
     }),
     photos_shared: (p) => ({
-      title: `${p.count} Fotos geteilt`,
-      body: `${p.actor} hat ${p.count} Foto(s) in "${p.trip}" geteilt.`,
+      title: pluralForm(p.count, 'de', { one: `${p.count} Foto geteilt`, other: `${p.count} Fotos geteilt` }),
+      body: pluralForm(p.count, 'de', {
+        one: `${p.actor} hat ${p.count} Foto in "${p.trip}" geteilt.`,
+        other: `${p.actor} hat ${p.count} Fotos in "${p.trip}" geteilt.`,
+      }),
     }),
     collab_message: (p) => ({
       title: `Neue Nachricht in "${p.trip}"`,
@@ -48,9 +56,33 @@ const de: NotificationLocale = {
       title: 'Neue TREK-Version verfügbar',
       body: `TREK ${p.version} ist jetzt verfügbar. Besuche das Admin-Panel zum Aktualisieren.`,
     }),
+    replica_failure: (p) => ({
+      title: 'Speicher-Replik-Fehler',
+      body:
+        `Schreibvorgang auf Replik '${p.backend}' fehlgeschlagen: ${p.op} von ${p.key} — ${p.error}.` +
+        (p.suppressed !== '0'
+          ? pluralForm(p.suppressed, 'de', {
+              one: ` Seit der letzten Benachrichtigung wurde ${p.suppressed} weiterer Fehler unterdrückt.`,
+              other: ` Seit der letzten Benachrichtigung wurden ${p.suppressed} weitere Fehler unterdrückt.`,
+            })
+          : ''),
+    }),
+    paddle_region_requested: (p) => ({
+      title: 'Paddel-Region angefragt',
+      body: `${p.actor} plant eine Paddeltour in ${p.region}. Im Admin-Bereich unter Addons kannst du die Gewässerdaten laden oder ablehnen.`,
+    }),
     synology_session_cleared: () => ({
       title: 'Synology-Sitzung beendet',
       body: 'Dein Synology-Konto oder die URL hat sich geändert. Du wurdest von Synology Photos abgemeldet.',
+    }),
+    wanderer_source_hint: (p) => ({
+      title: `wanderer-Trail: ${p.tour}`,
+      body:
+        p.state === 'changed'
+          ? `„${p.tour}“ in „${p.trip}“ wurde in wanderer geändert. Öffne die Tour und prüfe ihre Quelle, um alle Änderungen zu sehen. In der Reise ändert sich nichts von selbst.`
+          : p.state === 'unverifiable'
+            ? `„${p.tour}“ in „${p.trip}“ lässt sich in wanderer nicht mehr prüfen. Die Tour in deiner Reise bleibt, wie sie ist.`
+            : `„${p.tour}“ in „${p.trip}“ hat sich in wanderer möglicherweise geändert. Öffne die Tour und prüfe ihre Quelle, um es zu sehen. In der Reise ändert sich nichts von selbst.`,
     }),
     plugin_notification: (p) => ({ title: p.title ?? '', body: p.body ?? '' }),
   },

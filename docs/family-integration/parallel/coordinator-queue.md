@@ -1892,6 +1892,18 @@ The fallback at `6ef85890f` qualifies the standalone recovery page on both origi
 
 Next, obtain explicit approval for the maintenance window and the pinned migrations. Before the first migration, verify recovery delivery for affected profiles, the managed write pause and drain, and the fresh incremental backup. [Approval and stop rules](../preview-cutover-and-fallback.md#maintenance-window-and-conditional-approval)
 
+## Scoped REST acceptance for the maintenance window
+
+The original window stopped before the migration because ordinary REST writes could not stay closed during controlled acceptance. Both request-hook commands were refused under the modeled operator role. The isolated replacement profile permitted one MFA session to create a task and a packing item on one trip. Both retries returned their original result. Twenty-three refusal checks passed, and all archived rows matched after the 67-migration replay. [Evidence](../supported-core-readiness/recheck-20261121-schema154/scoped-rest-acceptance.json)
+
+Next, qualify the pre-migration exposed-schema switch and reversal, and prepare the restricted Cloudflare acceptance client. Keep the hosted migration on hold until the production prerequisites can be verified in an authorized window. [Runbook](../preview-cutover-and-fallback.md#scoped-rest-acceptance-rehearsal)
+
+## Local schema reversal and scoped preview browser
+
+Two local API processes passed the schema 88 switch and reversal without changing the ledger. After replaying 67 migrations, the separate acceptance page exercised two browser saves against local PostgreSQL and recovered a lost packing reply by receipt. Wrangler passed a preview asset dry run with the page, and all 296,764 archived rows matched. The recovery page's network policy is intact. [Evidence](../supported-core-readiness/recheck-20261121-schema154/rest-switch-and-browser-acceptance.json)
+
+Next, bind the acceptance page to a verified Cloudflare preview build and qualify the hosted API switch and reversal in a short approved preflight without migrations. The current evidence comes from the isolated backend and a loopback browser gateway. [Runbook](../preview-cutover-and-fallback.md#local-exposed-schema-switch-and-acceptance-browser)
+
 ## Integration and continuation
 
 Only this lane writes shared qualification/release metadata, master handoffs, canonical preservation state and the main private integration checkpoint. At each meaningful endpoint, inspect B's own status/report and fetch its private branch read-only if needed. Review each scoped worker commit, cherry-pick approved packets, update source rows, validate the combined tree and push the integration branch. Do not modify or advance B's checkout/branch after initial setup; do not treat B's moving head as a frozen “other checkout” preservation invariant. Its authorized progress is tracked through branch/status/commit ownership instead.

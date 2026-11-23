@@ -1,0 +1,10 @@
+{
+  "incoming": "1cd06cc2b8ddb508e78a5379c2bd59074dec688b",
+  "implementation": "bb223a2eb9fa0eabf07fc5901dfc66c091105d75",
+  "build_source": "706c5e3197f24b27cd7e91dcb141ed17ebf0b96a",
+  "previous_build_source": "4e1ab46ae2bfc799ed71f2b4b826905fd7263fed",
+  "runtime": "v24.22.2",
+  "prior_failure_receipt": "../retained-stylesheets-20261118/candidate-result.json",
+  "all_runtime_and_test_source_unchanged": true,
+  "no_hosted_operation": true
+}

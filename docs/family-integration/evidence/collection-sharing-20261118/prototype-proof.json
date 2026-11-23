@@ -1,0 +1,595 @@
+{
+  "passed": true,
+  "unchanged_public_options_roles_sorting_store_selectors_action_payload_callbacks_and_result_AST": true,
+  "unchanged_desktop_phone_markup_API_store_and_Family_handlers": true,
+  "busy_removal_body_exact": true,
+  "deliberate_changes": [
+    "scope private transient state and async follow-ups to the open collection/permission/account/private-source lifetime",
+    "retire operations on close/unmount/selection/permission/session changes and StrictMode effect teardown",
+    "use synchronous per-kind/phone-shared action locks without changing desktop concurrent leave semantics",
+    "refuse hidden owner-only writes while closed or non-owner",
+    "replace obsolete synchronous close-reset effect with owned render-state selection"
+  ],
+  "existing_native_cases": 38,
+  "new_cases": 40,
+  "new_gate_cases": 15,
+  "original_passed": 57,
+  "original_failed": 21,
+  "candidate_passed": 78,
+  "failures": [
+    {
+      "path": "src/components/Collections/collectionSharing.consumers.test.tsx",
+      "name": "unchanged native collection-sharing surfaces desktop cannot close the replacement collection after an old leave finishes"
+    },
+    {
+      "path": "src/components/Collections/collectionSharing.consumers.test.tsx",
+      "name": "unchanged native collection-sharing surfaces phone cannot close the replacement collection after an old leave finishes"
+    },
+    {
+      "path": "src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "collection sharing view and operation ownership a late invite cannot clear the new collection selection or publish its toast"
+    },
+    {
+      "path": "src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "collection sharing view and operation ownership a leave completion cannot publish after switch"
+    },
+    {
+      "path": "src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "collection sharing view and operation ownership a leave completion cannot publish after close"
+    },
+    {
+      "path": "src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "collection sharing view and operation ownership a leave completion cannot publish after unmount"
+    },
+    {
+      "path": "src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "collection sharing view and operation ownership a leave completion cannot publish after session"
+    },
+    {
+      "path": "src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "collection sharing view and operation ownership a leave completion cannot publish after account-roundtrip"
+    },
+    {
+      "path": "src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "collection sharing view and operation ownership suppresses a late invite error after close/reopen"
+    },
+    {
+      "path": "src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "collection sharing view and operation ownership suppresses a late row error after close/reopen"
+    },
+    {
+      "path": "src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "collection sharing view and operation ownership suppresses a late leave error after close/reopen"
+    },
+    {
+      "path": "src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "collection sharing view and operation ownership an old row reply cannot free a new collection busy slot"
+    },
+    {
+      "path": "src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "collection sharing view and operation ownership does not display the previous collection invitees while the replacement lookup is pending"
+    },
+    {
+      "path": "src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "collection sharing view and operation ownership refuses held callbacks after selection or permission changes"
+    },
+    {
+      "path": "src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "collection sharing view and operation ownership refuses owner writes while closed or non-owner (closed=false)"
+    },
+    {
+      "path": "src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "collection sharing view and operation ownership refuses owner writes while closed or non-owner (closed=true)"
+    },
+    {
+      "path": "src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "collection sharing view and operation ownership locks duplicate same-turn invites and allows an explicit retry after failure"
+    },
+    {
+      "path": "src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "collection sharing view and operation ownership keeps desktop per-kind and phone shared synchronous busy slots (phone=false)"
+    },
+    {
+      "path": "src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "collection sharing view and operation ownership keeps desktop per-kind and phone shared synchronous busy slots (phone=true)"
+    },
+    {
+      "path": "src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "collection sharing view and operation ownership locks same-turn phone leaves while preserving desktop leave behavior"
+    },
+    {
+      "path": "src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "collection sharing view and operation ownership StrictMode effect retirement cannot release the replacement operation lock"
+    }
+  ],
+  "source_sha256": "7085c0f5ede10e99c81327d4bd3a35e3723343a82c0cf75ecb7d30b263fb8519",
+  "companion_sha256": "2df54137c35cf485f6eddd6e1a222008f900ab7607eb89a3bc0574561a7a0edc",
+  "test_sha256": {
+    "useCollectionSharing.lifetime.test.tsx": "4dc0280f1e4a16a5675654085304c488cf3d07dc420cadab0e35c7a1bc8dbdb2",
+    "collectionSharing.consumers.test.tsx": "30e17c9a5817122f5835457e71762bf9411413c2c13ac51a23889b325e412c3e",
+    "collectionSharing.gates.test.ts": "a73a4b533b3a6e911a971a133b396ffed4d35263678c73d2ea18c6e9a11daf28"
+  },
+  "baseline_sha256": "bed68d3d6417e8ec83559df3cba54a5a0f7e2719e32bca8b73f5ee09a64aaa54",
+  "required_ratchet_tightening": {
+    "src": {
+      "react-hooks/set-state-in-effect": [
+        185,
+        184
+      ]
+    }
+  },
+  "new_allowances_or_suppressions": 0,
+  "coverage": {
+    "total": {
+      "lines": {
+        "total": 125,
+        "covered": 125,
+        "skipped": 0,
+        "pct": 100
+      },
+      "statements": {
+        "total": 175,
+        "covered": 174,
+        "skipped": 0,
+        "pct": 99.42
+      },
+      "functions": {
+        "total": 48,
+        "covered": 48,
+        "skipped": 0,
+        "pct": 100
+      },
+      "branches": {
+        "total": 108,
+        "covered": 104,
+        "skipped": 0,
+        "pct": 96.29
+      },
+      "branchesTrue": {
+        "total": 0,
+        "covered": 0,
+        "skipped": 0,
+        "pct": "Unknown"
+      }
+    },
+    "/private/tmp/trek-core-collection-sharing-source-20261118/candidate-checkout/client/src/components/Collections/collectionSharingState.ts": {
+      "lines": {
+        "total": 61,
+        "covered": 61,
+        "skipped": 0,
+        "pct": 100
+      },
+      "functions": {
+        "total": 21,
+        "covered": 21,
+        "skipped": 0,
+        "pct": 100
+      },
+      "statements": {
+        "total": 77,
+        "covered": 76,
+        "skipped": 0,
+        "pct": 98.7
+      },
+      "branches": {
+        "total": 51,
+        "covered": 48,
+        "skipped": 0,
+        "pct": 94.11
+      }
+    },
+    "/private/tmp/trek-core-collection-sharing-source-20261118/candidate-checkout/client/src/components/Collections/useCollectionSharing.ts": {
+      "lines": {
+        "total": 64,
+        "covered": 64,
+        "skipped": 0,
+        "pct": 100
+      },
+      "functions": {
+        "total": 27,
+        "covered": 27,
+        "skipped": 0,
+        "pct": 100
+      },
+      "statements": {
+        "total": 98,
+        "covered": 98,
+        "skipped": 0,
+        "pct": 100
+      },
+      "branches": {
+        "total": 57,
+        "covered": 56,
+        "skipped": 0,
+        "pct": 98.24
+      }
+    }
+  },
+  "measurements": [
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "sortCollectionMembers",
+      "line": 33,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 34,
+      "parameters": 1,
+      "complexity": 3,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 35,
+      "parameters": 2,
+      "complexity": 2,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "nextCollectionRole",
+      "line": 39,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "clearBusyMember",
+      "line": 44,
+      "parameters": 2,
+      "complexity": 1,
+      "lines": 5
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "useCollectionSharing",
+      "line": 56,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 118
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 66,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 67,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 68,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 69,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 70,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 71,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 90,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 92,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 93,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 95,
+      "parameters": 3,
+      "complexity": 6,
+      "lines": 14
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 100,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 106,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 110,
+      "parameters": 2,
+      "complexity": 2,
+      "lines": 4
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 112,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 115,
+      "parameters": 1,
+      "complexity": 3,
+      "lines": 4
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 120,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 4
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 122,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 125,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 4
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 127,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 130,
+      "parameters": 0,
+      "complexity": 9,
+      "lines": 16
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 147,
+      "parameters": 0,
+      "complexity": 10,
+      "lines": 16
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "sharingView",
+      "line": 23,
+      "parameters": 3,
+      "complexity": 1,
+      "lines": 44
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "ArrowFunction",
+      "line": 29,
+      "parameters": 0,
+      "complexity": 4,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "ArrowFunction",
+      "line": 30,
+      "parameters": 0,
+      "complexity": 4,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "ArrowFunction",
+      "line": 34,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 16
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "ArrowFunction",
+      "line": 36,
+      "parameters": 2,
+      "complexity": 4,
+      "lines": 7
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "ArrowFunction",
+      "line": 43,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 6
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "ArrowFunction",
+      "line": 50,
+      "parameters": 1,
+      "complexity": 5,
+      "lines": 14
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "ArrowFunction",
+      "line": 54,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "ArrowFunction",
+      "line": 57,
+      "parameters": 0,
+      "complexity": 3,
+      "lines": 5
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "useSharingView",
+      "line": 69,
+      "parameters": 2,
+      "complexity": 3,
+      "lines": 8
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "ArrowFunction",
+      "line": 72,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "ArrowFunction",
+      "line": 74,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "useViewState",
+      "line": 79,
+      "parameters": 2,
+      "complexity": 3,
+      "lines": 15
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "ArrowFunction",
+      "line": 80,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "ArrowFunction",
+      "line": 82,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 8
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "ArrowFunction",
+      "line": 84,
+      "parameters": 1,
+      "complexity": 4,
+      "lines": 5
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "useCollectionSharingState",
+      "line": 96,
+      "parameters": 3,
+      "complexity": 1,
+      "lines": 42
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "ArrowFunction",
+      "line": 105,
+      "parameters": 0,
+      "complexity": 4,
+      "lines": 16
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "ArrowFunction",
+      "line": 111,
+      "parameters": 1,
+      "complexity": 3,
+      "lines": 3
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "ArrowFunction",
+      "line": 114,
+      "parameters": 0,
+      "complexity": 3,
+      "lines": 3
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "ArrowFunction",
+      "line": 117,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    }
+  ],
+  "live_or_server_idempotency_acceptance": false
+}

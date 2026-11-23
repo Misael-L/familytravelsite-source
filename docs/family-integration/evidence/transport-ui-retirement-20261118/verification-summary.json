@@ -1,0 +1,70 @@
+{
+  "passed": true,
+  "packet": "Q114",
+  "incoming": "a7d27e34891b5522fd72dfe2021e3abad934f199",
+  "implementation": "225666ecdd06e3875511066ab403fe2217a8ee25",
+  "build_source": "f18be8d3fd32b32371a02d30eb1d2e43d8eaeaf0",
+  "date": "2026-11-18",
+  "removed_paths": [
+    "client/src/integrations/family/legacy/components/Planner/TransportModal.tsx",
+    "client/src/integrations/family/legacy/components/Planner/TransitSearchPanel.tsx"
+  ],
+  "new_or_modified_runtime_source_files": 0,
+  "candidate_passed": 1277,
+  "same_expanded_cases_before_after": 1277,
+  "exact_raw_case_titles": 1276,
+  "one_generated_UUID_label_explicitly_reviewed": true,
+  "raw_sources_reviewed": 14039,
+  "application_modules_reviewed": 7475,
+  "current_reachable_nodes_preserved": 6091,
+  "all_exports_and_internal_mixed_value_type_import_reviewed": true,
+  "no_outside_runtime_type_test_tool_consumer_or_ambient_augmentation": true,
+  "compiler_program_roots_before_after": [
+    5077,
+    5077
+  ],
+  "compiler_program_sources_before_after": [
+    10259,
+    10259
+  ],
+  "all_compiler_sources_and_selected_effective_export_types_exact": true,
+  "native_presentation_files_exact": 12,
+  "tested_and_type_consumed_Family_transport_panel_retained": true,
+  "tested_Family_booking_panel_and_all_dependency_helpers_retained": true,
+  "all_3792_generated_files_except_sourceCommit_configuration_byte_exact": true,
+  "all_421_JavaScript_CSS_outputs_and_14_stylesheets_byte_exact": true,
+  "public_configuration_other_fields_exact": true,
+  "fresh_typecheck_and_build_passed": true,
+  "fresh_current_declarations_fixed": 128,
+  "source_guards_passed": 4,
+  "artifact_binding_controls_passed": 3,
+  "warning_gate_pass": true,
+  "source_warnings_actual_limit": [
+    3418,
+    3418
+  ],
+  "source_complexity_actual_limit": [
+    218,
+    218
+  ],
+  "source_length_actual_limit": [
+    130,
+    130
+  ],
+  "format_gate_pass": true,
+  "unlisted_format_failures": 0,
+  "format_baseline_unchanged_entries": 2134,
+  "size_findings_before_after": [
+    10,
+    8
+  ],
+  "all_other_size_failure_lines_exact": true,
+  "rules_baselines_exclusions_suppressions_unchanged": true,
+  "quality_gates_serialized_only_to_reduce_memory_pressure": true,
+  "verified_disposable_prototype_removed_after_proofs": true,
+  "two_generated_build_trees_COW_shared_all_logical_bytes_and_metadata_exact": true,
+  "capacity_estimate_not_validation": true,
+  "global_release_gate_pass": false,
+  "live_database_browser_or_writer_admission_acceptance": false,
+  "next": "Q115 bounded source-preserving ExploreEntityDetailPanel props-contract extraction; retain its direct regression test, TripWorkspaceExplorePanel consumer, layout and media/permission behavior"
+}

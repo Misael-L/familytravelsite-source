@@ -1,0 +1,26 @@
+{
+  "passed": true,
+  "initial_archive_commit": "d55cb38d8e0007bb5da2ca8b53a6ec9ee94bdf71",
+  "initial_archive_exit": 1,
+  "initial_finding": {
+    "rule": "SUPABASE_CO",
+    "path": "docs/family-integration/evidence/explore-props-20261118/build_candidate.py",
+    "line": 5,
+    "classification": "Copied operational fixture configuration; synthetic hostname, not a credential. Scanner does not permit this hostname in that documentation-helper context."
+  },
+  "initial_scan_log": "archive-initial-scan.txt",
+  "actual_executed_build_helper_sha256": "8e5611fae5d6f67f11bea266e21111f361694ebac7284a491aaa00e56dba98f7",
+  "actual_executed_build_helper_retained_locally": "/private/tmp/trek-core-explore-props-20261118/build_candidate.py",
+  "actual_executed_helper_original_private_history": "d55cb38d8e0007bb5da2ca8b53a6ec9ee94bdf71:docs/family-integration/evidence/explore-props-20261118/build_candidate.py",
+  "disposition": "Replace the copied operational configuration helper with a distinctly named parameterized replay helper. Required synthetic fixture origin/key are external inputs, not constructed or hidden literals. The replay helper is not claimed as the executed script.",
+  "replay_helper": "replay_fixture_build.py",
+  "required_replay_environment": [
+    "FAMILY_REPLAY_FIXTURE_ORIGIN",
+    "FAMILY_REPLAY_FIXTURE_PUBLISHABLE_KEY"
+  ],
+  "application_source_build_and_tests_unchanged": true,
+  "no_scanner_publisher_exclusion_allowlist_or_policy_change": true,
+  "initial_complete_failed_archive_preserved": "/private/tmp/trek-core-explore-props-20261118/final-archive",
+  "fresh_archive_required": true,
+  "initial_Q115_manifest_sha256": "b26db3eaadbd66f76c43a21959d82f642763659b22ce7e5755586e07e6a990b7"
+}

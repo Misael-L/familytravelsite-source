@@ -1,0 +1,22 @@
+[
+  "src/components/Planner/PlaceInspector.test.tsx",
+  "src/components/Planner/PlaceDetailsColumn.test.tsx",
+  "src/components/Planner/usePlaceGallery.test.ts",
+  "src/mobile/screens/trip/sheets/MPlaceSheet.test.tsx",
+  "tests/unit/mobile/trip/MPlaceSheet.test.tsx",
+  "tests/unit/mobile/trip/MPlaceEditSheet.test.tsx",
+  "src/integrations/family/planLocations.test.tsx",
+  "src/integrations/family/identity.test.ts",
+  "src/integrations/family/directWriteSession.test.ts",
+  "src/integrations/family/FamilyExploreHost.test.tsx",
+  "src/integrations/family/FamilyGenericMapBridge.test.tsx",
+  "src/integrations/family/legacy/components/Explore/ExploreEntityDetailPanel.test.tsx",
+  "src/integrations/family/legacy/components/Map/ExplorePoiPartialCard.test.tsx",
+  "src/integrations/family/publicVariantProjection.test.ts",
+  "src/integrations/family/publicVariantImages.test.ts",
+  "src/repo/placeImageLease.test.ts",
+  "src/components/shared/PlaceAvatar.imageLease.test.tsx",
+  "src/components/Planner/usePlaceImageField.test.ts",
+  "src/components/Planner/placeImageChoice.test.ts",
+  "tests/unit/scripts/family-scanner-ownership.test.ts"
+]

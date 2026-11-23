@@ -1,0 +1,1332 @@
+{
+  "startingCommit": "2d25cc818b9844e77b693b4cde2393388184b12f",
+  "upstream514": "2bcfc1bfcbbff0affd097c0f789c835396389572",
+  "findingCount": 114,
+  "findingFiles": 56,
+  "resolutions": {
+    "reuse-existing-approved-mapbox-fixture": 2,
+    "reserved-invalid-host-for-synthetic-fixture": 62,
+    "reuse-existing-approved-carto-fixture": 1,
+    "exact-canonical-official-markdown-documentation-link": 40,
+    "redact-private-operational-identifier": 8,
+    "redact-private-operational-endpoint": 1
+  },
+  "files": [
+    {
+      "path": "client/src/components/Settings/MapSettingsTab.test.tsx",
+      "sha256Before": "16708815fe301b51c12786b2713b9b188395c39731e8e088728403d30c5ddd52",
+      "upstream514Owned": true,
+      "upstream514BlobOid": "fe8a434460af689b65b986a1a08fc6bcd14c7941",
+      "currentBlobOid": "fe8a434460af689b65b986a1a08fc6bcd14c7941"
+    },
+    {
+      "path": "client/src/components/Settings/mapSettingsModel.test.ts",
+      "sha256Before": "b2f739a9886187c2e470d7bf67d5a06ebff24b9475ee8da2a1a8ce575cf7f6d1",
+      "upstream514Owned": true,
+      "upstream514BlobOid": "3183e97d77044f299ff7b868f9c83d50d2414de4",
+      "currentBlobOid": "3183e97d77044f299ff7b868f9c83d50d2414de4"
+    },
+    {
+      "path": "client/src/integrations/family/FamilyPlannerBoundary.test.tsx",
+      "sha256Before": "19ac271468562c34a68ff2b07d058a222445b23f4af95f4defd7376772c278ca",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "6902e69926bd9b7d6d4e212c4fb240c49f52ee7c"
+    },
+    {
+      "path": "client/src/integrations/family/bookingCalendarHandler.test.ts",
+      "sha256Before": "4e2ce89e1660d529dc47a0eaeb9a66dfd30b7ff305a077a3f8fa34d3561e0265",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "3d4c31fbca21e078fb3a643412d87943a7972289"
+    },
+    {
+      "path": "client/src/integrations/family/bookingDetails.test.tsx",
+      "sha256Before": "57d29df815cac5fbdec720cf585ed3542d599dbc71809a7cb6a3af3591f1e5d6",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "7b5fbc3a4e1ab05e633d53b11ea1ed5a844e5cc8"
+    },
+    {
+      "path": "client/src/integrations/family/completeTripRead.test.ts",
+      "sha256Before": "23bcdbc34343a6ee75cf3f376e6bf06f333eab4eeffd1ef260a29d8f42f706b1",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "81dc4942663deb1dd6098d04d45de8933087a9cd"
+    },
+    {
+      "path": "client/src/integrations/family/deviceRecoveryGate.test.ts",
+      "sha256Before": "55481c23dbfcd8bd03b45b950cb9890ba03043651587944305adf502e3cbb9b1",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "41c8666420bb815f2b8acca8cbcfb606d8faf05c"
+    },
+    {
+      "path": "client/src/integrations/family/familyOriginalWorkExport.test.ts",
+      "sha256Before": "e80a1823b700da82ec5a2b1f347a2d174c84173d3e5f2ebc044b73a897312cb0",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "016a87c36b67990888669c72dc4d53e311fb7668"
+    },
+    {
+      "path": "client/src/integrations/family/governanceControls.test.tsx",
+      "sha256Before": "f80bcd7cedc2e892c1f8646b2476720bfdbe6027a2d75a8edfbf3bb912f1191e",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "e99161df3732bddce2e7da4784dd080ae4db3ea4"
+    },
+    {
+      "path": "client/src/integrations/family/logoutRecovery.test.tsx",
+      "sha256Before": "17ec9a83e0f943850758b311560c4facae9781b4487ba15e36379122d7407eda",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "de670746aed414b2b23a2234e402b5b050061339"
+    },
+    {
+      "path": "client/src/integrations/family/nativeBookingCallbacks.test.tsx",
+      "sha256Before": "80f42edc1b007dac55a5856661aace031991a0a4b1a033d5a083d6cca8ffaa3d",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "f1fd8f3bd36d8ff41bc972404175a4512de06388"
+    },
+    {
+      "path": "client/src/integrations/family/nativeStayControls.test.ts",
+      "sha256Before": "3c5c3f697c4a3f64f7203de78b5387db22759ed39161e0c96ee0abbede783044",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "53206871df9a5c2a90ed3b1f27ee69fd13d4374f"
+    },
+    {
+      "path": "client/src/integrations/family/nativeStayCreation.test.tsx",
+      "sha256Before": "920269bb1cc62c5564083a791a275935275d276509e432697ffe11a2ef2997ed",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "202b2d1f0f3c4d51e3df7164131fce28ea68b4da"
+    },
+    {
+      "path": "client/src/integrations/family/nativeStayQueueQualification.test.ts",
+      "sha256Before": "d42a2bd6bfae6539d6260711d0c3478d05b99cb29ecc3fdccd7f0d7025d418d1",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "557eb582b9bd8526fe1b05de00e6e3d8ea651c6b"
+    },
+    {
+      "path": "client/src/integrations/family/nativeStayWriter.test.tsx",
+      "sha256Before": "af9116877370a19ed205ad82eea9a24faa88e4a971020dfa029d8e32ab40af21",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "72a56ebd69e4815f14873f624ad95a6d03fec37b"
+    },
+    {
+      "path": "client/src/integrations/family/offlineCategoryQualification.test.ts",
+      "sha256Before": "4743e72d62736e1de0cd730f24018624c9ead853ba5cfb786d10ff8ed73d5280",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "30317333fa5a670e2af7f8abcee5715b25767ff2"
+    },
+    {
+      "path": "client/src/integrations/family/packingAggregateQualification.test.ts",
+      "sha256Before": "3a633880e7b87578994b73824d68fe662b9e9164c560fb88624e38529a57df19",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "7d6a0d23e6c9c64c1a8229363aece70ee0d0e604"
+    },
+    {
+      "path": "client/src/integrations/family/packingRecoveryQualification.test.ts",
+      "sha256Before": "82d52f1483281a3cacab0d7bf04b300ee6fadbf67f93d227528c9c09b885b592",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "483ab943a1b232b7c1d0f6845697e3da8dc300c6"
+    },
+    {
+      "path": "client/src/integrations/family/plannerCohort.test.tsx",
+      "sha256Before": "dfbe10805e7a577e0527987e3a17f281f88388984c5895ce584b0e261aefd1f6",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "f14eaf4d00174bb4f91dfadb2d271f3863343f87"
+    },
+    {
+      "path": "client/src/integrations/family/plannerState.test.ts",
+      "sha256Before": "2d4c6dfad00ffa29c7eda52f1e4500ffd796b5d89ebcbd4af1a21bbc5be51a07",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "ea33577306afaf40aac158083a7e7052ca2933ca"
+    },
+    {
+      "path": "client/src/integrations/family/plannerViews.test.ts",
+      "sha256Before": "67919e3b31752c767086a5b07d31e2e7fb6f98884ba67e31e6f5e1572163573a",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "4a4c08fc9c542b0324a3ace03a4369a237d2738a"
+    },
+    {
+      "path": "client/src/integrations/family/privateFilePreparationV4.test.ts",
+      "sha256Before": "3dcf032395834ea31954c645287657ddb9fd86b17831d0869123c83188b765fa",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "584eceea03ab56ec6167f9112dc673ec73481fc6"
+    },
+    {
+      "path": "client/src/integrations/family/publicImagePreparation.test.ts",
+      "sha256Before": "a3188e625eb333ae6280bd22026f44cb8395f3789426d860d9e7c8c43e5d6791",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "5fc3731b3590cf647477d2683cb90231def92e42"
+    },
+    {
+      "path": "client/src/integrations/family/publicImagePreparationV4.test.ts",
+      "sha256Before": "b80c160066afc2bb87d328ded64ac83940b6784a83e45d7235ba88126dd1417f",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "e693cdc47281af9170fed3462ea6a5e8f37a3953"
+    },
+    {
+      "path": "client/src/integrations/family/publicVariantCache.test.ts",
+      "sha256Before": "1caaac3d148d24b0c1726db3b8d4d4b49bba4e71319742c343aac85cb0372b2f",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "7bd6f745a0e6d5ef28637bb1d8aee0b59780d8ad"
+    },
+    {
+      "path": "client/src/integrations/family/startupReadSession.test.ts",
+      "sha256Before": "b7b82fd85d2aceffb98e19afafef736d5d357aa99f3602a765888c327dc2c865",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "64d228648e3dc4f95d5d2a0cbefaa911b2b99ffc"
+    },
+    {
+      "path": "docs/family-integration/offline-trip-snapshot-contract.md",
+      "sha256Before": "522f5d68b1831fc157699dad3d054d08f001de2bd08969a9d380dd10bbcca3ab",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "761f2392d202676da92c5222dd339e57aaec559e"
+    },
+    {
+      "path": "docs/family-integration/packing-bag-command-cancellation-contract.md",
+      "sha256Before": "9c7d504388f87895366ada08f983a21da37c7c3aaacb379cf8a955e5cfbae72d",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "8f44ae4734b93f5bb970184869f441128e5f53b0"
+    },
+    {
+      "path": "docs/family-integration/packing-bag-foundation-contract.md",
+      "sha256Before": "c5eecdd1b42c1ebb50cc00d14548deaba48d41a26b8322428cd437b485457981",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "aaffee480d7f94b4d45a25b6df4a5ded75cf694a"
+    },
+    {
+      "path": "docs/family-integration/packing-bag-ownership-audit.md",
+      "sha256Before": "c665054482056ec8f101fae0f5432e526c883b1f619a06fbefa14bd7a55b620f",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "554fb8f0b72c6723a6922d641a8e30bd321e8277"
+    },
+    {
+      "path": "docs/family-integration/packing-category-aggregate-contract.md",
+      "sha256Before": "d4e655e0b6fc506cfdf4a04b133db7c2a723f1a7cefbf395fd62db5e44a9b82f",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "0336cad2310853633fef3aada45127b89501354f"
+    },
+    {
+      "path": "docs/family-integration/packing-category-aggregate-sdk-contract.md",
+      "sha256Before": "b9c2ce6eb89e96a35215e9409ec2f3c12bc005cb4c1bc2f324e0268f35be8127",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "1b38c917ea1793751eac7da4fe902cf66a6165f9"
+    },
+    {
+      "path": "docs/family-integration/packing-category-commands-contract.md",
+      "sha256Before": "e803f5b3a03d566bb1cc251c71b55b53ab0f81283739010d57ebd62e2849e0e6",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "658afa54de0186f9c6581768586c0d81bc299a9f"
+    },
+    {
+      "path": "docs/family-integration/packing-category-contract.md",
+      "sha256Before": "a643fa66f7ac524733f3483de44525e63e67e27c366a131a3c0f2d897ab626a0",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "df60f4bbeefc4e4d4644f989cf3e2e5a487ec514"
+    },
+    {
+      "path": "docs/family-integration/packing-category-foundation-contract.md",
+      "sha256Before": "bfb0a87aae8186e922e1487cc6c664f7721cb4fc433b8366cb588a4109762379",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "dd40a384a243456d631875f7fd8c371238fb8fb7"
+    },
+    {
+      "path": "docs/family-integration/packing-category-lifecycle-next-packet.md",
+      "sha256Before": "972113e9ea546f889c4e0ef1020307939b64f7e98b2863cf58e4e3987be4adf6",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "498fe6d5e45df77789f9fe983c66ca53e8f55ce3"
+    },
+    {
+      "path": "docs/family-integration/packing-command-cancellation-packet.md",
+      "sha256Before": "1aca81b7fe59c1dfeaf96a2c4eb8c95ef65a0935b8c503b4b421a52798c445fc",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "aade94051fc7888b00e7e87763de160fc1725dbf"
+    },
+    {
+      "path": "docs/family-integration/packing-group-database-contract.md",
+      "sha256Before": "e9d3c952d4f01e68125695894706c003f3876fcf2eadfa0e16173d8197163f82",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "aeabe5a3b253cd09c8810a5d72a399b3059cc7db"
+    },
+    {
+      "path": "docs/family-integration/packing-group-writer-contract.md",
+      "sha256Before": "bfb16c70439cbadb14d3156e7c4cfe45c7bcef1238c3d6713791578f392ff418",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "194d7cc957534ec9bc2c26db8dc1bf4b43cad1f5"
+    },
+    {
+      "path": "docs/family-integration/preparation-readiness-contract-v1.md",
+      "sha256Before": "20015b6ccb3202becdc544142494c52ca25b1dfca1b275200894386ff121cfaf",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "58676955006654b793bc0ae8afff3ab6528b4f44"
+    },
+    {
+      "path": "docs/family-integration/private-file-acquisition-contract-v1.md",
+      "sha256Before": "49abf155596f2a35e61e8f65dcf1fdfc328e275d0bbe8fd7b89276dc1aea46a5",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "52d3c80e0a45e5d2cc44158b2326dafeef0d6678"
+    },
+    {
+      "path": "docs/family-integration/public-image-preparation-component-v1.md",
+      "sha256Before": "a8aee0fb9968925556f82ed5e1468b67c208b066f4de050d5435e815c53134a3",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "0ecddd89911d8b6b7b8a0d3fec879aa527eed934"
+    },
+    {
+      "path": "docs/family-integration/public-variant-byte-cache-v1.md",
+      "sha256Before": "a82caa06a475bec9dd26a81b4ab784436a3ced172ff87004f01615be1c456544",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "1d133631b2759b6bc37d73a1bed8324eeeea39bf"
+    },
+    {
+      "path": "docs/family-integration/saved-trip-public-image-leases.md",
+      "sha256Before": "5cc426a1e6ee5f157d3579c07e9bcdc08a6fa506a4477953b2ccd2c1952a62aa",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "95ef75bf0aa1874545504635f024ea22334081a0"
+    },
+    {
+      "path": "docs/family-integration/supported-core-preview-readiness.md",
+      "sha256Before": "79c57ed5e1d33c424c7bb10255a8bc5c18d6412e2adf540b48c9fce98db67d1f",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "3b90f3b87a7f29bbaa0d172ca52c6397176a3d10"
+    },
+    {
+      "path": "docs/family-integration/supported-core-readiness/backend131/contract.md",
+      "sha256Before": "02ab576e70203f2aa2e2e5f91c9245565945030fa71eeab2f98366a6472bfab0",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "6d20088e81d2b9392e5b09ea8d45b66f1335c1f0"
+    },
+    {
+      "path": "docs/family-integration/supported-core-readiness/hosted-comparison.json",
+      "sha256Before": "e478bd8b2b41c7052d041b774dd7c9fa385033b0ae62b9166ee4cf1c415afbf9",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "763631e59ac10c9d80539327b845c0827dfbfed6"
+    },
+    {
+      "path": "docs/family-integration/supported-core-readiness/hosted-core-schema.json",
+      "sha256Before": "1f96f1c233287b46519fcef6b39fc9a1a4114479bb015884872d75032c7b3e44",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "2fa6409d666501896ec4fac117c76b581ef048b3"
+    },
+    {
+      "path": "docs/family-integration/supported-core-readiness/hosted-recovery-schema.json",
+      "sha256Before": "5b5ca3867d70d2eafa106f801e42e6b8d1400dcbd589a063d1798687ab38bd3d",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "28de462c637b81140fd6ab1e16748ba937a61f3d"
+    },
+    {
+      "path": "docs/family-integration/supported-core-readiness/inventory.json",
+      "sha256Before": "c9d8df4a891b6d0b7ad71c72cda84a8ce502cdf20e63e29245dfd9c483ec5e90",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "9754c1e48b346d971569b30e2acc14fc7b093a46"
+    },
+    {
+      "path": "docs/family-integration/supported-core-readiness/recheck-20261114/hosted-project.json",
+      "sha256Before": "d109ef7550d1acc21c5c617106cf5210eff2d167911d65b01ca27d35d2ba0c43",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "eee85858b04ddae7edb808abdfea028e3db9f052"
+    },
+    {
+      "path": "docs/family-integration/trek-5.1.4-atomic-stay-create-contract.md",
+      "sha256Before": "23cd964d11d00c07c2e303bbc9a1424f5257b518bb7211cd2142c1f6a566be79",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "7d6fc0a9113d904d6037dd0528967b8239a00652"
+    },
+    {
+      "path": "docs/family-integration/trek-5.1.4-native-stay-client-handoff.md",
+      "sha256Before": "539d9f0b146a8390f47800ca9f2672a9ed5c51a0de6af609f2fa825bcb19e840",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "9c75e8262c38f504e7a51ffb9bb9cd8498962822"
+    },
+    {
+      "path": "docs/family-integration/trek-5.1.4-stay-timing-foundation-packet.md",
+      "sha256Before": "2e4351c3818ed99e1a45616aeac015dd882066e94f8e985ec3ba27db6d5c9187",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "435d5d3701c8a440c3ba106fe2f212f1a6982e4c"
+    },
+    {
+      "path": "docs/family-integration/u03d16c-activation-decision.md",
+      "sha256Before": "22b92b0ee64a886608ef2cfeb0adc2a2d088e12e340da3f66e048718539f75dd",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "f250cda67fa387dd9ee517c2e0ebceffc5015fae"
+    },
+    {
+      "path": "docs/family-integration/u03d16e-activation-decision.md",
+      "sha256Before": "f6e56b2a56d2c3300850360088c12800fcd17a0bdb36bc4d797594bedebffd72",
+      "upstream514Owned": false,
+      "upstream514BlobOid": null,
+      "currentBlobOid": "5382848788cf58fd3943e70039e224905ea51d26"
+    }
+  ],
+  "findings": [
+    {
+      "class": "MAPBOX_PK",
+      "path": "client/src/components/Settings/MapSettingsTab.test.tsx",
+      "line": 404,
+      "group": "test",
+      "lineSha256": "cda9b949e72731e2866ca9fa018af2de6191d58098098cdc84f70629e8103f06",
+      "resolution": "reuse-existing-approved-mapbox-fixture"
+    },
+    {
+      "class": "MAPBOX_PK",
+      "path": "client/src/components/Settings/mapSettingsModel.test.ts",
+      "line": 31,
+      "group": "test",
+      "lineSha256": "170a271e184930bbce9f91aab4a10afc1815fe4b07223b0847fae0486abd8db7",
+      "resolution": "reuse-existing-approved-mapbox-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/FamilyPlannerBoundary.test.tsx",
+      "line": 51,
+      "group": "test",
+      "lineSha256": "b1d4701fcae6b018700d48bc6e10f2af93f4a8c856eb244d13c3c3410417e17f",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/FamilyPlannerBoundary.test.tsx",
+      "line": 206,
+      "group": "test",
+      "lineSha256": "7100d9334cff57e4b6b541e008d145b247f043c3ad17cec486aa36c60fe96bc5",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/FamilyPlannerBoundary.test.tsx",
+      "line": 418,
+      "group": "test",
+      "lineSha256": "f3d072e735700546cd6ab73cf8b46d27bb9caad3aad713524cfe86525b03edde",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/bookingCalendarHandler.test.ts",
+      "line": 7,
+      "group": "test",
+      "lineSha256": "5b9519bb5d87215b783d823f27067db2536d47fb13e062951e4a722323f99086",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/bookingCalendarHandler.test.ts",
+      "line": 60,
+      "group": "test",
+      "lineSha256": "55cb56336ff0564721e559c21957e0d0874e386bb32ab8da24585d7fc7a0b793",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/bookingCalendarHandler.test.ts",
+      "line": 164,
+      "group": "test",
+      "lineSha256": "fabf0a97bc5d85c6dacc7e5737387ade661e350abbca04ae8c1d108338f8219f",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/bookingCalendarHandler.test.ts",
+      "line": 256,
+      "group": "test",
+      "lineSha256": "12013b5f9d83687bd408d5d85e534f834760061e5ba9acd916f737536853ee5b",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/bookingDetails.test.tsx",
+      "line": 22,
+      "group": "test",
+      "lineSha256": "5b9519bb5d87215b783d823f27067db2536d47fb13e062951e4a722323f99086",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/bookingDetails.test.tsx",
+      "line": 114,
+      "group": "test",
+      "lineSha256": "55cb56336ff0564721e559c21957e0d0874e386bb32ab8da24585d7fc7a0b793",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/bookingDetails.test.tsx",
+      "line": 340,
+      "group": "test",
+      "lineSha256": "0deaf02f4511f5db0c84302c2f6f87e97e5a6db465dfe412a6493903c1f045e6",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/bookingDetails.test.tsx",
+      "line": 381,
+      "group": "test",
+      "lineSha256": "f47010dd0d3e24906e8fabcfd40887add42420d2e010a02a494f389902f0aeb5",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/completeTripRead.test.ts",
+      "line": 266,
+      "group": "test",
+      "lineSha256": "88e1cfc68f22967f3249b0ab54de8defd181a16b0fd3b745e0c73a95f94c3a52",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/deviceRecoveryGate.test.ts",
+      "line": 8,
+      "group": "test",
+      "lineSha256": "6a1c3981369fcdcce76c1d318317122c23626dc5161bd5c00ceb86e478558f1f",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/familyOriginalWorkExport.test.ts",
+      "line": 16,
+      "group": "test",
+      "lineSha256": "9564cae1c08afa9f9c9adf55039f67f93332e95461f0169184c67f097341e116",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/governanceControls.test.tsx",
+      "line": 174,
+      "group": "test",
+      "lineSha256": "7100d9334cff57e4b6b541e008d145b247f043c3ad17cec486aa36c60fe96bc5",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/governanceControls.test.tsx",
+      "line": 340,
+      "group": "test",
+      "lineSha256": "6163db15f69780addb9503dbf0397181b840909201b73dac7750ec15d047e353",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/logoutRecovery.test.tsx",
+      "line": 75,
+      "group": "test",
+      "lineSha256": "e1d2a7139ffb877a1a36ae5a51c74b36ae65b18de8c6b05031409caefbc8d8c7",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/logoutRecovery.test.tsx",
+      "line": 93,
+      "group": "test",
+      "lineSha256": "7100d9334cff57e4b6b541e008d145b247f043c3ad17cec486aa36c60fe96bc5",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/logoutRecovery.test.tsx",
+      "line": 484,
+      "group": "test",
+      "lineSha256": "53a633285b16ae099f6ab261f25e8764772c34fc2f5899a0da03d4c66e889d68",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/nativeBookingCallbacks.test.tsx",
+      "line": 29,
+      "group": "test",
+      "lineSha256": "5b9519bb5d87215b783d823f27067db2536d47fb13e062951e4a722323f99086",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/nativeBookingCallbacks.test.tsx",
+      "line": 140,
+      "group": "test",
+      "lineSha256": "55cb56336ff0564721e559c21957e0d0874e386bb32ab8da24585d7fc7a0b793",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/nativeStayControls.test.ts",
+      "line": 125,
+      "group": "test",
+      "lineSha256": "a7f3079c18d535e4b33864e8b0e49923eda5d026a54007d37a0a7a94812f18d2",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/nativeStayCreation.test.tsx",
+      "line": 107,
+      "group": "test",
+      "lineSha256": "ea618e324288c056c2224eb7f0f1bbfba5494948d219c2f6c7fff9553987bcde",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/nativeStayQueueQualification.test.ts",
+      "line": 17,
+      "group": "test",
+      "lineSha256": "a7f3079c18d535e4b33864e8b0e49923eda5d026a54007d37a0a7a94812f18d2",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/nativeStayWriter.test.tsx",
+      "line": 384,
+      "group": "test",
+      "lineSha256": "932d7aacd4520abb2c3eaacc9767ce6ea905dfac514730aa153b2e5d53fa29b6",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/offlineCategoryQualification.test.ts",
+      "line": 7,
+      "group": "test",
+      "lineSha256": "dbdffebf8d80a121a4cdfa960fec7740447edeebbb6e566df7649a4bd2eebc36",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/offlineCategoryQualification.test.ts",
+      "line": 34,
+      "group": "test",
+      "lineSha256": "2035b26f37b28f8982f8e39e0d21a4b2ffd6702382b0b716770d7d7bbef3face",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/packingAggregateQualification.test.ts",
+      "line": 20,
+      "group": "test",
+      "lineSha256": "8590dd64ec3a20619c47fdf9b1079d63d257c937bdb8ec63ed258fdce2e86b3f",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/packingAggregateQualification.test.ts",
+      "line": 50,
+      "group": "test",
+      "lineSha256": "10487809165f359ea879c266dd3cc7af7ac2e7c05a6b77948edbe377af7b3d8a",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/packingRecoveryQualification.test.ts",
+      "line": 9,
+      "group": "test",
+      "lineSha256": "6bfe94cd59feaba8c05524a9752922c69d9eeb256ddadf1c94788fe96577cdcf",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/plannerCohort.test.tsx",
+      "line": 72,
+      "group": "test",
+      "lineSha256": "b1d4701fcae6b018700d48bc6e10f2af93f4a8c856eb244d13c3c3410417e17f",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/plannerCohort.test.tsx",
+      "line": 461,
+      "group": "test",
+      "lineSha256": "7100d9334cff57e4b6b541e008d145b247f043c3ad17cec486aa36c60fe96bc5",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/plannerCohort.test.tsx",
+      "line": 840,
+      "group": "test",
+      "lineSha256": "6163db15f69780addb9503dbf0397181b840909201b73dac7750ec15d047e353",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/plannerCohort.test.tsx",
+      "line": 995,
+      "group": "test",
+      "lineSha256": "3ef7723ea51fc3824a72313313daee77e9227ee90dcf38ca92b345776942e013",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/plannerCohort.test.tsx",
+      "line": 1127,
+      "group": "test",
+      "lineSha256": "7c0a40feec1a2d79d53e6881e7eabe4692c0bd69c25cc5bd68ad3c5b4b293635",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/plannerCohort.test.tsx",
+      "line": 1530,
+      "group": "test",
+      "lineSha256": "6163db15f69780addb9503dbf0397181b840909201b73dac7750ec15d047e353",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/plannerCohort.test.tsx",
+      "line": 1572,
+      "group": "test",
+      "lineSha256": "26efa2a43ccc9f048282d1f75ada759512a96d3a48c5b283e4ab1b1dd987c5cd",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/plannerCohort.test.tsx",
+      "line": 2044,
+      "group": "test",
+      "lineSha256": "4d209091bc95897eedf5656c082227e69de848537bd3575c8f307aebc315d18c",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/plannerCohort.test.tsx",
+      "line": 2316,
+      "group": "test",
+      "lineSha256": "10d2f7092ae62ec0fc0807d0f2da0cae457d6756eb90a207c96390da0179890d",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/plannerCohort.test.tsx",
+      "line": 2391,
+      "group": "test",
+      "lineSha256": "10d2f7092ae62ec0fc0807d0f2da0cae457d6756eb90a207c96390da0179890d",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/plannerCohort.test.tsx",
+      "line": 2605,
+      "group": "test",
+      "lineSha256": "56d6bd44a94c247df6f3c7439b967f1cc8b65ee65a7bdf3a90a50d161b7c8922",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/plannerCohort.test.tsx",
+      "line": 2949,
+      "group": "test",
+      "lineSha256": "56d6bd44a94c247df6f3c7439b967f1cc8b65ee65a7bdf3a90a50d161b7c8922",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/plannerCohort.test.tsx",
+      "line": 3069,
+      "group": "test",
+      "lineSha256": "14348f89b4304f72c7b93cc0eb022704cb33508e0ea5f715e29ed109ae4d0497",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/plannerCohort.test.tsx",
+      "line": 3546,
+      "group": "test",
+      "lineSha256": "b2d7f0ae0ab00a55a6c6fd3919476a75b99d5c6d3daef193e0641b0e43f70dfa",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/plannerCohort.test.tsx",
+      "line": 3576,
+      "group": "test",
+      "lineSha256": "6163db15f69780addb9503dbf0397181b840909201b73dac7750ec15d047e353",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/plannerCohort.test.tsx",
+      "line": 3902,
+      "group": "test",
+      "lineSha256": "14348f89b4304f72c7b93cc0eb022704cb33508e0ea5f715e29ed109ae4d0497",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/plannerCohort.test.tsx",
+      "line": 4315,
+      "group": "test",
+      "lineSha256": "97f75ab2bed1cc2112bc3b6a5aec6062b51f9e8f386384b7c730a2d17f99ab9d",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/plannerCohort.test.tsx",
+      "line": 4546,
+      "group": "test",
+      "lineSha256": "573bc1790d3ff1517f09976a1e6e039c21a3eb9105cccd51583fb81e5550f5d6",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/plannerCohort.test.tsx",
+      "line": 4876,
+      "group": "test",
+      "lineSha256": "feb6514b9a50cc617f5ee30f9ce880cecea24e6343c18ed85e473cb7fb5c3f42",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/plannerCohort.test.tsx",
+      "line": 4983,
+      "group": "test",
+      "lineSha256": "bce62c2bf0367e94e284530b45c867e339a58f4184c90f52f0630c8e65ee0440",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/plannerState.test.ts",
+      "line": 31,
+      "group": "test",
+      "lineSha256": "8065295e194b8a90acafaf1dcfe57722ba4fb2a5adce6503a658ab650611720c",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/plannerState.test.ts",
+      "line": 138,
+      "group": "test",
+      "lineSha256": "a19277bad58308807ab0123097b72cb94b7d6346a7caffa2557dee72923f011f",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/plannerViews.test.ts",
+      "line": 26,
+      "group": "test",
+      "lineSha256": "b1d4701fcae6b018700d48bc6e10f2af93f4a8c856eb244d13c3c3410417e17f",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/plannerViews.test.ts",
+      "line": 34,
+      "group": "test",
+      "lineSha256": "8065295e194b8a90acafaf1dcfe57722ba4fb2a5adce6503a658ab650611720c",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/plannerViews.test.ts",
+      "line": 197,
+      "group": "test",
+      "lineSha256": "efbc7611254b398f24a48cb3320b75ae581a1ac1480250b496d46e85090b6a6c",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/plannerViews.test.ts",
+      "line": 218,
+      "group": "test",
+      "lineSha256": "a19277bad58308807ab0123097b72cb94b7d6346a7caffa2557dee72923f011f",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/plannerViews.test.ts",
+      "line": 331,
+      "group": "test",
+      "lineSha256": "40baccd874fb72365348f499b67eda8af89c21612d95bd4106994b55aae58b0e",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/plannerViews.test.ts",
+      "line": 355,
+      "group": "test",
+      "lineSha256": "40baccd874fb72365348f499b67eda8af89c21612d95bd4106994b55aae58b0e",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/privateFilePreparationV4.test.ts",
+      "line": 266,
+      "group": "test",
+      "lineSha256": "8b8c505d40f9f1dab1eaffab00ba099b8e31ba9f5d4d2370ff0b417c410c9e85",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/publicImagePreparation.test.ts",
+      "line": 189,
+      "group": "test",
+      "lineSha256": "8a03fc4df3e5137ef973b97e6fe3a19404fefc38f0f90e4144b9f97c45c60689",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/publicImagePreparationV4.test.ts",
+      "line": 252,
+      "group": "test",
+      "lineSha256": "579eae6e0b65325774f0c26b0b985068ed9dd9b10f5223208ceb2b1dd6b56f66",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "client/src/integrations/family/publicVariantCache.test.ts",
+      "line": 179,
+      "group": "test",
+      "lineSha256": "0b3c84810206a09c3794eaeda9d91ef4c096ace80b08fd9d563d910395c419e3",
+      "resolution": "reserved-invalid-host-for-synthetic-fixture"
+    },
+    {
+      "class": "CARTO_KEY",
+      "path": "client/src/integrations/family/startupReadSession.test.ts",
+      "line": 254,
+      "group": "test",
+      "lineSha256": "4f5228cfdd04f879aafcb34676e0c1ec143bb2e9a68fc4092db35ba0f6b0fb36",
+      "resolution": "reuse-existing-approved-carto-fixture"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/offline-trip-snapshot-contract.md",
+      "line": 71,
+      "group": "documentation",
+      "lineSha256": "43f9882054e5611ef16b66053e495f1e4d217f15523d1f8090ebae897954d992",
+      "resolution": "exact-canonical-official-markdown-documentation-link"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/offline-trip-snapshot-contract.md",
+      "line": 71,
+      "group": "documentation",
+      "lineSha256": "43f9882054e5611ef16b66053e495f1e4d217f15523d1f8090ebae897954d992",
+      "resolution": "exact-canonical-official-markdown-documentation-link"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/packing-bag-command-cancellation-contract.md",
+      "line": 15,
+      "group": "documentation",
+      "lineSha256": "dc68bdc9a23dc9e0dfdf1c1be4dc3aa7c5b8b0a9942bb2485467f9bdfa0c31fa",
+      "resolution": "exact-canonical-official-markdown-documentation-link"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/packing-bag-foundation-contract.md",
+      "line": 51,
+      "group": "documentation",
+      "lineSha256": "d7c37484a9e59b3fea390c580dc9bad3f2170df14403f9ac9d3974376ac01c9f",
+      "resolution": "exact-canonical-official-markdown-documentation-link"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/packing-bag-foundation-contract.md",
+      "line": 51,
+      "group": "documentation",
+      "lineSha256": "d7c37484a9e59b3fea390c580dc9bad3f2170df14403f9ac9d3974376ac01c9f",
+      "resolution": "exact-canonical-official-markdown-documentation-link"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/packing-bag-foundation-contract.md",
+      "line": 51,
+      "group": "documentation",
+      "lineSha256": "d7c37484a9e59b3fea390c580dc9bad3f2170df14403f9ac9d3974376ac01c9f",
+      "resolution": "exact-canonical-official-markdown-documentation-link"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/packing-bag-ownership-audit.md",
+      "line": 48,
+      "group": "documentation",
+      "lineSha256": "01ab97133fc0118cfc35125df17f4f909df1b2095a6fd8724951b364b91ecfed",
+      "resolution": "exact-canonical-official-markdown-documentation-link"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/packing-bag-ownership-audit.md",
+      "line": 48,
+      "group": "documentation",
+      "lineSha256": "01ab97133fc0118cfc35125df17f4f909df1b2095a6fd8724951b364b91ecfed",
+      "resolution": "exact-canonical-official-markdown-documentation-link"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/packing-bag-ownership-audit.md",
+      "line": 48,
+      "group": "documentation",
+      "lineSha256": "01ab97133fc0118cfc35125df17f4f909df1b2095a6fd8724951b364b91ecfed",
+      "resolution": "exact-canonical-official-markdown-documentation-link"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/packing-category-aggregate-contract.md",
+      "line": 45,
+      "group": "documentation",
+      "lineSha256": "4d6ba2a1a5070919d170708aa601c29caa674d46490282669442374e7768f3aa",
+      "resolution": "exact-canonical-official-markdown-documentation-link"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/packing-category-aggregate-contract.md",
+      "line": 45,
+      "group": "documentation",
+      "lineSha256": "4d6ba2a1a5070919d170708aa601c29caa674d46490282669442374e7768f3aa",
+      "resolution": "exact-canonical-official-markdown-documentation-link"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/packing-category-aggregate-sdk-contract.md",
+      "line": 21,
+      "group": "documentation",
+      "lineSha256": "f8380a226e02b3a3e9494d09c46c2eda68efcde583a021b22013190659fb2700",
+      "resolution": "exact-canonical-official-markdown-documentation-link"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/packing-category-commands-contract.md",
+      "line": 49,
+      "group": "documentation",
+      "lineSha256": "27c53921892e5ef1b285f8f612427aee4be78c73b8587072715c5693ba5715db",
+      "resolution": "exact-canonical-official-markdown-documentation-link"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/packing-category-commands-contract.md",
+      "line": 49,
+      "group": "documentation",
+      "lineSha256": "27c53921892e5ef1b285f8f612427aee4be78c73b8587072715c5693ba5715db",
+      "resolution": "exact-canonical-official-markdown-documentation-link"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/packing-category-contract.md",
+      "line": 107,
+      "group": "documentation",
+      "lineSha256": "e2e9686441739f4d1b2059eb9599582f24c0e9ad2c45f742251bebbb9991855e",
+      "resolution": "exact-canonical-official-markdown-documentation-link"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/packing-category-contract.md",
+      "line": 107,
+      "group": "documentation",
+      "lineSha256": "e2e9686441739f4d1b2059eb9599582f24c0e9ad2c45f742251bebbb9991855e",
+      "resolution": "exact-canonical-official-markdown-documentation-link"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/packing-category-foundation-contract.md",
+      "line": 59,
+      "group": "documentation",
+      "lineSha256": "b5f9cb6109622b3bf88d4c6cee4bd7a1c72589588668d051b495adeb74dbf494",
+      "resolution": "exact-canonical-official-markdown-documentation-link"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/packing-category-foundation-contract.md",
+      "line": 59,
+      "group": "documentation",
+      "lineSha256": "b5f9cb6109622b3bf88d4c6cee4bd7a1c72589588668d051b495adeb74dbf494",
+      "resolution": "exact-canonical-official-markdown-documentation-link"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/packing-category-lifecycle-next-packet.md",
+      "line": 32,
+      "group": "documentation",
+      "lineSha256": "97e60ea700219a8438c36ea17b85bff50a5e8260a86d2acaf269c526dbbb37c8",
+      "resolution": "exact-canonical-official-markdown-documentation-link"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/packing-command-cancellation-packet.md",
+      "line": 52,
+      "group": "documentation",
+      "lineSha256": "730cf8bede2c1fe6716ee10ba54ba3a2e67defab621ba2d50cb22c67d7536dc9",
+      "resolution": "exact-canonical-official-markdown-documentation-link"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/packing-group-database-contract.md",
+      "line": 65,
+      "group": "documentation",
+      "lineSha256": "7d3ec86d0825f4a341885d02eaba1591bb6f7fcd05a1815f92c3d8b2173f9c2a",
+      "resolution": "exact-canonical-official-markdown-documentation-link"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/packing-group-database-contract.md",
+      "line": 65,
+      "group": "documentation",
+      "lineSha256": "7d3ec86d0825f4a341885d02eaba1591bb6f7fcd05a1815f92c3d8b2173f9c2a",
+      "resolution": "exact-canonical-official-markdown-documentation-link"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/packing-group-writer-contract.md",
+      "line": 41,
+      "group": "documentation",
+      "lineSha256": "dd2e9dfde82449d42be32df637238f4e9c39990a1c68df1001cab335e3a33044",
+      "resolution": "exact-canonical-official-markdown-documentation-link"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/preparation-readiness-contract-v1.md",
+      "line": 45,
+      "group": "documentation",
+      "lineSha256": "83f7148cf4bb77b6a109901c08e896ce3f1de879cb132baece62fca4c23375bb",
+      "resolution": "exact-canonical-official-markdown-documentation-link"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/preparation-readiness-contract-v1.md",
+      "line": 45,
+      "group": "documentation",
+      "lineSha256": "83f7148cf4bb77b6a109901c08e896ce3f1de879cb132baece62fca4c23375bb",
+      "resolution": "exact-canonical-official-markdown-documentation-link"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/private-file-acquisition-contract-v1.md",
+      "line": 39,
+      "group": "documentation",
+      "lineSha256": "94691211259897d5cd9dd203764f6ee111c8a6ff831780eb910e92dede8caed9",
+      "resolution": "exact-canonical-official-markdown-documentation-link"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/private-file-acquisition-contract-v1.md",
+      "line": 39,
+      "group": "documentation",
+      "lineSha256": "94691211259897d5cd9dd203764f6ee111c8a6ff831780eb910e92dede8caed9",
+      "resolution": "exact-canonical-official-markdown-documentation-link"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/public-image-preparation-component-v1.md",
+      "line": 37,
+      "group": "documentation",
+      "lineSha256": "d7b8a4e3811ec6d71fce41e38b97443446760e1ec3346de4b2243d42d2a4d6eb",
+      "resolution": "exact-canonical-official-markdown-documentation-link"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/public-variant-byte-cache-v1.md",
+      "line": 43,
+      "group": "documentation",
+      "lineSha256": "87c546d38f9259068e3903bb3adbe57902dba880f0ceb6f2c408c87b3c3f2d32",
+      "resolution": "exact-canonical-official-markdown-documentation-link"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/saved-trip-public-image-leases.md",
+      "line": 31,
+      "group": "documentation",
+      "lineSha256": "21f40c50bde6c9ec9851cffb4a96bb23fe076a594946672d8feff1bc568f4df4",
+      "resolution": "exact-canonical-official-markdown-documentation-link"
+    },
+    {
+      "class": "PROD_HOST",
+      "path": "docs/family-integration/supported-core-preview-readiness.md",
+      "line": 11,
+      "group": "documentation",
+      "lineSha256": "535f361a9559a0dc026ed81e38a9c71cf88fa1f909ab941d9ff7f8aa1d4a7aed",
+      "resolution": "redact-private-operational-identifier"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/supported-core-preview-readiness.md",
+      "line": 16,
+      "group": "documentation",
+      "lineSha256": "b81ffdce2485c6aff1dc10b01508fe68022c6a0014861d7932131ccfaf4c8816",
+      "resolution": "exact-canonical-official-markdown-documentation-link"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/supported-core-preview-readiness.md",
+      "line": 34,
+      "group": "documentation",
+      "lineSha256": "8a2a5aea90c293eb356240d46676004a66c20f3e0d0c62a9d008fc654bc5bcc8",
+      "resolution": "exact-canonical-official-markdown-documentation-link"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/supported-core-readiness/backend131/contract.md",
+      "line": 17,
+      "group": "documentation",
+      "lineSha256": "fc6a9565d5c655c7b012df96d34057acadba9f82c745d5b3c50bc2938161ee50",
+      "resolution": "exact-canonical-official-markdown-documentation-link"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/supported-core-readiness/backend131/contract.md",
+      "line": 17,
+      "group": "documentation",
+      "lineSha256": "fc6a9565d5c655c7b012df96d34057acadba9f82c745d5b3c50bc2938161ee50",
+      "resolution": "exact-canonical-official-markdown-documentation-link"
+    },
+    {
+      "class": "PROD_HOST",
+      "path": "docs/family-integration/supported-core-readiness/hosted-comparison.json",
+      "line": 2,
+      "group": "documentation",
+      "lineSha256": "e0b8edf1c6a99b61b19ab99e12329a9c7c8e5611134723246ca54974d8550e40",
+      "resolution": "redact-private-operational-identifier"
+    },
+    {
+      "class": "PROD_HOST",
+      "path": "docs/family-integration/supported-core-readiness/hosted-core-schema.json",
+      "line": 2,
+      "group": "documentation",
+      "lineSha256": "e0b8edf1c6a99b61b19ab99e12329a9c7c8e5611134723246ca54974d8550e40",
+      "resolution": "redact-private-operational-identifier"
+    },
+    {
+      "class": "PROD_HOST",
+      "path": "docs/family-integration/supported-core-readiness/hosted-recovery-schema.json",
+      "line": 2,
+      "group": "documentation",
+      "lineSha256": "e0b8edf1c6a99b61b19ab99e12329a9c7c8e5611134723246ca54974d8550e40",
+      "resolution": "redact-private-operational-identifier"
+    },
+    {
+      "class": "PROD_HOST",
+      "path": "docs/family-integration/supported-core-readiness/inventory.json",
+      "line": 340,
+      "group": "documentation",
+      "lineSha256": "10c1ff5972806c4d007402e9bfea7af1de03419f34733a1342f0c6d3b6753371",
+      "resolution": "redact-private-operational-identifier"
+    },
+    {
+      "class": "PROD_HOST",
+      "path": "docs/family-integration/supported-core-readiness/inventory.json",
+      "line": 345,
+      "group": "documentation",
+      "lineSha256": "f3b5b601475b69e07280abb6d6867942fc112983f7abcb5bf0ea92185dec2ad6",
+      "resolution": "redact-private-operational-identifier"
+    },
+    {
+      "class": "PROD_HOST",
+      "path": "docs/family-integration/supported-core-readiness/recheck-20261114/hosted-project.json",
+      "line": 2,
+      "group": "documentation",
+      "lineSha256": "41f28bc9d4ef58acf70a0c20f03216a30712f11d995f0662a5a82c4f1ff1102e",
+      "resolution": "redact-private-operational-identifier"
+    },
+    {
+      "class": "PROD_HOST",
+      "path": "docs/family-integration/supported-core-readiness/recheck-20261114/hosted-project.json",
+      "line": 7,
+      "group": "documentation",
+      "lineSha256": "9350edb054bdeccf2d5e4ec8c8c94322f21d3da76ed7c92909148d97f69ecf48",
+      "resolution": "redact-private-operational-identifier"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/supported-core-readiness/recheck-20261114/hosted-project.json",
+      "line": 7,
+      "group": "documentation",
+      "lineSha256": "9350edb054bdeccf2d5e4ec8c8c94322f21d3da76ed7c92909148d97f69ecf48",
+      "resolution": "redact-private-operational-endpoint"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/trek-5.1.4-atomic-stay-create-contract.md",
+      "line": 99,
+      "group": "documentation",
+      "lineSha256": "1b8ec2de134e27b198c3c9170b76dbbe2ab6024e29c6fcaf41c141bc66952cb3",
+      "resolution": "exact-canonical-official-markdown-documentation-link"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/trek-5.1.4-native-stay-client-handoff.md",
+      "line": 34,
+      "group": "documentation",
+      "lineSha256": "e4479f4659c69c84d9f0df7d1c37a4017195630a5399a629a1a7dec1120b8d3c",
+      "resolution": "exact-canonical-official-markdown-documentation-link"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/trek-5.1.4-stay-timing-foundation-packet.md",
+      "line": 70,
+      "group": "documentation",
+      "lineSha256": "cebd4b14217efbeb100c23fa8632affda3d9386207629cc79aa74c445edc8bb0",
+      "resolution": "exact-canonical-official-markdown-documentation-link"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/trek-5.1.4-stay-timing-foundation-packet.md",
+      "line": 70,
+      "group": "documentation",
+      "lineSha256": "cebd4b14217efbeb100c23fa8632affda3d9386207629cc79aa74c445edc8bb0",
+      "resolution": "exact-canonical-official-markdown-documentation-link"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/u03d16c-activation-decision.md",
+      "line": 51,
+      "group": "documentation",
+      "lineSha256": "5c24ec3dfeeeb04544b5c3d92247197b5263e0aaffaa3a96b6de1a4ed56ba3ca",
+      "resolution": "exact-canonical-official-markdown-documentation-link"
+    },
+    {
+      "class": "SUPABASE_CO",
+      "path": "docs/family-integration/u03d16e-activation-decision.md",
+      "line": 28,
+      "group": "documentation",
+      "lineSha256": "8f1b72fa4d3dea8fabc56b3258990176ddab990e973b4af52067f4f4f742d388",
+      "resolution": "exact-canonical-official-markdown-documentation-link"
+    }
+  ],
+  "scope": "Only the listed synthetic tests and operational documents, scanner/tests and packet documentation. Runtime/dependencies/schema/native layouts and adoption pins remain byte-exact.",
+  "officialDocumentationSpecialForms": {
+    "exactIndexPaths": [
+      "/changelog",
+      "/changelog.md"
+    ],
+    "exactBookmarkPath": "/docs/guides/database/functions",
+    "exactBookmark": "#function-privileges",
+    "arbitraryQueryOrFragmentAllowed": false
+  }
+}

@@ -1,0 +1,359 @@
+diff --git a/family-backend/src/data/supabase/personAvatars.ts b/family-backend/src/data/supabase/personAvatars.ts
+--- a/family-backend/src/data/supabase/personAvatars.ts
++++ b/family-backend/src/data/supabase/personAvatars.ts
+@@ -1,3 +1,4 @@
++import { captureFamilyOperation } from './operationContext'
+ import { getSupabaseBrowserClient } from './client'
+ import { normalizeImageFile } from '../../utils/convertHeic'
+ import { finalizePrivateUpload } from './privateUploads'
+@@ -27,7 +28,13 @@
+ export const SIGNED_URL_EXPIRES_SEC = 3600
+ export const FAMILY_AVATAR_BUCKET = 'family'
+ export const PERSON_AVATAR_MAX_BYTES = 8 * 1024 * 1024
+-const PERSON_AVATAR_MIME = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/avif'] as const
++const PERSON_AVATAR_MIME = [
++  'image/jpeg',
++  'image/png',
++  'image/gif',
++  'image/webp',
++  'image/avif',
++] as const
+ export const AVATAR_OBJECT_PROBE_EXPIRES_SEC = 30
+ export const REGISTER_PERSON_AVATAR_FN = 'register_person_avatar'
+
+@@ -42,19 +49,21 @@
+
+ export function asPersonAvatarError(err: unknown): PersonAvatarError {
+   if (err instanceof PersonAvatarError) return err
+-  const obj = err && typeof err === 'object' ? err as { message?: unknown; code?: unknown } : null
++  const obj = err && typeof err === 'object' ? (err as { message?: unknown; code?: unknown }) : null
+   const msg = [
+     err instanceof Error ? err.message : '',
+     typeof obj?.message === 'string' ? obj.message : '',
+     typeof obj?.code === 'string' ? String(obj.code) : '',
+     String(err ?? ''),
+-  ].join(' ').toLowerCase()
++  ]
++    .join(' ')
++    .toLowerCase()
+   if (
+-    msg.includes('42501')
+-    || msg.includes('not authorized')
+-    || msg.includes('not authenticated')
+-    || msg.includes('unauthorized')
+-    || msg.includes('owner mismatch')
++    msg.includes('42501') ||
++    msg.includes('not authorized') ||
++    msg.includes('not authenticated') ||
++    msg.includes('unauthorized') ||
++    msg.includes('owner mismatch')
+   ) {
+     return new PersonAvatarError('not-authorized')
+   }
+@@ -62,10 +71,10 @@
+     return new PersonAvatarError('too-large')
+   }
+   if (
+-    msg.includes('invalid avatar type')
+-    || msg.includes('bad-type')
+-    || msg.includes('size_or_mime')
+-    || msg.includes('content_rejected')
++    msg.includes('invalid avatar type') ||
++    msg.includes('bad-type') ||
++    msg.includes('size_or_mime') ||
++    msg.includes('content_rejected')
+   ) {
+     return new PersonAvatarError('bad-type')
+   }
+@@ -87,13 +96,15 @@
+ }
+
+ async function sha256Hex(bytes: BufferSource): Promise<string> {
+-  const src = bytes instanceof Uint8Array
+-    ? bytes
+-    : bytes instanceof ArrayBuffer
+-      ? new Uint8Array(bytes)
+-      : new Uint8Array(bytes.buffer, bytes.byteOffset, bytes.byteLength)
+-  const hash = await crypto.subtle.digest('SHA-256', src)
+-  return [...new Uint8Array(hash)].map(b => b.toString(16).padStart(2, '0')).join('')
++  const operationContext = captureFamilyOperation()
++  const src =
++    bytes instanceof Uint8Array
++      ? bytes
++      : bytes instanceof ArrayBuffer
++        ? new Uint8Array(bytes)
++        : new Uint8Array(bytes.buffer, bytes.byteOffset, bytes.byteLength)
++  const hash = await operationContext.perform(async () => crypto.subtle.digest('SHA-256', src))
++  return [...new Uint8Array(hash)].map((b) => b.toString(16).padStart(2, '0')).join('')
+ }
+
+ function avatarExt(mime: string): string {
+@@ -106,10 +117,13 @@
+
+ /** Family roster avatar refs — throw on `{ error }` (caller may soft-fail). */
+ export async function listPeopleAvatarRefs(familyId: string): Promise<PersonAvatarRef[]> {
+-  const { data, error } = await getSupabaseBrowserClient()
+-    .from('people_avatar_refs')
+-    .select('person_id,family_id,display_name,color,avatar_media_id,bucket,storage_path')
+-    .eq('family_id', familyId)
++  const operationContext = captureFamilyOperation()
++  const { data, error } = await operationContext.perform(async () =>
++    getSupabaseBrowserClient()
++      .from('people_avatar_refs')
++      .select('person_id,family_id,display_name,color,avatar_media_id,bucket,storage_path')
++      .eq('family_id', familyId)
++  )
+   if (error) throw error
+   const out: PersonAvatarRef[] = []
+   for (const row of (data ?? []) as AvatarRefRow[]) {
+@@ -139,8 +153,9 @@
+  */
+ export async function signAvatarUrls(
+   refs: PersonAvatarRef[],
+-  personIds: string[],
++  personIds: string[]
+ ): Promise<Record<string, string>> {
++  const operationContext = captureFamilyOperation()
+   const wanted = new Set(personIds)
+   const byBucket = new Map<string, { personId: string; path: string }[]>()
+   for (const ref of refs) {
+@@ -156,9 +171,11 @@
+   const out: Record<string, string> = {}
+   const storage = getSupabaseBrowserClient().storage
+   for (const [bucket, items] of byBucket) {
+-    const { data, error } = await storage.from(bucket).createSignedUrls(
+-      items.map(i => i.path),
+-      SIGNED_URL_EXPIRES_SEC,
++    const { data, error } = await operationContext.perform(async () =>
++      storage.from(bucket).createSignedUrls(
++        items.map((i) => i.path),
++        SIGNED_URL_EXPIRES_SEC
++      )
+     )
+     if (error || !data) continue
+     const rows = data as SignedUrlRow[]
+@@ -174,13 +191,13 @@
+ /** Stamp TREK `hub_members.avatarUrl` only — do not change counts. */
+ export function attachHubMemberAvatars(
+   trips: FamilyDashboardTrip[],
+-  urlByPersonId: Record<string, string>,
++  urlByPersonId: Record<string, string>
+ ): FamilyDashboardTrip[] {
+-  return trips.map(trip => {
++  return trips.map((trip) => {
+     if (!trip.hub_members?.length) return trip
+     return {
+       ...trip,
+-      hub_members: trip.hub_members.map(m => {
++      hub_members: trip.hub_members.map((m) => {
+         const url = urlByPersonId[m.personId]
+         return url ? { ...m, avatarUrl: url } : m
+       }),
+@@ -197,19 +214,23 @@
+     from: (bucket: string) => {
+       createSignedUrl: (
+         path: string,
+-        expiresIn: number,
+-      ) => Promise<{ data: { signedUrl?: string | null } | null; error: unknown }>
++        expiresIn: number
++      ) => Promise<{
++        data: { signedUrl?: string | null } | null
++        error: unknown
++      }>
+     }
+   },
+-  path: string,
++  path: string
+ ): Promise<boolean> {
++  const operationContext = captureFamilyOperation()
+   try {
+-    const { data, error } = await storage.from(FAMILY_AVATAR_BUCKET).createSignedUrl(
+-      path,
+-      AVATAR_OBJECT_PROBE_EXPIRES_SEC,
++    const { data, error } = await operationContext.perform(async () =>
++      storage.from(FAMILY_AVATAR_BUCKET).createSignedUrl(path, AVATAR_OBJECT_PROBE_EXPIRES_SEC)
+     )
+     return Boolean(!error && data?.signedUrl?.trim())
+   } catch {
++    operationContext.assertCurrent()
+     return false
+   }
+ }
+@@ -223,17 +244,18 @@
+   familyId: string
+   personId: string
+ }): Promise<string | null> {
++  const operationContext = captureFamilyOperation()
+   const familyId = opts.familyId.trim()
+   const personId = opts.personId.trim()
+   if (!familyId || !personId) return null
+
+-  const refs = await listPeopleAvatarRefs(familyId)
+-  const ref = refs.find(r => r.personId === personId)
++  const refs = await operationContext.perform(async () => listPeopleAvatarRefs(familyId))
++  const ref = refs.find((r) => r.personId === personId)
+   const bucket = ref?.bucket?.trim()
+   const path = ref?.storagePath?.trim()
+   if (!bucket || !path) return null
+
+-  const urls = await signAvatarUrls(refs, [personId])
++  const urls = await operationContext.perform(async () => signAvatarUrls(refs, [personId]))
+   const url = urls[personId]
+   if (url) return url
+   throw new Error('avatar-sign-unavailable')
+@@ -245,9 +267,11 @@
+   personId: string
+   file: File
+ }): Promise<string | null> {
++  const operationContext = captureFamilyOperation()
+   try {
+-    return await uploadPersonAvatarInner(opts)
++    return await operationContext.perform(async () => uploadPersonAvatarInner(opts))
+   } catch (err) {
++    operationContext.assertCurrent()
+     throw asPersonAvatarError(err)
+   }
+ }
+@@ -257,11 +281,12 @@
+   personId: string
+   file: File
+ }): Promise<string | null> {
++  const operationContext = captureFamilyOperation()
+   const familyId = opts.familyId.trim()
+   const personId = opts.personId.trim()
+   if (!familyId || !personId) throw new PersonAvatarError('missing-ids')
+
+-  const file = await normalizeImageFile(opts.file)
++  const file = await operationContext.perform(async () => normalizeImageFile(opts.file))
+   const mime = (file.type || '').toLowerCase()
+   if (!(PERSON_AVATAR_MIME as readonly string[]).includes(mime)) {
+     throw new PersonAvatarError('bad-type')
+@@ -270,53 +295,63 @@
+     throw new PersonAvatarError('too-large')
+   }
+
+-  const hash = await sha256Hex(new Uint8Array(await file.arrayBuffer()))
++  const hash = await operationContext.perform(async () =>
++    sha256Hex(new Uint8Array(await operationContext.perform(async () => file.arrayBuffer())))
++  )
+   const sb = getSupabaseBrowserClient()
+   const storage = sb.storage
+
+-  const { data: existing, error: existingErr } = await sb
+-    .from('media_assets')
+-    .select('id,storage_path,filename')
+-    .eq('content_hash', `av:${personId}:${hash}`)
+-    .maybeSingle()
++  const { data: existing, error: existingErr } = await operationContext.perform(async () =>
++    sb
++      .from('media_assets')
++      .select('id,storage_path,filename')
++      .eq('content_hash', `av:${personId}:${hash}`)
++      .maybeSingle()
++  )
+   if (existingErr) throw existingErr
+-  const existingRow = existing as { id?: string; storage_path?: string; filename?: string } | null
++  const existingRow = existing as {
++    id?: string
++    storage_path?: string
++    filename?: string
++  } | null
+   const existingPath = existingRow?.storage_path?.trim()
+   const existingName = existingRow?.filename?.trim() || existingPath?.split('/').pop()
+
+-  let path = existingPath
+-  let filename = existingName
+-
+-  const existingLive = path && filename
+-    ? await familyAvatarObjectExists(storage, path)
+-    : false
+-  if (!existingLive) {
+-    filename = `${crypto.randomUUID()}.${avatarExt(mime)}`
+-    path = `${familyId}/people/${personId}/${filename}`
+-    const { error: upErr } = await storage.from(FAMILY_AVATAR_BUCKET).upload(path, file, {
+-      contentType: mime,
+-      upsert: false,
+-    })
++  if (
++    !existingPath ||
++    !existingName ||
++    !(await operationContext.perform(async () => familyAvatarObjectExists(storage, existingPath)))
++  ) {
++    const filename = `${crypto.randomUUID()}.${avatarExt(mime)}`
++    const path = `${familyId}/people/${personId}/${filename}`
++    const { error: upErr } = await operationContext.perform(async () =>
++      storage.from(FAMILY_AVATAR_BUCKET).upload(path, file, {
++        contentType: mime,
++        upsert: false,
++      })
++    )
+     if (upErr) throw upErr
+-    const result = await finalizePrivateUpload({
+-      kind: 'person_avatar',
+-      path,
+-      personId,
+-      filename,
+-    }).catch(async err => {
+-      await storage.from(FAMILY_AVATAR_BUCKET).remove([path]).catch(() => {})
+-      throw err
+-    })
++    // Finalization may have committed even when its acknowledgment is lost. Retain the source.
++    const result = await operationContext.perform(async () =>
++      finalizePrivateUpload({
++        kind: 'person_avatar',
++        path,
++        personId,
++        filename,
++      })
++    )
+     if (!result.media_id) throw new Error('register_person_avatar returned no media_id')
+   } else {
+-    const { data, error } = await sb.rpc(REGISTER_PERSON_AVATAR_FN, {
+-      p_person_id: personId,
+-      p_storage_path: path,
+-      p_filename: filename,
+-      p_content_hash: hash,
+-      p_mime_type: mime,
+-      p_size_bytes: file.size,
+-    })
++    const { data, error } = await operationContext.perform(async () =>
++      sb.rpc(REGISTER_PERSON_AVATAR_FN, {
++        p_person_id: personId,
++        p_storage_path: existingPath,
++        p_filename: existingName,
++        p_content_hash: hash,
++        p_mime_type: mime,
++        p_size_bytes: file.size,
++      })
++    )
+     if (error) throw error
+     if (!(data as { media_id?: string } | null)?.media_id) {
+       throw new Error('register_person_avatar returned no media_id')
+@@ -324,19 +359,21 @@
+   }
+
+   try {
+-    return await resolveCurrentPersonAvatarUrl({ familyId, personId })
++    return await operationContext.perform(async () =>
++      resolveCurrentPersonAvatarUrl({ familyId, personId })
++    )
+   } catch {
++    operationContext.assertCurrent()
+     return null
+   }
+ }
+
+ export async function clearPersonAvatar(opts: { personId: string }): Promise<void> {
++  const operationContext = captureFamilyOperation()
+   const personId = opts.personId.trim()
+   if (!personId) throw new PersonAvatarError('missing-ids')
+-  const { error } = await getSupabaseBrowserClient()
+-    .from('people')
+-    .update({ avatar_media_id: null })
+-    .eq('id', personId)
++  const { error } = await operationContext.perform(async () =>
++    getSupabaseBrowserClient().from('people').update({ avatar_media_id: null }).eq('id', personId)
++  )
+   if (error) throw error
+ }
+-

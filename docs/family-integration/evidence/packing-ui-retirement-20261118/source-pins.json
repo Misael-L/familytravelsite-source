@@ -1,0 +1,17 @@
+{
+  "incoming": "caefebdcd764490f570a541c454cb1f661cab59a",
+  "implementation": "e708a6b9a0aafb8a04b62758e2502156c6351637",
+  "build_source": "dcc414ae54c3fce7c74a00511bf4b28c30f75539",
+  "removed_original_sha256": {
+    "client/src/integrations/family/legacy/components/Packing/PackingListPanel.tsx": "ebf601795ad1a716a8025e7c82450a2a501a56693225d558697ec712389fc8db",
+    "client/src/integrations/family/legacy/components/Packing/PackingListPanelList.tsx": "d7a5e2259d6224e0886078f48daa30398a7687729c5313a675aa7f6a1e673e11",
+    "client/src/integrations/family/legacy/components/Packing/PackingListPanelCategoryGroup.tsx": "d7788944de9fadef7a2b0f629830e7fec9e7e8d4576e7656531295ba03cfe5a6",
+    "client/src/integrations/family/legacy/components/Packing/PackingListPanelItemRow.tsx": "01b036f507bc97a250298c64f4596823a0b8cf7524dde755c87d1f4d84d3c7ff"
+  },
+  "prior_runtime_build": "1778046e78d42072d259e6637a20d82edfa40b65",
+  "retained_helper_sha256": "3632a8ecefe5f06ca78c84d1f1b7370174da6aabe095eefde3b272c7409cdbf0",
+  "fresh_current_compiler_declarations": 128,
+  "no_old_generated_declaration_identity_assumption": true,
+  "test_runtime": "v24.22.2",
+  "no_hosted_operation": true
+}

@@ -1,0 +1,20 @@
+# U04-A — packing writer foundation handoff
+
+11 November 2026. Isolated checkout `/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.2`, branch `codex/trek-v5.1.2-family-reconcile`, parent `4af4bec890d65d39636f6038706e4580e3f38711`.
+
+The missing complete packing publication/write-port foundation is implemented locally. The new owner retains original form/actor/source/layer/revision identities, sends existing observed commands under the retained queue lease, and publishes only fresh complete canonical rows, Person names and authoritative totals. It supports warm receipt reconciliation, original-set reorder and owned Trash/restore. Read [contract](packing-writer-foundation-contract.md).
+
+**Native desktop/phone packing authoring is still gated.** No component/layout or native checkbox/form handler changed. The original U04 milestone remains incomplete. Next is [U04-B](native-packing-controls-cutover-packet.md): native observed controls, cold retained-command recovery before bundle publication, owned Trash UI and direct packing/unsupported-group permission separation. Warm reconciliation alone cannot repair a cold reload blocked by retained work; the next packet explicitly covers that dependency.
+
+Fresh qualification:
+
+- Full **29,316 passed / 0 failed / 93 existing pending**, retaining all **29,378** prior assertion/status multiplicities plus **31**. Final source and compiled-support inputs are frozen; two declaration outputs rebuilt by the actual workspace build are recorded and requalified.
+- **31 new foundation tests** cover canonical empty/nonempty publication, immutable origins, context retirement, opaque revisions, coalescing, offline/original retries, older-work refusal, response loss/redacted receipts, failed refresh recovery, complete reorder and owned Trash. **Six real local SDK/Auth/TOTP/PostgreSQL cases** prove create/edit/partial packing, stale refusal, committed response-loss reconciliation, Trash/restore, reorder and original-operation retry. Their environment-only test harness is archived separately from the default full-suite assertions; these are not added to the full count.
+- **Ten actual desktop/phone browser observations / two process zero exits** pass against the new production build with real App/SDK/password/TOTP/generated worker and loopback-only proxy. Canonical shared/current-Person private packing renders, peer private items remain hidden, authoring stays unavailable, cold saved-view checkbox refuses before a transient toggle, generation is preserved, and page/proxy logs contain zero `/render/image/` attempts. This is read-only consumer acceptance, **not native editing acceptance** or physical iOS/hosted qualification.
+- Configured types, seven unchanged quality gates and scoped lint without warning growth pass. Twelve protected native layouts, fifteen baselines, 120 backend carryover files, 119 canonical migrations and original mixed source/HEAD/index remain preserved. Original populated browser graphs/audits/two file objects verify byte-exact. Prior seals remain intact.
+
+The first browser diagnostic used an empty fixture and an older broad controls driver expected unrelated restaurant details from a selected city. Final packing-only acceptance uses the existing populated fixtures without changing their data or the checked-in harness. An early SDK harness initialized before the test lifecycle and a fixture-only `never` annotation were repaired. Interrupted/unfrozen diagnostics are excluded from final qualification. No passing status was fabricated or protection relaxed.
+
+Changes remain local. No push/main merge/deploy/preview update, hosted migration/settings/billing/dependencies, transformation/backfill, original backup/media or ignored ETL operation occurred. The new local SQL records are isolated synthetic fixtures only. Independent full database-plus-files restoration/off-device copy and incremental backups remain unproved and deferred.
+
+Tested application snapshot: `2720c7a524917958449d7a0fea73ccd5057e2f7e`. The separate source-adoption commit pins this exact tested tree; the original import/native protection remains intact.

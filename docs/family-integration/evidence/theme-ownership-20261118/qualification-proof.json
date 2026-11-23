@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "implementation": "bb223a2eb9fa0eabf07fc5901dfc66c091105d75",
+  "only_new_source_exception": "client/scripts/theme-baseline.json",
+  "upstream": {
+    "mode": "100644",
+    "oid": "9fc05df3ce2ab160ce8679f86329ccce7904016a",
+    "bytes": 15099
+  },
+  "qualified": {
+    "mode": "100644",
+    "oid": "d0daef0452c2909c1ecdf775641c8000020179b6",
+    "bytes": 15153
+  },
+  "all_existing_source_rows_exact": true,
+  "application_runtime_and_tests_unchanged": true,
+  "only_previously_presented_user_approved_baseline_change": true
+}

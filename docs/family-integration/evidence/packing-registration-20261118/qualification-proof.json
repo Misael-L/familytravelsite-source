@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "implementation": "a8b698f4eb075be727bb5b8bbefa85df799b57c1",
+  "one_precise_native_source_exception": "client/scripts/feature-pairs.json",
+  "upstream": {
+    "mode": "100644",
+    "oid": "3cf18892dcca33e3fd203986e89d2ad0d4bf9e95",
+    "bytes": 58346
+  },
+  "qualified": {
+    "mode": "100644",
+    "oid": "8de2c26ebdd284b8015f969c75682b415a11ba67",
+    "bytes": 58406
+  },
+  "all_prior_exception_rows_exact": true,
+  "all_addition_rows_exact": true,
+  "no_new_quality_allowance_or_rule_change": true
+}

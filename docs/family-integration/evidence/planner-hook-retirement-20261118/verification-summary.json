@@ -1,0 +1,61 @@
+{
+  "passed": true,
+  "packet": "Q119",
+  "date": "2026-11-18",
+  "incoming": "4b898e190b68f50cbccbb93d4d666d6e883c9a24",
+  "implementation": "5be89a1520088a7c4691f48e2ed499703b202924",
+  "build_source": "ec6d56328a274ef7bc0088788138dc9e2a81b576",
+  "removed_application_paths": [
+    "client/src/integrations/family/legacy/pages/tripPlanner/useTripPlanner.ts"
+  ],
+  "only_one_proven_closed_legacy_hook_retired": true,
+  "no_outside_runtime_type_test_tool_config_importer": true,
+  "external_module_without_ambient_augmentation": true,
+  "all_existing_tests_and_other_source_files_preserved": true,
+  "candidate_passed": 1650,
+  "same_expanded_cases_before_after": 1650,
+  "raw_title_cases_exact": 1649,
+  "one_unchanged_generated_UUID_label_tightly_reviewed": true,
+  "ordinary_compiler_roots_before_after": [
+    5077,
+    5077
+  ],
+  "ordinary_compiler_sources_before_after": [
+    10264,
+    10264
+  ],
+  "all_ordinary_program_source_bytes_and_selected_public_contracts_exact": true,
+  "current_runtime_graph_nodes_edges_source_bytes_exact": 6091,
+  "synthetic_runtime_import_and_compiler_root_controls_pass": true,
+  "all_3792_outputs_except_sourceCommit_configuration_byte_exact": true,
+  "native_presentation_files_protected": 12,
+  "source_guards_passed": 4,
+  "artifact_binding_controls_passed": 3,
+  "new_feature_or_writer_UI_admission": false,
+  "current_declarations_fixed": 128,
+  "format_gate_pass": true,
+  "format_baseline_unchanged_entries": 2134,
+  "unlisted_format_failures": 0,
+  "warning_gate_pass": true,
+  "source_warnings_actual_limit": [
+    3418,
+    3418
+  ],
+  "source_complexity_actual_limit": [
+    218,
+    218
+  ],
+  "source_length_actual_limit": [
+    130,
+    130
+  ],
+  "size_findings_before_after": [
+    4,
+    3
+  ],
+  "all_other_size_failure_lines_exact": true,
+  "rules_baselines_exclusions_suppressions_unchanged": true,
+  "global_release_gate_pass": false,
+  "new_live_database_browser_or_writer_acceptance": false,
+  "next": "Q120 retained stylesheet review"
+}

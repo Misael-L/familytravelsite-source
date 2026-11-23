@@ -1,0 +1,15 @@
+{
+  "incoming": "6e5cc5d0f7856da484fe4c95653f58e38d36b56e",
+  "implementation": "0f792d490da09b342f5db3fe8002745b18b56e37",
+  "build_source": "726a0c8d6de803169579c51462cd59d6f916d447",
+  "removed_original_sha256": {
+    "client/src/integrations/family/legacy/pages/SettingsPage.tsx": "456ec4f887f0f5425463dfd0d512bd41bafb02ac609a0d86e094a84652d03ca9",
+    "client/src/integrations/family/legacy/components/Settings/AccountTab.tsx": "0abae3d5c4e90e85e99be03193be2dbfe151e1dc90acb3c8e1a082496030914c",
+    "client/src/integrations/family/legacy/components/Settings/IntegrationsTab.tsx": "211b667e35e66bc96f75790f6e4c9f6863c025eb1034662186c25260ec0e4d0f"
+  },
+  "prior_runtime_build": "a4e9f2197a600840c7cbfefbeb59def1e3f8acb4",
+  "fresh_current_compiler_declarations": 128,
+  "no_old_generated_declaration_identity_assumption": true,
+  "test_runtime": "v24.22.2",
+  "no_hosted_operation": true
+}

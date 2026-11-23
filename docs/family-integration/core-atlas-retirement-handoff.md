@@ -1,0 +1,31 @@
+# Q105 — Unused legacy Atlas page/hook retired
+
+Completed 18 November 2026 on the private integration branch. Incoming `05dc969be525a765bc4e367149dd3c66e32281c7`; implementation `81737fdfeea0c3c38b4e839019f020e7acf92fb7`; source-bound fixture build `a4e9f2197a600840c7cbfefbeb59def1e3f8acb4`. [Evidence and consumer replay](evidence/atlas-retirement-20261118/README.md).
+
+Removed only the copied legacy AtlasPage.tsx and atlas/useAtlas.ts. Their sole incoming edge is internal page-to-hook; full raw runtime/type/test/tool/configuration closure finds no outside consumer. Native desktop/phone Atlas, Family statistics/availability/permission behavior, geography/catalog/country/city identities, shared models/geometry/API/store/backend helpers and mark/unmark gates remain intact. All 12 protected native files and current 6,091-node/edge graph, expanded globs, source/license obligations and previous archives are preserved. This supersedes Q7's hold only for these two modules.
+
+611 identical regressions pass before/after. Fresh build/compiler, four source guards and three artifact-source controls pass. All 3,793 output paths are unchanged; only public sourceCommit differs. All 421 JavaScript/CSS files, including 14 stylesheets and SW cache data, are byte-identical. No new Q104-style generated-output exception is used. Actual formatting/warning gates pass under unchanged rules/baselines. Size23→21 removes exactly the two retired findings; every other failure line remains exact. G2 and independent G1/G3–G6 gates remain open. Database-facing tests are mocked; no live query, hosted/browser or writer admission.
+
+## Exact next packet — Q106 bounded old Settings UI review
+
+Review only this candidate island:
+
+- client/src/integrations/family/legacy/pages/SettingsPage.tsx
+- client/src/integrations/family/legacy/components/Settings/AccountTab.tsx
+- client/src/integrations/family/legacy/components/Settings/IntegrationsTab.tsx
+
+An initial text search shows the old page imports the two old tabs, with no apparent other importer. This is not deletion proof. Recompute complete raw import/export/type/ImportTypeNode/JSDoc/mock/require closure, all current web/recovery/classic/worker/native-address entries, dynamic/glob/cache behavior, tests/tool/public/configuration and source/license obligations. Retire only a proved closed part of this boundary. Any supported, test or type consumer takes precedence: retain that module and resolve the exact boundary. Internal imports are acceptable only after proving the whole selected island has no outside consumer. Do not delete the settings/useSettings hook, other tabs, stores, OAuth/auth/MFA/session/recovery/API/backend helpers or their dependency union by implication.
+
+Keep current native desktop/phone Settings, account/profile/password/MFA/session/logout/recovery behavior and permissions unchanged. Keep integration availability gates honest; cleanup must not enable providers, alter user settings, invoke profile or account actions, or make billing/storage/production changes. Preserve all existing source/native/media contracts, typed/tested modules and the single canonical schema authority.
+
+Prototype only proved-closed modules. Run unchanged meaningful native Settings/Account/Integrations/phone and Family account/auth/session/logout/recovery/provider-availability cases, plus scanner/source ownership controls, before/after. Compare expanded files/names/status/multiplicity without weakening mocks/assertions/configuration or adding skips. Preserve other tracked source bytes and current reachable graph identities. Use a fresh committed-source build and compare every generated output, including styles that scan unused source. If differences appear, investigate and prove their exact scope as Q104 did; never claim byte identity or suppress a failed comparison without evidence.
+
+Reconcile only actual deleted provenance rows/pins. Then fresh installed compiler/source/artifact/actual format/warning/size gates, current-generation declaration hashes, bounded preservation, check-only source archive and normal private checkpoint push. Keep remaining 21 size findings explicit; no added rule/baseline/exclusion/suppression or scanner relaxation. Any demonstrated reachable defect comes first with red/green proof. No feature/backend/profile admission follows from cleanup.
+
+Use `/private/tmp/trek-core-atlas-retirement-20261118/next-baseline-private.json` after the verified private push. Preserve canonical 151 migrations/370 source-support files/index/README, all earlier sealed evidence and unrelated checkouts. Shared backend remains8cc0fe3f; website only, iOS deferred. No main merge, preview/production deployment, hosted Supabase/schema/settings/billing, media/image transformations, public mirror, backup/restore or ignored ETL operation.
+
+## Storage preflight for continuation
+
+The first final archive check failed when the Mac's data volume had only about370MiB available. Application/tests/compiler/source/artifact/lint results were already passing; this was a local storage failure. Ten disposable source prototypes were removed only after proving their exact reconstructibility from pinned Git source preserved in the private remote, together with the incomplete failed extract. Four prototypes that did not pass the strict verification were retained. Roughly4GiB was reclaimed; authoritative checkouts, compiled comparison artifacts, test logs, sealed evidence, complete source archives, backups, Supabase media and ignored ETL were preserved. Detailed operational receipts remain in /private/tmp/trek-core-atlas-retirement-20261118/{temporary-space-recovery,finalized-space-recovery,space-recovery-summary}.json.
+
+Check disk capacity before Q106 and avoid accumulating new disposable full-source prototypes after their proofs are recorded. Only remove verified reconstructible agent-generated scratch copies; never treat an unverified prototype, original checkout, sealed evidence, media or backup as disposable. Available space remains low, so heavy backup/database rehearsals need a separate capacity check. A fresh archive retry and verified private push remain required for the completed checkpoint; consult the continuation receipt, not the earlier failed archive result.

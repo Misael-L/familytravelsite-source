@@ -1,0 +1,117 @@
+{
+  "plan_id": "FTS-PARALLEL-20261118-v1",
+  "date": "2026-11-18 America/New_York",
+  "base_commit": "0e265c1e92cd20048d775a161f8cf7d3c4462264",
+  "private_origin": "https://github.com/Misael-L/FamilyTravelSite",
+  "resource_lock": "/private/tmp/family-site-parallel-20261118/heavy-check.lock",
+  "setup_is_documentation_and_environment_only_no_feature_repair": true,
+  "lanes": {
+    "coordinator": {
+      "worktree": "/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4",
+      "branch": "codex/trek-v5.1.4-family-reconcile",
+      "owner": "This original chat",
+      "packets": [
+        {
+          "id": "PA-00",
+          "title": "Review exact one-line stale offline exemption removal",
+          "status": "waiting_for_specific_approval",
+          "source_paths": [
+            "client/scripts/offline-baseline.json"
+          ],
+          "tests": [
+            "tests/unit/scripts/offline-lint.test.ts"
+          ],
+          "completion": "Apply only if separately approved; real guard passes without increased allowance."
+        },
+        {
+          "id": "PA-01",
+          "title": "Repair packing-group nullable category selection typing",
+          "status": "ready",
+          "source_paths": [
+            "client/src/components/Packing/usePackingGroupActions.ts",
+            "client/src/integrations/family/nativePackingGroups.test.tsx"
+          ],
+          "tests": [
+            "src/integrations/family/nativePackingGroups.test.tsx"
+          ],
+          "completion": "Handle category selection semantics explicitly, preserve original group identity/default-category/null/empty behavior and operation/session locks, remove assigned TS2322 without any/assertion/baseline workaround; focused cases and integration checks pass."
+        },
+        {
+          "id": "PA-02",
+          "title": "Review remaining duplication dependencies",
+          "status": "ready_read_only",
+          "source_paths": [],
+          "tests": [],
+          "completion": "Produce a concrete dependency/evidence-backed next packet. No mass deletion, source exclusion or unreviewed shared refactor."
+        }
+      ],
+      "exclusive_shared_paths": [
+        ".github/family-release.json",
+        "docs/family-integration/qualified-source.json",
+        "docs/family-integration/core-release-prerequisites.md",
+        "docs/family-integration/private-github-checkpoints.md",
+        "/private/tmp/family-modernization-active.json"
+      ],
+      "preservation_authority": "Only the coordinator advances canonical/private preservation baselines and integrates peer commits."
+    },
+    "worker-b": {
+      "worktree": "/Users/Misael/.codex/worktrees/family-site-worker-b-20261118/FamilyTravelSite-trek-5.1.4",
+      "branch": "codex/trek-v5.1.4-test-types-worker-b-20261118",
+      "owner": "Second user-started chat",
+      "allowed_source_paths": [
+        "client/src/components/SystemNotices/SystemNoticeModal.escape.test.tsx",
+        "client/src/components/Planner/dayRoute.coordinates.test.ts",
+        "client/src/integrations/family/coherentTripCapture.test.ts"
+      ],
+      "allowed_report_paths": [
+        "docs/family-integration/parallel/worker-b-status.json",
+        "docs/family-integration/parallel/worker-b-reports/"
+      ],
+      "packets": [
+        {
+          "id": "PB-01",
+          "title": "Type the notice Escape listener test helper",
+          "source_paths": [
+            "client/src/components/SystemNotices/SystemNoticeModal.escape.test.tsx"
+          ],
+          "tests": [
+            "src/components/SystemNotices/SystemNoticeModal.escape.test.tsx"
+          ],
+          "expected_scored_strict_diagnostics_before": 1,
+          "baseline_allowance": 0,
+          "completion": "All original cases/assertions/fixtures retained, assigned diagnostic removed, no new warning/format/strict issue; code/report committed and pushed to worker branch."
+        },
+        {
+          "id": "PB-02",
+          "title": "Type malformed day-route coordinate fixtures without losing null cases",
+          "source_paths": [
+            "client/src/components/Planner/dayRoute.coordinates.test.ts"
+          ],
+          "tests": [
+            "src/components/Planner/dayRoute.coordinates.test.ts"
+          ],
+          "expected_scored_strict_diagnostics_before": 1,
+          "baseline_allowance": 0,
+          "completion": "All original cases/assertions/fixtures retained, assigned diagnostic removed, no new warning/format/strict issue; code/report committed and pushed to worker branch."
+        },
+        {
+          "id": "PB-03",
+          "title": "Type the coherent-trip cache-commit test continuation",
+          "source_paths": [
+            "client/src/integrations/family/coherentTripCapture.test.ts"
+          ],
+          "tests": [
+            "src/integrations/family/coherentTripCapture.test.ts"
+          ],
+          "expected_scored_strict_diagnostics_before": 1,
+          "baseline_allowance": 0,
+          "completion": "All original cases/assertions/fixtures retained, assigned diagnostic removed, no new warning/format/strict issue; code/report committed and pushed to worker branch."
+        }
+      ],
+      "finite_queue": true,
+      "no_global_next_pointer_or_queue_extension": true
+    }
+  },
+  "integration_policy": "Worker commits/pushes only its own private branch. Coordinator fetches and reviews scoped commits/reports, cherry-picks reviewed packets, updates source qualification, validates combined tree and pushes integration branch. No automatic merge/main/production/preview/schema/settings/billing/public-mirror operation.",
+  "shared_mutable_services": "Worktrees isolate code/dependencies, not Supabase/Cloudflare/Docker/ports. These queues use local mocked tests; hosted changes and destructive resets are outside scope."
+}

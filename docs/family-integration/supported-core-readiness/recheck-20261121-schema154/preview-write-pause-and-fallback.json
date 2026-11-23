@@ -1,0 +1,134 @@
+{
+  "scope": "Isolated X8 database restore and locally served fixture-only website on PostgreSQL 17.12",
+  "backup_generation": "full-project-20261120-incremental",
+  "isolated_engine_image": "17.12.0.000",
+  "backend_commit": "b79933be3af1ddcf4b0aa1a06bc8a7ca161a38c5",
+  "pinned_migrations_replayed_while_paused": 67,
+  "isolated_final_ledger_count": 155,
+  "archive_original_projections_verified": 200,
+  "archive_original_rows_preserved": 296764,
+  "rest_pause_and_receipt_rehearsal": {
+    "before": {
+      "legacy_records_created": 2,
+      "fresh_mutation_refusals_during_pause": 7,
+      "same_family_reads_preserved": true,
+      "cross_family_reads_filtered": true,
+      "in_flight_legacy_update_commits": 1,
+      "drain_lock_available_after_commit": true
+    },
+    "after": {
+      "legacy_refusals_after_reopen": [
+        {
+          "method": "POST",
+          "operation": "/todo_items",
+          "http": 403,
+          "sqlstate": "42501"
+        },
+        {
+          "method": "PATCH",
+          "operation": "/todo_items",
+          "http": 403,
+          "sqlstate": "42501"
+        },
+        {
+          "method": "DELETE",
+          "operation": "/todo_items",
+          "http": 403,
+          "sqlstate": "42501"
+        },
+        {
+          "method": "POST",
+          "operation": "/packing_items",
+          "http": 403,
+          "sqlstate": "42501"
+        },
+        {
+          "method": "PATCH",
+          "operation": "/packing_items",
+          "http": 403,
+          "sqlstate": "42501"
+        },
+        {
+          "method": "DELETE",
+          "operation": "/packing_items",
+          "http": 403,
+          "sqlstate": "42501"
+        },
+        {
+          "method": "POST",
+          "operation": "/rpc/ensure_packing_defaults",
+          "http": 403,
+          "sqlstate": "42501"
+        },
+        {
+          "method": "POST",
+          "operation": "/rpc/apply_packing_template",
+          "http": 403,
+          "sqlstate": "42501"
+        },
+        {
+          "method": "POST",
+          "operation": "/rpc/save_packing_template_from_trip",
+          "http": 403,
+          "sqlstate": "42501"
+        }
+      ],
+      "typed_commands_refused_while_paused": 2,
+      "typed_command_receipts_readable_while_paused": 2,
+      "committed_receipts_cross_family_denied": 2,
+      "tasks_and_packing_writes_retried_without_duplicates": 2,
+      "rest_pause_closed_at_end": true
+    }
+  },
+  "auth_method": "Isolated GoTrue password and TOTP with synthetic accounts",
+  "postgrest_process_count": 1,
+  "loopback_only": true,
+  "pause_applied_to_hosted_project": false,
+  "managed_role_and_gateway_coverage_verified": false,
+  "browser": {
+    "verification_passed": true,
+    "runbook_paragraph": "The source-bound fixture build showed both sets of saved rows with writes paused. After reopening, a signed-in desktop Chromium session saved a task and a packing item through the replacement APIs. A later save during the pause stayed in IndexedDB with its original operation ID, target and payload. Independent SQL found no record or receipt for that paused save. This build used loopback and the isolated writer profile.",
+    "source_bound_loopback_desktop_fallback": true,
+    "browser_service_workers_enabled_for_this_check": false,
+    "checkpoints": [
+      "Signed-in fallback shows saved task and packing rows while writes are paused.",
+      "Fallback build saves both kinds of item after writes reopen.",
+      "The real paused save kept its original ID, intent and payload in IndexedDB without replay."
+    ],
+    "postgrest_and_sql_checks": {
+      "task": {
+        "committed": 200,
+        "target_rows": 1,
+        "receipt_rows": 1,
+        "paused_original": {
+          "attempts": 1,
+          "http": 503,
+          "sqlstate": "PT503",
+          "target_rows": 0,
+          "receipt_rows": 0
+        }
+      },
+      "packing": {
+        "committed": 200,
+        "target_rows": 1,
+        "receipt_rows": 1
+      }
+    },
+    "browser_errors": 0,
+    "website_external_requests_forwarded": 0
+  },
+  "artifact": {
+    "source_commit": "a417626d2acbd00bcc9e7ad736cab0a1b005542f",
+    "configuration": "isolated-task-planner-packing-v1",
+    "artifact_scan": {
+      "correct": 0,
+      "wrong": 1,
+      "missing": 1
+    },
+    "files": 3780
+  },
+  "retained_recovery_tests_passed": 175,
+  "hosted_fallback_bound": false,
+  "hosted_migration_or_deployment": false,
+  "next": "Qualify the selected HTTPS preview and fallback against their approved backend and complete write-pause coverage"
+}

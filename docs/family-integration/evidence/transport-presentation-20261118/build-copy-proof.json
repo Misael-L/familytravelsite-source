@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "method": "Native APFS clonefile COW plus ACL|STAT|XATTR metadata copy to a new output directory only; no retained tree replaced",
+  "fresh_COW_isolation_probe_passed": true,
+  "all_output_paths_bytes_modes_owners_mtime_and_flags_exact": true,
+  "all_copied_files_have_separate_inodes": true,
+  "files": 3793,
+  "prior_builds_complete_archives_backups_ETL_media_untouched": true
+}

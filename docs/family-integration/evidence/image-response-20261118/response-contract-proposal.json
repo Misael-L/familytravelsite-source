@@ -1,0 +1,14 @@
+{
+  "source": "client/src/integrations/family/publicVariantCache.ts",
+  "test": "client/src/integrations/family/publicVariantCache.test.ts",
+  "source_before_sha256": "398d5621dfffa5ed9a8f53482b4fe08f12ae2b67c8cf682846c267a3eae8195a",
+  "source_after_sha256": "dae205047e1c1de9f0ae96165107fa43e843ee9780c2b471189421362952970f",
+  "test_before_sha256": "af4c2ab68f8eff74e1d910ded3a8f29d44e0ea9945f61cd44af341bbdae37752",
+  "test_after_sha256": "5a0ed4714f788abfcbeb01a89b58c812cf5e7c29d40d6dff6c0c8afaf7045562",
+  "exact_original_source_restored_by_reversing_helper_and_caller": true,
+  "all_original_test_bytes_restored_by_removing_only_added_block": true,
+  "intentional_behavior_delta": "Use the same validated stream and read Response.body once instead of twice. HTTP/header checks retain order before stream acquisition; resource cleanup stays in the same finally.",
+  "new_test_cases": 4,
+  "new_cases_one_red_on_original_expected": true,
+  "no_policy_baseline_or_suppression_change": true
+}

@@ -1,0 +1,82 @@
+{
+  "passed": true,
+  "receipt_chunks": 4,
+  "slots": 5,
+  "shifted_index_slots": 2,
+  "actual_unchanged_publicEnvironmentSlots_recomputes_every_record_exactly": true,
+  "all_slot_policy_origin_key_context_and_raw_expression_bytes_exact": true,
+  "only_physical_index_offsets_may_change": true,
+  "no_scanner_policy_or_public_config_implementation_change": true,
+  "records": [
+    {
+      "before_path": "assets/AccountDemoLock-DOtBACcq.js",
+      "after_path": "assets/AccountDemoLock-CNZh1gtr.js",
+      "context": "disabled-local-reader-gate",
+      "before_range": [
+        4817,
+        4856
+      ],
+      "after_range": [
+        4817,
+        4856
+      ],
+      "same_exact_slot_bytes_sha256": "0b2c84084990656dbdcc2bb2254f68421b75a4d3f6369b2e192ed56692c4b1e6"
+    },
+    {
+      "before_path": "assets/env-BQ7CRC5G.js",
+      "after_path": "assets/env-BQ7CRC5G.js",
+      "context": "vite-environment",
+      "before_range": [
+        673,
+        712
+      ],
+      "after_range": [
+        673,
+        712
+      ],
+      "same_exact_slot_bytes_sha256": "0b2c84084990656dbdcc2bb2254f68421b75a4d3f6369b2e192ed56692c4b1e6"
+    },
+    {
+      "before_path": "assets/index-RnjDS9Wy.js",
+      "after_path": "assets/index-KdHmKQEC.js",
+      "context": "vite-environment",
+      "before_range": [
+        596911,
+        596950
+      ],
+      "after_range": [
+        596963,
+        597002
+      ],
+      "same_exact_slot_bytes_sha256": "0b2c84084990656dbdcc2bb2254f68421b75a4d3f6369b2e192ed56692c4b1e6"
+    },
+    {
+      "before_path": "assets/index-RnjDS9Wy.js",
+      "after_path": "assets/index-KdHmKQEC.js",
+      "context": "vite-environment",
+      "before_range": [
+        598067,
+        598106
+      ],
+      "after_range": [
+        598119,
+        598158
+      ],
+      "same_exact_slot_bytes_sha256": "0b2c84084990656dbdcc2bb2254f68421b75a4d3f6369b2e192ed56692c4b1e6"
+    },
+    {
+      "before_path": "assets/settingsStore-DPxQcCRb.js",
+      "after_path": "assets/settingsStore-DPxQcCRb.js",
+      "context": "assistant-account-scope",
+      "before_range": [
+        887,
+        926
+      ],
+      "after_range": [
+        887,
+        926
+      ],
+      "same_exact_slot_bytes_sha256": "0b2c84084990656dbdcc2bb2254f68421b75a4d3f6369b2e192ed56692c4b1e6"
+    }
+  ]
+}

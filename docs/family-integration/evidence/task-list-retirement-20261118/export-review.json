@@ -1,0 +1,39 @@
+{
+  "passed": true,
+  "scoped_export_declarations": {
+    "client/src/integrations/family/legacy/components/Todo/TodoListPanel.tsx": [
+      {
+        "line": 20,
+        "declaration": "export default function TodoListPanel(props: TodoListPanelProps) {"
+      }
+    ],
+    "client/src/integrations/family/legacy/components/Todo/ListsContainer.tsx": [
+      {
+        "line": 12,
+        "declaration": "export type ListsContainerProps = {"
+      },
+      {
+        "line": 27,
+        "declaration": "export default function ListsContainer({"
+      }
+    ],
+    "client/src/integrations/family/legacy/components/Todo/ListsPanelFamily.tsx": [
+      {
+        "line": 8,
+        "declaration": "export default function ListsPanelFamily(props: FamilyListsPanelProps): React.ReactElement {"
+      }
+    ],
+    "client/src/integrations/family/legacy/components/Todo/useFamilyLists.ts": [
+      {
+        "line": 13,
+        "declaration": "export type FamilyListsPanelProps = {"
+      },
+      {
+        "line": 23,
+        "declaration": "export function useFamilyLists({"
+      }
+    ]
+  },
+  "outside_consumers": [],
+  "no_ambient_augmentation": true
+}

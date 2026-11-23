@@ -1,0 +1,41 @@
+{
+  "removed_paths": [
+    "client/src/integrations/family/legacy/pages/SettingsPage.tsx",
+    "client/src/integrations/family/legacy/components/Settings/AccountTab.tsx",
+    "client/src/integrations/family/legacy/components/Settings/IntegrationsTab.tsx"
+  ],
+  "previous_rows": [
+    {
+      "path": "client/src/integrations/family/legacy/pages/SettingsPage.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "4fe849ea6a612c185d98962728ccb646646bcd3c",
+        "bytes": 3703
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/pages/SettingsPage.tsx"
+    },
+    {
+      "path": "client/src/integrations/family/legacy/components/Settings/AccountTab.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "6b2f310d1d924749e65614fba2d9ea6ac5e624cf",
+        "bytes": 40885
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/components/Settings/AccountTab.tsx"
+    },
+    {
+      "path": "client/src/integrations/family/legacy/components/Settings/IntegrationsTab.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "3583f2cc32b4321d31f4fff98c5d8ff7e020239b",
+        "bytes": 52379
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/components/Settings/IntegrationsTab.tsx"
+    }
+  ],
+  "new_qualified_commit": "0f792d490da09b342f5db3fe8002745b18b56e37",
+  "reason": "Actual three-file Settings page/tab island deletion after bounded source/type/test/configuration closure; no guard relaxation or disappearing source row without deletion."
+}

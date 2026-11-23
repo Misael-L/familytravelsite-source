@@ -1,0 +1,26 @@
+{
+  "passed": true,
+  "raw_label_delta_before": [
+    [
+      "src/integrations/family/stayTransport.test.ts",
+      [],
+      "refuses false acknowledgements {\"stay_id\":\"410fbf9b-63e9-4a82-9084-58fe6146e40a\"}",
+      "passed"
+    ]
+  ],
+  "raw_label_delta_after": [
+    [
+      "src/integrations/family/stayTransport.test.ts",
+      [],
+      "refuses false acknowledgements {\"stay_id\":\"1bd0d59b-e614-404a-a5e5-30482a84090a\"}",
+      "passed"
+    ]
+  ],
+  "source": "src/integrations/family/stayTransport.test.ts",
+  "source_sha256": "4d42de9bacb6b0294d4525d52167571e32a6abf65a5a6a20ae1dd45ef09ada7c",
+  "exact_raw_title_cases": 1276,
+  "only_normalized_case": 1,
+  "source_defined_v4_UUID_in_parameterized_label": true,
+  "assertions_mocks_fixtures_test_configuration_unchanged": true,
+  "scope": "Only this exact known file/title/template and one generated UUID label are normalized; any other raw identity delta fails."
+}

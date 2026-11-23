@@ -1,0 +1,7 @@
+{
+  "algorithm": "SHA256 of sorted file/ancestor/title/status tuples, compact JSON; only the source-defined stayTransport v4UUID title is replaced as proved in consumer-proof.json.",
+  "cases": 2354,
+  "sha256": "0b2d9d5e4570de79265e31bed3d951d61b521c3ee86ad370035c109b51c1e2b0",
+  "raw_full_case_outcomes_preserved_in_private_Vitest_JSON": true,
+  "one_label_source_sha256": "4d42de9bacb6b0294d4525d52167571e32a6abf65a5a6a20ae1dd45ef09ada7c"
+}

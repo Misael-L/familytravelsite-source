@@ -1,0 +1,12 @@
+{
+  "reviewed_commit": "2008e3549fbf783201f08d96b1d39024ac5ea70b",
+  "application_commit": "066f615055b3be74d6664a260358f9cd6a8f1a37",
+  "source_bound_fixture_build_commit": "a0d896e186f3374d1c1122e6eb805cbd842c66e8",
+  "Q98_warning_gate_receipt_sha256": "739e16d254c58d306b4c4f3aae5c21d4d8795bcfa3f66d00ad771186ead3f130",
+  "Q98_source_size_receipt_sha256": "44cb39325fdb951c9825feb9b1fa6e2ea7f6ea990bf60cc8cd122ebee8424dfd",
+  "graph_sha256": "9ecdd0725fa56d51fc27ad09d2a7d5c6b269f475861c58f1082dc6fdf794dac5",
+  "all_current_tracked_inputs_match_incoming": true,
+  "fixed_Q98_source_and_declaration_inputs_match": 135,
+  "no_new_build_compiler_or_warning_gate_claim": true,
+  "no_hosted_operation": true
+}

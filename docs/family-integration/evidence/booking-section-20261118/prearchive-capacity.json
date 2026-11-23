@@ -1,0 +1,12 @@
+{
+  "available_bytes": 1478656000,
+  "measured_tar_bytes": 368691200,
+  "tracked_blob_upper_bound_extracted_bytes": 353845530,
+  "reserved_new_metadata_overhead_bytes": 33554432,
+  "reserved_operational_headroom_bytes": 536870912,
+  "build_compiler_test_warning_jobs_finished": true,
+  "estimated_total_required_bytes": 1292962074,
+  "capacity_estimate_passed": true,
+  "actual_strict_archive_required": true,
+  "source_snapshots_Git_qualified_and_logically_preserved_after_COW_sharing": true
+}

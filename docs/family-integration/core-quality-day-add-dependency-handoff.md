@@ -1,0 +1,31 @@
+# Q44 — active add-day dependency gate closure
+
+Completed locally 17 November 2026. One unnecessary `days.length` dependency was removed from the active native `useDayAdd.handleAddDay` callback. All other runtime bytes remain exact. This is a quality-gate cleanup, not a newly fixed save failure or a new feature.
+
+## Candidate review and bounded change
+
+Q43's location-bias lead was checked against the actual native LocationSelect, useLocationBias, mapsApi and Family catalog handler. Native desktop/phone transport controls and the map-stage selector use this search component. The current Family `/maps/search` handler validates but does not use the point bias in `discoverCatalog`; it searches by query and limit. Consequently, no distinct supported Family result-ordering/refresh defect was established from a bias-only change. Its warning remains; the handler and search code are unchanged. Do not imply the current Family catalog is geographically ranked or enable another provider to justify a lint repair. Q34's completed query/pick-order fixes remain untouched.
+
+Instead, fresh full typed lint identified the active native day-add callback's unnecessary dependency. Installed TypeScript AST inspection confirms the callback body contains no `days` reference. `useTripPlanner` consumes the hook on the real native planner path, including the qualified Family calendar port. The callback obtains current state through the original store/port operations. Only the redundant dependency entry is removed; the full function body, all other dependencies, imports, JSX consumers and every other source byte are exact. The separate dated-add callback still depends on `days.length` because it computes the end insertion position. No callback body, original operation/payload/retry identity, permission, busy guard, calendar command, error reporting or Undo behavior changes.
+
+## Verification
+
+- The same **204 existing cases in five suites pass before and after**: actual native Family calendar/recovery adapters, native planner calendar behavior, TripPlannerPage, day-reorder controls and phone day pager. No new tests, fixture, test edits or lowered assertions. This is preservation evidence, not a hosted/browser acceptance claim.
+- Typed scoped warnings fall 2→1, with only the unnecessary dependency disappearing. The inherited error-reporting console warning stays exact; zero errors or suppressions. The existing project formatter reports this old file unformatted both before and after, and it remains in the unchanged inherited format list. No wholesale runtime formatting or new exemption.
+- Clean committed local web build, direct installed client compiler, four actual source guards and correct/wrong/missing-source artifact controls pass. Tests and scoped typed lint finished before building. Compiler runs after build without the npm rebuilding precheck; its 128 declaration inputs remain fixed through final gate measurement. No cross-build declaration identity is presumed.
+- Actual installed full gate reports source **3548/3424**, tests **2859/2859**, suppressed **84/83**, errors **0**. The unsuppressed source dependency rule is now **114/114**, closing that overage. Suppressed dependencies remain **46/45**. Every other over-budget metric remains unchanged, no stale allowance, and the same **32 size failure lines** remain. **G2 is still blocked overall.**
+- All warning/size/format baselines, rule configurations, ignores and suppressions are byte-exact. Twelve protected native runtime/layout files retain eleven upstream-byte-exact files plus the fixed Sidebar type-only derivation. No layout or native presentation change.
+
+Incoming clean integration/publication HEAD: `1727da31586c7561fe02824a676c0a5eaad411ed`. Implementation: `e4a4b43fe39f1e3f60311891603bd336b70ce5fe`. Qualified clean build source: `d1f8adbe67e8d285641084750a5ba19cf2525800`. Five reviewed website paths: one runtime hook, two source-provenance files and two documentation files. Local check-only/unbound publication does not deploy or publish to a remote. The later documentation commit does not relabel the build.
+
+## Exact next packet
+
+Q28–Q44 and the unsuppressed dependency overage are closed at their accepted scope. Preserve the test-warning, unused-variable and unused-assignment closures. Do not automatically clean compliant dependency warnings or repeat the closed routing/search/lifecycle diagnoses.
+
+Next bounded review: the remaining **suppressed dependency overage (46/45)**. Verify a current supported consumer and distinguish intentional opening snapshots from stale completion before any edit. Keep `usePlannerBookingForm`'s intentional original-opening snapshot. Collection Trip-transfer writes and third-party-provider features remain unavailable; do not activate them to qualify a warning cleanup. If no supported defect is demonstrated in that group, select a bounded active finding from the remaining `no-misused-promises` overage (**850/843**) using current installed typed diagnostics. Preserve genuine awaited promises, owner retirement, original command/retry identity and honest refusal; do not add `void`, casts or suppressions just to hide a finding.
+
+Keep the [release prerequisites](core-release-prerequisites.md) and [deferred pre-production cleanup](pre-production-retained-source-cleanup-packet.md). Dormant map/tab bridges and ZoomTracker stay unchanged. No unsupported feature activation. All 370 canonical schema/test sources, 151 migrations, canonical mixed index, 202 prior seals/12908 members, 11 auxiliary manifests and three other checkouts remain exact.
+
+No database/browser fixture, hosted SQL/settings/billing, production/preview/main update, remote push, backup/media/ignored ETL or image-transformation change. Stored variants and original command/Undo contracts stay exact. Incremental backup protection, independent matched DB-plus-files recovery, current hosted contract/engine facts and real preview/source binding remain open release gates.
+
+Private originals, input hashes, exact exact dependency-change proof, typed diagnostics and before/after preservation runs: `/private/tmp/trek-core-quality-day-add-dependency-source-20261117`. Canonical sealed evidence records final local documentation commit and member hashes.

@@ -1,0 +1,12 @@
+--- a/client/scripts/theme-baseline.json
++++ b/client/scripts/theme-baseline.json
+@@ -272,7 +272,8 @@
+   "mobile/screens/trip/tabs/MFilesTab.tsx": 12,
+   "mobile/screens/trip/tabs/MPackItemSheet.tsx": 7,
+   "mobile/screens/trip/tabs/MPackingImportSheet.tsx": 3,
+-  "mobile/screens/trip/tabs/MPackingListTab.tsx": 32,
++  "mobile/screens/trip/tabs/MPackingItemRow.tsx": 13,
++  "mobile/screens/trip/tabs/MPackingListTab.tsx": 19,
+   "mobile/screens/trip/tabs/MReservationCardParts.tsx": 6,
+   "mobile/screens/trip/tabs/MTaskSheet.tsx": 6,
+   "mobile/screens/trip/tabs/MTodoListTab.tsx": 15,

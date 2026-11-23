@@ -1,0 +1,63 @@
+{
+  "removed_paths": [
+    "client/src/integrations/family/legacy/index.css",
+    "client/src/integrations/family/legacy/styles/collections.css",
+    "client/src/integrations/family/legacy/styles/dashboard.css",
+    "client/src/integrations/family/legacy/styles/collectionsPage.css",
+    "client/src/integrations/family/legacy/pages/CollectionsPage.tsx"
+  ],
+  "previous_rows": [
+    {
+      "path": "client/src/integrations/family/legacy/index.css",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "16f54abfb18be1684aac39804df156a5823b3b3b",
+        "bytes": 47220
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/index.css"
+    },
+    {
+      "path": "client/src/integrations/family/legacy/styles/collections.css",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "16a46b26d308f651f2b82854bd50886ef2772ff3",
+        "bytes": 40320
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/styles/collections.css"
+    },
+    {
+      "path": "client/src/integrations/family/legacy/styles/dashboard.css",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "3430d2317e40de6d440c736989f22573bfde2d78",
+        "bytes": 48530
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/styles/dashboard.css"
+    },
+    {
+      "path": "client/src/integrations/family/legacy/styles/collectionsPage.css",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "151aba615cdb8dca3832ddd013cd6c479b26560c",
+        "bytes": 121
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/styles/collectionsPage.css"
+    },
+    {
+      "path": "client/src/integrations/family/legacy/pages/CollectionsPage.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "48b75bed52b06ab6b4d6f488f5a0d63b5a058496",
+        "bytes": 20968
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/pages/CollectionsPage.tsx"
+    }
+  ],
+  "new_qualified_commit": "26fb14153156399db490c5dfa89809b484d3a11f",
+  "reason": "Only the closed copied Collections page and four stylesheets are deleted after complete source/type/test/CSS-loader/configuration closure; no dependency-union deletion or guard relaxation."
+}

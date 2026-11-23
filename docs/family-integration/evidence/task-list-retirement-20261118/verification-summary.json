@@ -1,0 +1,64 @@
+{
+  "passed": true,
+  "packet": "Q109",
+  "incoming": "4808891b1a5d0a1f0ec40ba59deba194ae0671af",
+  "implementation": "a0b9f76fd376a3baeb0873e35d4eda9f40417e11",
+  "build_source": "1778046e78d42072d259e6637a20d82edfa40b65",
+  "date": "2026-11-18",
+  "removed_paths": [
+    "client/src/integrations/family/legacy/components/Todo/TodoListPanel.tsx",
+    "client/src/integrations/family/legacy/components/Todo/ListsContainer.tsx",
+    "client/src/integrations/family/legacy/components/Todo/ListsPanelFamily.tsx",
+    "client/src/integrations/family/legacy/components/Todo/useFamilyLists.ts"
+  ],
+  "new_or_modified_runtime_source_files": 0,
+  "candidate_passed": 556,
+  "same_expanded_cases_before_after": 556,
+  "raw_sources_reviewed": 14052,
+  "application_modules_reviewed": 7488,
+  "current_reachable_nodes_preserved": 6091,
+  "literal_glob_locale_modules": 28,
+  "literal_glob_video_assets": 98,
+  "internal_value_edges": 3,
+  "internal_type_only_edges": 1,
+  "all_exports_and_type_exports_reviewed": true,
+  "no_outside_runtime_type_test_tool_importer": true,
+  "external_modules_without_ambient_augmentation": true,
+  "native_presentation_files_exact": 12,
+  "native_task_list_and_packing_controls_and_Family_contracts_preserved": true,
+  "all_3792_other_generated_files_byte_exact": true,
+  "all_421_generated_JS_CSS_files_byte_exact": true,
+  "all_14_stylesheets_byte_exact": true,
+  "service_worker_and_cache_manifest_byte_exact": true,
+  "public_configuration_only_sourceCommit_changed": true,
+  "fresh_typecheck_and_build_passed": true,
+  "fresh_declarations_fixed_at_current_compiler_generation": 128,
+  "source_guards_passed": 4,
+  "artifact_binding_controls_passed": 3,
+  "warning_gate_pass": true,
+  "source_warnings_actual_limit": [
+    3418,
+    3418
+  ],
+  "source_complexity_actual_limit": [
+    218,
+    218
+  ],
+  "source_length_actual_limit": [
+    130,
+    130
+  ],
+  "size_findings_before_after": [
+    16,
+    15
+  ],
+  "all_other_size_failure_lines_exact": true,
+  "format_gate_pass": true,
+  "unlisted_format_failures": 0,
+  "format_baseline_unchanged_entries": 2134,
+  "rules_baselines_exclusions_suppressions_unchanged": true,
+  "verified_disposable_prototype_removed_after_proofs": true,
+  "global_release_gate_pass": false,
+  "live_database_browser_or_writer_admission_acceptance": false,
+  "next": "Q110 bounded copied PackingListPanel/List/CategoryGroup/ItemRow review; preserve native packing controls and copied type/model/ops/helper consumers"
+}

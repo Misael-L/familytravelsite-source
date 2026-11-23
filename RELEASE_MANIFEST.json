@@ -1,0 +1,30 @@
+{
+  "privateSourceCommit": "ce3201a6510964cd2c94d562593eca4b85f79bc4",
+  "privateProductionCommit": "ce3201a6510964cd2c94d562593eca4b85f79bc4",
+  "privateCommitSubject": "Record qualification for the typed preview fixture",
+  "publicSourceTag": "source-20261123-ce3201a",
+  "publicSourceRemote": "https://github.com/Misael-L/familytravelsite-source.git",
+  "workersBuildUuid": null,
+  "workersVersionId": "a81d9086-d3ff-4d2a-ba66-15970c54c296",
+  "node": "24",
+  "buildCommand": "npm run build:web",
+  "origin": "https://familytravelsite-integration-preview.lmisael0721.workers.dev",
+  "license": "AGPL-3.0-only",
+  "createdAtUtc": "2026-11-23T21:21:28.683267+00:00",
+  "deploymentBinding": "caller-supplied-version",
+  "sanitization": {
+    "policy": "family.private-operational-plan.v1",
+    "privateCommit": "ce3201a6510964cd2c94d562593eca4b85f79bc4",
+    "trackedFiles": 18694,
+    "sourceFilesRetained": 18693,
+    "allRetainedBytesAndModesMatchGit": true,
+    "omissions": [
+      {
+        "path": ".cursor/plans/existing-family-backend-integration.plan.md",
+        "sha256": "c4677c13b949e3f714fe3f07f58f10c0a54af72a23537d7bb43e356240512449",
+        "bytes": 12372,
+        "reason": "Private operational plan; not required to build or run the application"
+      }
+    ]
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "implementation": "76984b74d9d34207bd1be57088a14e3f1fbbda91",
+  "updated_existing_addition_rows": [
+    "client/src/integrations/family/publicVariantCache.ts",
+    "client/src/integrations/family/privateFileMemory.ts",
+    "client/src/integrations/family/packingBagDependency.ts",
+    "client/src/integrations/family/packingDependencyPair.ts",
+    "client/src/integrations/family/creationTerminalSettlement.ts"
+  ],
+  "all_other_source_rows_and_exception_rows_exact": true,
+  "no_new_exception_or_policy_change": true,
+  "no_new_runtime_behavior_or_writer_admission": true
+}

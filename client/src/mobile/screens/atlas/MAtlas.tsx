@@ -1,0 +1,266 @@
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { useSearchParams } from 'react-router'
+import { CalendarClock, X } from 'lucide-react'
+import { useAtlas } from '../../../pages/atlas/useAtlas'
+import MIconBtn from '../../components/MIconBtn'
+import MSheet from '../../components/MSheet'
+import MChip from '../../components/MChip'
+import MAtlasStatsCard from './MAtlasStatsCard'
+import MAtlasSearch from './MAtlasSearch'
+import MAtlasCountryPopup from './MAtlasCountryPopup'
+import MAtlasBucketSheet from './MAtlasBucketSheet'
+import DawarichIcon from '../../../components/shared/DawarichIcon'
+import DawarichAtlasDialog from '../../../components/Dawarich/DawarichAtlasDialog'
+import { useAddonStore } from '../../../store/addonStore'
+import { countryStatus } from '../../../pages/atlas/atlasModel'
+import AtlasCountryPlaces from '../../../components/Atlas/AtlasCountryPlaces'
+import MSkeleton from '../../components/MSkeleton'
+
+/** The atlas header's buttons: one shape, equal widths, the phone shell's glass. */
+const HEADER_BUTTON = 'flex h-[38px] min-w-0 flex-1 items-center justify-center gap-2 rounded-full border px-3 text-[0.78125rem] font-bold transition-transform active:scale-[.97]'
+const HEADER_IDLE = 'border-[color:var(--m-gbr)] bg-[color:var(--m-glass)] text-m-ink shadow-[0_5px_12px_-8px_rgba(0,0,0,.18)] backdrop-blur-[24px] backdrop-saturate-[1.7]'
+
+const removeBtnCls = 'mt-4 w-full rounded-full bg-[rgba(214,39,59,.12)] py-[11px] text-center text-[0.8125rem] font-bold text-[color:var(--m-st-danger)]' // theme-lint-disable — fixed status-danger tint
+
+/**
+ * Mobile atlas screen: the interactive world map fills the viewport, the
+ * five-column stats card floats above the bottom nav and the search overlay
+ * flies the map to a country. All map/data logic comes from the shared
+ * useAtlas hook — this file is presentation and wiring only.
+ */
+export default function MAtlas() {
+  const rootRef = useRef<HTMLDivElement>(null)
+  const headerRef = useRef<HTMLDivElement>(null)
+  // The map runs under the rail (m-bleed) and the header: the camera keeps clear
+  // of both. The rail's share is the root's own negative margin, resolved by the
+  // browser; the header's is how far down it reaches.
+  const atlas = useAtlas({
+    chromeInsets: () => {
+      const root = rootRef.current
+      if (!root) return { top: 0, start: 0 }
+      const start = Math.max(0, -parseFloat(getComputedStyle(root).marginInlineStart) || 0)
+      const header = headerRef.current?.getBoundingClientRect()
+      const top = header ? Math.max(0, header.bottom - root.getBoundingClientRect().top) : 0
+      return { top, start }
+    },
+  })
+  const {
+    t,
+    navigate,
+    resolveName,
+    loading,
+    mapRef,
+    regionTooltipRef,
+    stats,
+    countries,
+    visitedCountries,
+    showPlanned,
+    togglePlanned,
+    bucketList,
+    selectedCountry,
+    countryDetail,
+    handleUnmarkCountry,
+    select_country_from_search,
+    atlas_country_options,
+  } = atlas
+  const plannedCount = stats.totalCountriesPlanned || 0
+  const [searchOpen, setSearchOpen] = useState(false)
+  const [bucketOpen, setBucketOpen] = useState(false)
+  const [dawarichOpen, setDawarichOpen] = useState(false)
+  const dawarichEnabled = useAddonStore(state => state.isEnabled)('dawarich')
+  const [detailOpen, setDetailOpen] = useState(false)
+
+  // The dock FAB is the search button on this screen (demo Z. 1099) and hands
+  // off via ?search=1, mirroring the ?create= contract of the other pages.
+  const [searchParams, setSearchParams] = useSearchParams()
+  useEffect(() => {
+    if (searchParams.get('search') == null) return
+    const next = new URLSearchParams(searchParams)
+    next.delete('search')
+    setSearchParams(next, { replace: true })
+    setSearchOpen(true)
+  }, [searchParams, setSearchParams])
+
+  // A search fly-to on a visited country loads its detail — surface it as a sheet.
+  useEffect(() => {
+    if (selectedCountry && countryDetail) setDetailOpen(true)
+  }, [selectedCountry, countryDetail])
+
+  // Suggestions for the empty search field: recently visited countries first,
+  // then countries already on the bucket list.
+  const suggestions = useMemo(() => {
+    const seen = new Set<string>()
+    const list: { code: string; label: string }[] = []
+    // Visited first, planned after — this list answers "where have I been", so a country
+    // you only booked a flight to shouldn't outrank one you actually saw.
+    const visited = [...countries].sort((a, b) => {
+      const rank = (c: typeof a) => (countryStatus(c) === 'visited' ? 0 : 1)
+      return rank(a) - rank(b) || (b.lastVisit || '').localeCompare(a.lastVisit || '')
+    })
+    for (const c of visited) {
+      if (seen.has(c.code)) continue
+      seen.add(c.code)
+      list.push({ code: c.code, label: resolveName(c.code) })
+    }
+    for (const item of bucketList) {
+      const code = item.country_code
+      if (!code || code.length !== 2 || seen.has(code)) continue
+      seen.add(code)
+      list.push({ code, label: resolveName(code) })
+    }
+    return list.slice(0, 5)
+  }, [countries, bucketList, resolveName])
+
+  if (loading) {
+    return (
+      <div className="relative h-dvh">
+        <MSkeleton variant="map" className="absolute inset-0" />
+      </div>
+    )
+  }
+
+  return (
+    // h-dvh, not h-full: the shell stopped providing a definite height (#1809)
+    // and a map on a percentage of an auto-height parent collapses to zero.
+    <div ref={rootRef} className="m-bleed relative h-dvh overflow-hidden">
+      <div ref={mapRef} className="absolute inset-0 z-[1] bg-[color:var(--m-mapb)] [&_.leaflet-control-zoom]:hidden" />
+      {/* Region hover tooltip — positioned imperatively by useAtlas. */}
+      <div
+        ref={regionTooltipRef}
+        style={{ display: 'none' }}
+        className="pointer-events-none fixed z-[80] min-w-[120px] rounded-[10px] border border-[color:var(--m-shbr)] bg-[color:var(--m-sheetop)] px-[14px] py-[10px] text-[0.75rem] text-m-ink shadow-[0_4px_16px_rgba(0,0,0,.18)]"
+      />
+
+      {/* Full-width bucket-list button. The bottom nav makes a back button
+          redundant on this main-nav screen, so the header spans the width. */}
+      <div ref={headerRef} className="m-bar-x absolute top-[var(--m-safe-top,12px)] z-[5] flex items-center gap-2 wide:mx-auto wide:max-w-[720px]">
+        <button
+          type="button"
+          onClick={() => setBucketOpen(true)}
+          className={`${HEADER_BUTTON} ${HEADER_IDLE}`}
+        >
+          {t('atlas.bucketTab')}
+        </button>
+        {/* Dawarich answers two questions about this map, so it opens from the
+            map — not from inside the wishlist sheet, where it was one card deep
+            and looked like part of the list it is only asking about. Renders
+            nothing when the addon is off. */}
+        {dawarichEnabled && (
+          <button
+            type="button"
+            onClick={() => setDawarichOpen(true)}
+            aria-label={t('dawarich.title')}
+            className={`${HEADER_BUTTON} ${HEADER_IDLE}`}
+          >
+            <span className="flex h-[22px] w-[22px] flex-none overflow-hidden rounded-full">
+              <DawarichIcon size={22} />
+            </span>
+            <span className="truncate">{t('dawarich.title')}</span>
+          </button>
+        )}
+        {/* Only worth the space once there is something planned to reveal. A
+            button of the same shape as its neighbours, filled while the planned
+            countries show, rather than a label with a switch in a pill of its own. */}
+        {plannedCount > 0 && (
+          <button
+            type="button"
+            onClick={() => togglePlanned()}
+            aria-pressed={showPlanned}
+            aria-label={t('atlas.showPlanned')}
+            className={`${HEADER_BUTTON} ${showPlanned ? 'border-transparent bg-m-act text-m-actfg' : HEADER_IDLE}`}
+          >
+            <CalendarClock size={15} strokeWidth={2.2} className="flex-none" aria-hidden="true" />
+            <span className="truncate">{t('atlas.planned')}</span>
+          </button>
+        )}
+      </div>
+
+      {dawarichOpen && (
+        <DawarichAtlasDialog
+          isOpen
+          onClose={() => setDawarichOpen(false)}
+          onChanged={atlas.reloadAfterDawarich}
+        />
+      )}
+
+      <MAtlasStatsCard stats={stats} availability={atlas.availability} retryRead={atlas.retryRead} />
+
+      <MAtlasSearch
+        open={searchOpen}
+        onClose={() => setSearchOpen(false)}
+        options={atlas_country_options}
+        suggestions={suggestions}
+        isVisited={(code) => visitedCountries.some((c) => c.code === code)}
+        isPlanned={(code) => countries.some((c) => c.code === code && countryStatus(c) !== 'visited')}
+        isOnBucketList={(code) => bucketList.some((b) => b.country_code === code)}
+        onSelect={(code) => {
+          setSearchOpen(false)
+          select_country_from_search(code)
+        }}
+      />
+
+      {/* Country detail sheet (visited country with trips/places). */}
+      <MSheet
+        open={detailOpen}
+        onClose={() => setDetailOpen(false)}
+        variant="card"
+        ariaLabel={selectedCountry ? resolveName(selectedCountry) : undefined}
+      >
+        {selectedCountry && countryDetail && (
+          <div className="p-5">
+            <div className="flex items-center gap-3">
+              <img
+                src={`https://flagcdn.com/w80/${selectedCountry.toLowerCase()}.png`}
+                alt=""
+                className="h-[30px] w-[42px] flex-none rounded-[6px] object-cover shadow-[0_1px_3px_rgba(0,0,0,.25)]"
+              />
+              <div className="min-w-0 flex-1">
+                <div className="truncate text-[1.0625rem] font-extrabold text-m-ink">{resolveName(selectedCountry)}</div>
+                <div className="mt-[4px] flex flex-wrap gap-1">
+                  {[[countryDetail.places.length, t('atlas.places', { count: countryDetail.places.length })], [countryDetail.trips.length, t('atlas.trips', { count: countryDetail.trips.length })]].map(([n, label]) => (
+                    <span key={label} className="rounded-full bg-[color:var(--m-ic)] px-2 py-[1px] font-geist text-[0.625rem] font-bold tabular-nums text-m-muted">
+                      {n} {label}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <MIconBtn variant="neutral" size={34} onClick={() => setDetailOpen(false)} ariaLabel={t('common.close')}>
+                <X size={16} strokeWidth={2.2} />
+              </MIconBtn>
+            </div>
+            {countryDetail.trips.length > 0 && (
+              <div className="mt-4 flex flex-wrap gap-[6px]">
+                {countryDetail.trips.slice(0, 6).map((trip) => (
+                  <MChip key={trip.id} onClick={() => navigate(`/trips/${trip.id}`)}>
+                    {trip.title}
+                  </MChip>
+                ))}
+              </div>
+            )}
+            {/* Every place counted for the country, by trip (#2174). */}
+            {countryDetail.places.length > 0 && (
+              <div className="mt-4 max-h-[46vh] overflow-y-auto">
+                <AtlasCountryPlaces variant="mobile" detail={countryDetail} onOpenTrip={id => navigate(`/trips/${id}`)} />
+              </div>
+            )}
+            {countryDetail.manually_marked && (
+              <button
+                type="button"
+                onClick={() => {
+                  setDetailOpen(false)
+                  handleUnmarkCountry(selectedCountry)
+                }}
+                className={removeBtnCls}
+              >
+                {t('atlas.unmark')}
+              </button>
+            )}
+          </div>
+        )}
+      </MSheet>
+
+      <MAtlasBucketSheet atlas={atlas} open={bucketOpen} onClose={() => setBucketOpen(false)} />
+      <MAtlasCountryPopup atlas={atlas} />
+    </div>
+  )
+}

@@ -1,0 +1,7 @@
+{
+  "exit": 0,
+  "seconds": 337.6,
+  "command": "npm run lint:warnings",
+  "installed_rules_and_baselines_unchanged": true,
+  "fixed_declarations": 128
+}

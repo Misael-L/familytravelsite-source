@@ -1,0 +1,21 @@
+{
+  "passed": true,
+  "current_nodes": 6091,
+  "current_roots_graph_edges_source_bytes_config_dynamic_globs_exact": true,
+  "raw_sources_before_after": [
+    14040,
+    14043
+  ],
+  "application_modules_before_after": [
+    7475,
+    7477
+  ],
+  "incoming_edges_before_after": [
+    2,
+    6
+  ],
+  "existing_direct_test_and_active_controller_type_consumer_preserved": true,
+  "only_new_test_parent_cards_lookup_imports_added": true,
+  "no_module_augmentation_or_new_runtime_mount": true,
+  "synthetic_import_control_detects_parent": true
+}

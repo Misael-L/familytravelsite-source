@@ -1,0 +1,19 @@
+{
+  "removed_paths": [
+    "client/src/integrations/family/legacy/pages/SharedTripPage.tsx"
+  ],
+  "previous_rows": [
+    {
+      "path": "client/src/integrations/family/legacy/pages/SharedTripPage.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "a434e71181b670b5bf0bfe4cd3857faa243e79e0",
+        "bytes": 47802
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/pages/SharedTripPage.tsx"
+    }
+  ],
+  "new_qualified_commit": "eb2fde5b272d7200c284722cb3d802e2fef47014",
+  "reason": "Actual single-file SharedTripPage deletion after bounded source/type/test/configuration closure; no guard relaxation or disappearing source row without deletion."
+}

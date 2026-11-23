@@ -1,0 +1,14 @@
+{
+  "incoming": "05dc969be525a765bc4e367149dd3c66e32281c7",
+  "implementation": "81737fdfeea0c3c38b4e839019f020e7acf92fb7",
+  "build_source": "a4e9f2197a600840c7cbfefbeb59def1e3f8acb4",
+  "removed_original_sha256": {
+    "client/src/integrations/family/legacy/pages/AtlasPage.tsx": "ea6113093465ac03c72c79d9ad422745619d7f62aa1757d915cc6cfd2e4cb123",
+    "client/src/integrations/family/legacy/pages/atlas/useAtlas.ts": "f8cfa6e6ad321caefd352381f7be7de4c42ef6ac4320a7d462a9fd6e79ea0008"
+  },
+  "prior_runtime_build": "7ddfc453061766432bde9f0efda18929660f6873",
+  "fresh_current_compiler_declarations": 128,
+  "no_old_generated_declaration_identity_assumption": true,
+  "test_runtime": "v24.22.2",
+  "no_hosted_operation": true
+}

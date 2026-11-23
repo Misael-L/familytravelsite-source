@@ -1,0 +1,7 @@
+[
+  "client/src/integrations/family/legacy/index.css",
+  "client/src/integrations/family/legacy/styles/collections.css",
+  "client/src/integrations/family/legacy/styles/dashboard.css",
+  "client/src/integrations/family/legacy/styles/collectionsPage.css",
+  "client/src/integrations/family/legacy/pages/CollectionsPage.tsx"
+]

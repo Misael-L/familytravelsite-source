@@ -1,0 +1,34 @@
+name: Family migration policy
+
+# Family validates locally; hosted workflows require an explicit manual run.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: family-migration-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  migration-guard:
+    name: Family migration guard
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+      - run: node scripts/family/check-git-structure.mjs
+      - run: node scripts/family/check-backend-carryover.mjs
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Check unchanged Family backend modules
+        run: |
+          npm run typecheck:family-backend
+          npm run test:family-backend

@@ -1,0 +1,78 @@
+{
+  "passed": false,
+  "repair_verified": true,
+  "packet": "Q125",
+  "scope": "Specifically approved two-file ownership correction, with formatter-only native path array normalization.",
+  "incoming": "f2242baedec45c10ab372c8f1c1812a9d5523826",
+  "implementation": "1612c35f8cc09b54f2e82de51f2d6b100aa99e2a",
+  "approved_paths": [
+    "client/scripts/rtl-baseline.json",
+    "client/scripts/i18n-keys.mjs"
+  ],
+  "approval_source": "User: What do you mean? Should we do it? If so, then continue. Agent recommended the exact prepared correction.",
+  "no_further_approval_pending_for_this_patch": true,
+  "quality_metadata_only_no_runtime_UI_test_or_permission_source_changes": true,
+  "RTL_allowance_before_after": [
+    273,
+    273
+  ],
+  "RTL_disable_allowance_before_after": [
+    12,
+    12
+  ],
+  "i18n_allow_site_count_before_after": [
+    19,
+    19
+  ],
+  "i18n_implicit_limit_before_after": [
+    30,
+    30
+  ],
+  "retained_permission_domain": 58,
+  "native_permission_domain": 66,
+  "fresh_real_guard_exits_after": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "fresh_existing_scanner_tests_passed": 30,
+  "fresh_existing_scanner_tests_failed": 0,
+  "fresh_existing_scanner_tests_skipped": 0,
+  "negative_controls_refuse_new_RTL_missing_keys_and_wrong_owner": true,
+  "fresh_source_guards_passed": 4,
+  "changed_script_format_pass": true,
+  "existing_ESLint_configuration_ignores_changed_script_before_and_after": true,
+  "no_new_ESLint_error_warning_or_inline_suppression": true,
+  "full_ESLint_reexecution_or_script_lint_coverage_not_claimed": true,
+  "new_build_performed": false,
+  "runtime_build_source_commit": "a7033ef64e9ff42fe59e3413d1584645dbbd2310",
+  "prior_Q123_runtime_results_reused_not_rerun_or_relabelled": true,
+  "retained_disjoint_runtime_tests_passed": 2529,
+  "retained_historical_skips": 38,
+  "all_3793_runtime_outputs_and_128_declarations_exact": true,
+  "additional_passed_commands": [
+    "pages",
+    "layers",
+    "pairs",
+    "skips",
+    "rtl",
+    "i18n-keys"
+  ],
+  "additional_failed_commands": [
+    "strict",
+    "offline",
+    "dup"
+  ],
+  "only_RTL_i18n_reexecuted_this_packet_other_seven_statuses_retained_with_unchanged_inputs": true,
+  "strict_diagnostics_remaining": 636,
+  "strict_allowance": 467,
+  "strict_excess": 172,
+  "strict_excess_files": 59,
+  "strict_stale_entries": 2,
+  "duplication_lines": 17619,
+  "duplication_files": 285,
+  "all_other_baselines_thresholds_exclusions_scanner_logic_and_suppressions_exact": true,
+  "global_release_gate_pass": false,
+  "next": "Q126: move Collection sharing available-users read behind the proper data-layer boundary, preserving original view/session/collection locks and late-reply retirement. Then review stale old offline allowance separately. Remaining strict/duplication and hosted gates remain explicit."
+}

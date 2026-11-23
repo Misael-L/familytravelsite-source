@@ -1,0 +1,52 @@
+{
+  "removed_paths": [
+    "client/src/integrations/family/legacy/components/Packing/PackingListPanel.tsx",
+    "client/src/integrations/family/legacy/components/Packing/PackingListPanelList.tsx",
+    "client/src/integrations/family/legacy/components/Packing/PackingListPanelCategoryGroup.tsx",
+    "client/src/integrations/family/legacy/components/Packing/PackingListPanelItemRow.tsx"
+  ],
+  "previous_rows": [
+    {
+      "path": "client/src/integrations/family/legacy/components/Packing/PackingListPanel.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "b8293f2149cec3578d257920443116c5f9145bc5",
+        "bytes": 1761
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/components/Packing/PackingListPanel.tsx"
+    },
+    {
+      "path": "client/src/integrations/family/legacy/components/Packing/PackingListPanelList.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "a3c725ded2615e8e0d81282ae8d1785a10933056",
+        "bytes": 2989
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/components/Packing/PackingListPanelList.tsx"
+    },
+    {
+      "path": "client/src/integrations/family/legacy/components/Packing/PackingListPanelCategoryGroup.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "183f0d2303f8a1aaed2b3b641909fa11ca4318da",
+        "bytes": 26346
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/components/Packing/PackingListPanelCategoryGroup.tsx"
+    },
+    {
+      "path": "client/src/integrations/family/legacy/components/Packing/PackingListPanelItemRow.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "fd3f20dbb92c0717d51a26c96f743d00e6d40eaf",
+        "bytes": 41644
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/components/Packing/PackingListPanelItemRow.tsx"
+    }
+  ],
+  "new_qualified_commit": "e708a6b9a0aafb8a04b62758e2502156c6351637",
+  "reason": "Actual four-file copied packing UI chain deletion after bounded source/type/test/configuration closure; no guard relaxation or disappearing source row without deletion."
+}

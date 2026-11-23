@@ -1,0 +1,16 @@
+{
+  "path": "client/scripts/eslint-baseline.json",
+  "before_sha256": "c27b307e86f2837b3eff06d6d1405935d34852c0a5ade449fd6916692680a1d8",
+  "after_sha256": "bed68d3d6417e8ec83559df3cba54a5a0f7e2719e32bca8b73f5ee09a64aaa54",
+  "only_semantic_difference": {
+    "src": {
+      "react-hooks/set-state-in-effect": [
+        185,
+        184
+      ]
+    }
+  },
+  "reason": "The obsolete synchronous close-reset effect is replaced by owned transient state. The existing warning ratchet requires tightening stale allowances; no allowance is raised.",
+  "installed_rule_configuration_and_all_other_baselines_exact": true,
+  "ordinary_warning_gate_exit": 0
+}

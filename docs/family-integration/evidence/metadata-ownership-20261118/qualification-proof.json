@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "implementation": "1612c35f8cc09b54f2e82de51f2d6b100aa99e2a",
+  "updated_existing_exception": "client/scripts/i18n-keys.mjs",
+  "one_new_precise_native_exception": "client/scripts/rtl-baseline.json",
+  "all_other_exception_rows_exact": true,
+  "all_additions_exact": true,
+  "approved_policy_delta_only": true
+}

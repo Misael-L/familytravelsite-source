@@ -1,0 +1,14 @@
+{
+  "incoming": "4b898e190b68f50cbccbb93d4d666d6e883c9a24",
+  "implementation": "5be89a1520088a7c4691f48e2ed499703b202924",
+  "build_source": "ec6d56328a274ef7bc0088788138dc9e2a81b576",
+  "prior_runtime_build": "898e0b38f2e31e645976782309b39b87b678cd2b",
+  "retired_source_sha256": {
+    "client/src/integrations/family/legacy/pages/tripPlanner/useTripPlanner.ts": "fdc9f8248ec1c3b6f454b1d58e8fe8fa8c58704d0bb4a71fc44978149588f79b"
+  },
+  "original_blobs_available_from_incoming_commit": true,
+  "fresh_current_declarations": 128,
+  "runtime": "v24.22.2",
+  "external_synthetic_fixture_inputs": true,
+  "no_hosted_operation": true
+}

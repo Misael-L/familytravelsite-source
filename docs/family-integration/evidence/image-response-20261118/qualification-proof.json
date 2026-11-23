@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "implementation": "bf6393c14e9949b7ab6740aa0e9fca4022499e7d",
+  "updated_existing_addition_rows": [
+    "client/src/integrations/family/publicVariantCache.ts",
+    "client/src/integrations/family/publicVariantCache.test.ts"
+  ],
+  "all_other_source_and_exception_rows_exact": true,
+  "no_new_exception_or_policy_change": true
+}

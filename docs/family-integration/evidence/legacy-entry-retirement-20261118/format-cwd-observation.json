@@ -1,0 +1,15 @@
+{
+  "source_unchanged": true,
+  "same_installed_prettier_and_node_runtime": true,
+  "checks": [
+    {
+      "cwd": "/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4",
+      "formatted": false
+    },
+    {
+      "cwd": "/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client",
+      "formatted": false
+    }
+  ],
+  "no_config_or_rule_mutation": true
+}

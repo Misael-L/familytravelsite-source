@@ -1,0 +1,417 @@
+{
+  "retrieved_at": "2026-11-14T17:33:53.388707+00:00",
+  "candidate_runtime": "9f03de03bd82fc15b89aa55ee7f1dd356c862bc5",
+  "branch": "codex/trek-v5.1.4-family-reconcile",
+  "upstream_source": {
+    "version": "5.1.4",
+    "commit": "2bcfc1bfcbbff0affd097c0f789c835396389572"
+  },
+  "source_adoption_metadata_version": "5.1.2",
+  "decision": "NOT_READY_FOR_PREVIEW_UPDATE",
+  "scope": "supported core, not full TREK parity",
+  "blockers": [
+    {
+      "id": "R1",
+      "state": "confirmed-ledger-gap; API-details-await-approval",
+      "finding": "Hosted Management API88 versions versus qualified local136:48 pending. Prefix names/versions match preserved local ledger. Local208 literal-reference functions/17 tables audited; no fresh hosted signature/grant check.",
+      "action": "Approve only the prepared catalog SELECT for comparison; prepare/review a separate backend release, including all48 frozen hashes and historical provenance. No blind db push or ledger repair."
+    },
+    {
+      "id": "R2",
+      "state": "confirmed-current-refusal",
+      "finding": "Exact candidate publisher exits1 on tracked private Cursor plan before credential scanning; manifest origin is hardcoded production. Existing GitHub checkout is168 tracked paths dirty and lacks this candidate commit.",
+      "action": "Next: scoped F4 archive hygiene, origin/version correspondence and clean publication checkout, with disposable-only publication tests."
+    },
+    {
+      "id": "R3",
+      "state": "confirmed-current-connector-gaps",
+      "finding": "Native /maps/pois501, autocomplete empties and null city coordinates; Atlas compatibility placeholders and limited global actions.",
+      "action": "Then F5 native5.1.4 typed catalog discovery/save plus truthful supported availability; no full advanced-feature parity prerequisite."
+    },
+    {
+      "id": "R4",
+      "state": "not-selected-or-accepted-for-release",
+      "finding": "No target-specific public artifact/current signed-in preview acceptance. Three source/native/history holds still point to5.1.2, while12 native layout files match5.1.4.",
+      "action": "After supported connector/archive fixes: default-profile local App acceptance, explicit per-file source adoption and target release/source/rollback checks."
+    },
+    {
+      "id": "R5",
+      "state": "engine-parity-unresolved",
+      "finding": "Management API still reports17.6.1.141; local qualification is17.11. Historical literal-zone mismatch exists; fresh hosted timezone SELECT was blocked.",
+      "action": "Review an engine/tzdata alignment plan separately. Keep the timed-write qualification guard. No hosted engine/settings change here."
+    },
+    {
+      "id": "R6",
+      "state": "pre-cutover-preservation-required",
+      "finding": "7November verified snapshot is fixed; later hosted changes/incremental media/off-device/full restore are not covered by this review.",
+      "action": "Before hosted mutation: fresh DB/object-state protection and rehearsed recovery. User runs heavy capture in Terminal; no full media redownload here."
+    }
+  ],
+  "domains": [
+    {
+      "id": "C01",
+      "domain": "Startup, login, MFA, logout",
+      "default_candidate_state": "locally-qualified",
+      "read_contract": "Validated membership before private startup",
+      "write_contract": "Supabase Auth and existing Family assurance",
+      "evidence": "U05-C5 real GoTrue/AAL2/token-refresh/logout and D2 final App login/logout; inherited exact-runtime scope",
+      "desktop_and_phone_acceptance_journey": "Sign in, return to chosen Trip, verify MFA, logout, retry another account",
+      "accepted_or_required_limits": "Preview Auth redirect/password-reset allowlist unverified; no hosted Auth mutation/settings inspection.",
+      "release_blockers": [
+        "R1",
+        "R4"
+      ],
+      "hosted_signed_in_acceptance": "not performed in this recheck",
+      "inherited_from": "U04-F2 inventory; revised against current source and latest accepted handoffs",
+      "fresh_default_profile_diagnostic": "selectors/composition/navigation/explicit gap witnesses only; no full feature acceptance"
+    },
+    {
+      "id": "C02",
+      "domain": "Dashboard and Trip lifecycle",
+      "default_candidate_state": "mixed",
+      "read_contract": "Existing Trip list/archive reads",
+      "write_contract": "Native plan creation and recoverable Trip Trash need new DB APIs",
+      "evidence": "tripRecovery.ts; plannerCohortCreation.ts; earlier recovery acceptance",
+      "desktop_and_phone_acceptance_journey": "Open an existing Trip; create a synthetic Trip; Trash/restore it without changing shared catalog",
+      "accepted_or_required_limits": "Old duplicate RPC copies an envelope, not a complete plan; native Trip metadata edits are unavailable in planner scope",
+      "release_blockers": [
+        "R1"
+      ],
+      "hosted_signed_in_acceptance": "not performed in this recheck",
+      "inherited_from": "U04-F2 inventory; revised against current source and latest accepted handoffs",
+      "fresh_default_profile_diagnostic": "selectors/composition/navigation/explicit gap witnesses only; no full feature acceptance"
+    },
+    {
+      "id": "C03",
+      "domain": "Plan, saved locations and visits",
+      "default_candidate_state": "locally-qualified",
+      "read_contract": "One coherent planner-view/bundle publication",
+      "write_contract": "Observed saved-location/visit editor and creation commands",
+      "evidence": "plannerBootstrap.ts; plannerCohortBundle.ts; plannerCohort.test.tsx; prior U03 actual-App acceptance",
+      "desktop_and_phone_acceptance_journey": "Load populated days/locations/visits, edit one original location, reopen and compare",
+      "accepted_or_required_limits": "Requires normalized locations and the new snapshot/form APIs; no legacy aggregate fallback",
+      "release_blockers": [
+        "R1"
+      ],
+      "hosted_signed_in_acceptance": "not performed in this recheck",
+      "inherited_from": "U04-F2 inventory; revised against current source and latest accepted handoffs",
+      "fresh_default_profile_diagnostic": "selectors/composition/navigation/explicit gap witnesses only; no full feature acceptance"
+    },
+    {
+      "id": "C04",
+      "domain": "Day scheduling and repeat visits",
+      "default_candidate_state": "locally-qualified",
+      "read_contract": "Explicit day/calendar/visit relationships",
+      "write_contract": "Observed day/calendar/arrangement commands with direct/propose/deny",
+      "evidence": "plannerCohortCalendar.ts; plannerCohortAssignments.ts",
+      "desktop_and_phone_acceptance_journey": "Untimed day visit, genuine midnight appointment, two restaurant visits, move/reorder and restore",
+      "accepted_or_required_limits": "Unknown time is not midnight; classification of real legacy records must be rehearsed",
+      "release_blockers": [
+        "R1"
+      ],
+      "hosted_signed_in_acceptance": "not performed in this recheck",
+      "inherited_from": "U04-F2 inventory; revised against current source and latest accepted handoffs",
+      "fresh_default_profile_diagnostic": "selectors/composition/navigation/explicit gap witnesses only; no full feature acceptance"
+    },
+    {
+      "id": "C05",
+      "domain": "Booking/stay/transport details",
+      "default_candidate_state": "observed-booking-core; native-stay-controls-strict-local-only",
+      "read_contract": "Coherent booking snapshot reconciled with the calendar",
+      "write_contract": "Observed booking forms; raw mutations remain refused",
+      "evidence": "plannerCohortBundle.ts; bookingStayRead.ts; U05-B2b3c5 Auth/PWA and D2 handoffs",
+      "desktop_and_phone_acceptance_journey": "Open a multi-night stay and a transport; edit supported facts; verify dates/visits",
+      "accepted_or_required_limits": "The ordinary bundle still uses base observed booking/calendar APIs. Canonical coherent-v4/new stay/arrival ownership and native create/edit/Trash controls require exact local qualifiers; applying DB136 does not enable them on hosted.",
+      "release_blockers": [
+        "R1"
+      ],
+      "hosted_signed_in_acceptance": "not performed in this recheck",
+      "inherited_from": "U04-F2 inventory; revised against current source and latest accepted handoffs",
+      "fresh_default_profile_diagnostic": "selectors/composition/navigation/explicit gap witnesses only; no full feature acceptance"
+    },
+    {
+      "id": "C06",
+      "domain": "Catalog media and galleries",
+      "default_candidate_state": "locally-qualified",
+      "read_contract": "Stored v1 variant objects and explicit canonical originals",
+      "write_contract": "No transformation or media regeneration",
+      "evidence": "Stored variant readers/prefetch preserved; D1/D2 actual local browser acceptance; no hosted image request in this review",
+      "desktop_and_phone_acceptance_journey": "Decode covers/gallery slides, navigate slides, explicitly open correct original",
+      "accepted_or_required_limits": "Ready v1 thumb/hero or placeholder; explicit View original. A compiled helper is not a zero-network-transform proof. Recheck target flow after an authorized preview release.",
+      "release_blockers": [
+        "R1",
+        "R4"
+      ],
+      "hosted_signed_in_acceptance": "not performed in this recheck",
+      "inherited_from": "U04-F2 inventory; revised against current source and latest accepted handoffs",
+      "fresh_default_profile_diagnostic": "selectors/composition/navigation/explicit gap witnesses only; no full feature acceptance"
+    },
+    {
+      "id": "C07",
+      "domain": "Existing Trip map pins",
+      "default_candidate_state": "locally-qualified",
+      "read_contract": "Native map consumes projected current Trip locations",
+      "write_contract": "Scheduling/editor commands retain typed locations",
+      "evidence": "plannerProjection.ts; prior actual native planner browser acceptance",
+      "desktop_and_phone_acceptance_journey": "Open populated Trip map and select a saved venue, compare correct coordinates",
+      "accepted_or_required_limits": "Map tiles/provider byte fidelity is not proved by synthetic local responses",
+      "release_blockers": [
+        "R1",
+        "R4"
+      ],
+      "hosted_signed_in_acceptance": "not performed in this recheck",
+      "inherited_from": "U04-F2 inventory; revised against current source and latest accepted handoffs",
+      "fresh_default_profile_diagnostic": "selectors/composition/navigation/explicit gap witnesses only; no full feature acceptance"
+    },
+    {
+      "id": "C08",
+      "domain": "Restaurants/Cafes discovery and autocomplete",
+      "default_candidate_state": "connector-gap-confirmed-current",
+      "read_contract": "/maps/pois is unimplemented; autocomplete returns empty compatibility data",
+      "write_contract": "No catalog add flow qualified through this missing endpoint",
+      "evidence": "44 current diagnostics through real handler/adapter: /maps/pois501, autocomplete compatibility empties; source city search still null coordinates",
+      "desktop_and_phone_acceptance_journey": "Toggle native restaurant/cafe categories, discover real typed catalog venue, select then save it",
+      "accepted_or_required_limits": "Repair one typed venue discovery/save journey in the existing F5 packet against native5.1.4. Preserve city/country context separately from venue identity; zero transformations.",
+      "release_blockers": [
+        "R3"
+      ],
+      "hosted_signed_in_acceptance": "not performed in this recheck",
+      "inherited_from": "U04-F2 inventory; revised against current source and latest accepted handoffs",
+      "fresh_default_profile_diagnostic": "selectors/composition/navigation/explicit gap witnesses only; no full feature acceptance"
+    },
+    {
+      "id": "C09",
+      "domain": "Routes and external enrichment",
+      "default_candidate_state": "restricted",
+      "read_contract": "Explicit unsupported provider responses",
+      "write_contract": "No new routing/community/provider writer",
+      "evidence": "serviceCompatibility.test.ts; /auth/app-config disabled enrichment flags",
+      "desktop_and_phone_acceptance_journey": "Navigation links may be tested explicitly; route calculation needs its own provider proof",
+      "accepted_or_required_limits": "Tours/Roadtrip/Collab remain absent; ordinary calculated routes are not newly accepted here",
+      "release_blockers": [
+        "R3",
+        "R4"
+      ],
+      "hosted_signed_in_acceptance": "not performed in this recheck",
+      "inherited_from": "U04-F2 inventory; revised against current source and latest accepted handoffs",
+      "fresh_default_profile_diagnostic": "selectors/composition/navigation/explicit gap witnesses only; no full feature acceptance"
+    },
+    {
+      "id": "C10",
+      "domain": "Tasks",
+      "default_candidate_state": "locally-qualified",
+      "read_contract": "Canonical task snapshot",
+      "write_contract": "Observed native create/edit/check/reorder/Trash/restore and original queue",
+      "evidence": "plannerTasks.ts; taskTransport.ts; u03d12-phone-task-draft-preservation-handoff.md",
+      "desktop_and_phone_acceptance_journey": "Create two tasks consecutively, edit/complete/reorder, retry original operation and restore",
+      "accepted_or_required_limits": "Direct authority required; source/actor/layer changes retire callbacks",
+      "release_blockers": [
+        "R1"
+      ],
+      "hosted_signed_in_acceptance": "not performed in this recheck",
+      "inherited_from": "U04-F2 inventory; revised against current source and latest accepted handoffs",
+      "fresh_default_profile_diagnostic": "selectors/composition/navigation/explicit gap witnesses only; no full feature acceptance"
+    },
+    {
+      "id": "C11",
+      "domain": "Packing items and observed groups",
+      "default_candidate_state": "locally-qualified",
+      "read_contract": "Canonical v1 visible packing publication",
+      "write_contract": "Base item/group observed commands and retained queue",
+      "evidence": "packing-native-controls-handoff.md; packing-group-native-controls-handoff.md",
+      "desktop_and_phone_acceptance_journey": "Create Common/Personal items, edit/check counts, reorder, Trash/restore, retry exact original",
+      "accepted_or_required_limits": "No raw group loops, automatic defaults, sharing/clone/templates/import/contributors",
+      "release_blockers": [
+        "R1"
+      ],
+      "hosted_signed_in_acceptance": "not performed in this recheck",
+      "inherited_from": "U04-F2 inventory; revised against current source and latest accepted handoffs",
+      "fresh_default_profile_diagnostic": "selectors/composition/navigation/explicit gap witnesses only; no full feature acceptance"
+    },
+    {
+      "id": "C12",
+      "domain": "Packing export",
+      "default_candidate_state": "accepted-current-runtime",
+      "read_contract": "Owned visible snapshot and bag names/colors",
+      "write_contract": "Read only: CSV/Markdown/print",
+      "evidence": "packing-export-ownership-handoff.md; runtime b93124b; 2661 regressions/16 App observations inherited",
+      "desktop_and_phone_acceptance_journey": "Download Common/Personal, verify bag labels, close print, change owner/Trip and ensure no old output",
+      "accepted_or_required_limits": "Saved/read-only proof is admitted-lease scope; not a new hosted/offline admission",
+      "release_blockers": [
+        "R1"
+      ],
+      "hosted_signed_in_acceptance": "not performed in this recheck",
+      "inherited_from": "U04-F2 inventory; revised against current source and latest accepted handoffs",
+      "fresh_default_profile_diagnostic": "selectors/composition/navigation/explicit gap witnesses only; no full feature acceptance"
+    },
+    {
+      "id": "C13",
+      "domain": "New packing categories/bags/recovery",
+      "default_candidate_state": "strict-local-only",
+      "read_contract": "Latest category identity/aggregate and bag snapshots",
+      "write_contract": "Qualified only by exact loopback selectors",
+      "evidence": "Current real-module flags; prior packing identity/aggregate/bag/recovery qualification",
+      "desktop_and_phone_acceptance_journey": "Use only the qualified local build; later explicit hosted profile needs separate acceptance",
+      "accepted_or_required_limits": "Ordinary/hosted leaves advanced categories/bags/recovery modes off. Exact unrelated loopback flags must not be combined into a blanket activation switch.",
+      "release_blockers": [],
+      "hosted_signed_in_acceptance": "not performed in this recheck",
+      "inherited_from": "U04-F2 inventory; revised against current source and latest accepted handoffs",
+      "fresh_default_profile_diagnostic": "selectors/composition/navigation/explicit gap witnesses only; no full feature acceptance"
+    },
+    {
+      "id": "C14",
+      "domain": "Costs",
+      "default_candidate_state": "read-only-core",
+      "read_contract": "Existing expense/settlement projection",
+      "write_contract": "Native planner budget_edit is unavailable",
+      "evidence": "plannerActionAvailability.ts; budgetHandler.ts; P04au ancillary read proof",
+      "desktop_and_phone_acceptance_journey": "Read existing amounts/currency/settlement; verify unsupported editing is unavailable",
+      "accepted_or_required_limits": "Ledger/payment/split/import parity is not part of supported writer scope",
+      "release_blockers": [
+        "R1",
+        "R4"
+      ],
+      "hosted_signed_in_acceptance": "not performed in this recheck",
+      "inherited_from": "U04-F2 inventory; revised against current source and latest accepted handoffs",
+      "fresh_default_profile_diagnostic": "selectors/composition/navigation/explicit gap witnesses only; no full feature acceptance"
+    },
+    {
+      "id": "C15",
+      "domain": "Files",
+      "default_candidate_state": "narrow-online-preview; prepared-RAM-strict-local-only",
+      "read_contract": "File metadata plus separately authorized private preview",
+      "write_contract": "Native file upload/edit/delete remain unavailable in the planner",
+      "evidence": "D2 24 new regressions, 20 desktop/phone final-App checkpoints, native disconnect race repair; inherited exact source",
+      "desktop_and_phone_acceptance_journey": "Read authorized file metadata and preview explicit available bytes; verify denied private access",
+      "accepted_or_required_limits": "Normal authorized online file preview is distinct from explicit qualified RAM preparation. Warm same-document files work under original lease; cold restart has metadata and missing RAM. No durable private store/upload acceptance or hosted Storage server qualification.",
+      "release_blockers": [
+        "R1",
+        "R4"
+      ],
+      "hosted_signed_in_acceptance": "not performed in this recheck",
+      "inherited_from": "U04-F2 inventory; revised against current source and latest accepted handoffs",
+      "fresh_default_profile_diagnostic": "selectors/composition/navigation/explicit gap witnesses only; no full feature acceptance"
+    },
+    {
+      "id": "C16",
+      "domain": "Trip/Journey recovery",
+      "default_candidate_state": "local-recovery-qualified; hosted-upgrade-unverified",
+      "read_contract": "New Trash/history/restore contracts accepted locally",
+      "write_contract": "Hosted old Journey delete functions still physically delete rows",
+      "evidence": "Earlier normalized recovery/aggregate tests and authentic upgrade; hosted management ledger still88; hosted SQL refused by auto-review",
+      "desktop_and_phone_acceptance_journey": "Trash/restore synthetic Trips/Journeys/entries with media links intact and recover overwritten text",
+      "accepted_or_required_limits": "Historical Nov12 inspection found physical Journey deletes; do not present that as a fresh definition check. Current hosted recovery definitions/grants remain unverified. Local DB136 proof is not a completed independent database-plus-files restore.",
+      "release_blockers": [
+        "R1"
+      ],
+      "hosted_signed_in_acceptance": "not performed in this recheck",
+      "inherited_from": "U04-F2 inventory; revised against current source and latest accepted handoffs",
+      "fresh_default_profile_diagnostic": "selectors/composition/navigation/explicit gap witnesses only; no full feature acceptance"
+    },
+    {
+      "id": "C17",
+      "domain": "Atlas",
+      "default_candidate_state": "limited-read",
+      "read_contract": "Country geometry and Family travel stats",
+      "write_contract": "Atlas mutations not connected",
+      "evidence": "Current actual-adapter empty bucket-list/regions/layers diagnostics and source country/stats mappings",
+      "desktop_and_phone_acceptance_journey": "Open map/stats; compare real visited facts after database upgrade",
+      "accepted_or_required_limits": "Country geometry/family totals are the existing subset; region/bucket-list/layer and some per-country counters are compatibility placeholders. Visible global navigation does not establish full Atlas functionality.",
+      "release_blockers": [
+        "R3",
+        "R4"
+      ],
+      "hosted_signed_in_acceptance": "not performed in this recheck",
+      "inherited_from": "U04-F2 inventory; revised against current source and latest accepted handoffs",
+      "fresh_default_profile_diagnostic": "selectors/composition/navigation/explicit gap witnesses only; no full feature acceptance"
+    },
+    {
+      "id": "C18",
+      "domain": "Vacay",
+      "default_candidate_state": "limited-existing-adapter",
+      "read_contract": "Family annual calendar/member/settings reads",
+      "write_contract": "Existing whole-day operations/authorized settings",
+      "evidence": "Current navigation/availability and service compatibility; reconciled5.1.4 Family holiday adapter; earlier Vacay tests",
+      "desktop_and_phone_acceptance_journey": "Open year, inspect data; on isolated fixture toggle/clear whole day and verify Family scope",
+      "accepted_or_required_limits": "Existing whole-day leave/school breaks/calendar-year subset. Non-one fractions and unsupported new settings refuse; not full native5.1.4 parity.",
+      "release_blockers": [
+        "R3",
+        "R4"
+      ],
+      "hosted_signed_in_acceptance": "not performed in this recheck",
+      "inherited_from": "U04-F2 inventory; revised against current source and latest accepted handoffs",
+      "fresh_default_profile_diagnostic": "selectors/composition/navigation/explicit gap witnesses only; no full feature acceptance"
+    },
+    {
+      "id": "C19",
+      "domain": "Collections",
+      "default_candidate_state": "limited-existing-adapter",
+      "read_contract": "Existing Family named lists/items",
+      "write_contract": "Existing adapters; normalized planner round-trip identity needs acceptance",
+      "evidence": "Current handler source/current general adapter tests plus earlier normalized identity/recovery packets",
+      "desktop_and_phone_acceptance_journey": "Open collection/item; test save/copy with normalized saved-location IDs on isolated data",
+      "accepted_or_required_limits": "Known list/item subset only. Extra links/cover/icon, broad cross-domain copy/import and unqualified source mappings remain unavailable or require separate acceptance.",
+      "release_blockers": [
+        "R1",
+        "R3",
+        "R4"
+      ],
+      "hosted_signed_in_acceptance": "not performed in this recheck",
+      "inherited_from": "U04-F2 inventory; revised against current source and latest accepted handoffs",
+      "fresh_default_profile_diagnostic": "selectors/composition/navigation/explicit gap witnesses only; no full feature acceptance"
+    },
+    {
+      "id": "C20",
+      "domain": "Journey pages",
+      "default_candidate_state": "limited-existing-adapter",
+      "read_contract": "Existing Journey/entry reads with newer recovery references",
+      "write_contract": "Partially connected entry/media operations; recovery incompatible on hosted",
+      "evidence": "Current journeyHandler explicit supported field sets/recovery calls and prior aggregate recovery",
+      "desktop_and_phone_acceptance_journey": "Open existing journal; test entry edit/history/Trash/restore only on isolated upgraded copy",
+      "accepted_or_required_limits": "Journal/map/media read and accepted editor subset only. Unsupported layers/draft/preferences refuse. Hosted recovery semantics require approved catalog comparison and DB rollout.",
+      "release_blockers": [
+        "R1",
+        "R3",
+        "R4"
+      ],
+      "hosted_signed_in_acceptance": "not performed in this recheck",
+      "inherited_from": "U04-F2 inventory; revised against current source and latest accepted handoffs",
+      "fresh_default_profile_diagnostic": "selectors/composition/navigation/explicit gap witnesses only; no full feature acceptance"
+    },
+    {
+      "id": "C21",
+      "domain": "Plan exports/imports",
+      "default_candidate_state": "mixed",
+      "read_contract": "Published Family plan PDF/ICS and bounded preview extraction exist",
+      "write_contract": "Review/apply must use qualified observed commands",
+      "evidence": "planExport.ts; bookingImportJobs.ts; importReviewSession.test.tsx",
+      "desktop_and_phone_acceptance_journey": "Compare downloaded published plan against source; cancel/reopen import without replay or file loss",
+      "accepted_or_required_limits": "GPX/my-plan/subscribe, AI/provider import and broad native exports remain excluded. Current bookingImport parsing/config responses do not prove persisted import; F5 must keep availability honest.",
+      "release_blockers": [
+        "R1",
+        "R4"
+      ],
+      "hosted_signed_in_acceptance": "not performed in this recheck",
+      "inherited_from": "U04-F2 inventory; revised against current source and latest accepted handoffs",
+      "fresh_default_profile_diagnostic": "selectors/composition/navigation/explicit gap witnesses only; no full feature acceptance"
+    },
+    {
+      "id": "C22",
+      "domain": "Offline, retained work and release update",
+      "default_candidate_state": "bounded-local-qualification",
+      "read_contract": "Recent saved read leases only on exact selectors; worker/release recovery inherited",
+      "write_contract": "Read-only cold views and deliberate original-work recovery only",
+      "evidence": "C5 real Auth/PWA and D1/D2 saved-v4 accepted local paths; current exact-source/marker diagnostics",
+      "desktop_and_phone_acceptance_journey": "Preserve original fields/files across reload/logout; verify explicit update, not mid-edit auto-reload",
+      "accepted_or_required_limits": "Cold/v4/stay/private RAM authority is exact-local only; no ordinary/hosted full offline Trip Done or durable private bytes. Current live descriptors returned SPA HTML, so new-build/update/SW parity is not verified. Physical iOS and independent backup recovery remain separate.",
+      "release_blockers": [],
+      "hosted_signed_in_acceptance": "not performed in this recheck",
+      "inherited_from": "U04-F2 inventory; revised against current source and latest accepted handoffs",
+      "fresh_default_profile_diagnostic": "selectors/composition/navigation/explicit gap witnesses only; no full feature acceptance"
+    }
+  ],
+  "new_diagnostics_are_not_feature_acceptance": true,
+  "new_database_schema_or_runtime_changes": false,
+  "hosted_catalog_SQL_executed": false,
+  "next": "U04-F4 publication hygiene on current5.1.4 runtime; fresh hosted metadata comparison awaits explicit approval"
+}

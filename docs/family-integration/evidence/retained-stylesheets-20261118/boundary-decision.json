@@ -1,0 +1,32 @@
+{
+  "scope_expanded_for_dependency_closure": true,
+  "initial_size_candidates": [
+    "client/src/integrations/family/legacy/index.css",
+    "client/src/integrations/family/legacy/styles/collections.css",
+    "client/src/integrations/family/legacy/styles/dashboard.css"
+  ],
+  "additional_direct_loader_and_owning_page": [
+    "client/src/integrations/family/legacy/styles/collectionsPage.css",
+    "client/src/integrations/family/legacy/pages/CollectionsPage.tsx"
+  ],
+  "demonstrated_edges": [
+    {
+      "file": "client/src/integrations/family/legacy/styles/collectionsPage.css",
+      "line": 2,
+      "name": "import",
+      "spec": "./dashboard.css",
+      "target": "client/src/integrations/family/legacy/styles/dashboard.css"
+    },
+    {
+      "file": "client/src/integrations/family/legacy/styles/collectionsPage.css",
+      "line": 3,
+      "name": "import",
+      "spec": "./collections.css",
+      "target": "client/src/integrations/family/legacy/styles/collections.css"
+    }
+  ],
+  "reason": "Do not delete imported CSS or leave dangling imports. Audit the direct wrapper and owning retained page as one bounded island; retain all shared components/models/API/backend dependencies. Retirement is conditional on complete no-outside-consumer and compiler/runtime proof.",
+  "alternative_if_any_real_consumer_found": "Keep the page and wrapper; split styles without changing cascade or rules.",
+  "not_a_whole_directory_or_dependency_union_retirement": true,
+  "native_CollectionsPage_and_native_styles_remain_exact": true
+}

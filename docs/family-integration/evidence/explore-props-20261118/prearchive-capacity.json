@@ -1,0 +1,9 @@
+{
+  "available_bytes_after_verified_storage_sharing": 1892352000,
+  "previous_complete_archive_bytes": 353710049,
+  "publisher_uses_temporary_tar_and_extracted_tree": true,
+  "estimated_tar_and_extract_plus32MiB_overhead_and1GiB_headroom": 1814716354,
+  "capacity_estimate_passed": true,
+  "initial_incomplete_estimate_retained_and_corrected_before_archive": true,
+  "estimate_is_not_archive_acceptance": true
+}

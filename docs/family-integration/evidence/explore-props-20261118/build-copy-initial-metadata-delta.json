@@ -1,0 +1,37 @@
+{
+  "failed_metadata_identity_assertion": true,
+  "files": 3793,
+  "same_paths_and_contents": true,
+  "different_files": 3793,
+  "differing_field_counts": {
+    "gid": 3793
+  },
+  "example": [
+    {
+      "path": "index.html",
+      "fields": [
+        "gid"
+      ],
+      "source": [
+        "cbea2ab57524062839d18e896e8f36f4a99788e54e9634c0feb75e6e0e195968",
+        6231,
+        420,
+        504,
+        20,
+        1795008953885890438,
+        0
+      ],
+      "copy": [
+        "cbea2ab57524062839d18e896e8f36f4a99788e54e9634c0feb75e6e0e195968",
+        6231,
+        420,
+        504,
+        0,
+        1795008953885890438,
+        0
+      ]
+    }
+  ],
+  "production_build_exit": 0,
+  "scope": "New generated output copy only; no prior build or source changed."
+}

@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "only_import_layout_and_order_change": true,
+  "parent_public_declarations_and_complete_body_exact": true,
+  "existing_reordered_dependency": "client/src/integrations/family/legacy/components/Planner/familyTransportDetail.ts",
+  "existing_reordered_dependency_sha256": "2458253e191a7cf3ccb69a665b57a41475143e4e2b4107ee76bbeef441132f90",
+  "reordered_dependency_contains_only_type_imports_types_and_function_declarations": true,
+  "extracted_components_and_lookup_are_pure_definitions_with_preexisting_dependencies": true,
+  "rules_and_baselines_unchanged": true
+}

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'"
+    />
+    <title>Unattributed device recovery</title>
+  </head>
+  <body>
+    <main id="device-recovery">
+      <h1>Unattributed device recovery</h1>
+      <p>
+        This qualification utility copies unsent local work from this browser profile. It cannot identify the original
+        account or server. It never uploads, replays, changes or removes work.
+      </p>
+      <p>
+        The data may include another person's private notes or documents. This is an unencrypted local export, not a
+        restored Family record or a verified independent backup.
+      </p>
+      <p>
+        This page does not sign in. Signing out of Family in another tab does not verify ownership or cancel this
+        separate device consent. Close or cancel this page when finished; reload requires fresh consent.
+      </p>
+      <label
+        ><input id="recovery-consent" type="checkbox" /> I am authorized to handle private unsent data in this browser
+        profile.</label
+      >
+      <div class="actions">
+        <button id="recovery-scan" type="button" disabled>Scan this device</button>
+        <button id="recovery-cancel" type="button">Cancel recovery</button>
+      </div>
+      <label for="recovery-database">Unattributed database</label>
+      <select id="recovery-database" disabled>
+        <option value="">Choose one database after scanning</option>
+      </select>
+      <div class="actions"><button id="recovery-inspect" type="button" disabled>Inspect selected database</button></div>
+      <p id="recovery-status" role="status" aria-live="polite">Nothing has been inspected.</p>
+      <p id="recovery-summary"></p>
+      <button id="recovery-download" type="button" disabled>Download unattributed copy</button>
+      <p>
+        This is a point-in-time copy of original commands and imports only. Other cache stores are excluded. Later edits
+        need another export. Keep the copy private; downloading does not prove it can be restored.
+      </p>
+    </main>
+    <script type="module" src="/src/integrations/family/deviceRecovery/main.ts"></script>
+  </body>
+</html>

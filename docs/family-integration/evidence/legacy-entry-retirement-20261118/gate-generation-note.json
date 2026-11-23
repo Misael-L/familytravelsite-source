@@ -1,0 +1,18 @@
+{
+  "fresh_compiler_input_set": 128,
+  "prior_identical_source_inputs": 7,
+  "regenerated_declarations_differing_from_prior": [
+    {
+      "path": "/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/shared/dist/index.d.mts",
+      "prior_sha256": "09269f09e5b26cc426a6c76842586115d23694aeece0741becde76e43f9bb952",
+      "fresh_build_sha256": "47bf7a7c674a5525d36c25ff8f926991cf328c636e6c2a1e3a3a1220034faf30"
+    },
+    {
+      "path": "/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/shared/dist/index.d.cts",
+      "prior_sha256": "2af78c3d7cc816561a8a15801c20f1f11870ee2568114512efef431f13b75793",
+      "fresh_build_sha256": "efd0544013b20e243749b0a8edde2ffa2206408d3b4bd021327c6923cd94e02d"
+    }
+  ],
+  "claim": "Current gates bind to the fresh compiler-proven declaration set; no claim that all generated declarations equal the older build. Tracked shared source and policies are unchanged.",
+  "harness_initial_old_generation_comparison_replaced": true
+}

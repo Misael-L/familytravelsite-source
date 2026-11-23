@@ -1,0 +1,6 @@
+[
+  "client/src/integrations/family/legacy/components/Planner/FamilyTransportEditor.tsx",
+  "client/src/integrations/family/legacy/components/Planner/FamilyTransportManualForm.tsx",
+  "client/src/integrations/family/legacy/components/Planner/familyTransportWaypoints.ts",
+  "client/src/integrations/family/legacy/components/Planner/FamilyTransportEditor.behavior.test.tsx"
+]

@@ -1,0 +1,2373 @@
+{
+  "tables": [
+    {
+      "name": "journey_entries",
+      "schema": "public",
+      "row_security": true,
+      "force_row_security": false,
+      "authenticated_delete": false,
+      "authenticated_insert": false,
+      "authenticated_select": true,
+      "authenticated_update": false
+    },
+    {
+      "name": "journeys",
+      "schema": "public",
+      "row_security": true,
+      "force_row_security": false,
+      "authenticated_delete": false,
+      "authenticated_insert": false,
+      "authenticated_select": true,
+      "authenticated_update": false
+    },
+    {
+      "name": "list_items",
+      "schema": "public",
+      "row_security": true,
+      "force_row_security": false,
+      "authenticated_delete": false,
+      "authenticated_insert": false,
+      "authenticated_select": true,
+      "authenticated_update": false
+    },
+    {
+      "name": "lists",
+      "schema": "public",
+      "row_security": true,
+      "force_row_security": false,
+      "authenticated_delete": false,
+      "authenticated_insert": false,
+      "authenticated_select": true,
+      "authenticated_update": false
+    },
+    {
+      "name": "media_assets",
+      "schema": "public",
+      "row_security": true,
+      "force_row_security": false,
+      "authenticated_delete": false,
+      "authenticated_insert": false,
+      "authenticated_select": true,
+      "authenticated_update": false
+    },
+    {
+      "name": "packing_bags",
+      "schema": "public",
+      "row_security": true,
+      "force_row_security": false,
+      "authenticated_delete": false,
+      "authenticated_insert": false,
+      "authenticated_select": true,
+      "authenticated_update": false
+    },
+    {
+      "name": "packing_items",
+      "schema": "public",
+      "row_security": true,
+      "force_row_security": false,
+      "authenticated_delete": false,
+      "authenticated_insert": false,
+      "authenticated_select": true,
+      "authenticated_update": false
+    },
+    {
+      "name": "schedule_items",
+      "schema": "public",
+      "row_security": true,
+      "force_row_security": false,
+      "authenticated_delete": true,
+      "authenticated_insert": false,
+      "authenticated_select": true,
+      "authenticated_update": false
+    },
+    {
+      "name": "todo_items",
+      "schema": "public",
+      "row_security": true,
+      "force_row_security": false,
+      "authenticated_delete": false,
+      "authenticated_insert": false,
+      "authenticated_select": true,
+      "authenticated_update": false
+    },
+    {
+      "name": "trip_days",
+      "schema": "public",
+      "row_security": true,
+      "force_row_security": false,
+      "authenticated_delete": true,
+      "authenticated_insert": true,
+      "authenticated_select": true,
+      "authenticated_update": true
+    },
+    {
+      "name": "trip_expenses",
+      "schema": "public",
+      "row_security": true,
+      "force_row_security": false,
+      "authenticated_delete": true,
+      "authenticated_insert": true,
+      "authenticated_select": true,
+      "authenticated_update": true
+    },
+    {
+      "name": "trip_file_links",
+      "schema": "public",
+      "row_security": true,
+      "force_row_security": false,
+      "authenticated_delete": false,
+      "authenticated_insert": false,
+      "authenticated_select": true,
+      "authenticated_update": false
+    },
+    {
+      "name": "trip_files",
+      "schema": "public",
+      "row_security": true,
+      "force_row_security": false,
+      "authenticated_delete": false,
+      "authenticated_insert": false,
+      "authenticated_select": true,
+      "authenticated_update": false
+    },
+    {
+      "name": "trip_plan_locations",
+      "schema": "public",
+      "row_security": true,
+      "force_row_security": false,
+      "authenticated_delete": false,
+      "authenticated_insert": false,
+      "authenticated_select": true,
+      "authenticated_update": false
+    },
+    {
+      "name": "trip_reservations",
+      "schema": "public",
+      "row_security": true,
+      "force_row_security": false,
+      "authenticated_delete": true,
+      "authenticated_insert": true,
+      "authenticated_select": true,
+      "authenticated_update": true
+    },
+    {
+      "name": "trips",
+      "schema": "public",
+      "row_security": true,
+      "force_row_security": false,
+      "authenticated_delete": false,
+      "authenticated_insert": false,
+      "authenticated_select": true,
+      "authenticated_update": false
+    }
+  ],
+  "functions": [
+    {
+      "name": "apply_packing_template",
+      "arguments": "p_trip_id uuid, p_template_id uuid",
+      "result_type": "integer",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_template_id"
+      ],
+      "definition_md5": "84ff2fb6579c60e52e49ffaa966674aa",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_template_id uuid",
+      "authenticated_execute": false
+    },
+    {
+      "name": "cancel_family_trip_packing_bag_command_v1",
+      "arguments": "p_trip_id uuid, p_operation_id uuid, p_original_args jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id",
+        "p_original_args"
+      ],
+      "definition_md5": "60283c9a7f7514883f7d961480ab7cc7",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid, p_original_args jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "cancel_family_trip_packing_restore_v1",
+      "arguments": "p_trip_id uuid, p_operation_id uuid, p_protocol text, p_original_args jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id",
+        "p_protocol",
+        "p_original_args"
+      ],
+      "definition_md5": "948b1837d8965103b968045452ed1c8a",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid, p_protocol text, p_original_args jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "catalog_media_urls",
+      "arguments": "p_entity_kind text, p_entity_ids uuid[], p_limit_per integer DEFAULT 3",
+      "result_type": "TABLE(entity_id uuid, \"position\" integer, public_url text)",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_entity_kind",
+        "p_entity_ids",
+        "p_limit_per",
+        "entity_id",
+        "position",
+        "public_url"
+      ],
+      "definition_md5": "47109456fed149b9e3e75ff6703f0def",
+      "security_definer": true,
+      "default_arguments": 1,
+      "identity_arguments": "p_entity_kind text, p_entity_ids uuid[], p_limit_per integer",
+      "authenticated_execute": true
+    },
+    {
+      "name": "catalog_media_variants",
+      "arguments": "p_entity_kind text, p_entity_ids uuid[], p_limit_per integer DEFAULT 3, p_recipe text DEFAULT 'v1'::text",
+      "result_type": "TABLE(entity_id uuid, \"position\" integer, media_asset_id uuid, public_url text, thumb_url text, hero_url text, recipe_version text)",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_entity_kind",
+        "p_entity_ids",
+        "p_limit_per",
+        "p_recipe",
+        "entity_id",
+        "position",
+        "media_asset_id",
+        "public_url",
+        "thumb_url",
+        "hero_url",
+        "recipe_version"
+      ],
+      "definition_md5": "6fb688181bfde80104b68af9ef1b7a16",
+      "security_definer": true,
+      "default_arguments": 2,
+      "identity_arguments": "p_entity_kind text, p_entity_ids uuid[], p_limit_per integer, p_recipe text",
+      "authenticated_execute": true
+    },
+    {
+      "name": "catalog_media_variants_for_assets",
+      "arguments": "p_media_ids uuid[], p_recipe text DEFAULT 'v1'::text",
+      "result_type": "TABLE(media_asset_id uuid, public_url text, thumb_url text, hero_url text, recipe_version text)",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_media_ids",
+        "p_recipe",
+        "media_asset_id",
+        "public_url",
+        "thumb_url",
+        "hero_url",
+        "recipe_version"
+      ],
+      "definition_md5": "78a9cc0c872db40853e305edea75b421",
+      "security_definer": true,
+      "default_arguments": 1,
+      "identity_arguments": "p_media_ids uuid[], p_recipe text",
+      "authenticated_execute": true
+    },
+    {
+      "name": "create_family_native_plan_v1",
+      "arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_form jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id",
+        "p_scope",
+        "p_form"
+      ],
+      "definition_md5": "f4b522015d74ecf9e028c567456b4868",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_form jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "create_family_trip_plan_entry_v1",
+      "arguments": "p_trip_id uuid, p_operation_id uuid, p_payload jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id",
+        "p_payload"
+      ],
+      "definition_md5": "70bd48d51aa84ea3a727c2690a3f1679",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid, p_payload jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "create_trip_proposal",
+      "arguments": "p_family_id uuid, p_title text, p_notes text DEFAULT NULL::text, p_start_at timestamp with time zone DEFAULT NULL::timestamp with time zone, p_end_at timestamp with time zone DEFAULT NULL::timestamp with time zone, p_country_ids uuid[] DEFAULT '{}'::uuid[], p_place_ids uuid[] DEFAULT '{}'::uuid[], p_traveler_person_ids uuid[] DEFAULT '{}'::uuid[], p_primary_country_id uuid DEFAULT NULL::uuid, p_occasion trip_occasion DEFAULT 'trip'::trip_occasion, p_cover_url text DEFAULT NULL::text, p_reminder_days integer DEFAULT 3",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_title",
+        "p_notes",
+        "p_start_at",
+        "p_end_at",
+        "p_country_ids",
+        "p_place_ids",
+        "p_traveler_person_ids",
+        "p_primary_country_id",
+        "p_occasion",
+        "p_cover_url",
+        "p_reminder_days"
+      ],
+      "definition_md5": "469144ccf0ffe3cff4c2a8835157a376",
+      "security_definer": true,
+      "default_arguments": 10,
+      "identity_arguments": "p_family_id uuid, p_title text, p_notes text, p_start_at timestamp with time zone, p_end_at timestamp with time zone, p_country_ids uuid[], p_place_ids uuid[], p_traveler_person_ids uuid[], p_primary_country_id uuid, p_occasion trip_occasion, p_cover_url text, p_reminder_days integer",
+      "authenticated_execute": true
+    },
+    {
+      "name": "delete_family_packing_template",
+      "arguments": "p_family_id uuid, p_template_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_template_id"
+      ],
+      "definition_md5": "635fd43200e7343f03de84e283f54832",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid, p_template_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "delete_family_place_category",
+      "arguments": "p_family_id uuid, p_category_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_category_id"
+      ],
+      "definition_md5": "16de7e08d2b8b52c3a2336597d02ee8e",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid, p_category_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "delete_trip_change_draft_op",
+      "arguments": "p_op_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_op_id"
+      ],
+      "definition_md5": "940dbe6a6bba27e352ce5ca37c208f39",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_op_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "duplicate_trip",
+      "arguments": "p_source_trip_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_source_trip_id"
+      ],
+      "definition_md5": "ee2a9fa9c359d0c721a9e48497dd114b",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_source_trip_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "ensure_packing_defaults",
+      "arguments": "p_trip_id uuid",
+      "result_type": "integer",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_trip_id"
+      ],
+      "definition_md5": "7dd4cf17070142cf7efbc0213d5764b5",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid",
+      "authenticated_execute": false
+    },
+    {
+      "name": "ensure_trip_change_draft",
+      "arguments": "p_trip_id uuid",
+      "result_type": "uuid",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_trip_id"
+      ],
+      "definition_md5": "7fbbf861fa5311162cea2db0bbddd785",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "execute_family_plan_governance_v1",
+      "arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_action text, p_target_id uuid, p_observation jsonb, p_parameters jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id",
+        "p_scope",
+        "p_action",
+        "p_target_id",
+        "p_observation",
+        "p_parameters"
+      ],
+      "definition_md5": "8332ede677104a0df8f2908cb20a5139",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_action text, p_target_id uuid, p_observation jsonb, p_parameters jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "execute_family_trip_packing_bag_v1",
+      "arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_action text, p_target_id uuid, p_expected_revision bigint, p_expected_collection_revision bigint, p_observed jsonb, p_values jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id",
+        "p_scope",
+        "p_action",
+        "p_target_id",
+        "p_expected_revision",
+        "p_expected_collection_revision",
+        "p_observed",
+        "p_values"
+      ],
+      "definition_md5": "7ca9948ee75fe6639d6303493e7b4073",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_action text, p_target_id uuid, p_expected_revision bigint, p_expected_collection_revision bigint, p_observed jsonb, p_values jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "execute_family_trip_packing_category_aggregate_v3",
+      "arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_action text, p_target_id uuid, p_expected_collection_revision bigint, p_observed jsonb, p_values jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id",
+        "p_scope",
+        "p_action",
+        "p_target_id",
+        "p_expected_collection_revision",
+        "p_observed",
+        "p_values"
+      ],
+      "definition_md5": "febdc9b66f4c9211354b7e0b7f5ed6e4",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_action text, p_target_id uuid, p_expected_collection_revision bigint, p_observed jsonb, p_values jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "execute_family_trip_packing_category_item_v2",
+      "arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_action text, p_target_id uuid, p_expected_revision bigint, p_expected_collection_revision bigint, p_category_id uuid, p_observed_category jsonb, p_values jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id",
+        "p_scope",
+        "p_action",
+        "p_target_id",
+        "p_expected_revision",
+        "p_expected_collection_revision",
+        "p_category_id",
+        "p_observed_category",
+        "p_values"
+      ],
+      "definition_md5": "3c08abadd269289efe2d2a59ee9cfa68",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_action text, p_target_id uuid, p_expected_revision bigint, p_expected_collection_revision bigint, p_category_id uuid, p_observed_category jsonb, p_values jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "execute_family_trip_packing_category_lifecycle_v2",
+      "arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_action text, p_target_id uuid, p_expected_collection_revision bigint, p_observed_category jsonb, p_values jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id",
+        "p_scope",
+        "p_action",
+        "p_target_id",
+        "p_expected_collection_revision",
+        "p_observed_category",
+        "p_values"
+      ],
+      "definition_md5": "6c30cd85af829b5b311e8125342c3124",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_action text, p_target_id uuid, p_expected_collection_revision bigint, p_observed_category jsonb, p_values jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "execute_family_trip_packing_category_v1",
+      "arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_action text, p_expected_collection_revision bigint, p_observed_category jsonb, p_values jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id",
+        "p_scope",
+        "p_action",
+        "p_expected_collection_revision",
+        "p_observed_category",
+        "p_values"
+      ],
+      "definition_md5": "4feaaa68f3c15e829e5f3784d715540e",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_action text, p_expected_collection_revision bigint, p_observed_category jsonb, p_values jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "execute_family_trip_packing_group_v1",
+      "arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_action text, p_expected_collection_revision bigint, p_selector jsonb, p_observed_items jsonb, p_values jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id",
+        "p_scope",
+        "p_action",
+        "p_expected_collection_revision",
+        "p_selector",
+        "p_observed_items",
+        "p_values"
+      ],
+      "definition_md5": "809643bafab9231d982d8afb64eb050f",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_action text, p_expected_collection_revision bigint, p_selector jsonb, p_observed_items jsonb, p_values jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "execute_family_trip_packing_v1",
+      "arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_action text, p_target_id uuid, p_expected_revision bigint, p_expected_collection_revision bigint, p_values jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id",
+        "p_scope",
+        "p_action",
+        "p_target_id",
+        "p_expected_revision",
+        "p_expected_collection_revision",
+        "p_values"
+      ],
+      "definition_md5": "c56927fb201013e49ca9e1ad8d1bcd0a",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_action text, p_target_id uuid, p_expected_revision bigint, p_expected_collection_revision bigint, p_values jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "execute_family_trip_task_v1",
+      "arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_action text, p_target_id uuid, p_expected_revision bigint, p_expected_collection_revision bigint, p_values jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id",
+        "p_scope",
+        "p_action",
+        "p_target_id",
+        "p_expected_revision",
+        "p_expected_collection_revision",
+        "p_values"
+      ],
+      "definition_md5": "1d27857ef48f7cfdf5a78983435de765",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_action text, p_target_id uuid, p_expected_revision bigint, p_expected_collection_revision bigint, p_values jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_booking_calendar_v1",
+      "arguments": "p_trip_id uuid, p_reservation_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_reservation_id"
+      ],
+      "definition_md5": "f758b76ecd6a7f91ccbd7ab5885e1de7",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_reservation_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_booking_details_v1",
+      "arguments": "p_trip_id uuid, p_reservation_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_reservation_id"
+      ],
+      "definition_md5": "e993994f2a25bd4d2e2997606da51054",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_reservation_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_file_policy",
+      "arguments": "p_family_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id"
+      ],
+      "definition_md5": "52a4b0b710679eee9488b9f40a645d96",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_identity_assurance",
+      "arguments": "p_family_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id"
+      ],
+      "definition_md5": "61a2bb4a3f960a234ad2127e82fa3c95",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_map_settings",
+      "arguments": "p_family_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id"
+      ],
+      "definition_md5": "7f7b56a87d28a68e6f2b8e648c5eb74f",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_notification_defaults",
+      "arguments": "p_family_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id"
+      ],
+      "definition_md5": "9994d2e108627c96482e8c21a601810a",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_plan_governance_v1",
+      "arguments": "p_trip_id uuid, p_layer text DEFAULT 'published'::text",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_layer"
+      ],
+      "definition_md5": "15b04547bf80e58af290c53652c6cfce",
+      "security_definer": true,
+      "default_arguments": 1,
+      "identity_arguments": "p_trip_id uuid, p_layer text",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_preference_defaults",
+      "arguments": "p_family_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id"
+      ],
+      "definition_md5": "8517b76fade3968086f74b741855d493",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_booking_view_v1",
+      "arguments": "p_trip_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id"
+      ],
+      "definition_md5": "79b56583eeb8adbc08dcba5179d585de",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_calendar_v1",
+      "arguments": "p_trip_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id"
+      ],
+      "definition_md5": "5d1b4ed2c89e4c37a9cdfc21da1d669d",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_location_form_v1",
+      "arguments": "p_trip_id uuid, p_location_id uuid, p_layer text DEFAULT 'published'::text",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_location_id",
+        "p_layer"
+      ],
+      "definition_md5": "a18255ef7ab9234e6f6c6f19647bb588",
+      "security_definer": true,
+      "default_arguments": 1,
+      "identity_arguments": "p_trip_id uuid, p_location_id uuid, p_layer text",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_location_v1",
+      "arguments": "p_trip_id uuid, p_location_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_location_id"
+      ],
+      "definition_md5": "fef2cf610babc331f355d10f71efe67f",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_location_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_packing_bag_command_cancellation_v1",
+      "arguments": "p_trip_id uuid, p_operation_id uuid, p_original_args jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id",
+        "p_original_args"
+      ],
+      "definition_md5": "0c6ef5fdf9f2ce2102e02b48389ac01c",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid, p_original_args jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_packing_bag_receipt_v1",
+      "arguments": "p_trip_id uuid, p_operation_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id"
+      ],
+      "definition_md5": "079da57ff4b811b775546dcca84e7785",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_packing_bag_v1",
+      "arguments": "p_trip_id uuid, p_bag_id uuid, p_include_deleted boolean DEFAULT false",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_bag_id",
+        "p_include_deleted"
+      ],
+      "definition_md5": "7cc40db9540d8a4e98283d4b0ed935cb",
+      "security_definer": false,
+      "default_arguments": 1,
+      "identity_arguments": "p_trip_id uuid, p_bag_id uuid, p_include_deleted boolean",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_packing_bags_v1",
+      "arguments": "p_trip_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id"
+      ],
+      "definition_md5": "ca11cf1e30cad4d32430314817796a9c",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_packing_category_aggregate_receipt_v3",
+      "arguments": "p_trip_id uuid, p_operation_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id"
+      ],
+      "definition_md5": "bfac682cbb5c5df8492edc6312fceda8",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_packing_category_aggregate_v3",
+      "arguments": "p_trip_id uuid, p_category_id uuid, p_include_deleted boolean DEFAULT false",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_category_id",
+        "p_include_deleted"
+      ],
+      "definition_md5": "d22352c6531f260249449bda1cc144d3",
+      "security_definer": false,
+      "default_arguments": 1,
+      "identity_arguments": "p_trip_id uuid, p_category_id uuid, p_include_deleted boolean",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_packing_category_item_receipt_v2",
+      "arguments": "p_trip_id uuid, p_operation_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id"
+      ],
+      "definition_md5": "219f46ad2643ba42878e907257a6c01e",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_packing_category_lane_v3",
+      "arguments": "p_trip_id uuid, p_visibility text",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_visibility"
+      ],
+      "definition_md5": "21c3c76cae287bbb39857de9329b139f",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_visibility text",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_packing_category_lifecycle_receipt_v2",
+      "arguments": "p_trip_id uuid, p_operation_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id"
+      ],
+      "definition_md5": "ce180509db3e94d92d3a08c0fdfa7013",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_packing_category_receipt_v1",
+      "arguments": "p_trip_id uuid, p_operation_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id"
+      ],
+      "definition_md5": "7bd733f9072142eb7a0860693b3e0e6c",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_packing_group_receipt_v1",
+      "arguments": "p_trip_id uuid, p_operation_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id"
+      ],
+      "definition_md5": "12e2a23d5dc5296460fadf27015b29b2",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_packing_receipt_v1",
+      "arguments": "p_trip_id uuid, p_operation_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id"
+      ],
+      "definition_md5": "d326a66a43085703a38c7a53b1107ba1",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_packing_restore_cancellation_v1",
+      "arguments": "p_trip_id uuid, p_operation_id uuid, p_protocol text, p_original_args jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id",
+        "p_protocol",
+        "p_original_args"
+      ],
+      "definition_md5": "8c9b1d96cc52312074a88395661b1f87",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid, p_protocol text, p_original_args jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_packing_v1",
+      "arguments": "p_trip_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id"
+      ],
+      "definition_md5": "9edee77787b60397ca5d04b051080cbe",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_packing_with_categories_v1",
+      "arguments": "p_trip_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id"
+      ],
+      "definition_md5": "73c1df354b9984961abda0b3a97863f5",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_packing_with_categories_v2",
+      "arguments": "p_trip_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id"
+      ],
+      "definition_md5": "031f75ef994636aed04baa1e55302630",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_planner_state_v1",
+      "arguments": "p_trip_id uuid, p_max_entities integer DEFAULT 10000",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_max_entities"
+      ],
+      "definition_md5": "57559ed667645c408f73007dfab8df2e",
+      "security_definer": true,
+      "default_arguments": 1,
+      "identity_arguments": "p_trip_id uuid, p_max_entities integer",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_planner_view_v1",
+      "arguments": "p_trip_id uuid, p_layer text DEFAULT 'published'::text, p_max_entities integer DEFAULT 10000, p_max_ops integer DEFAULT 250",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_layer",
+        "p_max_entities",
+        "p_max_ops"
+      ],
+      "definition_md5": "9257e1432ed0477f734048df81accbe3",
+      "security_definer": true,
+      "default_arguments": 3,
+      "identity_arguments": "p_trip_id uuid, p_layer text, p_max_entities integer, p_max_ops integer",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_task_receipt_v1",
+      "arguments": "p_trip_id uuid, p_operation_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id"
+      ],
+      "definition_md5": "a2d6706fa1c25648e55afb1f4f470cd5",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_tasks_v1",
+      "arguments": "p_trip_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id"
+      ],
+      "definition_md5": "fbd5fc854b2802098fb6e7462888e153",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_visit_classification_v1",
+      "arguments": "p_trip_id uuid, p_visit_id uuid, p_include_trash boolean DEFAULT false",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_visit_id",
+        "p_include_trash"
+      ],
+      "definition_md5": "0f37e23f8b6864bd24e26afa9a58dd8d",
+      "security_definer": true,
+      "default_arguments": 1,
+      "identity_arguments": "p_trip_id uuid, p_visit_id uuid, p_include_trash boolean",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_visit_form_v1",
+      "arguments": "p_trip_id uuid, p_visit_id uuid, p_layer text DEFAULT 'published'::text",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_visit_id",
+        "p_layer"
+      ],
+      "definition_md5": "7416e13389f9e37d0d6a1cceaccb7f4e",
+      "security_definer": true,
+      "default_arguments": 1,
+      "identity_arguments": "p_trip_id uuid, p_visit_id uuid, p_layer text",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_visit_timing_revision_v1",
+      "arguments": "p_trip_id uuid, p_visit_id uuid, p_revision bigint, p_include_trash boolean DEFAULT false",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_visit_id",
+        "p_revision",
+        "p_include_trash"
+      ],
+      "definition_md5": "dbb7648121574ab21a8a5ff89151a726",
+      "security_definer": true,
+      "default_arguments": 1,
+      "identity_arguments": "p_trip_id uuid, p_visit_id uuid, p_revision bigint, p_include_trash boolean",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_visit_v1",
+      "arguments": "p_trip_id uuid, p_visit_id uuid, p_include_trash boolean DEFAULT false",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_visit_id",
+        "p_include_trash"
+      ],
+      "definition_md5": "eb90a80056d70b4aa7654cc45dd2d902",
+      "security_definer": true,
+      "default_arguments": 1,
+      "identity_arguments": "p_trip_id uuid, p_visit_id uuid, p_include_trash boolean",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_my_auth_bootstrap",
+      "arguments": "",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": null,
+      "definition_md5": "2e2079098bb35139077f6c7f1403d46c",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_my_effective_features",
+      "arguments": "p_family_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id"
+      ],
+      "definition_md5": "f75924d3b79d239d08b47a5d0902aafd",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_my_effective_map_settings",
+      "arguments": "p_family_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id"
+      ],
+      "definition_md5": "44d31f355f048ba6cb898e702c95100c",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_my_effective_preferences",
+      "arguments": "p_family_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id"
+      ],
+      "definition_md5": "a170ea4cf1d47cf4426c6913a6694c37",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_my_notification_preferences",
+      "arguments": "p_family_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id"
+      ],
+      "definition_md5": "b313149db58a336fc9a5fc3d8ae8a57e",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_family_audit_events",
+      "arguments": "p_family_id uuid, p_limit integer DEFAULT 50, p_before_created_at timestamp with time zone DEFAULT NULL::timestamp with time zone, p_before_id uuid DEFAULT NULL::uuid, p_actor_person_id uuid DEFAULT NULL::uuid, p_capability_key text DEFAULT NULL::text, p_outcome family_permission_outcome DEFAULT NULL::family_permission_outcome",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_limit",
+        "p_before_created_at",
+        "p_before_id",
+        "p_actor_person_id",
+        "p_capability_key",
+        "p_outcome"
+      ],
+      "definition_md5": "c8ee366614087349f54d04c8125f65b7",
+      "security_definer": true,
+      "default_arguments": 6,
+      "identity_arguments": "p_family_id uuid, p_limit integer, p_before_created_at timestamp with time zone, p_before_id uuid, p_actor_person_id uuid, p_capability_key text, p_outcome family_permission_outcome",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_family_export_jobs",
+      "arguments": "p_family_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id"
+      ],
+      "definition_md5": "92bea0936913c08bad1cc41e9fa7c3f3",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_family_feature_controls",
+      "arguments": "p_family_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id"
+      ],
+      "definition_md5": "0bb3b85af862793723d678d3d699c283",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_family_journey_entry_trash",
+      "arguments": "p_journey_id uuid, p_limit integer DEFAULT 50, p_before_deleted_at timestamp with time zone DEFAULT NULL::timestamp with time zone, p_before_entry_id uuid DEFAULT NULL::uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_journey_id",
+        "p_limit",
+        "p_before_deleted_at",
+        "p_before_entry_id"
+      ],
+      "definition_md5": "bf76e62306a178830e9216bed84ae975",
+      "security_definer": true,
+      "default_arguments": 3,
+      "identity_arguments": "p_journey_id uuid, p_limit integer, p_before_deleted_at timestamp with time zone, p_before_entry_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_family_journey_entry_versions",
+      "arguments": "p_entry_id uuid, p_limit integer DEFAULT 50, p_before_revision bigint DEFAULT NULL::bigint",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_entry_id",
+        "p_limit",
+        "p_before_revision"
+      ],
+      "definition_md5": "9ce60589805f6f070b8d9733c33507a4",
+      "security_definer": true,
+      "default_arguments": 2,
+      "identity_arguments": "p_entry_id uuid, p_limit integer, p_before_revision bigint",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_family_journey_trash",
+      "arguments": "p_family_id uuid, p_limit integer DEFAULT 50, p_before_deleted_at timestamp with time zone DEFAULT NULL::timestamp with time zone, p_before_journey_id uuid DEFAULT NULL::uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_limit",
+        "p_before_deleted_at",
+        "p_before_journey_id"
+      ],
+      "definition_md5": "1b33e799daef3328cf5eb9930383ace5",
+      "security_definer": true,
+      "default_arguments": 3,
+      "identity_arguments": "p_family_id uuid, p_limit integer, p_before_deleted_at timestamp with time zone, p_before_journey_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_family_packing_templates",
+      "arguments": "p_family_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id"
+      ],
+      "definition_md5": "4ebe155ca79ea23dc2f28419067786a6",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_family_permission_policies",
+      "arguments": "p_family_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id"
+      ],
+      "definition_md5": "96d62c4c77a9b67c4146e78ca4f9c8a6",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_family_place_categories",
+      "arguments": "p_family_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id"
+      ],
+      "definition_md5": "98b1505e7cc9cee37330637e09443e86",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_family_trip_locations_v1",
+      "arguments": "p_trip_id uuid, p_state text DEFAULT 'active'::text, p_limit integer DEFAULT 100, p_after_id uuid DEFAULT NULL::uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_state",
+        "p_limit",
+        "p_after_id"
+      ],
+      "definition_md5": "c73a117434b8cc9682c9aa8f17b2dcc2",
+      "security_definer": true,
+      "default_arguments": 3,
+      "identity_arguments": "p_trip_id uuid, p_state text, p_limit integer, p_after_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_family_trip_packing_bag_trash_v1",
+      "arguments": "p_trip_id uuid, p_limit integer DEFAULT 50, p_before_deleted_at timestamp with time zone DEFAULT NULL::timestamp with time zone, p_before_id uuid DEFAULT NULL::uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_limit",
+        "p_before_deleted_at",
+        "p_before_id"
+      ],
+      "definition_md5": "0466b4be252b3454cc9ae62166c3d8cd",
+      "security_definer": false,
+      "default_arguments": 3,
+      "identity_arguments": "p_trip_id uuid, p_limit integer, p_before_deleted_at timestamp with time zone, p_before_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_family_trip_packing_category_batches_v3",
+      "arguments": "p_trip_id uuid, p_limit integer DEFAULT 50, p_before_deleted_at timestamp with time zone DEFAULT NULL::timestamp with time zone, p_before_id uuid DEFAULT NULL::uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_limit",
+        "p_before_deleted_at",
+        "p_before_id"
+      ],
+      "definition_md5": "007d2877149c3916f6274ff3a30052ae",
+      "security_definer": false,
+      "default_arguments": 3,
+      "identity_arguments": "p_trip_id uuid, p_limit integer, p_before_deleted_at timestamp with time zone, p_before_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_family_trip_packing_category_trash_v2",
+      "arguments": "p_trip_id uuid, p_limit integer DEFAULT 50, p_before_deleted_at timestamp with time zone DEFAULT NULL::timestamp with time zone, p_before_id uuid DEFAULT NULL::uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_limit",
+        "p_before_deleted_at",
+        "p_before_id"
+      ],
+      "definition_md5": "1b5da1857113ff1d2302b86ff1adb0e7",
+      "security_definer": false,
+      "default_arguments": 3,
+      "identity_arguments": "p_trip_id uuid, p_limit integer, p_before_deleted_at timestamp with time zone, p_before_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_family_trip_packing_trash_v1",
+      "arguments": "p_trip_id uuid, p_limit integer DEFAULT 50, p_before timestamp with time zone DEFAULT NULL::timestamp with time zone, p_before_id uuid DEFAULT NULL::uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_limit",
+        "p_before",
+        "p_before_id"
+      ],
+      "definition_md5": "d9421228528f6eaefa6c16e854538bd7",
+      "security_definer": false,
+      "default_arguments": 3,
+      "identity_arguments": "p_trip_id uuid, p_limit integer, p_before timestamp with time zone, p_before_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_family_trip_task_trash_v1",
+      "arguments": "p_trip_id uuid, p_limit integer DEFAULT 50, p_before timestamp with time zone DEFAULT NULL::timestamp with time zone, p_before_id uuid DEFAULT NULL::uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_limit",
+        "p_before",
+        "p_before_id"
+      ],
+      "definition_md5": "f3ee1315193ca5578e1ff99b998ae3b3",
+      "security_definer": true,
+      "default_arguments": 3,
+      "identity_arguments": "p_trip_id uuid, p_limit integer, p_before timestamp with time zone, p_before_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_family_trip_trash",
+      "arguments": "p_family_id uuid, p_limit integer DEFAULT 50, p_before_deleted_at timestamp with time zone DEFAULT NULL::timestamp with time zone, p_before_trip_id uuid DEFAULT NULL::uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_limit",
+        "p_before_deleted_at",
+        "p_before_trip_id"
+      ],
+      "definition_md5": "2127ce9a7865c0bb9857159d08d15d93",
+      "security_definer": true,
+      "default_arguments": 3,
+      "identity_arguments": "p_family_id uuid, p_limit integer, p_before_deleted_at timestamp with time zone, p_before_trip_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_family_trip_visits_v1",
+      "arguments": "p_trip_id uuid, p_limit integer DEFAULT 100, p_after_id uuid DEFAULT NULL::uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_limit",
+        "p_after_id"
+      ],
+      "definition_md5": "ff4b8c883721e0c09f7d947e344f76ca",
+      "security_definer": true,
+      "default_arguments": 2,
+      "identity_arguments": "p_trip_id uuid, p_limit integer, p_after_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_feature_rollout_events",
+      "arguments": "p_limit integer DEFAULT 50",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_limit"
+      ],
+      "definition_md5": "504cbfcd60af27f973d4dbf11d75e3af",
+      "security_definer": true,
+      "default_arguments": 1,
+      "identity_arguments": "p_limit integer",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_my_catalog_saves_in_countries",
+      "arguments": "p_family_id uuid, p_country_ids uuid[]",
+      "result_type": "TABLE(kind catalog_save_kind, entity_id uuid, name text, country_id uuid, created_at timestamp with time zone)",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_country_ids",
+        "kind",
+        "entity_id",
+        "name",
+        "country_id",
+        "created_at"
+      ],
+      "definition_md5": "33afd74f2518cc3e84349e713bba71c5",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid, p_country_ids uuid[]",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_my_notifications",
+      "arguments": "p_family_id uuid, p_limit integer DEFAULT 30, p_before_created_at timestamp with time zone DEFAULT NULL::timestamp with time zone, p_before_id uuid DEFAULT NULL::uuid, p_unread_only boolean DEFAULT false",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_limit",
+        "p_before_created_at",
+        "p_before_id",
+        "p_unread_only"
+      ],
+      "definition_md5": "a98d4d80e081661535daa80cb7fc4463",
+      "security_definer": true,
+      "default_arguments": 4,
+      "identity_arguments": "p_family_id uuid, p_limit integer, p_before_created_at timestamp with time zone, p_before_id uuid, p_unread_only boolean",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_trip_action_outcomes",
+      "arguments": "p_trip_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_trip_id"
+      ],
+      "definition_md5": "d7bfc906dd8fb35b0e671d94dc1d7ac6",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "mark_all_notifications_read",
+      "arguments": "p_family_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id"
+      ],
+      "definition_md5": "0b23b8c1d79c689f1383284b477c4433",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "mark_notifications_read",
+      "arguments": "p_ids uuid[]",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_ids"
+      ],
+      "definition_md5": "c98f849ba6bb5eb4fc322baf79776f0f",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_ids uuid[]",
+      "authenticated_execute": true
+    },
+    {
+      "name": "mark_notifications_unread",
+      "arguments": "p_ids uuid[]",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_ids"
+      ],
+      "definition_md5": "1561eeae68dd8c0be7d035dd3ecc97ed",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_ids uuid[]",
+      "authenticated_execute": true
+    },
+    {
+      "name": "purge_trip_file",
+      "arguments": "p_file_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_file_id"
+      ],
+      "definition_md5": "6e8884eb965485a576fe0ff964512fd1",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_file_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "register_person_avatar",
+      "arguments": "p_person_id uuid, p_storage_path text, p_filename text, p_content_hash text, p_mime_type text, p_size_bytes bigint",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_person_id",
+        "p_storage_path",
+        "p_filename",
+        "p_content_hash",
+        "p_mime_type",
+        "p_size_bytes"
+      ],
+      "definition_md5": "0a83a0f99405cc84b42069db8cc13366",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_person_id uuid, p_storage_path text, p_filename text, p_content_hash text, p_mime_type text, p_size_bytes bigint",
+      "authenticated_execute": true
+    },
+    {
+      "name": "resolve_trip_change_op",
+      "arguments": "p_op_id uuid, p_accept boolean, p_note text DEFAULT NULL::text",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_op_id",
+        "p_accept",
+        "p_note"
+      ],
+      "definition_md5": "42b2c829c4d57861dc84f6247cc2ecb0",
+      "security_definer": true,
+      "default_arguments": 1,
+      "identity_arguments": "p_op_id uuid, p_accept boolean, p_note text",
+      "authenticated_execute": true
+    },
+    {
+      "name": "resolve_trip_change_request",
+      "arguments": "p_request_id uuid, p_accept_all boolean",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_request_id",
+        "p_accept_all"
+      ],
+      "definition_md5": "3d459b904fefa6f0e9a2e68fb7f49d9d",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_request_id uuid, p_accept_all boolean",
+      "authenticated_execute": true
+    },
+    {
+      "name": "restore_family_journey",
+      "arguments": "p_journey_id uuid, p_expected_revision integer",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_journey_id",
+        "p_expected_revision"
+      ],
+      "definition_md5": "802393cccde7ea8741621eb84a4132d0",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_journey_id uuid, p_expected_revision integer",
+      "authenticated_execute": true
+    },
+    {
+      "name": "restore_family_journey_entry",
+      "arguments": "p_entry_id uuid, p_expected_revision bigint",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_entry_id",
+        "p_expected_revision"
+      ],
+      "definition_md5": "625a437e7fa59514a828dbd5a7d2a3d8",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_entry_id uuid, p_expected_revision bigint",
+      "authenticated_execute": true
+    },
+    {
+      "name": "restore_family_journey_entry_version",
+      "arguments": "p_entry_id uuid, p_revision bigint, p_expected_revision bigint",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_entry_id",
+        "p_revision",
+        "p_expected_revision"
+      ],
+      "definition_md5": "d38b087b0c0e554aa97ec136c5e4e132",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_entry_id uuid, p_revision bigint, p_expected_revision bigint",
+      "authenticated_execute": true
+    },
+    {
+      "name": "restore_family_trip",
+      "arguments": "p_trip_id uuid, p_expected_revision bigint",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_expected_revision"
+      ],
+      "definition_md5": "d3f16c54efa30d9bb0dbe5fe0db3aae5",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_expected_revision bigint",
+      "authenticated_execute": true
+    },
+    {
+      "name": "restore_trip_file",
+      "arguments": "p_file_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_file_id"
+      ],
+      "definition_md5": "69b6f26058fff80bbea7faa6415d37fc",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_file_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "set_family_booking_calendar_v1",
+      "arguments": "p_trip_id uuid, p_reservation_id uuid, p_operation_id uuid, p_scope jsonb, p_observation jsonb, p_dates jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_reservation_id",
+        "p_operation_id",
+        "p_scope",
+        "p_observation",
+        "p_dates"
+      ],
+      "definition_md5": "340d0d78f994640a1f497082a44548a4",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_reservation_id uuid, p_operation_id uuid, p_scope jsonb, p_observation jsonb, p_dates jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "set_family_trip_visit_timing_v1",
+      "arguments": "p_trip_id uuid, p_operation_id uuid, p_visit_id uuid, p_expected_revision bigint, p_payload jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id",
+        "p_visit_id",
+        "p_expected_revision",
+        "p_payload"
+      ],
+      "definition_md5": "d95aef6e73b7ab4916cec6e7851c787e",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid, p_visit_id uuid, p_expected_revision bigint, p_payload jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "trash_family_trip",
+      "arguments": "p_trip_id uuid, p_expected_revision bigint DEFAULT NULL::bigint",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_expected_revision"
+      ],
+      "definition_md5": "03c61b7264f1d16bcac3c358d3c63183",
+      "security_definer": true,
+      "default_arguments": 1,
+      "identity_arguments": "p_trip_id uuid, p_expected_revision bigint",
+      "authenticated_execute": true
+    },
+    {
+      "name": "trash_trip_file",
+      "arguments": "p_file_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_file_id"
+      ],
+      "definition_md5": "c852fd8dbbe66589570401e036375eab",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_file_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "update_family_feature_overrides",
+      "arguments": "p_family_id uuid, p_patch jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_patch"
+      ],
+      "definition_md5": "13af83f1afa51fd91922304ec5b500c1",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid, p_patch jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "update_family_map_settings",
+      "arguments": "p_family_id uuid, p_patch jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_patch"
+      ],
+      "definition_md5": "3136979fa96eca584df16dfe4af535ee",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid, p_patch jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "update_family_notification_defaults",
+      "arguments": "p_family_id uuid, p_patch jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_patch"
+      ],
+      "definition_md5": "8d6d5e2c1a64b615f4a83902c5a15985",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid, p_patch jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "update_family_permission_policies",
+      "arguments": "p_family_id uuid, p_policies jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_policies"
+      ],
+      "definition_md5": "2542ec005c3ec8f5f71e69bcda2d0e45",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid, p_policies jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "update_family_preference_defaults",
+      "arguments": "p_family_id uuid, p_patch jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_patch"
+      ],
+      "definition_md5": "583064d13b00ea3616aa0155e2b7ab80",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid, p_patch jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "update_feature_rollout",
+      "arguments": "p_feature_key text, p_state text",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_feature_key",
+        "p_state"
+      ],
+      "definition_md5": "13b6cb1183e22d1bbd2fefab40c7222d",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_feature_key text, p_state text",
+      "authenticated_execute": true
+    },
+    {
+      "name": "update_my_family_preferences",
+      "arguments": "p_family_id uuid, p_patch jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_patch"
+      ],
+      "definition_md5": "568547a8dd59913525af24450ca346dc",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid, p_patch jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "update_my_map_preference",
+      "arguments": "p_family_id uuid, p_option_id text",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_option_id"
+      ],
+      "definition_md5": "a7640b90abc07087fdc38994a219648c",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid, p_option_id text",
+      "authenticated_execute": true
+    },
+    {
+      "name": "update_my_notification_preferences",
+      "arguments": "p_family_id uuid, p_patch jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_patch"
+      ],
+      "definition_md5": "dd55c24babedb3716e5750761a491c01",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid, p_patch jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "update_trip_proposal",
+      "arguments": "p_proposal_id uuid, p_title text, p_notes text DEFAULT NULL::text, p_start_at timestamp with time zone DEFAULT NULL::timestamp with time zone, p_end_at timestamp with time zone DEFAULT NULL::timestamp with time zone, p_country_ids uuid[] DEFAULT '{}'::uuid[], p_place_ids uuid[] DEFAULT '{}'::uuid[], p_traveler_person_ids uuid[] DEFAULT '{}'::uuid[], p_primary_country_id uuid DEFAULT NULL::uuid, p_occasion trip_occasion DEFAULT 'trip'::trip_occasion, p_cover_url text DEFAULT NULL::text, p_reminder_days integer DEFAULT 3",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_proposal_id",
+        "p_title",
+        "p_notes",
+        "p_start_at",
+        "p_end_at",
+        "p_country_ids",
+        "p_place_ids",
+        "p_traveler_person_ids",
+        "p_primary_country_id",
+        "p_occasion",
+        "p_cover_url",
+        "p_reminder_days"
+      ],
+      "definition_md5": "1033679e9aa2d531a62dd9b9d461e3d6",
+      "security_definer": true,
+      "default_arguments": 10,
+      "identity_arguments": "p_proposal_id uuid, p_title text, p_notes text, p_start_at timestamp with time zone, p_end_at timestamp with time zone, p_country_ids uuid[], p_place_ids uuid[], p_traveler_person_ids uuid[], p_primary_country_id uuid, p_occasion trip_occasion, p_cover_url text, p_reminder_days integer",
+      "authenticated_execute": true
+    },
+    {
+      "name": "upsert_family_packing_template",
+      "arguments": "p_family_id uuid, p_template_id uuid, p_name text, p_items jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_template_id",
+        "p_name",
+        "p_items"
+      ],
+      "definition_md5": "cb6b655d78e1382b7f40e8db2a657d7d",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid, p_template_id uuid, p_name text, p_items jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "upsert_family_place_category",
+      "arguments": "p_family_id uuid, p_category_id uuid, p_name text, p_color_hex text, p_icon_key text, p_sort_order integer DEFAULT NULL::integer",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_category_id",
+        "p_name",
+        "p_color_hex",
+        "p_icon_key",
+        "p_sort_order"
+      ],
+      "definition_md5": "229166ee57e5ff7238bfe5210c820d48",
+      "security_definer": true,
+      "default_arguments": 1,
+      "identity_arguments": "p_family_id uuid, p_category_id uuid, p_name text, p_color_hex text, p_icon_key text, p_sort_order integer",
+      "authenticated_execute": true
+    },
+    {
+      "name": "upsert_trip_change_draft_op",
+      "arguments": "p_trip_id uuid, p_op_id uuid DEFAULT NULL::uuid, p_module trip_change_module DEFAULT NULL::trip_change_module, p_op trip_change_op_kind DEFAULT NULL::trip_change_op_kind, p_trip_day_id uuid DEFAULT NULL::uuid, p_civil_date date DEFAULT NULL::date, p_target_table text DEFAULT NULL::text, p_target_id uuid DEFAULT NULL::uuid, p_payload jsonb DEFAULT NULL::jsonb, p_sort_order integer DEFAULT 0",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_op_id",
+        "p_module",
+        "p_op",
+        "p_trip_day_id",
+        "p_civil_date",
+        "p_target_table",
+        "p_target_id",
+        "p_payload",
+        "p_sort_order"
+      ],
+      "definition_md5": "9527b597de73b04ae5b1b1819a071ec7",
+      "security_definer": true,
+      "default_arguments": 9,
+      "identity_arguments": "p_trip_id uuid, p_op_id uuid, p_module trip_change_module, p_op trip_change_op_kind, p_trip_day_id uuid, p_civil_date date, p_target_table text, p_target_id uuid, p_payload jsonb, p_sort_order integer",
+      "authenticated_execute": true
+    }
+  ],
+  "server_version": "17.11"
+}

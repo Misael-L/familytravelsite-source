@@ -1,0 +1,30 @@
+{
+  "privateSourceCommit": "4297ed557e93b737bddeb26a7088f57bcd6fe5ef",
+  "privateProductionCommit": "4297ed557e93b737bddeb26a7088f57bcd6fe5ef",
+  "privateCommitSubject": "Reconcile source qualification for the Mexico preview hotfix",
+  "publicSourceTag": "source-20261123-4297ed5",
+  "publicSourceRemote": "https://github.com/Misael-L/familytravelsite-source.git",
+  "workersBuildUuid": null,
+  "workersVersionId": "d77e0809-d51a-4a6e-84d5-c94a21a23fc1",
+  "node": "24",
+  "buildCommand": "npm run build:web",
+  "origin": "https://familytravelsite-integration-preview.lmisael0721.workers.dev",
+  "license": "AGPL-3.0-only",
+  "createdAtUtc": "2026-11-23T21:01:19.168930+00:00",
+  "deploymentBinding": "caller-supplied-version",
+  "sanitization": {
+    "policy": "family.private-operational-plan.v1",
+    "privateCommit": "4297ed557e93b737bddeb26a7088f57bcd6fe5ef",
+    "trackedFiles": 18694,
+    "sourceFilesRetained": 18693,
+    "allRetainedBytesAndModesMatchGit": true,
+    "omissions": [
+      {
+        "path": ".cursor/plans/existing-family-backend-integration.plan.md",
+        "sha256": "c4677c13b949e3f714fe3f07f58f10c0a54af72a23537d7bb43e356240512449",
+        "bytes": 12372,
+        "reason": "Private operational plan; not required to build or run the application"
+      }
+    ]
+  }
+}

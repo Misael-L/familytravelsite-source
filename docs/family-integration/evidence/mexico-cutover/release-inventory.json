@@ -1,0 +1,632 @@
+{
+  "baseline": {
+    "count": 88,
+    "version_digest": "6e4586e37a9635e33ce5cbf0e769ec05b86393b596c384cbb9110656d8f0558d"
+  },
+  "expected_final_count": 181,
+  "pending": [
+    {
+      "wave": "core",
+      "version": "20261104175741",
+      "file": "supabase/migrations/20261104175741_journey_entry_recovery.sql",
+      "sha256": "acbd46debbe99c0dd0a01993e7bc0cc5b621f51ce34655e9c5a6e9ca9fa05d23"
+    },
+    {
+      "wave": "core",
+      "version": "20261104192908",
+      "file": "supabase/migrations/20261104192908_journey_aggregate_recovery.sql",
+      "sha256": "85e46ea93a017ea57687be9a2d14c049b61a43ed622167f1348e2049f27ac838"
+    },
+    {
+      "wave": "core",
+      "version": "20261104200550",
+      "file": "supabase/migrations/20261104200550_trip_aggregate_recovery.sql",
+      "sha256": "fc3d5dc05d31295c184d8eec83265195b72a7c1d5bc196365aa8718ba84f96ea"
+    },
+    {
+      "wave": "core",
+      "version": "20261104230709",
+      "file": "supabase/migrations/20261104230709_trip_plan_locations.sql",
+      "sha256": "dc7cf49c5ba2da80a494fc2184b8c03866d8852956d10aa5d0c16ff01867aecb"
+    },
+    {
+      "wave": "core",
+      "version": "20261104233950",
+      "file": "supabase/migrations/20261104233950_trip_visit_location_bridge.sql",
+      "sha256": "707f84a94f5d004cddb98f9ea783177e787aa167c165888172b287d93a114304"
+    },
+    {
+      "wave": "core",
+      "version": "20261105001102",
+      "file": "supabase/migrations/20261105001102_trip_untimed_visit_commands.sql",
+      "sha256": "b246e71775c989ab658835ac098807866f4119896fabffd89e504cc63962a902"
+    },
+    {
+      "wave": "core",
+      "version": "20261105004710",
+      "file": "supabase/migrations/20261105004710_typed_plan_change_proposals.sql",
+      "sha256": "646ba3bf683ea87847573469ea598ad8589a87693831f5e74a08382814541986"
+    },
+    {
+      "wave": "core",
+      "version": "20261105012509",
+      "file": "supabase/migrations/20261105012509_legacy_visit_time_classification.sql",
+      "sha256": "c435969732372587635a717dbf655aaf98a349830badcdad5fda25d06a50e7a5"
+    },
+    {
+      "wave": "core",
+      "version": "20261105015237",
+      "file": "supabase/migrations/20261105015237_named_zone_visit_timing.sql",
+      "sha256": "0038599f796671abc0ae570478d52f1313e031ffd02d4dc935a1f383daa3aa5c"
+    },
+    {
+      "wave": "core",
+      "version": "20261105030029",
+      "file": "supabase/migrations/20261105030029_visit_timing_proposals.sql",
+      "sha256": "1c3187897578fa4d38de3e975e819894dd1bf8c43518dad0faf2869eddbeb4f5"
+    },
+    {
+      "wave": "core",
+      "version": "20261105040722",
+      "file": "supabase/migrations/20261105040722_visit_partial_time_semantics.sql",
+      "sha256": "c58228688898c6435ef2b681bfb62e788acc562a40562a5409dd33fc8d0c6ddf"
+    },
+    {
+      "wave": "core",
+      "version": "20261105054629",
+      "file": "supabase/migrations/20261105054629_atomic_trip_plan_entries.sql",
+      "sha256": "062f2dbe30b9c30dc4c5f3e82870155f70b61d9bfa8d900815790c674bc69c4f"
+    },
+    {
+      "wave": "core",
+      "version": "20261105194324",
+      "file": "supabase/migrations/20261105194324_trip_planner_state_snapshot.sql",
+      "sha256": "c00b06d08e330dbd317850c1e64ed51de529421cf17248162e2ff21a982359cb"
+    },
+    {
+      "wave": "core",
+      "version": "20261105201625",
+      "file": "supabase/migrations/20261105201625_trip_destination_location_bridge.sql",
+      "sha256": "a394d3e35f92cf8956e811c8def45ac975b7ba0fc10166ec9c0c626b48c01208"
+    },
+    {
+      "wave": "core",
+      "version": "20261105205015",
+      "file": "supabase/migrations/20261105205015_trip_location_form_commands.sql",
+      "sha256": "baea21ee3ed3a3eabf6034dd5c0b8b2a324aa617e9d496c3f3b47ead5f40fd64"
+    },
+    {
+      "wave": "core",
+      "version": "20261105212614",
+      "file": "supabase/migrations/20261105212614_trip_visit_form_commands.sql",
+      "sha256": "1baf6e679df11a4df35d5ea87cec8227973b5851ea509a6f69462dc33f9d5a3d"
+    },
+    {
+      "wave": "core",
+      "version": "20261106005109",
+      "file": "supabase/migrations/20261106005109_trip_private_planner_snapshot.sql",
+      "sha256": "c1140eefe306fe7a534ae149c556da97e7ad557b0559c56fa6a15c70dfe58a21"
+    },
+    {
+      "wave": "core",
+      "version": "20261106023651",
+      "file": "supabase/migrations/20261106023651_native_planner_creation.sql",
+      "sha256": "b63f8bf2b09df1b8ec63db0b5f86099b2160babd585b60209bacfe700bb23245"
+    },
+    {
+      "wave": "core",
+      "version": "20261106030729",
+      "file": "supabase/migrations/20261106030729_native_visit_arrangements.sql",
+      "sha256": "1aa5c19f67f166cf5552477ed881d7bd8f0f1ee2f0f24c6a72ede09668fa28f1"
+    },
+    {
+      "wave": "core",
+      "version": "20261106035504",
+      "file": "supabase/migrations/20261106035504_observed_trip_calendar.sql",
+      "sha256": "7f3ca3600e520d1fd51ff7d05cc118ca30627f6ab27d7e1e8729dc378a03d40b"
+    },
+    {
+      "wave": "core",
+      "version": "20261106043206",
+      "file": "supabase/migrations/20261106043206_recoverable_trip_day_order.sql",
+      "sha256": "106a3989253c703a3eabe11401e80af57752eb74f7c2bc1271ad255b8417a940"
+    },
+    {
+      "wave": "core",
+      "version": "20261106185358",
+      "file": "supabase/migrations/20261106185358_recoverable_trip_day_insertion.sql",
+      "sha256": "e5ae80930f3200d1117f7fb834037ee8ff6291657ef0a1f6824dae06d2f6e4fb"
+    },
+    {
+      "wave": "core",
+      "version": "20261106193124",
+      "file": "supabase/migrations/20261106193124_recoverable_unreferenced_trip_days.sql",
+      "sha256": "64f464cd43424e72959bffa94ccabec765adda41bb04fda7cd5fac9715f36900"
+    },
+    {
+      "wave": "core",
+      "version": "20261106201143",
+      "file": "supabase/migrations/20261106201143_recoverable_trip_day_contents.sql",
+      "sha256": "aa67982294a0a10dfada2b6248a302c6fab9aef2627bd421072e821b9662a809"
+    },
+    {
+      "wave": "core",
+      "version": "20261106213759",
+      "file": "supabase/migrations/20261106213759_recoverable_trip_day_file_links.sql",
+      "sha256": "9b27ddfe2e69884e89b19335f05abbf681caeb0daadc488791d2bf4df9e5299c"
+    },
+    {
+      "wave": "core",
+      "version": "20261106222223",
+      "file": "supabase/migrations/20261106222223_booking_calendar_date_facts.sql",
+      "sha256": "e708f913213390745c343538caa75b5ccdfda65f6bb984a436d06b5ca568c37d"
+    },
+    {
+      "wave": "core",
+      "version": "20261106230656",
+      "file": "supabase/migrations/20261106230656_recoverable_day_booking_bindings.sql",
+      "sha256": "65d6989b17918b42f6e1231d2daa392f02796c1f5cb00b4ec2752b1688325a21"
+    },
+    {
+      "wave": "core",
+      "version": "20261106234140",
+      "file": "supabase/migrations/20261106234140_observed_booking_detail_commands.sql",
+      "sha256": "502978ab32b7a8abc65cff94eadc0f78c6d8601e1937c6a069a9b46aa761449d"
+    },
+    {
+      "wave": "core",
+      "version": "20261107021228",
+      "file": "supabase/migrations/20261107021228_observed_plan_governance.sql",
+      "sha256": "37d41e2545ef28780ff0c1a9ccccf17da36e8658b98e6bd5e615d427190d3586"
+    },
+    {
+      "wave": "core",
+      "version": "20261109000220",
+      "file": "supabase/migrations/20261109000220_observed_trip_task_commands.sql",
+      "sha256": "bece3c0d42e5ac8115a0b0331805faf4dd753781d036eb0d3fed8efac2816ca2"
+    },
+    {
+      "wave": "core",
+      "version": "20261109032335",
+      "file": "supabase/migrations/20261109032335_observed_trip_packing_commands.sql",
+      "sha256": "630426299804d09beef98dc6d2f9132b363f7310fb33cc82298c1490d4469e48"
+    },
+    {
+      "wave": "core",
+      "version": "20261111201637",
+      "file": "supabase/migrations/20261111201637_observed_trip_packing_groups.sql",
+      "sha256": "99dcc3aa50af153ff245d70283e5b1ac0f6e7af97325cb3eb08bb485e79e09a6"
+    },
+    {
+      "wave": "core",
+      "version": "20261111234537",
+      "file": "supabase/migrations/20261111234537_normalized_trip_packing_categories.sql",
+      "sha256": "b361c5ad6d313fd8d42a424a4f106a671cc5a4d7afa1bcb45437fd1fd807873b"
+    },
+    {
+      "wave": "core",
+      "version": "20261112005447",
+      "file": "supabase/migrations/20261112005447_observed_trip_packing_categories.sql",
+      "sha256": "ca5381fc403eed90809c9ae9c92a94785d58b2cd09e36602af466a27d1e2f031"
+    },
+    {
+      "wave": "core",
+      "version": "20261112050004",
+      "file": "supabase/migrations/20261112050004_normalized_packing_category_lifecycle.sql",
+      "sha256": "bd373fd75d5a88c66a3ead421ca9b779e80247b1de4354109d6e4f2fa5d74e3f"
+    },
+    {
+      "wave": "core",
+      "version": "20261112055647",
+      "file": "supabase/migrations/20261112055647_category_bound_packing_items.sql",
+      "sha256": "67c3f6ceb03844e41908cd9e72f3759a9643c929ab3bbfe625b5c10a13eed63d"
+    },
+    {
+      "wave": "core",
+      "version": "20261112084121",
+      "file": "supabase/migrations/20261112084121_packing_category_aggregate_commands.sql",
+      "sha256": "b495d1368a4702c75c49c9b542f8320f2795054feb5a29e0ae86a0b16f24ac5a"
+    },
+    {
+      "wave": "core",
+      "version": "20261112112956",
+      "file": "supabase/migrations/20261112112956_observed_trip_packing_bags.sql",
+      "sha256": "b5af8384e481f56f85c9268bd783600b60cfd973bf3b28a6e29f86f34d69eb03"
+    },
+    {
+      "wave": "core",
+      "version": "20261112132958",
+      "file": "supabase/migrations/20261112132958_terminal_trip_packing_restore_cancellation.sql",
+      "sha256": "a3aa625587de1747fce3024a12de8c4d11892e6ca213ebef498bcd2b2ec1fee7"
+    },
+    {
+      "wave": "core",
+      "version": "20261112162520",
+      "file": "supabase/migrations/20261112162520_terminal_trip_packing_bag_commands.sql",
+      "sha256": "80dae4bc5dc064ea991dc11079b9d6c63d7981e06d71f7cf9053bc4159da4794"
+    },
+    {
+      "wave": "core",
+      "version": "20261112235203",
+      "file": "supabase/migrations/20261112235203_reconcile_family_api_privileges.sql",
+      "sha256": "9e3d2313ae480cf702890775c97c91d3432496cc08b8e9d85d325d1e901ea406"
+    },
+    {
+      "wave": "core",
+      "version": "20261113032434",
+      "file": "supabase/migrations/20261113032434_trip_stay_read_foundation.sql",
+      "sha256": "9309739d31efc5039c44b6293af3d11d0a07875cd0a946769adfb41b3ff275b0"
+    },
+    {
+      "wave": "core",
+      "version": "20261113220230",
+      "file": "supabase/migrations/20261113220230_observed_trip_stay_commands.sql",
+      "sha256": "3a9b9e8df6bb9f5773571c1a94f1fad8864eaa64376c1348f3cdc348b558ec8d"
+    },
+    {
+      "wave": "core",
+      "version": "20261113225457",
+      "file": "supabase/migrations/20261113225457_original_stay_command_outcomes.sql",
+      "sha256": "595829734fa870e398098a378193f030f61fcf4a06e6e8629ea7bb94910c754c"
+    },
+    {
+      "wave": "core",
+      "version": "20261113234914",
+      "file": "supabase/migrations/20261113234914_coherent_booking_stay_read.sql",
+      "sha256": "b52d662f2f94098343e8d7396d26bda8ad30271b5faed883deda14989a773c4b"
+    },
+    {
+      "wave": "core",
+      "version": "20261114051232",
+      "file": "supabase/migrations/20261114051232_atomic_stay_booking_bundle.sql",
+      "sha256": "3b62e5649adbe4e98748981b16da41d84bafbb96ef294d5d2524e34c06d703d8"
+    },
+    {
+      "wave": "core",
+      "version": "20261114070706",
+      "file": "supabase/migrations/20261114070706_native_stay_arrival_recovery.sql",
+      "sha256": "5a73d28a72ddf9deb2f63193b40df33ecb32d8fb82273f07cd69a06ab154aec2"
+    },
+    {
+      "wave": "core",
+      "version": "20261114110052",
+      "file": "supabase/migrations/20261114110052_native_stay_calendar_consistency.sql",
+      "sha256": "89de2623faccc3131fc8f37dcf9c609dce06e57365723c663846e9bc727599bd"
+    },
+    {
+      "wave": "core",
+      "version": "20261114230948",
+      "file": "supabase/migrations/20261114230948_recoverable_family_collections.sql",
+      "sha256": "9e04a75d7281b7373c903f2318a8195d88daaa8bd95fb862784d34dbe59dbcd6"
+    },
+    {
+      "wave": "core",
+      "version": "20261115000913",
+      "file": "supabase/migrations/20261115000913_collection_manual_item_kind.sql",
+      "sha256": "21c779e867def673c37bb4f59576fdafb4f7fa84462c1b2be100993effb94e24"
+    },
+    {
+      "wave": "core",
+      "version": "20261115000914",
+      "file": "supabase/migrations/20261115000914_normalized_collection_location_content.sql",
+      "sha256": "5978524ed42018939a003a626a50c6b1669009412326cb13181235c380f5ee63"
+    },
+    {
+      "wave": "core",
+      "version": "20261115010522",
+      "file": "supabase/migrations/20261115010522_bounded_family_collection_content_reads.sql",
+      "sha256": "1ac03fbd77153a5884fb9582fd1d603d6c0071bbc13c8e233606e68a7521dc4e"
+    },
+    {
+      "wave": "core",
+      "version": "20261115015406",
+      "file": "supabase/migrations/20261115015406_observed_family_collection_item_authoring.sql",
+      "sha256": "3c1840be4316e2055e5b285bbbc9fb46cd215956b54b1906e04c15c90f086b40"
+    },
+    {
+      "wave": "core",
+      "version": "20261115021715",
+      "file": "supabase/migrations/20261115021715_bounded_family_collection_library_reads.sql",
+      "sha256": "2ddffed56199b6d3f0282148e028228a70c3d52917e9ac971db1266323636c0d"
+    },
+    {
+      "wave": "core",
+      "version": "20261115052800",
+      "file": "supabase/migrations/20261115052800_cancel_unprepared_family_collection_requests.sql",
+      "sha256": "33694cecc554e5e3bef7109fb86ee1cb78f783cab8a65aae2fde63451ced0715"
+    },
+    {
+      "wave": "core",
+      "version": "20261115122753",
+      "file": "supabase/migrations/20261115122753_correct_completed_travel_statistics_grain.sql",
+      "sha256": "7ea17ad47517b07be5134c78c34972561db094cfeefd2644e5bd094eb3f3538d"
+    },
+    {
+      "wave": "core",
+      "version": "20261116053245",
+      "file": "supabase/migrations/20261116053245_task_current_session_boundary.sql",
+      "sha256": "fdd74b3ca624cfd3ea93c6b97dd4e6c44080b8d6658edd444ca1483dcee3e470"
+    },
+    {
+      "wave": "core",
+      "version": "20261116074325",
+      "file": "supabase/migrations/20261116074325_core_current_session_boundary.sql",
+      "sha256": "66d07206247fa49c460e9d04fcd37654213a3ff3555839ec84a967ea9e7add1b"
+    },
+    {
+      "wave": "core",
+      "version": "20261116092657",
+      "file": "supabase/migrations/20261116092657_native_plan_receipt_reader.sql",
+      "sha256": "7e39a0896970aa304316c5bb8de00fc8fb03f48eb32280722b674df52cbf260f"
+    },
+    {
+      "wave": "core",
+      "version": "20261116105805",
+      "file": "supabase/migrations/20261116105805_native_plan_semantic_conflicts.sql",
+      "sha256": "8e70bb75ac5cf7bd93f013362b5632a7ea7a53dd80b1e5926e2aacdcf04dbc0b"
+    },
+    {
+      "wave": "core",
+      "version": "20261116114653",
+      "file": "supabase/migrations/20261116114653_native_plan_terminal_cancellation.sql",
+      "sha256": "2a850cfb4c2a6a23c4bf2429196a027b1f4d83a2b58eca8d4d280d2d139064e6"
+    },
+    {
+      "wave": "core",
+      "version": "20261116142011",
+      "file": "supabase/migrations/20261116142011_planner_editor_receipt_readers.sql",
+      "sha256": "bfe6a9cad9c621b75dbc8161f7aafc0b7eabb9e74a6eec6530e3e543106a5f9e"
+    },
+    {
+      "wave": "core",
+      "version": "20261116161133",
+      "file": "supabase/migrations/20261116161133_planner_arrangement_receipts.sql",
+      "sha256": "2d2f00a2f0f25c7d25dc3738703b08e204dead0ed56e19267a374119d7b863d9"
+    },
+    {
+      "wave": "core",
+      "version": "20261119233622",
+      "file": "supabase/migrations/20261119233622_profile_display_preferences.sql",
+      "sha256": "56ce66ecd6356f537aaee5f3600382945ff9151ae8a6da46580b0ee54d3339d0"
+    },
+    {
+      "wave": "core",
+      "version": "20261120043029",
+      "file": "supabase/migrations/20261120043029_family_holiday_calendar_authenticated_grants.sql",
+      "sha256": "1b5677646395e6f5f13b3b0c9ae24de8542162000f1d97195ebbd259ff33f751"
+    },
+    {
+      "wave": "core",
+      "version": "20261120044024",
+      "file": "supabase/migrations/20261120044024_family_vacay_calendar_entry_grants.sql",
+      "sha256": "c3f0887a2a06a6598480566fa243452df106969c9fddfdb7bcb8cf4a6a806105"
+    },
+    {
+      "wave": "core",
+      "version": "20261121184611",
+      "file": "supabase/migrations/20261121184611_qualify_vacay_permissions_and_collection_authoring_index.sql",
+      "sha256": "6f7e694f175a8b1fd58ae4316825e2c03c36c7aa8f2b163a91904853f5854cbe"
+    },
+    {
+      "wave": "mexico",
+      "version": "20261122050845",
+      "file": "supabase/migrations/20261122050845_family_route_preferences.sql",
+      "sha256": "55502c38c15f98f5702ddc6591b6e506d4b52e6105c63e07881b1e670f981999"
+    },
+    {
+      "wave": "mexico",
+      "version": "20261122053010",
+      "file": "supabase/migrations/20261122053010_family_route_waypoints.sql",
+      "sha256": "2a6095e9a5c38a434b6cf92a5477660c7b7d938eace6cfdc1bdb203883b903f4"
+    },
+    {
+      "wave": "mexico",
+      "version": "20261122061522",
+      "file": "supabase/migrations/20261122061522_family_trip_tour_reads.sql",
+      "sha256": "c82247524731251e26e7699d1d77d4ae52c72fedb998db8b06e8177164a572aa"
+    },
+    {
+      "wave": "mexico",
+      "version": "20261122062910",
+      "file": "supabase/migrations/20261122062910_family_tour_day_guard.sql",
+      "sha256": "8a5f0f62faaf4640c3d59fc3f1aefba786ff095fe986cb2f07c1fc2ac9953b78"
+    },
+    {
+      "wave": "mexico",
+      "version": "20261122064412",
+      "file": "supabase/migrations/20261122064412_family_trip_journal_preview_read.sql",
+      "sha256": "6c054fc5c7629066248ca71c601664e229cb6bc3cb0a38c6da95e90c24972ce4"
+    },
+    {
+      "wave": "mexico",
+      "version": "20261122065923",
+      "file": "supabase/migrations/20261122065923_family_trip_journal_text_commands.sql",
+      "sha256": "ad99b1c05744e8935972b1223d29538e4f028c167e061ebfaba340ed7429693e"
+    },
+    {
+      "wave": "mexico",
+      "version": "20261122071723",
+      "file": "supabase/migrations/20261122071723_family_trip_journal_text_creation.sql",
+      "sha256": "ea41179274c65c087b05128e93ab4b80f1fddcdfb80f938b639e59ed52cc0cf9"
+    },
+    {
+      "wave": "mexico",
+      "version": "20261122072515",
+      "file": "supabase/migrations/20261122072515_family_trip_collab_notes_read.sql",
+      "sha256": "ea70e2bf19afbfc531802a848539d5fef4d57856032872d83049ddea71af2645"
+    },
+    {
+      "wave": "mexico",
+      "version": "20261122073434",
+      "file": "supabase/migrations/20261122073434_family_trip_collab_note_commands.sql",
+      "sha256": "bc44a6a4c6b8fae2f73eade279ed98b55a4c3535219ca8a497f0cd43216cfb86"
+    },
+    {
+      "wave": "mexico",
+      "version": "20261122074842",
+      "file": "supabase/migrations/20261122074842_family_trip_collab_note_trash.sql",
+      "sha256": "187514985466b4a3d78e29cad4be4cb4ecaeacd3f0317e74c9565e0c738a69e5"
+    },
+    {
+      "wave": "mexico",
+      "version": "20261122075522",
+      "file": "supabase/migrations/20261122075522_family_trip_collab_links.sql",
+      "sha256": "c59c5054016f9a73cf9fbb7de16e1cb90bc287bfb1642d210d2ca93d97b9bea8"
+    },
+    {
+      "wave": "mexico",
+      "version": "20261122080605",
+      "file": "supabase/migrations/20261122080605_family_trip_collab_link_actions.sql",
+      "sha256": "adaa628cb86de143c88cb22875c6012c91ed99c44751af92366af9c02eda1b20"
+    },
+    {
+      "wave": "mexico",
+      "version": "20261122081424",
+      "file": "supabase/migrations/20261122081424_family_trip_collab_chat.sql",
+      "sha256": "b66fc815079e06317f5dd16ac7040fc5a139c42d80d3a4f984fac5596ec5753c"
+    },
+    {
+      "wave": "mexico",
+      "version": "20261122094358",
+      "file": "supabase/migrations/20261122094358_family_trip_collab_chat_updates.sql",
+      "sha256": "f53f8f751dccbd45864e6ae90eb194a3d23a00c010e55c6ced8f93f77cdf79ab"
+    },
+    {
+      "wave": "mexico",
+      "version": "20261122095242",
+      "file": "supabase/migrations/20261122095242_family_trip_collab_chat_replies.sql",
+      "sha256": "5faf964485f6d0f298129c7839d10d81428fa9adb7f4b093dc391c57a4292116"
+    },
+    {
+      "wave": "mexico",
+      "version": "20261122190901",
+      "file": "supabase/migrations/20261122190901_family_trip_collab_chat_recovery.sql",
+      "sha256": "1bb0f6c080bb741ef013cb11f539cf218bbcb967f80ef6b19f86fb26f139870f"
+    },
+    {
+      "wave": "mexico",
+      "version": "20261122192032",
+      "file": "supabase/migrations/20261122192032_family_trip_collab_chat_reactions.sql",
+      "sha256": "e3a5d4f7f3691dd2c0e357bf40c5e4a3eff71b2af488b73cefe6c34877431bd8"
+    },
+    {
+      "wave": "mexico",
+      "version": "20261122193408",
+      "file": "supabase/migrations/20261122193408_family_trip_collab_chat_images.sql",
+      "sha256": "2aebf580ef527cf7c41bd35623d401c51940daa0f58c7121d10ac678da0cf33d"
+    },
+    {
+      "wave": "mexico",
+      "version": "20261122195812",
+      "file": "supabase/migrations/20261122195812_family_trip_collab_polls.sql",
+      "sha256": "643f35d2585720a067197eb5a5320077254ed512236dbb27c4456af570329f89"
+    },
+    {
+      "wave": "mexico",
+      "version": "20261122202505",
+      "file": "supabase/migrations/20261122202505_family_trip_tour_track_edit.sql",
+      "sha256": "45b4603fb8364fb1188c714788b9f4d1bcebcc96f7ef089fbebc8f1dd445e590"
+    },
+    {
+      "wave": "mexico",
+      "version": "20261122204555",
+      "file": "supabase/migrations/20261122204555_family_trip_journal_photo.sql",
+      "sha256": "5a463a1a40630883d4d00bc7b8a24f71b78bc1a592c0a1eaa599addf303411d1"
+    },
+    {
+      "wave": "mexico",
+      "version": "20261122211225",
+      "file": "supabase/migrations/20261122211225_family_trip_journal_photo_links.sql",
+      "sha256": "c01264fc52584831fb53c39b7863ea0a2d58f93c30c5109f32cdc7666bdddfc8"
+    },
+    {
+      "wave": "mexico",
+      "version": "20261122212126",
+      "file": "supabase/migrations/20261122212126_family_trip_tour_track_shape.sql",
+      "sha256": "36507baeca3dfeba4593e27eb97b3f4e3fec91bc5dcd233d41fdfe0412e93bfe"
+    },
+    {
+      "wave": "mexico",
+      "version": "20261122214518",
+      "file": "supabase/migrations/20261122214518_family_trip_tour_station_edit.sql",
+      "sha256": "67237329d55291e0da9d889e24ed4381854763379b1abc9af8e9ceaa09300579"
+    },
+    {
+      "wave": "mexico",
+      "version": "20261122221354",
+      "file": "supabase/migrations/20261122221354_family_trip_tour_station_membership.sql",
+      "sha256": "c19e3a1595ec9d719d4e65fdb1d88ddaac27aba9260e1b92d18b1de67cded823"
+    },
+    {
+      "wave": "mexico",
+      "version": "20261122222205",
+      "file": "supabase/migrations/20261122222205_family_trip_tour_station_move.sql",
+      "sha256": "c1b4a4659ca5e6a2b80f5f27a8b3846feb35226f65b803b53c9f248cc8f3c035"
+    }
+  ],
+  "production": {
+    "source": "021be98460c2c3af7c15c1b9fce2f22cea0c0f1e",
+    "version": "family-2026.11.21.3-rc.1",
+    "entries": 3778,
+    "entry": {
+      "path": "/assets/index-B6lrn0f9.js",
+      "bytes": 1222121,
+      "sha256": "74a45b42550b976c6d577eaccf4480b61a851621528ef8bd4d4a9a88de4424d5"
+    },
+    "service_worker_sha256": "3133f4f93e5ba1363aef21debe9f2de96e1bc011245c6a225d29e712bd82c83f",
+    "asset_tree_sha256": "7e96bde8d9b25a18d18898b796ee02dfe918f57bbc569438e0a68d8d7deb64e2"
+  },
+  "fallback": {
+    "source": "4b9ea419a4cbd1b47f6fe2a05e05e24e5288da61",
+    "version": "family-2026.11.21.1-rc.4",
+    "entries": 3785,
+    "entry": {
+      "path": "/assets/index-CpD4vhxV.js",
+      "bytes": 1218633,
+      "sha256": "4a8e32b745c1ccffe6e7d69c68aaf51a0b766b8e39f228727c201379ed4d83d7"
+    },
+    "service_worker_sha256": "f8998735e695eb10eaa7f40db77f2eeea438ffb1f939a980050d4c2b311dac2b",
+    "asset_tree_sha256": "8aa74cfb040ba1c0a0eafc0f1333d74e3ea8ef1eb42cfa9d70308d840f650f14"
+  },
+  "integration_preview": {
+    "source": "32b3b64ef44bfe9988cd24ae347b41e5529624bc",
+    "version": "family-2026.11.22.1-rc.1",
+    "entries": 3466,
+    "entry": {
+      "path": "/assets/index-s7VO6pTo.js",
+      "bytes": 1263270,
+      "sha256": "5f412df0f2ec0d97053dd061857e95ab9efa21666e050d04b78830a633137bbc"
+    },
+    "service_worker_sha256": "90b8135d5bc82997ddd306112745299f6c500b89606bfb6f1ee001d3b83e5ad4",
+    "asset_tree_sha256": "7e71853aca3b76f8799f8ecdbd5b8e869e176a4b5eac22eaac23bcc74e9df2d6"
+  },
+  "edge": {
+    "function": "finalize-private-upload",
+    "entrypoint": "finalize-private-upload/index.ts",
+    "verify_jwt": true,
+    "import_map": false,
+    "hosted_version_checked": 6,
+    "rollback": {
+      "commit": "c14ba0a8c0b2c505584a80150743b77bca65b812",
+      "files": {
+        "finalize-private-upload/index.ts": "676fec2e5a56acc94a1f2e4b810d3f2a7fa478b8307b8876b975e46a1b566745",
+        "finalize-private-upload/inspect.ts": "dd6c4e237117071de513deabb05f2e3d7c6d1e9d005cd0d2b77cd51751b23a51"
+      }
+    },
+    "candidate": {
+      "commit": "5f8116388851246bafcbbed27a894b146748f670",
+      "files": {
+        "finalize-private-upload/index.ts": "d907565181e52b756360ca187f30b0c28b00741bdda0f87866cd3989fd9d3ea4",
+        "finalize-private-upload/inspect.ts": "dd6c4e237117071de513deabb05f2e3d7c6d1e9d005cd0d2b77cd51751b23a51"
+      }
+    }
+  },
+  "seed": {
+    "source": "510db0f90",
+    "files": {
+      "scripts/family/mexico-preview-seed.sql": "e602177fe3c2cdadac765b53e555d28e4c2fb37266e180d26b996438996f9863",
+      "scripts/family/mexico-preview-media/Mexico-walk-preview.png": "788565705870d602d58dfccddb194e6750126a588be6fb254e80e0c6034ccdd0",
+      "scripts/family/mexico-preview-media/Puebla-preview.png": "fa95cd2d1fca42532f1f55a3ea4713d7f78856e1ff84a22be4cf093dc49d1418"
+    }
+  }
+}

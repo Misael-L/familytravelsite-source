@@ -1,0 +1,36 @@
+{
+  "passed": true,
+  "method": "APFS clonefile with CLONE_NOFOLLOW; copyfile ACL|STAT|XATTR metadata only; validate then atomic replace",
+  "source_build": "/private/tmp/trek-core-transport-editor-20261118/candidate-web-explicit",
+  "source_tree_sha256_unchanged": "06c5c1e0e1629b5300e421d998bba758437e99ca4d5b2fa19573aec00e9774ef",
+  "source_and_all_target_logical_trees_unchanged": true,
+  "target_builds": [
+    {
+      "root": "/private/tmp/trek-core-planner-hook-retirement-20261118/candidate-web-explicit",
+      "pinned_build_source": "ec6d56328a274ef7bc0088788138dc9e2a81b576",
+      "all_files": 3793,
+      "before_tree_sha256": "78b42f1ff90ada92d2fd594c2dc7153a49c397124952572a49ad57f298739f90",
+      "after_tree_sha256": "78b42f1ff90ada92d2fd594c2dc7153a49c397124952572a49ad57f298739f90",
+      "all_paths_bytes_modes_owners_mtime_flags_xattrs_ACLs_exact": true,
+      "cloned_identical_files": 3792,
+      "logical_bytes_now_using_current_source_extents": 241909604,
+      "nonidentical_or_special_files_untouched": 1
+    },
+    {
+      "root": "/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client/dist",
+      "pinned_build_source": "ec6d56328a274ef7bc0088788138dc9e2a81b576",
+      "all_files": 3793,
+      "before_tree_sha256": "78b42f1ff90ada92d2fd594c2dc7153a49c397124952572a49ad57f298739f90",
+      "after_tree_sha256": "78b42f1ff90ada92d2fd594c2dc7153a49c397124952572a49ad57f298739f90",
+      "all_paths_bytes_modes_owners_mtime_flags_xattrs_ACLs_exact": true,
+      "cloned_identical_files": 3792,
+      "logical_bytes_now_using_current_source_extents": 241909604,
+      "nonidentical_or_special_files_untouched": 1
+    }
+  ],
+  "free_bytes_before": 2809688064,
+  "free_bytes_after": 3059499008,
+  "no_tracked_source_complete_archive_sealed_evidence_backup_ETL_media_or_unverified_copy_changed": true,
+  "physical_inodes_and_ctime_may_change": true,
+  "no_file_removed_from_any_logical_build": true
+}

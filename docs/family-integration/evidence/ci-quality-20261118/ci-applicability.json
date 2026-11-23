@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "source_commit": "d7bd79fa7c7e7d76a3e4d4ba887d7af3200c76f5",
+  "workflow_sha256": "c92eb8e059aec4d9763576192dfb297061168ce1415f484b42adb5dadd6b932f",
+  "classifier_sha256": "32112425e15e9ec06f93f0abe28946e8fc3e421650fd47c2ae5885c31ab7914e",
+  "hosted_workflow_trigger": "manual workflow_dispatch only in this branch; not invoked",
+  "client_jobs_condition": "needs.changes.outputs.code == 'true'",
+  "client_source_or_policy_changes_are_code_for_classifier": true,
+  "manual_run_has_fallback_all_areas_when_no_usable_change_list": true,
+  "nine_remaining_client_checks_are_applicable_commands_not_conditionally_disabled_features": true,
+  "full_workflow_also_has_server_shared_test_coverage_bundle_and_e2e_jobs_not_accepted_by_this_inventory": true,
+  "no_CI_workflow_or_branch_protection_change": true
+}

@@ -1,0 +1,251 @@
+{
+  "packet": "U04-E",
+  "date": "2026-11-12",
+  "qualified_runtime": "b50fbdc2c267249f339ada5e37c340927ed27798",
+  "reviewed_head": "38229193e22b02bcac3590ad7e7fcbd4a9ce2a02",
+  "activation_scope": "strict local qualification; hosted/default and unsupported features remain gated",
+  "source": "actual qualified repository source, immutable upstream TREK5.1.2 and read-only local128 catalog; inherited D2c3b acceptance explicitly distinguished from this audit",
+  "capabilities": [
+    {
+      "id": "read",
+      "capability": "Common/Personal list, visible sharing data, weights and bag names",
+      "status": "qualified-local",
+      "behavior": "Read one coherent actor-visible snapshot; preserve authoritative totals rather than summing only visible items.",
+      "persistence_and_contract": "packing_items, recipients, contributors, bags/members; typed get_family_trip_packing_v1 and versioned category/bag views.",
+      "permission_boundary": "Read authorization/privacy and source/account/Family/Person/Trip/layer ownership; a returned bag total grants no hidden-item visibility.",
+      "source": "client/src/integrations/family/plannerPacking.ts"
+    },
+    {
+      "id": "item-write",
+      "capability": "Explicit common/personal create and scalar edit",
+      "status": "qualified-local",
+      "behavior": "One intentional create has stable target/operation IDs; edits keep the opening revision. Shared-recipient creation is outside this qualified item contract.",
+      "persistence_and_contract": "execute_family_trip_packing_v1 or execute_family_trip_packing_category_item_v2, immutable receipt and current category identity.",
+      "permission_boundary": "Current direct trip.packing.manage for writes; private owner/visibility, session/MFA and lifecycle are rechecked by the qualified RPC. Propose/deny/read-only do not gain direct writes.",
+      "source": "client/src/integrations/family/plannerCohortPacking.ts"
+    },
+    {
+      "id": "packed",
+      "capability": "Checked and partial packed quantities",
+      "status": "qualified-local",
+      "behavior": "Single original-bound operation; preserve quantity semantics and fresh canonical publication.",
+      "persistence_and_contract": "packing_items.checked/packed_quantity and typed item receipt.",
+      "permission_boundary": "Current direct trip.packing.manage for writes; private owner/visibility, session/MFA and lifecycle are rechecked by the qualified RPC. Propose/deny/read-only do not gain direct writes.",
+      "source": "client/src/integrations/family/packingCommandContract.ts"
+    },
+    {
+      "id": "item-order",
+      "capability": "Item reorder",
+      "status": "qualified-local",
+      "behavior": "Requires the complete observed set; filtered/stale subsets cannot issue a partial reorder.",
+      "persistence_and_contract": "Item collection revision and ordered UUIDs through the typed item command.",
+      "permission_boundary": "Current direct trip.packing.manage for writes; private owner/visibility, session/MFA and lifecycle are rechecked by the qualified RPC. Propose/deny/read-only do not gain direct writes.",
+      "source": "client/src/integrations/family/plannerCohortPacking.ts"
+    },
+    {
+      "id": "item-trash",
+      "capability": "Item Trash and owned-page Restore",
+      "status": "qualified-local",
+      "behavior": "Trash retains identity; restore uses its exact paginated observation and restores no unrelated parent implicitly.",
+      "persistence_and_contract": "packing_items lifecycle; list_family_trip_packing_trash_v1 plus typed item commands.",
+      "permission_boundary": "Current direct trip.packing.manage for writes; private owner/visibility, session/MFA and lifecycle are rechecked by the qualified RPC. Propose/deny/read-only do not gain direct writes.",
+      "source": "client/src/integrations/family/FamilyPackingTrash.tsx"
+    },
+    {
+      "id": "category-meta",
+      "capability": "Empty lists, names and Family Person assignees",
+      "status": "qualified-local",
+      "behavior": "Explicit category identity handles empty lists and raw-label collisions without persisted placeholder items.",
+      "persistence_and_contract": "packing_categories/packing_category_assignments; versioned lifecycle/category commands.",
+      "permission_boundary": "Current direct trip.packing.manage for writes; private owner/visibility, session/MFA and lifecycle are rechecked by the qualified RPC. Propose/deny/read-only do not gain direct writes.",
+      "source": "client/src/integrations/family/packingCategoryV2Contract.ts"
+    },
+    {
+      "id": "category-order",
+      "capability": "Category order",
+      "status": "qualified-local",
+      "behavior": "Version3 requires the whole observed owner lane, independent of item subsets.",
+      "persistence_and_contract": "get_family_trip_packing_category_lane_v3 and category-reorder aggregate.",
+      "permission_boundary": "Current direct trip.packing.manage for writes; private owner/visibility, session/MFA and lifecycle are rechecked by the qualified RPC. Propose/deny/read-only do not gain direct writes.",
+      "source": "client/src/integrations/family/packingAggregateComposer.ts"
+    },
+    {
+      "id": "group-state",
+      "capability": "Category check/uncheck and clear-completed",
+      "status": "qualified-local",
+      "behavior": "One observed group transaction, no client item loop. Only qualified actions acquire this authority.",
+      "persistence_and_contract": "execute_family_trip_packing_group_v1; collection revision, explicit membership and receipt.",
+      "permission_boundary": "Current direct trip.packing.manage for writes; private owner/visibility, session/MFA and lifecycle are rechecked by the qualified RPC. Propose/deny/read-only do not gain direct writes.",
+      "source": "client/src/components/Packing/usePackingGroupActions.ts"
+    },
+    {
+      "id": "category-trash",
+      "capability": "Nonempty list Trash/whole-batch Restore",
+      "status": "qualified-local",
+      "behavior": "Preserve category/member manifest as one recoverable aggregate; current observations protect later restoration.",
+      "persistence_and_contract": "family_auth.packing_category_batches/items and category aggregate v3.",
+      "permission_boundary": "Current direct trip.packing.manage for writes; private owner/visibility, session/MFA and lifecycle are rechecked by the qualified RPC. Propose/deny/read-only do not gain direct writes.",
+      "source": "client/src/integrations/family/packingAggregateTrash.ts"
+    },
+    {
+      "id": "bag-write",
+      "capability": "Bag create/name/color/weight limit",
+      "status": "qualified-local",
+      "behavior": "Dedicated bag port, immutable observed command; repeated names do not merge separate bags.",
+      "persistence_and_contract": "packing_bags plus execute_family_trip_packing_bag_v1 and receipts.",
+      "permission_boundary": "Current direct trip.packing.manage for writes; private owner/visibility, session/MFA and lifecycle are rechecked by the qualified RPC. Propose/deny/read-only do not gain direct writes.",
+      "source": "client/src/integrations/family/packingNativeBags.ts"
+    },
+    {
+      "id": "bag-carriers",
+      "capability": "Bag carriers",
+      "status": "qualified-local",
+      "behavior": "Differential eligible Family Person sets, not Auth IDs or name joins; historical names can remain without granting hidden-item access.",
+      "persistence_and_contract": "packing_bag_members and bag-members original command.",
+      "permission_boundary": "Current direct trip.packing.manage for writes; private owner/visibility, session/MFA and lifecycle are rechecked by the qualified RPC. Propose/deny/read-only do not gain direct writes.",
+      "source": "client/src/repo/plannerPackingBagPort.ts"
+    },
+    {
+      "id": "bag-assign",
+      "capability": "Move an item into/out of a bag",
+      "status": "qualified-local",
+      "behavior": "Existing original-bound item edit; totals are reread coherently.",
+      "persistence_and_contract": "packing_items.bag_id; typed item update and bag/root guards.",
+      "permission_boundary": "Current direct trip.packing.manage for writes; private owner/visibility, session/MFA and lifecycle are rechecked by the qualified RPC. Propose/deny/read-only do not gain direct writes.",
+      "source": "client/src/integrations/family/plannerCohortPacking.ts"
+    },
+    {
+      "id": "bag-trash",
+      "capability": "Empty-only bag Trash and exact Restore",
+      "status": "qualified-local",
+      "behavior": "Preserve historical links and require deliberate parent restoration.",
+      "persistence_and_contract": "Bag deleted_at/revision and bag-trash-empty/bag-restore commands.",
+      "permission_boundary": "Current direct trip.packing.manage for writes; private owner/visibility, session/MFA and lifecycle are rechecked by the qualified RPC. Propose/deny/read-only do not gain direct writes.",
+      "source": "client/src/integrations/family/packingBagContract.ts"
+    },
+    {
+      "id": "bag-nonempty",
+      "capability": "Delete a bag with live dependencies",
+      "status": "intentional-refusal",
+      "behavior": "Visible or hidden live dependencies refuse; deleting a bag must not silently unassign another person\u2019s item.",
+      "persistence_and_contract": "Existing RESTRICT/lifecycle/hidden-inclusive occupancy guards. No new generic bag-removal command is implemented.",
+      "permission_boundary": "Current direct trip.packing.manage for writes; private owner/visibility, session/MFA and lifecycle are rechecked by the qualified RPC. Propose/deny/read-only do not gain direct writes.",
+      "source": "client/src/integrations/family/packingNativeBags.ts"
+    },
+    {
+      "id": "recovery",
+      "capability": "Original queue, cancellation and deliberate replacement",
+      "status": "qualified-local",
+      "behavior": "Named item/list/bag restores and four non-restore bag actions have accepted recovery; unknowns stay retained. No general cancellation for every future domain is implied.",
+      "persistence_and_contract": "Versioned queue/archive, original receipt/cancellation ledger, current target checks and new UUID only for a separately confirmed replacement.",
+      "permission_boundary": "Current direct trip.packing.manage for writes; private owner/visibility, session/MFA and lifecycle are rechecked by the qualified RPC. Propose/deny/read-only do not gain direct writes.",
+      "source": "client/src/integrations/family/packingTerminalSettlement.ts"
+    },
+    {
+      "id": "saved",
+      "capability": "Saved/offline/read-only packing views",
+      "status": "qualified-local",
+      "behavior": "Earlier saved v1/v2/v3 admissions retain their accepted formats. Local128 does not automatically become a new complete offline-trip admission.",
+      "persistence_and_contract": "Saved read lease and existing snapshot codecs; no new offline write authority.",
+      "permission_boundary": "Current admitted saved read lease; exports must use its owned scope and never acquire a writer merely to read.",
+      "source": "client/src/repo/savedPackingReadPort.ts"
+    },
+    {
+      "id": "defaults",
+      "capability": "Automatic creation of native default packing rows",
+      "status": "intentional-refusal",
+      "behavior": "Do not run the unobserved ensure_packing_defaults side effect. Explicit new list/item creation is the qualified alternative.",
+      "persistence_and_contract": "The old RPC exists but its authenticated/anon execute grants are revoked on local128.",
+      "permission_boundary": "Current direct trip.packing.manage for writes; private owner/visibility, session/MFA and lifecycle are rechecked by the qualified RPC. Propose/deny/read-only do not gain direct writes.",
+      "source": "family-backend/src/data/supabase/packing.ts"
+    },
+    {
+      "id": "template-apply",
+      "capability": "Trip template list/apply (Common or Personal)",
+      "status": "blocked-unimplemented",
+      "behavior": "The native hook and cohort deny this legacy path. An old Family handler rejects Personal and omits created items; it cannot be enabled as-is.",
+      "persistence_and_contract": "Family packing_templates/items already exist. apply_packing_template is revoked and lacks the new observed-operation/recovery contract.",
+      "permission_boundary": "Current direct trip.packing.manage for writes; private owner/visibility, session/MFA and lifecycle are rechecked by the qualified RPC. Propose/deny/read-only do not gain direct writes.",
+      "source": "client/src/components/Packing/usePackingTemplates.ts"
+    },
+    {
+      "id": "template-save",
+      "capability": "Save a trip list as a reusable template",
+      "status": "blocked-unimplemented",
+      "behavior": "Separate family.templates.manage versus trip.packing.manage scope must be specified; do not infer template authoring from packing edits.",
+      "persistence_and_contract": "save_packing_template_from_trip is revoked; existing model needs snapshot/operation/owner/Trash/version decisions before a replacement writer.",
+      "permission_boundary": "Current direct trip.packing.manage for writes; private owner/visibility, session/MFA and lifecycle are rechecked by the qualified RPC. Propose/deny/read-only do not gain direct writes.",
+      "source": "client/src/integrations/family/listHandler.ts"
+    },
+    {
+      "id": "template-admin",
+      "capability": "Family template administration",
+      "status": "legacy-separate",
+      "behavior": "Existing admin list/upsert/delete RPCs are separate from the gated native Trip controls. Their retained permission checks do not establish modern template recovery.",
+      "persistence_and_contract": "packing_templates has no revision/deleted_at; delete_family_packing_template still exists with authenticated execute and internal feature enforcement. Do not describe this lifecycle as recoverable or newly qualified.",
+      "permission_boundary": "family.templates.manage inside the existing administrative RPC; no new grants or behavior accepted here.",
+      "source": "family-backend/src/data/supabase/packing.ts"
+    },
+    {
+      "id": "import",
+      "capability": "Bulk text/CSV/Markdown import",
+      "status": "blocked-unimplemented",
+      "behavior": "Native import is gated. The older Family handler loops raw upserts and has no complete atomic receipt/result contract; never reopen it by enabling the generic group gate.",
+      "persistence_and_contract": "Existing item/category/bag relations can hold imported rows, but a new bounded transactional import command and original-preserving retry/recovery contract must be designed.",
+      "permission_boundary": "Current direct trip.packing.manage for writes; private owner/visibility, session/MFA and lifecycle are rechecked by the qualified RPC. Propose/deny/read-only do not gain direct writes.",
+      "source": "client/src/components/Packing/usePackingImport.ts"
+    },
+    {
+      "id": "clone",
+      "capability": "Copy an item to My list",
+      "status": "blocked-unimplemented",
+      "behavior": "The native meaning is a personal copy; the older Family clone handler preserves a common item\u2019s common status. Gating currently prevents that mismatch.",
+      "persistence_and_contract": "Existing item relation can hold another identity; source observation, personal owner/category, selected fields, operation identity and retry semantics need a typed command.",
+      "permission_boundary": "Current direct trip.packing.manage for writes; private owner/visibility, session/MFA and lifecycle are rechecked by the qualified RPC. Propose/deny/read-only do not gain direct writes.",
+      "source": "client/src/integrations/family/listHandler.ts"
+    },
+    {
+      "id": "sharing",
+      "capability": "Common/Personal/Shared recipients",
+      "status": "blocked-unimplemented",
+      "behavior": "Existing recipient data can render. Changing visibility/owner/recipients is not a qualified scalar edit, and must be one atomic privacy transition.",
+      "persistence_and_contract": "packing_items plus packing_item_recipients exist; raw DML is revoked. Existing sequential adapter updates are not a transactional/versioned command.",
+      "permission_boundary": "Specify item owner/claim rules, eligible Family People, recipient disclosure, direct/propose/deny and notifications before enabling; never treat an Auth user ID as a Person.",
+      "source": "family-backend/src/data/supabase/packing.ts"
+    },
+    {
+      "id": "contributors",
+      "capability": "Join/leave item responsibility",
+      "status": "blocked-unimplemented",
+      "behavior": "Store callbacks and cohort legacy routes refuse before effects. Contributor responsibility is distinct from item recipient access.",
+      "persistence_and_contract": "packing_item_contributors exists; raw DML is revoked. Self/other-person changes and operation/recovery semantics need their own contract.",
+      "permission_boundary": "Current direct trip.packing.manage for writes; private owner/visibility, session/MFA and lifecycle are rechecked by the qualified RPC. Propose/deny/read-only do not gain direct writes.",
+      "source": "client/src/store/slices/packingSlice.ts"
+    },
+    {
+      "id": "exports",
+      "capability": "Markdown, CSV and print",
+      "status": "active-with-gaps",
+      "behavior": "Common/Personal filtering and native formats exist, but Family bags can lose exported labels and late/retained print or download can outlive its original scope. Five current-behavior witnesses reproduce these gaps.",
+      "persistence_and_contract": "Read-only client output: reuse the owned live/saved packing publication. No schema or backend write is needed for the selected repair.",
+      "permission_boundary": "Export only the originating admitted visible read scope; current write permission is not a prerequisite for a permitted read export.",
+      "source": "client/src/components/Packing/usePackingExport.ts"
+    }
+  ],
+  "selected_next": "U04-F1 packing export ownership and snapshot repair",
+  "new_database_tables_required_for_selected_next": false,
+  "fresh_proof": {
+    "mocked_native_contract_probes": 33,
+    "healthy_contract_witnesses": 28,
+    "reproduced_gap_witnesses": 5,
+    "catalog_assertions": 20,
+    "catalog_tables": 15,
+    "catalog_functions": 126
+  },
+  "inherited_not_rerun": {
+    "D2c3b_client_tests": 2520,
+    "D2c3b_backend_tests": 66,
+    "D2c3b_real_sdk_cases": 32,
+    "D2c3b_actual_App_browser_observations": 28
+  }
+}

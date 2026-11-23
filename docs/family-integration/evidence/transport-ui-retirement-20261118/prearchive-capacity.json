@@ -1,0 +1,7 @@
+{
+  "available_bytes_after_quality_checks_and_verified_COW_sharing": 1957888000,
+  "previous_complete_archive_bytes": 352812147,
+  "estimated_tar_plus_extract_plus_1GiB": 1779366118,
+  "capacity_estimate_passed": true,
+  "capacity_estimate_not_actual_archive_validation": true
+}

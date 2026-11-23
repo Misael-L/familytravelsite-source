@@ -1,0 +1,14 @@
+{
+  "incoming": "42d56a4d4e3a241529e162ce04e2ec5e523abcd2",
+  "implementation": "7f64a69080dcc9f0a545f8f0a46a7d1352a9a47b",
+  "build_source": "70a794cf0a2fe44c73faee902369f1b0f0e45b1e",
+  "removed_original_sha256": {
+    "client/src/integrations/family/legacy/components/Budget/CostsPanelFamily.tsx": "e21a93f38ccdf8d2212f30baf357c7dd48b144d6320425d924fb7b3b155ac188",
+    "client/src/integrations/family/legacy/components/Budget/CostsPanel.tsx": "823f7eeb8490191f8f29726cc99ab7fbded35ede8697e515bc2a24664d4eaa75"
+  },
+  "prior_runtime_build": "a1bb09c78a25516aafe8b36ed76f885b02cbebe9",
+  "fresh_current_compiler_declarations": 128,
+  "no_old_generated_declaration_identity_assumption": true,
+  "test_runtime": "v24.22.2",
+  "no_hosted_operation": true
+}

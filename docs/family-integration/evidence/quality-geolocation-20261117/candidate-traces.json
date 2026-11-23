@@ -1,0 +1,2655 @@
+{
+  "heading projection: 'webkit wins'": [
+    [
+      "mount",
+      {
+        "mode": "off",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "add",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "add",
+      "deviceorientation",
+      0,
+      null
+    ],
+    [
+      "watch",
+      10,
+      {
+        "enableHighAccuracy": true,
+        "maximumAge": 2000,
+        "timeout": 15000
+      }
+    ],
+    [
+      "before fix",
+      {
+        "mode": "show",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "fix",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 120,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "350",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 87.5,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "smoothed",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 95.625,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "gps zero",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 0,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "clear",
+      10
+    ],
+    [
+      "remove",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "remove",
+      "deviceorientation",
+      0,
+      null
+    ],
+    [
+      "stopped",
+      {
+        "mode": "off",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ]
+  ],
+  "heading projection: 'absolute alpha'": [
+    [
+      "mount",
+      {
+        "mode": "off",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "add",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "add",
+      "deviceorientation",
+      0,
+      null
+    ],
+    [
+      "watch",
+      10,
+      {
+        "enableHighAccuracy": true,
+        "maximumAge": 2000,
+        "timeout": 15000
+      }
+    ],
+    [
+      "before fix",
+      {
+        "mode": "show",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "fix",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 270,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "350",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 290,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "smoothed",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 285,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "gps zero",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 0,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "clear",
+      10
+    ],
+    [
+      "remove",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "remove",
+      "deviceorientation",
+      0,
+      null
+    ],
+    [
+      "stopped",
+      {
+        "mode": "off",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ]
+  ],
+  "heading projection: 'relative alpha'": [
+    [
+      "mount",
+      {
+        "mode": "off",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "add",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "add",
+      "deviceorientation",
+      0,
+      null
+    ],
+    [
+      "watch",
+      10,
+      {
+        "enableHighAccuracy": true,
+        "maximumAge": 2000,
+        "timeout": 15000
+      }
+    ],
+    [
+      "before fix",
+      {
+        "mode": "show",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "fix",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 270,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "350",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 290,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "smoothed",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 285,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "gps zero",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 0,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "clear",
+      10
+    ],
+    [
+      "remove",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "remove",
+      "deviceorientation",
+      0,
+      null
+    ],
+    [
+      "stopped",
+      {
+        "mode": "off",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ]
+  ],
+  "heading projection: 'missing angle'": [
+    [
+      "mount",
+      {
+        "mode": "off",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "add",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "add",
+      "deviceorientation",
+      0,
+      null
+    ],
+    [
+      "watch",
+      10,
+      {
+        "enableHighAccuracy": true,
+        "maximumAge": 2000,
+        "timeout": 15000
+      }
+    ],
+    [
+      "before fix",
+      {
+        "mode": "show",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "fix",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": null,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "350",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 350,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "smoothed",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 350,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "gps zero",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 0,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "clear",
+      10
+    ],
+    [
+      "remove",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "remove",
+      "deviceorientation",
+      0,
+      null
+    ],
+    [
+      "stopped",
+      {
+        "mode": "off",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ]
+  ],
+  "heading projection: 'null alpha'": [
+    [
+      "mount",
+      {
+        "mode": "off",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "add",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "add",
+      "deviceorientation",
+      0,
+      null
+    ],
+    [
+      "watch",
+      10,
+      {
+        "enableHighAccuracy": true,
+        "maximumAge": 2000,
+        "timeout": 15000
+      }
+    ],
+    [
+      "before fix",
+      {
+        "mode": "show",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "fix",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": null,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "350",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 350,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "smoothed",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 350,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "gps zero",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 0,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "clear",
+      10
+    ],
+    [
+      "remove",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "remove",
+      "deviceorientation",
+      0,
+      null
+    ],
+    [
+      "stopped",
+      {
+        "mode": "off",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ]
+  ],
+  "heading projection: 'NaN webkit'": [
+    [
+      "mount",
+      {
+        "mode": "off",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "add",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "add",
+      "deviceorientation",
+      0,
+      null
+    ],
+    [
+      "watch",
+      10,
+      {
+        "enableHighAccuracy": true,
+        "maximumAge": 2000,
+        "timeout": 15000
+      }
+    ],
+    [
+      "before fix",
+      {
+        "mode": "show",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "fix",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": null,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "350",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 350,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "smoothed",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 350,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "gps zero",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 0,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "clear",
+      10
+    ],
+    [
+      "remove",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "remove",
+      "deviceorientation",
+      0,
+      null
+    ],
+    [
+      "stopped",
+      {
+        "mode": "off",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ]
+  ],
+  "heading projection: 'NaN alpha'": [
+    [
+      "mount",
+      {
+        "mode": "off",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "add",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "add",
+      "deviceorientation",
+      0,
+      null
+    ],
+    [
+      "watch",
+      10,
+      {
+        "enableHighAccuracy": true,
+        "maximumAge": 2000,
+        "timeout": 15000
+      }
+    ],
+    [
+      "before fix",
+      {
+        "mode": "show",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "fix",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": null,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "350",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 350,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "smoothed",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 350,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "gps zero",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 0,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "clear",
+      10
+    ],
+    [
+      "remove",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "remove",
+      "deviceorientation",
+      0,
+      null
+    ],
+    [
+      "stopped",
+      {
+        "mode": "off",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ]
+  ],
+  "heading projection: 'non-number webkit'": [
+    [
+      "mount",
+      {
+        "mode": "off",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "add",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "add",
+      "deviceorientation",
+      0,
+      null
+    ],
+    [
+      "watch",
+      10,
+      {
+        "enableHighAccuracy": true,
+        "maximumAge": 2000,
+        "timeout": 15000
+      }
+    ],
+    [
+      "before fix",
+      {
+        "mode": "show",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "fix",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 340,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "350",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 342.5,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "smoothed",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 341.875,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "gps zero",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 0,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "clear",
+      10
+    ],
+    [
+      "remove",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "remove",
+      "deviceorientation",
+      0,
+      null
+    ],
+    [
+      "stopped",
+      {
+        "mode": "off",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ]
+  ],
+  "heading projection: 'zero heading'": [
+    [
+      "mount",
+      {
+        "mode": "off",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "add",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "add",
+      "deviceorientation",
+      0,
+      null
+    ],
+    [
+      "watch",
+      10,
+      {
+        "enableHighAccuracy": true,
+        "maximumAge": 2000,
+        "timeout": 15000
+      }
+    ],
+    [
+      "before fix",
+      {
+        "mode": "show",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "fix",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 0,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "350",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 357.5,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "smoothed",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 358.125,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "gps zero",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 0,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "clear",
+      10
+    ],
+    [
+      "remove",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "remove",
+      "deviceorientation",
+      0,
+      null
+    ],
+    [
+      "stopped",
+      {
+        "mode": "off",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ]
+  ],
+  "heading projection: 'clockwise seam'": [
+    [
+      "mount",
+      {
+        "mode": "off",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "add",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "add",
+      "deviceorientation",
+      0,
+      null
+    ],
+    [
+      "watch",
+      10,
+      {
+        "enableHighAccuracy": true,
+        "maximumAge": 2000,
+        "timeout": 15000
+      }
+    ],
+    [
+      "before fix",
+      {
+        "mode": "show",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "fix",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 10,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "350",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 5,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "smoothed",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 6.25,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "gps zero",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 0,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "clear",
+      10
+    ],
+    [
+      "remove",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "remove",
+      "deviceorientation",
+      0,
+      null
+    ],
+    [
+      "stopped",
+      {
+        "mode": "off",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ]
+  ],
+  "heading projection: 'counterclockwise seam'": [
+    [
+      "mount",
+      {
+        "mode": "off",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "add",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "add",
+      "deviceorientation",
+      0,
+      null
+    ],
+    [
+      "watch",
+      10,
+      {
+        "enableHighAccuracy": true,
+        "maximumAge": 2000,
+        "timeout": 15000
+      }
+    ],
+    [
+      "before fix",
+      {
+        "mode": "show",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "fix",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 350,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "350",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 350,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "smoothed",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 350,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "gps zero",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 0,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "clear",
+      10
+    ],
+    [
+      "remove",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "remove",
+      "deviceorientation",
+      0,
+      null
+    ],
+    [
+      "stopped",
+      {
+        "mode": "off",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ]
+  ],
+  "watch failure/recovery 1": [
+    [
+      "mount",
+      {
+        "mode": "off",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "add",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "add",
+      "deviceorientation",
+      0,
+      null
+    ],
+    [
+      "watch",
+      10,
+      {
+        "enableHighAccuracy": true,
+        "maximumAge": 2000,
+        "timeout": 15000
+      }
+    ],
+    [
+      "clear",
+      10
+    ],
+    [
+      "remove",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "remove",
+      "deviceorientation",
+      0,
+      null
+    ],
+    [
+      "error",
+      {
+        "mode": "off",
+        "position": null,
+        "error": "Location unavailable",
+        "code": "permission-denied"
+      }
+    ],
+    [
+      "late success",
+      {
+        "mode": "off",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": null,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "add",
+      "deviceorientationabsolute",
+      1,
+      null
+    ],
+    [
+      "add",
+      "deviceorientation",
+      1,
+      null
+    ],
+    [
+      "watch",
+      11,
+      {
+        "enableHighAccuracy": true,
+        "maximumAge": 2000,
+        "timeout": 15000
+      }
+    ],
+    [
+      "next cycle",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": null,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "clear",
+      11
+    ],
+    [
+      "remove",
+      "deviceorientationabsolute",
+      1,
+      null
+    ],
+    [
+      "remove",
+      "deviceorientation",
+      1,
+      null
+    ]
+  ],
+  "watch failure/recovery 2": [
+    [
+      "mount",
+      {
+        "mode": "off",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "add",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "add",
+      "deviceorientation",
+      0,
+      null
+    ],
+    [
+      "watch",
+      10,
+      {
+        "enableHighAccuracy": true,
+        "maximumAge": 2000,
+        "timeout": 15000
+      }
+    ],
+    [
+      "error",
+      {
+        "mode": "show",
+        "position": null,
+        "error": "Location unavailable",
+        "code": "unavailable"
+      }
+    ],
+    [
+      "late success",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": null,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "next cycle",
+      {
+        "mode": "follow",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": null,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "clear",
+      10
+    ],
+    [
+      "remove",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "remove",
+      "deviceorientation",
+      0,
+      null
+    ]
+  ],
+  "watch failure/recovery 3": [
+    [
+      "mount",
+      {
+        "mode": "off",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "add",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "add",
+      "deviceorientation",
+      0,
+      null
+    ],
+    [
+      "watch",
+      10,
+      {
+        "enableHighAccuracy": true,
+        "maximumAge": 2000,
+        "timeout": 15000
+      }
+    ],
+    [
+      "error",
+      {
+        "mode": "show",
+        "position": null,
+        "error": "Location unavailable",
+        "code": "timeout"
+      }
+    ],
+    [
+      "late success",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": null,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "next cycle",
+      {
+        "mode": "follow",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": null,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "clear",
+      10
+    ],
+    [
+      "remove",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "remove",
+      "deviceorientation",
+      0,
+      null
+    ]
+  ],
+  "watch failure/recovery 9": [
+    [
+      "mount",
+      {
+        "mode": "off",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "add",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "add",
+      "deviceorientation",
+      0,
+      null
+    ],
+    [
+      "watch",
+      10,
+      {
+        "enableHighAccuracy": true,
+        "maximumAge": 2000,
+        "timeout": 15000
+      }
+    ],
+    [
+      "error",
+      {
+        "mode": "show",
+        "position": null,
+        "error": "Location unavailable",
+        "code": null
+      }
+    ],
+    [
+      "late success",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": null,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "next cycle",
+      {
+        "mode": "follow",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": null,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "clear",
+      10
+    ],
+    [
+      "remove",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "remove",
+      "deviceorientation",
+      0,
+      null
+    ]
+  ],
+  "unavailable capability: missing": [
+    [
+      "mount",
+      {
+        "mode": "off",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "refused",
+      {
+        "mode": "off",
+        "position": null,
+        "error": "Geolocation is not supported in this browser",
+        "code": "unsupported"
+      }
+    ]
+  ],
+  "unavailable capability: insecure": [
+    [
+      "mount",
+      {
+        "mode": "off",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "refused",
+      {
+        "mode": "off",
+        "position": null,
+        "error": "Location requires a secure (HTTPS) connection",
+        "code": "insecure-context"
+      }
+    ]
+  ],
+  "orientation permission: granted": [
+    [
+      "mount",
+      {
+        "mode": "off",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "permission"
+    ],
+    [
+      "add",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "add",
+      "deviceorientation",
+      0,
+      null
+    ],
+    [
+      "watch",
+      10,
+      {
+        "enableHighAccuracy": true,
+        "maximumAge": 2000,
+        "timeout": 15000
+      }
+    ],
+    [
+      "permitted location",
+      {
+        "mode": "show",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "clear",
+      10
+    ],
+    [
+      "remove",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "remove",
+      "deviceorientation",
+      0,
+      null
+    ]
+  ],
+  "orientation permission: denied": [
+    [
+      "mount",
+      {
+        "mode": "off",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "permission"
+    ],
+    [
+      "add",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "add",
+      "deviceorientation",
+      0,
+      null
+    ],
+    [
+      "watch",
+      10,
+      {
+        "enableHighAccuracy": true,
+        "maximumAge": 2000,
+        "timeout": 15000
+      }
+    ],
+    [
+      "permitted location",
+      {
+        "mode": "show",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "clear",
+      10
+    ],
+    [
+      "remove",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "remove",
+      "deviceorientation",
+      0,
+      null
+    ]
+  ],
+  "orientation permission: throw": [
+    [
+      "mount",
+      {
+        "mode": "off",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "permission"
+    ],
+    [
+      "add",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "add",
+      "deviceorientation",
+      0,
+      null
+    ],
+    [
+      "watch",
+      10,
+      {
+        "enableHighAccuracy": true,
+        "maximumAge": 2000,
+        "timeout": 15000
+      }
+    ],
+    [
+      "permitted location",
+      {
+        "mode": "show",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "clear",
+      10
+    ],
+    [
+      "remove",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "remove",
+      "deviceorientation",
+      0,
+      null
+    ]
+  ],
+  "orientation permission: reject": [
+    [
+      "mount",
+      {
+        "mode": "off",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "permission"
+    ],
+    [
+      "add",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "add",
+      "deviceorientation",
+      0,
+      null
+    ],
+    [
+      "watch",
+      10,
+      {
+        "enableHighAccuracy": true,
+        "maximumAge": 2000,
+        "timeout": 15000
+      }
+    ],
+    [
+      "permitted location",
+      {
+        "mode": "show",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "clear",
+      10
+    ],
+    [
+      "remove",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "remove",
+      "deviceorientation",
+      0,
+      null
+    ]
+  ],
+  "pending permission lifetime: 'stop'": [
+    [
+      "mount",
+      {
+        "mode": "off",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "permission"
+    ],
+    [
+      "grant 0",
+      {
+        "mode": "off",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ]
+  ],
+  "pending permission lifetime: 'unmount'": [
+    [
+      "mount",
+      {
+        "mode": "off",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "permission"
+    ],
+    [
+      "grant 0",
+      {
+        "mode": "show",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ]
+  ],
+  "pending permission lifetime: 'restart old first'": [
+    [
+      "mount",
+      {
+        "mode": "off",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "permission"
+    ],
+    [
+      "permission"
+    ],
+    [
+      "grant 0",
+      {
+        "mode": "show",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "add",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "add",
+      "deviceorientation",
+      0,
+      null
+    ],
+    [
+      "watch",
+      10,
+      {
+        "enableHighAccuracy": true,
+        "maximumAge": 2000,
+        "timeout": 15000
+      }
+    ],
+    [
+      "grant 1",
+      {
+        "mode": "show",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "clear",
+      10
+    ],
+    [
+      "remove",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "remove",
+      "deviceorientation",
+      0,
+      null
+    ]
+  ],
+  "pending permission lifetime: 'restart new first'": [
+    [
+      "mount",
+      {
+        "mode": "off",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "permission"
+    ],
+    [
+      "permission"
+    ],
+    [
+      "add",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "add",
+      "deviceorientation",
+      0,
+      null
+    ],
+    [
+      "watch",
+      10,
+      {
+        "enableHighAccuracy": true,
+        "maximumAge": 2000,
+        "timeout": 15000
+      }
+    ],
+    [
+      "grant 1",
+      {
+        "mode": "show",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "grant 0",
+      {
+        "mode": "show",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "clear",
+      10
+    ],
+    [
+      "remove",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "remove",
+      "deviceorientation",
+      0,
+      null
+    ]
+  ],
+  "keeps updater batching, callback identities, listener lifetime and held callbacks": [
+    [
+      "mount",
+      {
+        "mode": "off",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "permission"
+    ],
+    [
+      "add",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "add",
+      "deviceorientation",
+      0,
+      null
+    ],
+    [
+      "watch",
+      10,
+      {
+        "enableHighAccuracy": true,
+        "maximumAge": 2000,
+        "timeout": 15000
+      }
+    ],
+    [
+      "batched",
+      {
+        "mode": "follow",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "clear",
+      10
+    ],
+    [
+      "remove",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "remove",
+      "deviceorientation",
+      0,
+      null
+    ],
+    [
+      "permission"
+    ],
+    [
+      "add",
+      "deviceorientationabsolute",
+      1,
+      null
+    ],
+    [
+      "add",
+      "deviceorientation",
+      1,
+      null
+    ],
+    [
+      "watch",
+      11,
+      {
+        "enableHighAccuracy": true,
+        "maximumAge": 2000,
+        "timeout": 15000
+      }
+    ],
+    [
+      "old success during new watch",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 90,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "old error during new watch",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 90,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": "test failure",
+        "code": "timeout"
+      }
+    ],
+    [
+      "new success",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": null,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "clear",
+      11
+    ],
+    [
+      "remove",
+      "deviceorientationabsolute",
+      1,
+      null
+    ],
+    [
+      "remove",
+      "deviceorientation",
+      1,
+      null
+    ],
+    [
+      "unmounted",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": null,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ]
+  ],
+  "retains property-read order for native orientation event getters": [
+    [
+      "mount",
+      {
+        "mode": "off",
+        "position": null,
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "add",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "add",
+      "deviceorientation",
+      0,
+      null
+    ],
+    [
+      "watch",
+      10,
+      {
+        "enableHighAccuracy": true,
+        "maximumAge": 2000,
+        "timeout": 15000
+      }
+    ],
+    [
+      "get",
+      "webkitCompassHeading",
+      null
+    ],
+    [
+      "get",
+      "absolute",
+      true
+    ],
+    [
+      "get",
+      "alpha",
+      90
+    ],
+    [
+      "get",
+      "alpha",
+      100
+    ],
+    [
+      "getter heading",
+      {
+        "mode": "show",
+        "position": {
+          "lat": 19.04,
+          "lng": -98.19,
+          "accuracy": 12,
+          "heading": 260,
+          "speed": null,
+          "timestamp": 123
+        },
+        "error": null,
+        "code": null
+      }
+    ],
+    [
+      "clear",
+      10
+    ],
+    [
+      "remove",
+      "deviceorientationabsolute",
+      0,
+      null
+    ],
+    [
+      "remove",
+      "deviceorientation",
+      0,
+      null
+    ]
+  ],
+  "one-shot contract null": [
+    [
+      "once options",
+      {
+        "enableHighAccuracy": false,
+        "maximumAge": 17,
+        "timeout": 19
+      },
+      true
+    ],
+    [
+      "resolved",
+      {
+        "lat": 19.04,
+        "lng": -98.19,
+        "accuracy": 12,
+        "heading": 0,
+        "speed": null,
+        "timestamp": 123
+      }
+    ]
+  ],
+  "one-shot contract 0": [
+    [
+      "once options",
+      {
+        "enableHighAccuracy": false,
+        "maximumAge": 17,
+        "timeout": 19
+      },
+      true
+    ],
+    [
+      "rejected",
+      true,
+      "GeoOnceError",
+      "unavailable",
+      "test failure"
+    ]
+  ],
+  "one-shot contract 1": [
+    [
+      "once options",
+      {
+        "enableHighAccuracy": false,
+        "maximumAge": 17,
+        "timeout": 19
+      },
+      true
+    ],
+    [
+      "rejected",
+      true,
+      "GeoOnceError",
+      "permission-denied",
+      "test failure"
+    ]
+  ],
+  "one-shot contract 2": [
+    [
+      "once options",
+      {
+        "enableHighAccuracy": false,
+        "maximumAge": 17,
+        "timeout": 19
+      },
+      true
+    ],
+    [
+      "rejected",
+      true,
+      "GeoOnceError",
+      "unavailable",
+      "test failure"
+    ]
+  ],
+  "one-shot contract 3": [
+    [
+      "once options",
+      {
+        "enableHighAccuracy": false,
+        "maximumAge": 17,
+        "timeout": 19
+      },
+      true
+    ],
+    [
+      "rejected",
+      true,
+      "GeoOnceError",
+      "timeout",
+      "test failure"
+    ]
+  ],
+  "one-shot contract 9": [
+    [
+      "once options",
+      {
+        "enableHighAccuracy": false,
+        "maximumAge": 17,
+        "timeout": 19
+      },
+      true
+    ],
+    [
+      "rejected",
+      true,
+      "GeoOnceError",
+      "unavailable",
+      "test failure"
+    ]
+  ]
+}

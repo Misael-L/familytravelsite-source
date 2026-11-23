@@ -1,0 +1,25 @@
+{
+  "all_nine_commands_executed_and_rechecked_after_repair": true,
+  "passed": false,
+  "passed_commands": [
+    "pages",
+    "layers",
+    "skips"
+  ],
+  "failed_commands": [
+    "strict",
+    "rtl",
+    "offline",
+    "dup",
+    "pairs",
+    "i18n-keys"
+  ],
+  "strict_total_before_after": [
+    701,
+    637
+  ],
+  "strict_diagnostics_resolved": 64,
+  "other_eight_failure_outputs_byte_exact": true,
+  "baseline_policy_scanner_threshold_or_exclusion_changes": false,
+  "full_CI_or_release_acceptance": false
+}

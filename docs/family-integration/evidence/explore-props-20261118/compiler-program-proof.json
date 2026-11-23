@@ -1,0 +1,120 @@
+{
+  "passed": true,
+  "actual_program_roots_before_after": [
+    5077,
+    5077
+  ],
+  "actual_program_sources_before_after": [
+    10259,
+    10260
+  ],
+  "only_program_source_addition": "client/src/integrations/family/legacy/components/Explore/ExploreEntityDetailPanel.types.ts",
+  "only_changed_existing_program_source": "client/src/integrations/family/legacy/components/Explore/ExploreEntityDetailPanel.tsx",
+  "every_other_compiler_source_name_and_byte_exact": true,
+  "original_named_type_export_resolves_to_identical_effective_type": true,
+  "default_component_call_parameter_and_return_types_exact": true,
+  "all_properties_optionality_readonly_and_callback_signatures_preserved": true,
+  "selected_boundary_semantic_syntactic_diagnostics_before_after": [
+    0,
+    0
+  ],
+  "ordinary_and_explicit_boundary_consumer_programs_reviewed": true,
+  "no_ambient_augmentation_or_runtime_import_in_new_type_module": true,
+  "component_emitted_bytes_exact": true,
+  "emitted_sha256": "5ee17f62cbc6bb8fdcac3ea8104031ac70895a87d4a152d51c529e5e04a3136c",
+  "props_contract": [
+    {
+      "name": "default",
+      "type": "({ kind, entityId, onBack, tripId, canMutate, writeMode, nextSortOrder, stageOp, tripPlaceIds, days, scheduleItems, onItineraryChanged, familyId, personId, }: ExploreEntityDetailPanelProps) => ReactElement<unknown, string | JSXElementConstructor<any>>",
+      "properties": [],
+      "call_signatures": [
+        {
+          "parameters": [
+            {
+              "name": "__0",
+              "type": "{ kind: ExploreCatalogKind; entityId: string; onBack: () => void; tripId: string; canMutate: boolean; writeMode?: \"direct\" | \"draft\" | \"nudge\" | \"deny\"; nextSortOrder?: number; stageOp?: StageExploreOp; tripPlaceIds: readonly string[]; days: FamilyTripDay[]; scheduleItems: FamilyScheduleItem[]; onItineraryChanged: () => Promise<void>; familyId: string; personId: string; }"
+            }
+          ],
+          "return_type": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        }
+      ]
+    },
+    {
+      "name": "ExploreEntityDetailPanelProps",
+      "type": "{ kind: ExploreCatalogKind; entityId: string; onBack: () => void; tripId: string; canMutate: boolean; writeMode?: \"direct\" | \"draft\" | \"nudge\" | \"deny\"; nextSortOrder?: number; stageOp?: StageExploreOp; tripPlaceIds: readonly string[]; days: FamilyTripDay[]; scheduleItems: FamilyScheduleItem[]; onItineraryChanged: () => Promise<void>; familyId: string; personId: string; }",
+      "properties": [
+        {
+          "name": "kind",
+          "optional": false,
+          "type": "\"place\" | \"experience\" | \"food\" | \"hotel\""
+        },
+        {
+          "name": "entityId",
+          "optional": false,
+          "type": "string"
+        },
+        {
+          "name": "onBack",
+          "optional": false,
+          "type": "() => void"
+        },
+        {
+          "name": "tripId",
+          "optional": false,
+          "type": "string"
+        },
+        {
+          "name": "canMutate",
+          "optional": false,
+          "type": "boolean"
+        },
+        {
+          "name": "writeMode",
+          "optional": true,
+          "type": "\"direct\" | \"draft\" | \"nudge\" | \"deny\""
+        },
+        {
+          "name": "nextSortOrder",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "stageOp",
+          "optional": true,
+          "type": "(input: { module: \"trip_place\" | \"plan_item\" | \"reservation\"; op: \"add\"; payload: TripChangeOpPayload; tripDayId?: string; civilDate?: string; targetTable?: string; sortOrder?: number; }) => Promise<boolean>"
+        },
+        {
+          "name": "tripPlaceIds",
+          "optional": false,
+          "type": "readonly string[]"
+        },
+        {
+          "name": "days",
+          "optional": false,
+          "type": "FamilyTripDay[]"
+        },
+        {
+          "name": "scheduleItems",
+          "optional": false,
+          "type": "FamilyScheduleItem[]"
+        },
+        {
+          "name": "onItineraryChanged",
+          "optional": false,
+          "type": "() => Promise<void>"
+        },
+        {
+          "name": "familyId",
+          "optional": false,
+          "type": "string"
+        },
+        {
+          "name": "personId",
+          "optional": false,
+          "type": "string"
+        }
+      ],
+      "call_signatures": []
+    }
+  ]
+}

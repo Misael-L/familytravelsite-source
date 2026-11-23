@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "implementation": "84e722d1c5a760bfca263f0c69fea3d568550eff",
+  "one_existing_addition_updated": "client/src/components/Collections/collectionSharingState.ts",
+  "new_additions": [
+    "client/src/repo/collectionSharingRepo.ts",
+    "client/src/repo/collectionSharingRepo.test.ts",
+    "client/src/components/Collections/collectionSharing.read-boundary.test.tsx"
+  ],
+  "all_prior_other_addition_rows_exact": true,
+  "all_native_exception_rows_exact": true,
+  "no_policy_or_baseline_change": true
+}

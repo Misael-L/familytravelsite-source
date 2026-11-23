@@ -1,0 +1,35 @@
+{
+  "exit": 0,
+  "seconds": 7.5,
+  "files": [
+    "src/components/Collections/useCollectionSharing.test.ts",
+    "src/components/Collections/ShareCollectionModal.test.tsx",
+    "src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+    "src/components/Collections/collectionSharing.consumers.test.tsx",
+    "src/components/Collections/collectionSharing.gates.test.ts"
+  ],
+  "command": [
+    "/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/node_modules/.bin/vitest",
+    "run",
+    "src/components/Collections/useCollectionSharing.test.ts",
+    "src/components/Collections/ShareCollectionModal.test.tsx",
+    "src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+    "src/components/Collections/collectionSharing.consumers.test.tsx",
+    "src/components/Collections/collectionSharing.gates.test.ts",
+    "--maxWorkers=2",
+    "--reporter=default",
+    "--reporter=json",
+    "--outputFile=/private/tmp/trek-core-collection-sharing-source-20261118/candidate-tests.json",
+    "--coverage.enabled",
+    "--coverage.include=src/components/Collections/useCollectionSharing.ts",
+    "--coverage.include=src/components/Collections/collectionSharingState.ts",
+    "--coverage.reporter=json",
+    "--coverage.reporter=json-summary",
+    "--coverage.reporter=text",
+    "--coverage.reportsDirectory=/private/tmp/trek-core-collection-sharing-source-20261118/candidate-coverage"
+  ],
+  "thresholds_unchanged": 85,
+  "numPassedTests": 78,
+  "numFailedTests": 0,
+  "numTotalTests": 78
+}

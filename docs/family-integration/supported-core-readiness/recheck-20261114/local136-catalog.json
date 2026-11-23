@@ -1,0 +1,4899 @@
+{
+  "tables": [
+    {
+      "name": "journey_entries",
+      "schema": "public",
+      "row_security": true,
+      "force_row_security": false,
+      "authenticated_delete": false,
+      "authenticated_insert": false,
+      "authenticated_select": true,
+      "authenticated_update": false,
+      "authenticated_truncate": false
+    },
+    {
+      "name": "journeys",
+      "schema": "public",
+      "row_security": true,
+      "force_row_security": false,
+      "authenticated_delete": false,
+      "authenticated_insert": false,
+      "authenticated_select": true,
+      "authenticated_update": false,
+      "authenticated_truncate": false
+    },
+    {
+      "name": "list_items",
+      "schema": "public",
+      "row_security": true,
+      "force_row_security": false,
+      "authenticated_delete": false,
+      "authenticated_insert": false,
+      "authenticated_select": true,
+      "authenticated_update": false,
+      "authenticated_truncate": false
+    },
+    {
+      "name": "lists",
+      "schema": "public",
+      "row_security": true,
+      "force_row_security": false,
+      "authenticated_delete": false,
+      "authenticated_insert": false,
+      "authenticated_select": true,
+      "authenticated_update": false,
+      "authenticated_truncate": false
+    },
+    {
+      "name": "media_assets",
+      "schema": "public",
+      "row_security": true,
+      "force_row_security": false,
+      "authenticated_delete": false,
+      "authenticated_insert": false,
+      "authenticated_select": true,
+      "authenticated_update": false,
+      "authenticated_truncate": false
+    },
+    {
+      "name": "packing_bags",
+      "schema": "public",
+      "row_security": true,
+      "force_row_security": false,
+      "authenticated_delete": false,
+      "authenticated_insert": false,
+      "authenticated_select": true,
+      "authenticated_update": false,
+      "authenticated_truncate": false
+    },
+    {
+      "name": "packing_items",
+      "schema": "public",
+      "row_security": true,
+      "force_row_security": false,
+      "authenticated_delete": false,
+      "authenticated_insert": false,
+      "authenticated_select": true,
+      "authenticated_update": false,
+      "authenticated_truncate": false
+    },
+    {
+      "name": "schedule_items",
+      "schema": "public",
+      "row_security": true,
+      "force_row_security": false,
+      "authenticated_delete": true,
+      "authenticated_insert": false,
+      "authenticated_select": true,
+      "authenticated_update": false,
+      "authenticated_truncate": false
+    },
+    {
+      "name": "todo_items",
+      "schema": "public",
+      "row_security": true,
+      "force_row_security": false,
+      "authenticated_delete": false,
+      "authenticated_insert": false,
+      "authenticated_select": true,
+      "authenticated_update": false,
+      "authenticated_truncate": false
+    },
+    {
+      "name": "trip_days",
+      "schema": "public",
+      "row_security": true,
+      "force_row_security": false,
+      "authenticated_delete": true,
+      "authenticated_insert": true,
+      "authenticated_select": true,
+      "authenticated_update": true,
+      "authenticated_truncate": false
+    },
+    {
+      "name": "trip_expenses",
+      "schema": "public",
+      "row_security": true,
+      "force_row_security": false,
+      "authenticated_delete": true,
+      "authenticated_insert": true,
+      "authenticated_select": true,
+      "authenticated_update": true,
+      "authenticated_truncate": false
+    },
+    {
+      "name": "trip_file_links",
+      "schema": "public",
+      "row_security": true,
+      "force_row_security": false,
+      "authenticated_delete": false,
+      "authenticated_insert": false,
+      "authenticated_select": true,
+      "authenticated_update": false,
+      "authenticated_truncate": false
+    },
+    {
+      "name": "trip_files",
+      "schema": "public",
+      "row_security": true,
+      "force_row_security": false,
+      "authenticated_delete": false,
+      "authenticated_insert": false,
+      "authenticated_select": true,
+      "authenticated_update": false,
+      "authenticated_truncate": false
+    },
+    {
+      "name": "trip_plan_locations",
+      "schema": "public",
+      "row_security": true,
+      "force_row_security": false,
+      "authenticated_delete": false,
+      "authenticated_insert": false,
+      "authenticated_select": true,
+      "authenticated_update": false,
+      "authenticated_truncate": false
+    },
+    {
+      "name": "trip_reservations",
+      "schema": "public",
+      "row_security": true,
+      "force_row_security": false,
+      "authenticated_delete": true,
+      "authenticated_insert": true,
+      "authenticated_select": true,
+      "authenticated_update": true,
+      "authenticated_truncate": false
+    },
+    {
+      "name": "trip_stays",
+      "schema": "public",
+      "row_security": true,
+      "force_row_security": false,
+      "authenticated_delete": false,
+      "authenticated_insert": false,
+      "authenticated_select": true,
+      "authenticated_update": false,
+      "authenticated_truncate": false
+    },
+    {
+      "name": "trips",
+      "schema": "public",
+      "row_security": true,
+      "force_row_security": false,
+      "authenticated_delete": false,
+      "authenticated_insert": false,
+      "authenticated_select": true,
+      "authenticated_update": false,
+      "authenticated_truncate": false
+    }
+  ],
+  "functions": [
+    {
+      "name": "add_family_journey_member",
+      "owner": "postgres",
+      "arguments": "p_journey_id uuid, p_person_id uuid, p_role journey_member_role",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_journey_id",
+        "p_person_id",
+        "p_role"
+      ],
+      "definition_md5": "55903a928f2a70deadb22accbdce884b",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_journey_id uuid, p_person_id uuid, p_role journey_member_role",
+      "authenticated_execute": true
+    },
+    {
+      "name": "add_list_item",
+      "owner": "postgres",
+      "arguments": "p_list_id uuid, p_kind list_item_kind, p_entity_id uuid, p_status list_item_status DEFAULT 'idea'::list_item_status",
+      "result_type": "uuid",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_list_id",
+        "p_kind",
+        "p_entity_id",
+        "p_status"
+      ],
+      "definition_md5": "e84eba8062f3e915d173dcb684965a38",
+      "security_definer": true,
+      "default_arguments": 1,
+      "identity_arguments": "p_list_id uuid, p_kind list_item_kind, p_entity_id uuid, p_status list_item_status",
+      "authenticated_execute": true
+    },
+    {
+      "name": "apply_packing_template",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_template_id uuid",
+      "result_type": "integer",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_template_id"
+      ],
+      "definition_md5": "84ff2fb6579c60e52e49ffaa966674aa",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_template_id uuid",
+      "authenticated_execute": false
+    },
+    {
+      "name": "archive_family_journey",
+      "owner": "postgres",
+      "arguments": "p_journey_id uuid, p_archived boolean DEFAULT true",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_journey_id",
+        "p_archived"
+      ],
+      "definition_md5": "f143a30905067ad7bc8230df644b85e3",
+      "security_definer": true,
+      "default_arguments": 1,
+      "identity_arguments": "p_journey_id uuid, p_archived boolean",
+      "authenticated_execute": true
+    },
+    {
+      "name": "archive_family_list",
+      "owner": "postgres",
+      "arguments": "p_list_id uuid",
+      "result_type": "void",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_list_id"
+      ],
+      "definition_md5": "3cc039b40f4461ba0b1252f610db7dc3",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_list_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "arrange_family_native_visits_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_plan jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id",
+        "p_scope",
+        "p_plan"
+      ],
+      "definition_md5": "1ca0c8289a469beb220f4a93eab94cea",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_plan jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "attach_family_journey_entry_media",
+      "owner": "postgres",
+      "arguments": "p_entry_id uuid, p_journey_media_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_entry_id",
+        "p_journey_media_id"
+      ],
+      "definition_md5": "24ec072b126fc7119adc8765b8cb7e54",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_entry_id uuid, p_journey_media_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "bridge_family_trip_destinations_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_operation_id uuid, p_expected_revision bigint, p_destinations jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id",
+        "p_expected_revision",
+        "p_destinations"
+      ],
+      "definition_md5": "86983abd3ed8222cbd3beaac98c5dafa",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid, p_expected_revision bigint, p_destinations jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "can_decide_proposal",
+      "owner": "postgres",
+      "arguments": "p_proposal_id uuid",
+      "result_type": "boolean",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_proposal_id"
+      ],
+      "definition_md5": "c718e887d9ad3ca300ea4e71a91cd6ea",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_proposal_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "can_draft_trip_changes",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid",
+      "result_type": "boolean",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_trip_id"
+      ],
+      "definition_md5": "4e4e319acb6133b818213348bd22a2c6",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "can_escalate_proposal",
+      "owner": "postgres",
+      "arguments": "p_proposal_id uuid",
+      "result_type": "boolean",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_proposal_id"
+      ],
+      "definition_md5": "86b6353ecf468b66fa169dab1c17e4a0",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_proposal_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "can_mutate_trip",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid",
+      "result_type": "boolean",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_trip_id"
+      ],
+      "definition_md5": "549958a6333948bc7e5145398fe5f836",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "can_trip_action_direct",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_capability_key text",
+      "result_type": "boolean",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_capability_key"
+      ],
+      "definition_md5": "c246e0107790c62dbe3e751c49f50f78",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_capability_key text",
+      "authenticated_execute": true
+    },
+    {
+      "name": "cancel_family_native_stay_v1",
+      "owner": "postgres",
+      "arguments": "p_command jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_command"
+      ],
+      "definition_md5": "83bcc59293f65ee79e71aa8405f5225d",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_command jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "cancel_family_stay_bundle_v1",
+      "owner": "postgres",
+      "arguments": "p_command jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_command"
+      ],
+      "definition_md5": "92b59e6e0fc1b53b165b6c4bf26a16a1",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_command jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "cancel_family_stay_command_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_stay_id uuid, p_operation_id uuid, p_scope jsonb, p_observation jsonb, p_action text, p_changes jsonb, p_reservation_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_stay_id",
+        "p_operation_id",
+        "p_scope",
+        "p_observation",
+        "p_action",
+        "p_changes",
+        "p_reservation_id"
+      ],
+      "definition_md5": "9c91ca0187de233e59cc3af8769dbee7",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_stay_id uuid, p_operation_id uuid, p_scope jsonb, p_observation jsonb, p_action text, p_changes jsonb, p_reservation_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "cancel_family_trip_packing_bag_command_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_operation_id uuid, p_original_args jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id",
+        "p_original_args"
+      ],
+      "definition_md5": "60283c9a7f7514883f7d961480ab7cc7",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid, p_original_args jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "cancel_family_trip_packing_restore_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_operation_id uuid, p_protocol text, p_original_args jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id",
+        "p_protocol",
+        "p_original_args"
+      ],
+      "definition_md5": "948b1837d8965103b968045452ed1c8a",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid, p_protocol text, p_original_args jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "cast_proposal_vote",
+      "owner": "postgres",
+      "arguments": "p_proposal_id uuid, p_vote vote_choice",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_proposal_id",
+        "p_vote"
+      ],
+      "definition_md5": "478bf4dd5fd945eb0bbc4880d80bf37c",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_proposal_id uuid, p_vote vote_choice",
+      "authenticated_execute": true
+    },
+    {
+      "name": "catalog_media_urls",
+      "owner": "postgres",
+      "arguments": "p_entity_kind text, p_entity_ids uuid[], p_limit_per integer DEFAULT 3",
+      "result_type": "TABLE(entity_id uuid, \"position\" integer, public_url text)",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_entity_kind",
+        "p_entity_ids",
+        "p_limit_per",
+        "entity_id",
+        "position",
+        "public_url"
+      ],
+      "definition_md5": "47109456fed149b9e3e75ff6703f0def",
+      "security_definer": true,
+      "default_arguments": 1,
+      "identity_arguments": "p_entity_kind text, p_entity_ids uuid[], p_limit_per integer",
+      "authenticated_execute": true
+    },
+    {
+      "name": "catalog_media_variants",
+      "owner": "postgres",
+      "arguments": "p_entity_kind text, p_entity_ids uuid[], p_limit_per integer DEFAULT 3, p_recipe text DEFAULT 'v1'::text",
+      "result_type": "TABLE(entity_id uuid, \"position\" integer, media_asset_id uuid, public_url text, thumb_url text, hero_url text, recipe_version text)",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_entity_kind",
+        "p_entity_ids",
+        "p_limit_per",
+        "p_recipe",
+        "entity_id",
+        "position",
+        "media_asset_id",
+        "public_url",
+        "thumb_url",
+        "hero_url",
+        "recipe_version"
+      ],
+      "definition_md5": "6fb688181bfde80104b68af9ef1b7a16",
+      "security_definer": true,
+      "default_arguments": 2,
+      "identity_arguments": "p_entity_kind text, p_entity_ids uuid[], p_limit_per integer, p_recipe text",
+      "authenticated_execute": true
+    },
+    {
+      "name": "catalog_media_variants_for_assets",
+      "owner": "postgres",
+      "arguments": "p_media_ids uuid[], p_recipe text DEFAULT 'v1'::text",
+      "result_type": "TABLE(media_asset_id uuid, public_url text, thumb_url text, hero_url text, recipe_version text)",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_media_ids",
+        "p_recipe",
+        "media_asset_id",
+        "public_url",
+        "thumb_url",
+        "hero_url",
+        "recipe_version"
+      ],
+      "definition_md5": "78a9cc0c872db40853e305edea75b421",
+      "security_definer": true,
+      "default_arguments": 1,
+      "identity_arguments": "p_media_ids uuid[], p_recipe text",
+      "authenticated_execute": true
+    },
+    {
+      "name": "classify_family_trip_visit_untimed_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_operation_id uuid, p_visit_id uuid, p_expected_revision bigint, p_payload jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id",
+        "p_visit_id",
+        "p_expected_revision",
+        "p_payload"
+      ],
+      "definition_md5": "07334710f8b0a345624545885a44eb4e",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid, p_visit_id uuid, p_expected_revision bigint, p_payload jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "count_my_unread_notifications",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id"
+      ],
+      "definition_md5": "3039be9a75d2e76b3c4771afb10d7e8a",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "create_family_journey",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid, p_title text, p_subtitle text DEFAULT NULL::text, p_trip_ids uuid[] DEFAULT '{}'::uuid[]",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_title",
+        "p_subtitle",
+        "p_trip_ids"
+      ],
+      "definition_md5": "7cdae4831f9477afd9d4b01708d0639c",
+      "security_definer": true,
+      "default_arguments": 2,
+      "identity_arguments": "p_family_id uuid, p_title text, p_subtitle text, p_trip_ids uuid[]",
+      "authenticated_execute": true
+    },
+    {
+      "name": "create_family_list",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid, p_name text, p_visibility list_visibility DEFAULT 'private'::list_visibility, p_description text DEFAULT NULL::text, p_color text DEFAULT NULL::text",
+      "result_type": "uuid",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_name",
+        "p_visibility",
+        "p_description",
+        "p_color"
+      ],
+      "definition_md5": "fe50a438b3bfc55e492409e55e680700",
+      "security_definer": true,
+      "default_arguments": 3,
+      "identity_arguments": "p_family_id uuid, p_name text, p_visibility list_visibility, p_description text, p_color text",
+      "authenticated_execute": true
+    },
+    {
+      "name": "create_family_native_plan_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_form jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id",
+        "p_scope",
+        "p_form"
+      ],
+      "definition_md5": "f4b522015d74ecf9e028c567456b4868",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_form jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "create_family_stay_bundle_v1",
+      "owner": "postgres",
+      "arguments": "p_command jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_command"
+      ],
+      "definition_md5": "fc073c5c22f1e8372f999462bc627ca6",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_command jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "create_family_trip_plan_entry_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_operation_id uuid, p_payload jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id",
+        "p_payload"
+      ],
+      "definition_md5": "70bd48d51aa84ea3a727c2690a3f1679",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid, p_payload jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "create_trip_proposal",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid, p_title text, p_notes text DEFAULT NULL::text, p_start_at timestamp with time zone DEFAULT NULL::timestamp with time zone, p_end_at timestamp with time zone DEFAULT NULL::timestamp with time zone, p_country_ids uuid[] DEFAULT '{}'::uuid[], p_place_ids uuid[] DEFAULT '{}'::uuid[], p_traveler_person_ids uuid[] DEFAULT '{}'::uuid[], p_primary_country_id uuid DEFAULT NULL::uuid, p_occasion trip_occasion DEFAULT 'trip'::trip_occasion, p_cover_url text DEFAULT NULL::text, p_reminder_days integer DEFAULT 3",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_title",
+        "p_notes",
+        "p_start_at",
+        "p_end_at",
+        "p_country_ids",
+        "p_place_ids",
+        "p_traveler_person_ids",
+        "p_primary_country_id",
+        "p_occasion",
+        "p_cover_url",
+        "p_reminder_days"
+      ],
+      "definition_md5": "469144ccf0ffe3cff4c2a8835157a376",
+      "security_definer": true,
+      "default_arguments": 10,
+      "identity_arguments": "p_family_id uuid, p_title text, p_notes text, p_start_at timestamp with time zone, p_end_at timestamp with time zone, p_country_ids uuid[], p_place_ids uuid[], p_traveler_person_ids uuid[], p_primary_country_id uuid, p_occasion trip_occasion, p_cover_url text, p_reminder_days integer",
+      "authenticated_execute": true
+    },
+    {
+      "name": "decide_calendar_access",
+      "owner": "postgres",
+      "arguments": "p_id uuid, p_approve boolean",
+      "result_type": "void",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_id",
+        "p_approve"
+      ],
+      "definition_md5": "98be25f417656dfda3476e98a4235765",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_id uuid, p_approve boolean",
+      "authenticated_execute": true
+    },
+    {
+      "name": "decide_trip_proposal",
+      "owner": "postgres",
+      "arguments": "p_proposal_id uuid, p_accept boolean, p_decision_summary text DEFAULT NULL::text, p_confirm_advisory_all_no boolean DEFAULT false",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_proposal_id",
+        "p_accept",
+        "p_decision_summary",
+        "p_confirm_advisory_all_no"
+      ],
+      "definition_md5": "f2085ae0310becb999e4dc272f5ed6f2",
+      "security_definer": true,
+      "default_arguments": 2,
+      "identity_arguments": "p_proposal_id uuid, p_accept boolean, p_decision_summary text, p_confirm_advisory_all_no boolean",
+      "authenticated_execute": true
+    },
+    {
+      "name": "delete_family_journey",
+      "owner": "postgres",
+      "arguments": "p_journey_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_journey_id"
+      ],
+      "definition_md5": "9800d80882dcf73fec64e0642f75c7c3",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_journey_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "delete_family_journey_entry",
+      "owner": "postgres",
+      "arguments": "p_entry_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_entry_id"
+      ],
+      "definition_md5": "30451397add7532c16f11b60151a097d",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_entry_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "delete_family_journey_media",
+      "owner": "postgres",
+      "arguments": "p_journey_media_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_journey_media_id"
+      ],
+      "definition_md5": "aca6dbd5683b1b9fbadd1f6007fcf6ed",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_journey_media_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "delete_family_packing_template",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid, p_template_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_template_id"
+      ],
+      "definition_md5": "635fd43200e7343f03de84e283f54832",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid, p_template_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "delete_family_place_category",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid, p_category_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_category_id"
+      ],
+      "definition_md5": "16de7e08d2b8b52c3a2336597d02ee8e",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid, p_category_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "delete_trip_change_draft_op",
+      "owner": "postgres",
+      "arguments": "p_op_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_op_id"
+      ],
+      "definition_md5": "940dbe6a6bba27e352ce5ca37c208f39",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_op_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "deny_access_request",
+      "owner": "postgres",
+      "arguments": "p_request_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_request_id"
+      ],
+      "definition_md5": "6cd914ec6241f5856442cd081848fc64",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_request_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "detach_family_journey_entry_media",
+      "owner": "postgres",
+      "arguments": "p_entry_id uuid, p_journey_media_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_entry_id",
+        "p_journey_media_id"
+      ],
+      "definition_md5": "64b7254209b66cadc761823a2adaa9b7",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_entry_id uuid, p_journey_media_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "dismiss_all_notifications",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id"
+      ],
+      "definition_md5": "225d5deb58c1be6f82eee8cb787ad933",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "dismiss_notifications",
+      "owner": "postgres",
+      "arguments": "p_ids uuid[]",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_ids"
+      ],
+      "definition_md5": "fd53b6a3284fc30c2a686ecfa5a346fc",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_ids uuid[]",
+      "authenticated_execute": true
+    },
+    {
+      "name": "duplicate_trip",
+      "owner": "postgres",
+      "arguments": "p_source_trip_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_source_trip_id"
+      ],
+      "definition_md5": "ee2a9fa9c359d0c721a9e48497dd114b",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_source_trip_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "ensure_packing_defaults",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid",
+      "result_type": "integer",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_trip_id"
+      ],
+      "definition_md5": "7dd4cf17070142cf7efbc0213d5764b5",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid",
+      "authenticated_execute": false
+    },
+    {
+      "name": "ensure_trip_change_draft",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid",
+      "result_type": "uuid",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_trip_id"
+      ],
+      "definition_md5": "7fbbf861fa5311162cea2db0bbddd785",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "escalate_trip_proposal",
+      "owner": "postgres",
+      "arguments": "p_proposal_id uuid, p_branch_ids uuid[] DEFAULT '{}'::uuid[], p_person_ids uuid[] DEFAULT '{}'::uuid[], p_note text DEFAULT NULL::text",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_proposal_id",
+        "p_branch_ids",
+        "p_person_ids",
+        "p_note"
+      ],
+      "definition_md5": "897f4d42bb99813922beca8aa586a27f",
+      "security_definer": true,
+      "default_arguments": 3,
+      "identity_arguments": "p_proposal_id uuid, p_branch_ids uuid[], p_person_ids uuid[], p_note text",
+      "authenticated_execute": true
+    },
+    {
+      "name": "execute_family_native_stay_v1",
+      "owner": "postgres",
+      "arguments": "p_command jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_command"
+      ],
+      "definition_md5": "13eb18e4602217579ac43404999523c2",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_command jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "execute_family_plan_governance_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_action text, p_target_id uuid, p_observation jsonb, p_parameters jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id",
+        "p_scope",
+        "p_action",
+        "p_target_id",
+        "p_observation",
+        "p_parameters"
+      ],
+      "definition_md5": "8332ede677104a0df8f2908cb20a5139",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_action text, p_target_id uuid, p_observation jsonb, p_parameters jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "execute_family_trip_packing_bag_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_action text, p_target_id uuid, p_expected_revision bigint, p_expected_collection_revision bigint, p_observed jsonb, p_values jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id",
+        "p_scope",
+        "p_action",
+        "p_target_id",
+        "p_expected_revision",
+        "p_expected_collection_revision",
+        "p_observed",
+        "p_values"
+      ],
+      "definition_md5": "7ca9948ee75fe6639d6303493e7b4073",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_action text, p_target_id uuid, p_expected_revision bigint, p_expected_collection_revision bigint, p_observed jsonb, p_values jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "execute_family_trip_packing_category_aggregate_v3",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_action text, p_target_id uuid, p_expected_collection_revision bigint, p_observed jsonb, p_values jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id",
+        "p_scope",
+        "p_action",
+        "p_target_id",
+        "p_expected_collection_revision",
+        "p_observed",
+        "p_values"
+      ],
+      "definition_md5": "febdc9b66f4c9211354b7e0b7f5ed6e4",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_action text, p_target_id uuid, p_expected_collection_revision bigint, p_observed jsonb, p_values jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "execute_family_trip_packing_category_item_v2",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_action text, p_target_id uuid, p_expected_revision bigint, p_expected_collection_revision bigint, p_category_id uuid, p_observed_category jsonb, p_values jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id",
+        "p_scope",
+        "p_action",
+        "p_target_id",
+        "p_expected_revision",
+        "p_expected_collection_revision",
+        "p_category_id",
+        "p_observed_category",
+        "p_values"
+      ],
+      "definition_md5": "3c08abadd269289efe2d2a59ee9cfa68",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_action text, p_target_id uuid, p_expected_revision bigint, p_expected_collection_revision bigint, p_category_id uuid, p_observed_category jsonb, p_values jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "execute_family_trip_packing_category_lifecycle_v2",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_action text, p_target_id uuid, p_expected_collection_revision bigint, p_observed_category jsonb, p_values jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id",
+        "p_scope",
+        "p_action",
+        "p_target_id",
+        "p_expected_collection_revision",
+        "p_observed_category",
+        "p_values"
+      ],
+      "definition_md5": "6c30cd85af829b5b311e8125342c3124",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_action text, p_target_id uuid, p_expected_collection_revision bigint, p_observed_category jsonb, p_values jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "execute_family_trip_packing_category_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_action text, p_expected_collection_revision bigint, p_observed_category jsonb, p_values jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id",
+        "p_scope",
+        "p_action",
+        "p_expected_collection_revision",
+        "p_observed_category",
+        "p_values"
+      ],
+      "definition_md5": "4feaaa68f3c15e829e5f3784d715540e",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_action text, p_expected_collection_revision bigint, p_observed_category jsonb, p_values jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "execute_family_trip_packing_group_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_action text, p_expected_collection_revision bigint, p_selector jsonb, p_observed_items jsonb, p_values jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id",
+        "p_scope",
+        "p_action",
+        "p_expected_collection_revision",
+        "p_selector",
+        "p_observed_items",
+        "p_values"
+      ],
+      "definition_md5": "809643bafab9231d982d8afb64eb050f",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_action text, p_expected_collection_revision bigint, p_selector jsonb, p_observed_items jsonb, p_values jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "execute_family_trip_packing_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_action text, p_target_id uuid, p_expected_revision bigint, p_expected_collection_revision bigint, p_values jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id",
+        "p_scope",
+        "p_action",
+        "p_target_id",
+        "p_expected_revision",
+        "p_expected_collection_revision",
+        "p_values"
+      ],
+      "definition_md5": "c56927fb201013e49ca9e1ad8d1bcd0a",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_action text, p_target_id uuid, p_expected_revision bigint, p_expected_collection_revision bigint, p_values jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "execute_family_trip_task_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_action text, p_target_id uuid, p_expected_revision bigint, p_expected_collection_revision bigint, p_values jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id",
+        "p_scope",
+        "p_action",
+        "p_target_id",
+        "p_expected_revision",
+        "p_expected_collection_revision",
+        "p_values"
+      ],
+      "definition_md5": "1d27857ef48f7cfdf5a78983435de765",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_action text, p_target_id uuid, p_expected_revision bigint, p_expected_collection_revision bigint, p_values jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_booking_calendar_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_reservation_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_reservation_id"
+      ],
+      "definition_md5": "f758b76ecd6a7f91ccbd7ab5885e1de7",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_reservation_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_booking_details_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_reservation_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_reservation_id"
+      ],
+      "definition_md5": "e993994f2a25bd4d2e2997606da51054",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_reservation_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_file_policy",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id"
+      ],
+      "definition_md5": "52a4b0b710679eee9488b9f40a645d96",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_identity_assurance",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id"
+      ],
+      "definition_md5": "61a2bb4a3f960a234ad2127e82fa3c95",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_journey",
+      "owner": "postgres",
+      "arguments": "p_journey_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_journey_id"
+      ],
+      "definition_md5": "07ee55481ddfcb66d31d81e0666c45d7",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_journey_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_map_settings",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id"
+      ],
+      "definition_md5": "7f7b56a87d28a68e6f2b8e648c5eb74f",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_native_stay_context_v1",
+      "owner": "postgres",
+      "arguments": "p_inner jsonb, p_arrival_visit_id uuid, p_keep_stop boolean DEFAULT false",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_inner",
+        "p_arrival_visit_id",
+        "p_keep_stop"
+      ],
+      "definition_md5": "75c10e77ffeaa135d6a3f21ede6bbcfb",
+      "security_definer": true,
+      "default_arguments": 1,
+      "identity_arguments": "p_inner jsonb, p_arrival_visit_id uuid, p_keep_stop boolean",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_native_stay_outcome_v1",
+      "owner": "postgres",
+      "arguments": "p_command jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_command"
+      ],
+      "definition_md5": "515710586a00b38cffc63757ade4b999",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_command jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_native_stay_view_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id"
+      ],
+      "definition_md5": "7a2664f75191ddf6a16bf74e16bd538e",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_notification_defaults",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id"
+      ],
+      "definition_md5": "9994d2e108627c96482e8c21a601810a",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_plan_governance_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_layer text DEFAULT 'published'::text",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_layer"
+      ],
+      "definition_md5": "15b04547bf80e58af290c53652c6cfce",
+      "security_definer": true,
+      "default_arguments": 1,
+      "identity_arguments": "p_trip_id uuid, p_layer text",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_preference_defaults",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id"
+      ],
+      "definition_md5": "8517b76fade3968086f74b741855d493",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_stay_bundle_context_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_location_id uuid, p_arrival_day_id uuid, p_departure_day_id uuid, p_stay_id uuid, p_reservation_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_location_id",
+        "p_arrival_day_id",
+        "p_departure_day_id",
+        "p_stay_id",
+        "p_reservation_id"
+      ],
+      "definition_md5": "299a887449cbd527aef4daa2c715f15a",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_location_id uuid, p_arrival_day_id uuid, p_departure_day_id uuid, p_stay_id uuid, p_reservation_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_stay_bundle_outcome_v1",
+      "owner": "postgres",
+      "arguments": "p_command jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_command"
+      ],
+      "definition_md5": "2d56167a68ca3548944df720112bec40",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_command jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_stay_command_context_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_stay_id uuid, p_location_id uuid DEFAULT NULL::uuid, p_reservation_id uuid DEFAULT NULL::uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_stay_id",
+        "p_location_id",
+        "p_reservation_id"
+      ],
+      "definition_md5": "2e94694288cebb9ce03bed9a46b148a1",
+      "security_definer": true,
+      "default_arguments": 2,
+      "identity_arguments": "p_trip_id uuid, p_stay_id uuid, p_location_id uuid, p_reservation_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_stay_command_outcome_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_stay_id uuid, p_operation_id uuid, p_scope jsonb, p_observation jsonb, p_action text, p_changes jsonb, p_reservation_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_stay_id",
+        "p_operation_id",
+        "p_scope",
+        "p_observation",
+        "p_action",
+        "p_changes",
+        "p_reservation_id"
+      ],
+      "definition_md5": "095f086a03c4d2fb0e6291f14d09e9a3",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_stay_id uuid, p_operation_id uuid, p_scope jsonb, p_observation jsonb, p_action text, p_changes jsonb, p_reservation_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_stay_editor_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_stay_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_stay_id"
+      ],
+      "definition_md5": "79fa1f60555dbe0676f7c30bdf5d21f8",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_stay_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_stay_history_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_stay_id uuid, p_before_sequence bigint DEFAULT NULL::bigint, p_limit integer DEFAULT 50",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_stay_id",
+        "p_before_sequence",
+        "p_limit"
+      ],
+      "definition_md5": "597feb7a6c4bafeead55f9024890feb5",
+      "security_definer": true,
+      "default_arguments": 2,
+      "identity_arguments": "p_trip_id uuid, p_stay_id uuid, p_before_sequence bigint, p_limit integer",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_booking_view_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id"
+      ],
+      "definition_md5": "79b56583eeb8adbc08dcba5179d585de",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_booking_view_v2",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id"
+      ],
+      "definition_md5": "c7a390a910d4cc8f8ccb8468560f5a66",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_calendar_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id"
+      ],
+      "definition_md5": "5d1b4ed2c89e4c37a9cdfc21da1d669d",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_location_form_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_location_id uuid, p_layer text DEFAULT 'published'::text",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_location_id",
+        "p_layer"
+      ],
+      "definition_md5": "a18255ef7ab9234e6f6c6f19647bb588",
+      "security_definer": true,
+      "default_arguments": 1,
+      "identity_arguments": "p_trip_id uuid, p_location_id uuid, p_layer text",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_location_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_location_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_location_id"
+      ],
+      "definition_md5": "fef2cf610babc331f355d10f71efe67f",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_location_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_packing_bag_command_cancellation_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_operation_id uuid, p_original_args jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id",
+        "p_original_args"
+      ],
+      "definition_md5": "0c6ef5fdf9f2ce2102e02b48389ac01c",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid, p_original_args jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_packing_bag_receipt_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_operation_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id"
+      ],
+      "definition_md5": "079da57ff4b811b775546dcca84e7785",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_packing_bag_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_bag_id uuid, p_include_deleted boolean DEFAULT false",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_bag_id",
+        "p_include_deleted"
+      ],
+      "definition_md5": "7cc40db9540d8a4e98283d4b0ed935cb",
+      "security_definer": false,
+      "default_arguments": 1,
+      "identity_arguments": "p_trip_id uuid, p_bag_id uuid, p_include_deleted boolean",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_packing_bags_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id"
+      ],
+      "definition_md5": "ca11cf1e30cad4d32430314817796a9c",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_packing_category_aggregate_receipt_v3",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_operation_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id"
+      ],
+      "definition_md5": "bfac682cbb5c5df8492edc6312fceda8",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_packing_category_aggregate_v3",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_category_id uuid, p_include_deleted boolean DEFAULT false",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_category_id",
+        "p_include_deleted"
+      ],
+      "definition_md5": "d22352c6531f260249449bda1cc144d3",
+      "security_definer": false,
+      "default_arguments": 1,
+      "identity_arguments": "p_trip_id uuid, p_category_id uuid, p_include_deleted boolean",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_packing_category_item_receipt_v2",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_operation_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id"
+      ],
+      "definition_md5": "219f46ad2643ba42878e907257a6c01e",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_packing_category_lane_v3",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_visibility text",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_visibility"
+      ],
+      "definition_md5": "21c3c76cae287bbb39857de9329b139f",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_visibility text",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_packing_category_lifecycle_receipt_v2",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_operation_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id"
+      ],
+      "definition_md5": "ce180509db3e94d92d3a08c0fdfa7013",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_packing_category_receipt_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_operation_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id"
+      ],
+      "definition_md5": "7bd733f9072142eb7a0860693b3e0e6c",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_packing_group_receipt_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_operation_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id"
+      ],
+      "definition_md5": "12e2a23d5dc5296460fadf27015b29b2",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_packing_receipt_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_operation_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id"
+      ],
+      "definition_md5": "d326a66a43085703a38c7a53b1107ba1",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_packing_restore_cancellation_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_operation_id uuid, p_protocol text, p_original_args jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id",
+        "p_protocol",
+        "p_original_args"
+      ],
+      "definition_md5": "8c9b1d96cc52312074a88395661b1f87",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid, p_protocol text, p_original_args jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_packing_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id"
+      ],
+      "definition_md5": "9edee77787b60397ca5d04b051080cbe",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_packing_with_categories_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id"
+      ],
+      "definition_md5": "73c1df354b9984961abda0b3a97863f5",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_packing_with_categories_v2",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id"
+      ],
+      "definition_md5": "031f75ef994636aed04baa1e55302630",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_planner_state_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_max_entities integer DEFAULT 10000",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_max_entities"
+      ],
+      "definition_md5": "57559ed667645c408f73007dfab8df2e",
+      "security_definer": true,
+      "default_arguments": 1,
+      "identity_arguments": "p_trip_id uuid, p_max_entities integer",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_planner_view_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_layer text DEFAULT 'published'::text, p_max_entities integer DEFAULT 10000, p_max_ops integer DEFAULT 250",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_layer",
+        "p_max_entities",
+        "p_max_ops"
+      ],
+      "definition_md5": "9257e1432ed0477f734048df81accbe3",
+      "security_definer": true,
+      "default_arguments": 3,
+      "identity_arguments": "p_trip_id uuid, p_layer text, p_max_entities integer, p_max_ops integer",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_stay_view_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id"
+      ],
+      "definition_md5": "a76ce4e6369a6b941214efeefcb9fbec",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_task_receipt_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_operation_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id"
+      ],
+      "definition_md5": "a2d6706fa1c25648e55afb1f4f470cd5",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_tasks_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id"
+      ],
+      "definition_md5": "fbd5fc854b2802098fb6e7462888e153",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_visit_classification_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_visit_id uuid, p_include_trash boolean DEFAULT false",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_visit_id",
+        "p_include_trash"
+      ],
+      "definition_md5": "0f37e23f8b6864bd24e26afa9a58dd8d",
+      "security_definer": true,
+      "default_arguments": 1,
+      "identity_arguments": "p_trip_id uuid, p_visit_id uuid, p_include_trash boolean",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_visit_form_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_visit_id uuid, p_layer text DEFAULT 'published'::text",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_visit_id",
+        "p_layer"
+      ],
+      "definition_md5": "7416e13389f9e37d0d6a1cceaccb7f4e",
+      "security_definer": true,
+      "default_arguments": 1,
+      "identity_arguments": "p_trip_id uuid, p_visit_id uuid, p_layer text",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_visit_timing_revision_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_visit_id uuid, p_revision bigint, p_include_trash boolean DEFAULT false",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_visit_id",
+        "p_revision",
+        "p_include_trash"
+      ],
+      "definition_md5": "dbb7648121574ab21a8a5ff89151a726",
+      "security_definer": true,
+      "default_arguments": 1,
+      "identity_arguments": "p_trip_id uuid, p_visit_id uuid, p_revision bigint, p_include_trash boolean",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_family_trip_visit_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_visit_id uuid, p_include_trash boolean DEFAULT false",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_visit_id",
+        "p_include_trash"
+      ],
+      "definition_md5": "eb90a80056d70b4aa7654cc45dd2d902",
+      "security_definer": true,
+      "default_arguments": 1,
+      "identity_arguments": "p_trip_id uuid, p_visit_id uuid, p_include_trash boolean",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_my_auth_bootstrap",
+      "owner": "postgres",
+      "arguments": "",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": null,
+      "definition_md5": "2e2079098bb35139077f6c7f1403d46c",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_my_effective_features",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id"
+      ],
+      "definition_md5": "f75924d3b79d239d08b47a5d0902aafd",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_my_effective_map_settings",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id"
+      ],
+      "definition_md5": "44d31f355f048ba6cb898e702c95100c",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_my_effective_preferences",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id"
+      ],
+      "definition_md5": "a170ea4cf1d47cf4426c6913a6694c37",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_my_notification_preferences",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id"
+      ],
+      "definition_md5": "b313149db58a336fc9a5fc3d8ae8a57e",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "link_family_journey_trip",
+      "owner": "postgres",
+      "arguments": "p_journey_id uuid, p_trip_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_journey_id",
+        "p_trip_id"
+      ],
+      "definition_md5": "2bb99c06e9c51033a01e7cd9a7efc2d8",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_journey_id uuid, p_trip_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "link_family_member_person",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid, p_person_id uuid, p_user_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_person_id",
+        "p_user_id"
+      ],
+      "definition_md5": "5488bbe150b154a7081fd004e1ec7676",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid, p_person_id uuid, p_user_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "link_trip_file",
+      "owner": "postgres",
+      "arguments": "p_file_id uuid, p_place_id uuid DEFAULT NULL::uuid, p_reservation_id uuid DEFAULT NULL::uuid, p_trip_day_id uuid DEFAULT NULL::uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_file_id",
+        "p_place_id",
+        "p_reservation_id",
+        "p_trip_day_id"
+      ],
+      "definition_md5": "788440ead55f2e3083ee30efeabcbef0",
+      "security_definer": true,
+      "default_arguments": 3,
+      "identity_arguments": "p_file_id uuid, p_place_id uuid, p_reservation_id uuid, p_trip_day_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_family_audit_events",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid, p_limit integer DEFAULT 50, p_before_created_at timestamp with time zone DEFAULT NULL::timestamp with time zone, p_before_id uuid DEFAULT NULL::uuid, p_actor_person_id uuid DEFAULT NULL::uuid, p_capability_key text DEFAULT NULL::text, p_outcome family_permission_outcome DEFAULT NULL::family_permission_outcome",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_limit",
+        "p_before_created_at",
+        "p_before_id",
+        "p_actor_person_id",
+        "p_capability_key",
+        "p_outcome"
+      ],
+      "definition_md5": "c8ee366614087349f54d04c8125f65b7",
+      "security_definer": true,
+      "default_arguments": 6,
+      "identity_arguments": "p_family_id uuid, p_limit integer, p_before_created_at timestamp with time zone, p_before_id uuid, p_actor_person_id uuid, p_capability_key text, p_outcome family_permission_outcome",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_family_export_jobs",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id"
+      ],
+      "definition_md5": "92bea0936913c08bad1cc41e9fa7c3f3",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_family_feature_controls",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id"
+      ],
+      "definition_md5": "0bb3b85af862793723d678d3d699c283",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_family_journey_available_trips",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid, p_journey_id uuid DEFAULT NULL::uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_journey_id"
+      ],
+      "definition_md5": "a59b7e860f89b96ca14c015f3faa6144",
+      "security_definer": true,
+      "default_arguments": 1,
+      "identity_arguments": "p_family_id uuid, p_journey_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_family_journey_entry_trash",
+      "owner": "postgres",
+      "arguments": "p_journey_id uuid, p_limit integer DEFAULT 50, p_before_deleted_at timestamp with time zone DEFAULT NULL::timestamp with time zone, p_before_entry_id uuid DEFAULT NULL::uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_journey_id",
+        "p_limit",
+        "p_before_deleted_at",
+        "p_before_entry_id"
+      ],
+      "definition_md5": "bf76e62306a178830e9216bed84ae975",
+      "security_definer": true,
+      "default_arguments": 3,
+      "identity_arguments": "p_journey_id uuid, p_limit integer, p_before_deleted_at timestamp with time zone, p_before_entry_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_family_journey_entry_versions",
+      "owner": "postgres",
+      "arguments": "p_entry_id uuid, p_limit integer DEFAULT 50, p_before_revision bigint DEFAULT NULL::bigint",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_entry_id",
+        "p_limit",
+        "p_before_revision"
+      ],
+      "definition_md5": "9ce60589805f6f070b8d9733c33507a4",
+      "security_definer": true,
+      "default_arguments": 2,
+      "identity_arguments": "p_entry_id uuid, p_limit integer, p_before_revision bigint",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_family_journey_trash",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid, p_limit integer DEFAULT 50, p_before_deleted_at timestamp with time zone DEFAULT NULL::timestamp with time zone, p_before_journey_id uuid DEFAULT NULL::uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_limit",
+        "p_before_deleted_at",
+        "p_before_journey_id"
+      ],
+      "definition_md5": "1b33e799daef3328cf5eb9930383ace5",
+      "security_definer": true,
+      "default_arguments": 3,
+      "identity_arguments": "p_family_id uuid, p_limit integer, p_before_deleted_at timestamp with time zone, p_before_journey_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_family_journeys",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_family_id"
+      ],
+      "definition_md5": "2d4952a200757116073d2e0d038a7190",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_family_packing_templates",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id"
+      ],
+      "definition_md5": "4ebe155ca79ea23dc2f28419067786a6",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_family_permission_policies",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id"
+      ],
+      "definition_md5": "96d62c4c77a9b67c4146e78ca4f9c8a6",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_family_place_categories",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id"
+      ],
+      "definition_md5": "98b1505e7cc9cee37330637e09443e86",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_family_trashed_stays_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_after jsonb DEFAULT NULL::jsonb, p_limit integer DEFAULT 25",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_after",
+        "p_limit"
+      ],
+      "definition_md5": "25d5ee5e8854dc13b8346ada002e5fc9",
+      "security_definer": true,
+      "default_arguments": 2,
+      "identity_arguments": "p_trip_id uuid, p_after jsonb, p_limit integer",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_family_trip_locations_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_state text DEFAULT 'active'::text, p_limit integer DEFAULT 100, p_after_id uuid DEFAULT NULL::uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_state",
+        "p_limit",
+        "p_after_id"
+      ],
+      "definition_md5": "c73a117434b8cc9682c9aa8f17b2dcc2",
+      "security_definer": true,
+      "default_arguments": 3,
+      "identity_arguments": "p_trip_id uuid, p_state text, p_limit integer, p_after_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_family_trip_packing_bag_trash_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_limit integer DEFAULT 50, p_before_deleted_at timestamp with time zone DEFAULT NULL::timestamp with time zone, p_before_id uuid DEFAULT NULL::uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_limit",
+        "p_before_deleted_at",
+        "p_before_id"
+      ],
+      "definition_md5": "0466b4be252b3454cc9ae62166c3d8cd",
+      "security_definer": false,
+      "default_arguments": 3,
+      "identity_arguments": "p_trip_id uuid, p_limit integer, p_before_deleted_at timestamp with time zone, p_before_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_family_trip_packing_category_batches_v3",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_limit integer DEFAULT 50, p_before_deleted_at timestamp with time zone DEFAULT NULL::timestamp with time zone, p_before_id uuid DEFAULT NULL::uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_limit",
+        "p_before_deleted_at",
+        "p_before_id"
+      ],
+      "definition_md5": "007d2877149c3916f6274ff3a30052ae",
+      "security_definer": false,
+      "default_arguments": 3,
+      "identity_arguments": "p_trip_id uuid, p_limit integer, p_before_deleted_at timestamp with time zone, p_before_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_family_trip_packing_category_trash_v2",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_limit integer DEFAULT 50, p_before_deleted_at timestamp with time zone DEFAULT NULL::timestamp with time zone, p_before_id uuid DEFAULT NULL::uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_limit",
+        "p_before_deleted_at",
+        "p_before_id"
+      ],
+      "definition_md5": "1b5da1857113ff1d2302b86ff1adb0e7",
+      "security_definer": false,
+      "default_arguments": 3,
+      "identity_arguments": "p_trip_id uuid, p_limit integer, p_before_deleted_at timestamp with time zone, p_before_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_family_trip_packing_trash_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_limit integer DEFAULT 50, p_before timestamp with time zone DEFAULT NULL::timestamp with time zone, p_before_id uuid DEFAULT NULL::uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_limit",
+        "p_before",
+        "p_before_id"
+      ],
+      "definition_md5": "d9421228528f6eaefa6c16e854538bd7",
+      "security_definer": false,
+      "default_arguments": 3,
+      "identity_arguments": "p_trip_id uuid, p_limit integer, p_before timestamp with time zone, p_before_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_family_trip_task_trash_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_limit integer DEFAULT 50, p_before timestamp with time zone DEFAULT NULL::timestamp with time zone, p_before_id uuid DEFAULT NULL::uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_limit",
+        "p_before",
+        "p_before_id"
+      ],
+      "definition_md5": "f3ee1315193ca5578e1ff99b998ae3b3",
+      "security_definer": true,
+      "default_arguments": 3,
+      "identity_arguments": "p_trip_id uuid, p_limit integer, p_before timestamp with time zone, p_before_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_family_trip_trash",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid, p_limit integer DEFAULT 50, p_before_deleted_at timestamp with time zone DEFAULT NULL::timestamp with time zone, p_before_trip_id uuid DEFAULT NULL::uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_limit",
+        "p_before_deleted_at",
+        "p_before_trip_id"
+      ],
+      "definition_md5": "2127ce9a7865c0bb9857159d08d15d93",
+      "security_definer": true,
+      "default_arguments": 3,
+      "identity_arguments": "p_family_id uuid, p_limit integer, p_before_deleted_at timestamp with time zone, p_before_trip_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_family_trip_visits_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_limit integer DEFAULT 100, p_after_id uuid DEFAULT NULL::uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_limit",
+        "p_after_id"
+      ],
+      "definition_md5": "ff4b8c883721e0c09f7d947e344f76ca",
+      "security_definer": true,
+      "default_arguments": 2,
+      "identity_arguments": "p_trip_id uuid, p_limit integer, p_after_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_feature_rollout_events",
+      "owner": "postgres",
+      "arguments": "p_limit integer DEFAULT 50",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_limit"
+      ],
+      "definition_md5": "504cbfcd60af27f973d4dbf11d75e3af",
+      "security_definer": true,
+      "default_arguments": 1,
+      "identity_arguments": "p_limit integer",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_my_catalog_saves_in_countries",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid, p_country_ids uuid[]",
+      "result_type": "TABLE(kind catalog_save_kind, entity_id uuid, name text, country_id uuid, created_at timestamp with time zone)",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_country_ids",
+        "kind",
+        "entity_id",
+        "name",
+        "country_id",
+        "created_at"
+      ],
+      "definition_md5": "33afd74f2518cc3e84349e713bba71c5",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid, p_country_ids uuid[]",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_my_notifications",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid, p_limit integer DEFAULT 30, p_before_created_at timestamp with time zone DEFAULT NULL::timestamp with time zone, p_before_id uuid DEFAULT NULL::uuid, p_unread_only boolean DEFAULT false",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_limit",
+        "p_before_created_at",
+        "p_before_id",
+        "p_unread_only"
+      ],
+      "definition_md5": "a98d4d80e081661535daa80cb7fc4463",
+      "security_definer": true,
+      "default_arguments": 4,
+      "identity_arguments": "p_family_id uuid, p_limit integer, p_before_created_at timestamp with time zone, p_before_id uuid, p_unread_only boolean",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_overlayable_branch_ids",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid",
+      "result_type": "TABLE(branch_id uuid)",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id",
+        "branch_id"
+      ],
+      "definition_md5": "e96dd2b9a6ed57fafa07ccdedf5a54b3",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_trip_action_outcomes",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_trip_id"
+      ],
+      "definition_md5": "d7bfc906dd8fb35b0e671d94dc1d7ac6",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "list_viewable_person_ids",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid",
+      "result_type": "TABLE(person_id uuid)",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id",
+        "person_id"
+      ],
+      "definition_md5": "6fc2ad85904fc9a6f1f44a39af04c711",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "lookup_family_trip_packing_category_v2",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_visibility text, p_name text",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_visibility",
+        "p_name"
+      ],
+      "definition_md5": "c015dc240a89e998215fe691c0c15b85",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_visibility text, p_name text",
+      "authenticated_execute": true
+    },
+    {
+      "name": "mark_all_notifications_read",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id"
+      ],
+      "definition_md5": "0b23b8c1d79c689f1383284b477c4433",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "mark_notifications_read",
+      "owner": "postgres",
+      "arguments": "p_ids uuid[]",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_ids"
+      ],
+      "definition_md5": "c98f849ba6bb5eb4fc322baf79776f0f",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_ids uuid[]",
+      "authenticated_execute": true
+    },
+    {
+      "name": "mark_notifications_unread",
+      "owner": "postgres",
+      "arguments": "p_ids uuid[]",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_ids"
+      ],
+      "definition_md5": "1561eeae68dd8c0be7d035dd3ecc97ed",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_ids uuid[]",
+      "authenticated_execute": true
+    },
+    {
+      "name": "mutate_family_trip_location_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_operation_id uuid, p_action text, p_location_id uuid DEFAULT NULL::uuid, p_expected_revision bigint DEFAULT NULL::bigint, p_payload jsonb DEFAULT '{}'::jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id",
+        "p_action",
+        "p_location_id",
+        "p_expected_revision",
+        "p_payload"
+      ],
+      "definition_md5": "1011b943012c739ba6ff18d096c87906",
+      "security_definer": true,
+      "default_arguments": 3,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid, p_action text, p_location_id uuid, p_expected_revision bigint, p_payload jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "mutate_family_trip_visit_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_operation_id uuid, p_action text, p_visit_id uuid DEFAULT NULL::uuid, p_expected_revision bigint DEFAULT NULL::bigint, p_payload jsonb DEFAULT '{}'::jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id",
+        "p_action",
+        "p_visit_id",
+        "p_expected_revision",
+        "p_payload"
+      ],
+      "definition_md5": "059f8d7747bfba481616b8f2af6c9243",
+      "security_definer": true,
+      "default_arguments": 3,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid, p_action text, p_visit_id uuid, p_expected_revision bigint, p_payload jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "patch_trip_file_metadata",
+      "owner": "postgres",
+      "arguments": "p_file_id uuid, p_starred boolean DEFAULT NULL::boolean, p_description text DEFAULT NULL::text",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_file_id",
+        "p_starred",
+        "p_description"
+      ],
+      "definition_md5": "b2d8a05ab213c40981044b377b0d9216",
+      "security_definer": true,
+      "default_arguments": 2,
+      "identity_arguments": "p_file_id uuid, p_starred boolean, p_description text",
+      "authenticated_execute": true
+    },
+    {
+      "name": "proposal_eligible_voters",
+      "owner": "postgres",
+      "arguments": "p_proposal_id uuid",
+      "result_type": "TABLE(person_id uuid, vote_role proposal_vote_role)",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_proposal_id",
+        "person_id",
+        "vote_role"
+      ],
+      "definition_md5": "12b8a73c794da05f2063cbc24eb4e67e",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_proposal_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "purge_trip_file",
+      "owner": "postgres",
+      "arguments": "p_file_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_file_id"
+      ],
+      "definition_md5": "6e8884eb965485a576fe0ff964512fd1",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_file_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "register_person_avatar",
+      "owner": "postgres",
+      "arguments": "p_person_id uuid, p_storage_path text, p_filename text, p_content_hash text, p_mime_type text, p_size_bytes bigint",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_person_id",
+        "p_storage_path",
+        "p_filename",
+        "p_content_hash",
+        "p_mime_type",
+        "p_size_bytes"
+      ],
+      "definition_md5": "0a83a0f99405cc84b42069db8cc13366",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_person_id uuid, p_storage_path text, p_filename text, p_content_hash text, p_mime_type text, p_size_bytes bigint",
+      "authenticated_execute": true
+    },
+    {
+      "name": "remove_family_journey_member",
+      "owner": "postgres",
+      "arguments": "p_journey_id uuid, p_person_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_journey_id",
+        "p_person_id"
+      ],
+      "definition_md5": "08750652a42ba1d7a00b782a29f0d4c2",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_journey_id uuid, p_person_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "remove_list_item",
+      "owner": "postgres",
+      "arguments": "p_item_id uuid",
+      "result_type": "void",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_item_id"
+      ],
+      "definition_md5": "cfc92d1da6f90e6a78ab0c792905ef63",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_item_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "reorder_family_journey_entries",
+      "owner": "postgres",
+      "arguments": "p_journey_id uuid, p_ordered_ids uuid[]",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_journey_id",
+        "p_ordered_ids"
+      ],
+      "definition_md5": "586a1b0d51464a7db97f225ff55cf90a",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_journey_id uuid, p_ordered_ids uuid[]",
+      "authenticated_execute": true
+    },
+    {
+      "name": "reorder_family_journey_entry_media",
+      "owner": "postgres",
+      "arguments": "p_entry_id uuid, p_ordered_ids uuid[]",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_entry_id",
+        "p_ordered_ids"
+      ],
+      "definition_md5": "d08f56ed8bb38a63e74ab1faf951460e",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_entry_id uuid, p_ordered_ids uuid[]",
+      "authenticated_execute": true
+    },
+    {
+      "name": "request_calendar_access",
+      "owner": "postgres",
+      "arguments": "p_target_person_id uuid DEFAULT NULL::uuid, p_target_branch_id uuid DEFAULT NULL::uuid",
+      "result_type": "uuid",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_target_person_id",
+        "p_target_branch_id"
+      ],
+      "definition_md5": "d5b46eece2064cc40dcb8028a96e7d9f",
+      "security_definer": true,
+      "default_arguments": 2,
+      "identity_arguments": "p_target_person_id uuid, p_target_branch_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "request_family_export",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id"
+      ],
+      "definition_md5": "5a7a514de371b4b593440b991e2490f8",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "reset_family_permission_policies",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id"
+      ],
+      "definition_md5": "439c809ce2249b278f17c38cde3aefe0",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "resolve_trip_change_op",
+      "owner": "postgres",
+      "arguments": "p_op_id uuid, p_accept boolean, p_note text DEFAULT NULL::text",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_op_id",
+        "p_accept",
+        "p_note"
+      ],
+      "definition_md5": "42b2c829c4d57861dc84f6247cc2ecb0",
+      "security_definer": true,
+      "default_arguments": 1,
+      "identity_arguments": "p_op_id uuid, p_accept boolean, p_note text",
+      "authenticated_execute": true
+    },
+    {
+      "name": "resolve_trip_change_request",
+      "owner": "postgres",
+      "arguments": "p_request_id uuid, p_accept_all boolean",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_request_id",
+        "p_accept_all"
+      ],
+      "definition_md5": "3d459b904fefa6f0e9a2e68fb7f49d9d",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_request_id uuid, p_accept_all boolean",
+      "authenticated_execute": true
+    },
+    {
+      "name": "restore_family_journey",
+      "owner": "postgres",
+      "arguments": "p_journey_id uuid, p_expected_revision integer",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_journey_id",
+        "p_expected_revision"
+      ],
+      "definition_md5": "802393cccde7ea8741621eb84a4132d0",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_journey_id uuid, p_expected_revision integer",
+      "authenticated_execute": true
+    },
+    {
+      "name": "restore_family_journey_entry",
+      "owner": "postgres",
+      "arguments": "p_entry_id uuid, p_expected_revision bigint",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_entry_id",
+        "p_expected_revision"
+      ],
+      "definition_md5": "625a437e7fa59514a828dbd5a7d2a3d8",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_entry_id uuid, p_expected_revision bigint",
+      "authenticated_execute": true
+    },
+    {
+      "name": "restore_family_journey_entry_version",
+      "owner": "postgres",
+      "arguments": "p_entry_id uuid, p_revision bigint, p_expected_revision bigint",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_entry_id",
+        "p_revision",
+        "p_expected_revision"
+      ],
+      "definition_md5": "d38b087b0c0e554aa97ec136c5e4e132",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_entry_id uuid, p_revision bigint, p_expected_revision bigint",
+      "authenticated_execute": true
+    },
+    {
+      "name": "restore_family_stay_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_stay_id uuid, p_operation_id uuid, p_scope jsonb, p_observation jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_stay_id",
+        "p_operation_id",
+        "p_scope",
+        "p_observation"
+      ],
+      "definition_md5": "b3d5dbcd92fd60ac5f33f81507afe99c",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_stay_id uuid, p_operation_id uuid, p_scope jsonb, p_observation jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "restore_family_trip",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_expected_revision bigint",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_expected_revision"
+      ],
+      "definition_md5": "d3f16c54efa30d9bb0dbe5fe0db3aae5",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_expected_revision bigint",
+      "authenticated_execute": true
+    },
+    {
+      "name": "restore_trip_file",
+      "owner": "postgres",
+      "arguments": "p_file_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_file_id"
+      ],
+      "definition_md5": "69b6f26058fff80bbea7faa6415d37fc",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_file_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "review_family_plan_change_v2",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_op_id uuid, p_accept boolean, p_note text DEFAULT NULL::text",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_op_id",
+        "p_accept",
+        "p_note"
+      ],
+      "definition_md5": "5cfd99205fc52689ab5889b6e124d40f",
+      "security_definer": true,
+      "default_arguments": 1,
+      "identity_arguments": "p_trip_id uuid, p_op_id uuid, p_accept boolean, p_note text",
+      "authenticated_execute": true
+    },
+    {
+      "name": "revise_family_trip_calendar_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_observation jsonb, p_change jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id",
+        "p_scope",
+        "p_observation",
+        "p_change"
+      ],
+      "definition_md5": "bc4048a20b05d3ec6bdd9f304f3a7284",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid, p_scope jsonb, p_observation jsonb, p_change jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "revoke_calendar_access",
+      "owner": "postgres",
+      "arguments": "p_id uuid",
+      "result_type": "void",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_id"
+      ],
+      "definition_md5": "5b6f13c781ab7c23cd89fbe730c548dc",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "save_family_booking_details_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_reservation_id uuid, p_operation_id uuid, p_scope jsonb, p_observation jsonb, p_changes jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_reservation_id",
+        "p_operation_id",
+        "p_scope",
+        "p_observation",
+        "p_changes"
+      ],
+      "definition_md5": "62dac85a94e0795d0e9f9618667e5f86",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_reservation_id uuid, p_operation_id uuid, p_scope jsonb, p_observation jsonb, p_changes jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "save_family_stay_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_stay_id uuid, p_operation_id uuid, p_scope jsonb, p_observation jsonb, p_changes jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_stay_id",
+        "p_operation_id",
+        "p_scope",
+        "p_observation",
+        "p_changes"
+      ],
+      "definition_md5": "5b592a9df22af81a71182ba4937699f4",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_stay_id uuid, p_operation_id uuid, p_scope jsonb, p_observation jsonb, p_changes jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "save_family_trip_location_form_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_location_id uuid, p_operation_id uuid, p_observation jsonb, p_form jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_location_id",
+        "p_operation_id",
+        "p_observation",
+        "p_form"
+      ],
+      "definition_md5": "b8647271dd7da1e8671b745ab6acbf87",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_location_id uuid, p_operation_id uuid, p_observation jsonb, p_form jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "save_family_trip_visit_form_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_visit_id uuid, p_operation_id uuid, p_observation jsonb, p_form jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_visit_id",
+        "p_operation_id",
+        "p_observation",
+        "p_form"
+      ],
+      "definition_md5": "f0102efa66cafdf68a3505219f003987",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_visit_id uuid, p_operation_id uuid, p_observation jsonb, p_form jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "save_packing_template_from_trip",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_name text",
+      "result_type": "uuid",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_name"
+      ],
+      "definition_md5": "e85b904315dc4eb82dc025d7fad26848",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_name text",
+      "authenticated_execute": false
+    },
+    {
+      "name": "set_family_booking_calendar_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_reservation_id uuid, p_operation_id uuid, p_scope jsonb, p_observation jsonb, p_dates jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_reservation_id",
+        "p_operation_id",
+        "p_scope",
+        "p_observation",
+        "p_dates"
+      ],
+      "definition_md5": "340d0d78f994640a1f497082a44548a4",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_reservation_id uuid, p_operation_id uuid, p_scope jsonb, p_observation jsonb, p_dates jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "set_family_journey_cover",
+      "owner": "postgres",
+      "arguments": "p_journey_id uuid, p_media_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_journey_id",
+        "p_media_id"
+      ],
+      "definition_md5": "bc530d417d94b862afa87c6c33d3f006",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_journey_id uuid, p_media_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "set_family_journey_member_preferences",
+      "owner": "postgres",
+      "arguments": "p_journey_id uuid, p_hide_skeletons boolean",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_journey_id",
+        "p_hide_skeletons"
+      ],
+      "definition_md5": "df35a61da34a8f4d56e461d97463cdee",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_journey_id uuid, p_hide_skeletons boolean",
+      "authenticated_execute": true
+    },
+    {
+      "name": "set_family_stay_booking_link_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_stay_id uuid, p_operation_id uuid, p_scope jsonb, p_observation jsonb, p_reservation_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_stay_id",
+        "p_operation_id",
+        "p_scope",
+        "p_observation",
+        "p_reservation_id"
+      ],
+      "definition_md5": "b1bda7c25e4c896389c2a0460e56e067",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_stay_id uuid, p_operation_id uuid, p_scope jsonb, p_observation jsonb, p_reservation_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "set_family_trip_visit_timing_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_operation_id uuid, p_visit_id uuid, p_expected_revision bigint, p_payload jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id",
+        "p_visit_id",
+        "p_expected_revision",
+        "p_payload"
+      ],
+      "definition_md5": "d95aef6e73b7ab4916cec6e7851c787e",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid, p_visit_id uuid, p_expected_revision bigint, p_payload jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "set_list_item_status",
+      "owner": "postgres",
+      "arguments": "p_item_id uuid, p_status list_item_status",
+      "result_type": "void",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_item_id",
+        "p_status"
+      ],
+      "definition_md5": "2c07e68596e3cab3c65b613588f23f2a",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_item_id uuid, p_status list_item_status",
+      "authenticated_execute": true
+    },
+    {
+      "name": "settle_trip_expense_flows",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_flows jsonb",
+      "result_type": "integer",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_flows"
+      ],
+      "definition_md5": "b5999390051db38fe48b2de829131040",
+      "security_definer": false,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_flows jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "stage_family_plan_change_v2",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_operation_id uuid, p_domain text, p_action text, p_target_id uuid DEFAULT NULL::uuid, p_expected_revision bigint DEFAULT NULL::bigint, p_changes jsonb DEFAULT '{}'::jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id",
+        "p_domain",
+        "p_action",
+        "p_target_id",
+        "p_expected_revision",
+        "p_changes"
+      ],
+      "definition_md5": "57cceb488a8325dc09794c61abcdde1c",
+      "security_definer": true,
+      "default_arguments": 3,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid, p_domain text, p_action text, p_target_id uuid, p_expected_revision bigint, p_changes jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "submit_access_request",
+      "owner": "postgres",
+      "arguments": "p_email text, p_display_name text, p_relation_note text DEFAULT NULL::text, p_family_id uuid DEFAULT NULL::uuid",
+      "result_type": "uuid",
+      "anon_execute": true,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_email",
+        "p_display_name",
+        "p_relation_note",
+        "p_family_id"
+      ],
+      "definition_md5": "ad71f2f6098d8d6414ad16977e09f533",
+      "security_definer": true,
+      "default_arguments": 2,
+      "identity_arguments": "p_email text, p_display_name text, p_relation_note text, p_family_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "submit_family_plan_change_draft_v2",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_operation_id uuid, p_draft_id uuid, p_summary text DEFAULT NULL::text",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_operation_id",
+        "p_draft_id",
+        "p_summary"
+      ],
+      "definition_md5": "b51b0aecc0af0184eb451b003af430f6",
+      "security_definer": true,
+      "default_arguments": 1,
+      "identity_arguments": "p_trip_id uuid, p_operation_id uuid, p_draft_id uuid, p_summary text",
+      "authenticated_execute": true
+    },
+    {
+      "name": "submit_trip_change_request",
+      "owner": "postgres",
+      "arguments": "p_draft_id uuid, p_summary text DEFAULT NULL::text",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_draft_id",
+        "p_summary"
+      ],
+      "definition_md5": "8e3ce084d8486c0f870f5553361a116b",
+      "security_definer": true,
+      "default_arguments": 1,
+      "identity_arguments": "p_draft_id uuid, p_summary text",
+      "authenticated_execute": true
+    },
+    {
+      "name": "sync_my_linked_person_email",
+      "owner": "postgres",
+      "arguments": "",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": null,
+      "definition_md5": "69eb25e1011c42b7f5e915dc4b9c48dc",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "",
+      "authenticated_execute": true
+    },
+    {
+      "name": "sync_trip_days",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid",
+      "result_type": "void",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id"
+      ],
+      "definition_md5": "516c0cd6d76a02eff9a2baa4303f4bb1",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "toggle_person_catalog_save",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid, p_kind catalog_save_kind, p_entity_id uuid",
+      "result_type": "boolean",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_kind",
+        "p_entity_id"
+      ],
+      "definition_md5": "b35eda8c032871d845970eb9660a33b1",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid, p_kind catalog_save_kind, p_entity_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "trash_family_stay_v1",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_stay_id uuid, p_operation_id uuid, p_scope jsonb, p_observation jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_stay_id",
+        "p_operation_id",
+        "p_scope",
+        "p_observation"
+      ],
+      "definition_md5": "7d85e9262c445ca4b9640ecaf281e42f",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_trip_id uuid, p_stay_id uuid, p_operation_id uuid, p_scope jsonb, p_observation jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "trash_family_trip",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_expected_revision bigint DEFAULT NULL::bigint",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=\"\""
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_expected_revision"
+      ],
+      "definition_md5": "03c61b7264f1d16bcac3c358d3c63183",
+      "security_definer": true,
+      "default_arguments": 1,
+      "identity_arguments": "p_trip_id uuid, p_expected_revision bigint",
+      "authenticated_execute": true
+    },
+    {
+      "name": "trash_trip_file",
+      "owner": "postgres",
+      "arguments": "p_file_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_file_id"
+      ],
+      "definition_md5": "c852fd8dbbe66589570401e036375eab",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_file_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "unlink_family_journey_trip",
+      "owner": "postgres",
+      "arguments": "p_journey_id uuid, p_trip_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_journey_id",
+        "p_trip_id"
+      ],
+      "definition_md5": "a3e0d94b3fa2c4db3bd6fe5d7f0f3b60",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_journey_id uuid, p_trip_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "unlink_trip_file",
+      "owner": "postgres",
+      "arguments": "p_link_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_link_id"
+      ],
+      "definition_md5": "4e2ae54c0eb49721a9a457e0fc0de416",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_link_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "update_family_feature_overrides",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid, p_patch jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_patch"
+      ],
+      "definition_md5": "13af83f1afa51fd91922304ec5b500c1",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid, p_patch jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "update_family_journey",
+      "owner": "postgres",
+      "arguments": "p_journey_id uuid, p_title text DEFAULT NULL::text, p_subtitle text DEFAULT NULL::text, p_status journey_status DEFAULT NULL::journey_status",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_journey_id",
+        "p_title",
+        "p_subtitle",
+        "p_status"
+      ],
+      "definition_md5": "be36d757997e3f07b99404190cca513c",
+      "security_definer": true,
+      "default_arguments": 3,
+      "identity_arguments": "p_journey_id uuid, p_title text, p_subtitle text, p_status journey_status",
+      "authenticated_execute": true
+    },
+    {
+      "name": "update_family_list",
+      "owner": "postgres",
+      "arguments": "p_list_id uuid, p_name text DEFAULT NULL::text, p_description text DEFAULT NULL::text, p_color text DEFAULT NULL::text, p_visibility list_visibility DEFAULT NULL::list_visibility, p_cover_media_id uuid DEFAULT NULL::uuid, p_clear_cover boolean DEFAULT false, p_sort_order integer DEFAULT NULL::integer",
+      "result_type": "void",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_list_id",
+        "p_name",
+        "p_description",
+        "p_color",
+        "p_visibility",
+        "p_cover_media_id",
+        "p_clear_cover",
+        "p_sort_order"
+      ],
+      "definition_md5": "d156236c5c7631622f53b531048949ab",
+      "security_definer": true,
+      "default_arguments": 7,
+      "identity_arguments": "p_list_id uuid, p_name text, p_description text, p_color text, p_visibility list_visibility, p_cover_media_id uuid, p_clear_cover boolean, p_sort_order integer",
+      "authenticated_execute": true
+    },
+    {
+      "name": "update_family_map_settings",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid, p_patch jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_patch"
+      ],
+      "definition_md5": "3136979fa96eca584df16dfe4af535ee",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid, p_patch jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "update_family_membership",
+      "owner": "postgres",
+      "arguments": "p_member_id uuid, p_role family_role DEFAULT NULL::family_role, p_status membership_status DEFAULT NULL::membership_status",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_member_id",
+        "p_role",
+        "p_status"
+      ],
+      "definition_md5": "5a14b013da2a5fc60d3ad1566514f56f",
+      "security_definer": true,
+      "default_arguments": 2,
+      "identity_arguments": "p_member_id uuid, p_role family_role, p_status membership_status",
+      "authenticated_execute": true
+    },
+    {
+      "name": "update_family_notification_defaults",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid, p_patch jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_patch"
+      ],
+      "definition_md5": "8d6d5e2c1a64b615f4a83902c5a15985",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid, p_patch jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "update_family_permission_policies",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid, p_policies jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_policies"
+      ],
+      "definition_md5": "2542ec005c3ec8f5f71e69bcda2d0e45",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid, p_policies jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "update_family_preference_defaults",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid, p_patch jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_patch"
+      ],
+      "definition_md5": "583064d13b00ea3616aa0155e2b7ab80",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid, p_patch jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "update_feature_rollout",
+      "owner": "postgres",
+      "arguments": "p_feature_key text, p_state text",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_feature_key",
+        "p_state"
+      ],
+      "definition_md5": "13b6cb1183e22d1bbd2fefab40c7222d",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_feature_key text, p_state text",
+      "authenticated_execute": true
+    },
+    {
+      "name": "update_my_family_preferences",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid, p_patch jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_patch"
+      ],
+      "definition_md5": "568547a8dd59913525af24450ca346dc",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid, p_patch jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "update_my_map_preference",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid, p_option_id text",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_option_id"
+      ],
+      "definition_md5": "a7640b90abc07087fdc38994a219648c",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid, p_option_id text",
+      "authenticated_execute": true
+    },
+    {
+      "name": "update_my_notification_preferences",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid, p_patch jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_patch"
+      ],
+      "definition_md5": "dd55c24babedb3716e5750761a491c01",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid, p_patch jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "update_trip_proposal",
+      "owner": "postgres",
+      "arguments": "p_proposal_id uuid, p_title text, p_notes text DEFAULT NULL::text, p_start_at timestamp with time zone DEFAULT NULL::timestamp with time zone, p_end_at timestamp with time zone DEFAULT NULL::timestamp with time zone, p_country_ids uuid[] DEFAULT '{}'::uuid[], p_place_ids uuid[] DEFAULT '{}'::uuid[], p_traveler_person_ids uuid[] DEFAULT '{}'::uuid[], p_primary_country_id uuid DEFAULT NULL::uuid, p_occasion trip_occasion DEFAULT 'trip'::trip_occasion, p_cover_url text DEFAULT NULL::text, p_reminder_days integer DEFAULT 3",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_proposal_id",
+        "p_title",
+        "p_notes",
+        "p_start_at",
+        "p_end_at",
+        "p_country_ids",
+        "p_place_ids",
+        "p_traveler_person_ids",
+        "p_primary_country_id",
+        "p_occasion",
+        "p_cover_url",
+        "p_reminder_days"
+      ],
+      "definition_md5": "1033679e9aa2d531a62dd9b9d461e3d6",
+      "security_definer": true,
+      "default_arguments": 10,
+      "identity_arguments": "p_proposal_id uuid, p_title text, p_notes text, p_start_at timestamp with time zone, p_end_at timestamp with time zone, p_country_ids uuid[], p_place_ids uuid[], p_traveler_person_ids uuid[], p_primary_country_id uuid, p_occasion trip_occasion, p_cover_url text, p_reminder_days integer",
+      "authenticated_execute": true
+    },
+    {
+      "name": "upsert_family_journey_entry",
+      "owner": "postgres",
+      "arguments": "p_journey_id uuid, p_entry_id uuid DEFAULT NULL::uuid, p_payload jsonb DEFAULT '{}'::jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_journey_id",
+        "p_entry_id",
+        "p_payload"
+      ],
+      "definition_md5": "deb72011d3ff027f3289b9d81d34f92d",
+      "security_definer": true,
+      "default_arguments": 2,
+      "identity_arguments": "p_journey_id uuid, p_entry_id uuid, p_payload jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "upsert_family_packing_template",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid, p_template_id uuid, p_name text, p_items jsonb",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_template_id",
+        "p_name",
+        "p_items"
+      ],
+      "definition_md5": "cb6b655d78e1382b7f40e8db2a657d7d",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_family_id uuid, p_template_id uuid, p_name text, p_items jsonb",
+      "authenticated_execute": true
+    },
+    {
+      "name": "upsert_family_place_category",
+      "owner": "postgres",
+      "arguments": "p_family_id uuid, p_category_id uuid, p_name text, p_color_hex text, p_icon_key text, p_sort_order integer DEFAULT NULL::integer",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_family_id",
+        "p_category_id",
+        "p_name",
+        "p_color_hex",
+        "p_icon_key",
+        "p_sort_order"
+      ],
+      "definition_md5": "229166ee57e5ff7238bfe5210c820d48",
+      "security_definer": true,
+      "default_arguments": 1,
+      "identity_arguments": "p_family_id uuid, p_category_id uuid, p_name text, p_color_hex text, p_icon_key text, p_sort_order integer",
+      "authenticated_execute": true
+    },
+    {
+      "name": "upsert_trip_change_draft_op",
+      "owner": "postgres",
+      "arguments": "p_trip_id uuid, p_op_id uuid DEFAULT NULL::uuid, p_module trip_change_module DEFAULT NULL::trip_change_module, p_op trip_change_op_kind DEFAULT NULL::trip_change_op_kind, p_trip_day_id uuid DEFAULT NULL::uuid, p_civil_date date DEFAULT NULL::date, p_target_table text DEFAULT NULL::text, p_target_id uuid DEFAULT NULL::uuid, p_payload jsonb DEFAULT NULL::jsonb, p_sort_order integer DEFAULT 0",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_trip_id",
+        "p_op_id",
+        "p_module",
+        "p_op",
+        "p_trip_day_id",
+        "p_civil_date",
+        "p_target_table",
+        "p_target_id",
+        "p_payload",
+        "p_sort_order"
+      ],
+      "definition_md5": "9527b597de73b04ae5b1b1819a071ec7",
+      "security_definer": true,
+      "default_arguments": 9,
+      "identity_arguments": "p_trip_id uuid, p_op_id uuid, p_module trip_change_module, p_op trip_change_op_kind, p_trip_day_id uuid, p_civil_date date, p_target_table text, p_target_id uuid, p_payload jsonb, p_sort_order integer",
+      "authenticated_execute": true
+    },
+    {
+      "name": "withdraw_trip_change_request",
+      "owner": "postgres",
+      "arguments": "p_request_id uuid",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "configuration": [
+        "search_path=public"
+      ],
+      "argument_names": [
+        "p_request_id"
+      ],
+      "definition_md5": "f9a1b8ff2e373aba512d2a4e25ff0282",
+      "security_definer": true,
+      "default_arguments": 0,
+      "identity_arguments": "p_request_id uuid",
+      "authenticated_execute": true
+    }
+  ],
+  "migrations": [
+    {
+      "name": "auth_family_core",
+      "version": "20260713000000"
+    },
+    {
+      "name": "seed_admin_template",
+      "version": "20260713000001"
+    },
+    {
+      "name": "fix_table_ownership",
+      "version": "20260713595900"
+    },
+    {
+      "name": "fix_table_ownership",
+      "version": "20260714000000"
+    },
+    {
+      "name": "additive_travel_enums_auth_people",
+      "version": "20260714150000"
+    },
+    {
+      "name": "additive_travel_geography",
+      "version": "20260714150100"
+    },
+    {
+      "name": "additive_travel_poi",
+      "version": "20260714150200"
+    },
+    {
+      "name": "additive_travel_trips_planning",
+      "version": "20260714150300"
+    },
+    {
+      "name": "additive_travel_rls_views",
+      "version": "20260714150400"
+    },
+    {
+      "name": "revoke_anon_helper_rpc",
+      "version": "20260714150500"
+    },
+    {
+      "name": "etl_sync_state",
+      "version": "20260714180000"
+    },
+    {
+      "name": "additive_trip_places_stats",
+      "version": "20260716000000"
+    },
+    {
+      "name": "additive_vacay_calendar",
+      "version": "20260716000100"
+    },
+    {
+      "name": "additive_propose_trip_rpcs",
+      "version": "20260716140000"
+    },
+    {
+      "name": "additive_trip_occasion",
+      "version": "20260716150000"
+    },
+    {
+      "name": "additive_trip_cover_reminder",
+      "version": "20260716160000"
+    },
+    {
+      "name": "additive_people_calendar_feed_token",
+      "version": "20260716170000"
+    },
+    {
+      "name": "additive_resolve_my_person_id",
+      "version": "20260716171000"
+    },
+    {
+      "name": "additive_people_accent_hex",
+      "version": "20260716223727"
+    },
+    {
+      "name": "additive_play_game_schema",
+      "version": "20260717000000"
+    },
+    {
+      "name": "migrate_reward_ledger",
+      "version": "20260717000100"
+    },
+    {
+      "name": "additive_family_person_relationships",
+      "version": "20260717010000"
+    },
+    {
+      "name": "family_tree_soft_rels_and_seed",
+      "version": "20260717120000"
+    },
+    {
+      "name": "traveler_preset_branches",
+      "version": "20260717220000"
+    },
+    {
+      "name": "datetime_foundation_zones",
+      "version": "20260717230000"
+    },
+    {
+      "name": "update_trip_proposal",
+      "version": "20260718010000"
+    },
+    {
+      "name": "travel_stats_completed_and_person",
+      "version": "20260718020000"
+    },
+    {
+      "name": "places_destination_coordinates",
+      "version": "20260718221510"
+    },
+    {
+      "name": "schedule_sort_order_and_day_notes",
+      "version": "20260718225411"
+    },
+    {
+      "name": "trip_days_spine",
+      "version": "20260718234420"
+    },
+    {
+      "name": "trip_days_table_and_sync",
+      "version": "20260718234610"
+    },
+    {
+      "name": "trip_days_create_proposal_hook",
+      "version": "20260718234638"
+    },
+    {
+      "name": "trip_days_update_proposal_hook",
+      "version": "20260718234927"
+    },
+    {
+      "name": "places_coord_provenance",
+      "version": "20260720012200"
+    },
+    {
+      "name": "profile_clock_zones",
+      "version": "20260722040053"
+    },
+    {
+      "name": "trip_reservations_transport",
+      "version": "20260722044346"
+    },
+    {
+      "name": "media_assets_storage",
+      "version": "20260724213522"
+    },
+    {
+      "name": "sync_trip_days_strict_spine",
+      "version": "20260725211059"
+    },
+    {
+      "name": "trip_reservations_day_integrity",
+      "version": "20260727032453"
+    },
+    {
+      "name": "day_accommodations",
+      "version": "20260727032506"
+    },
+    {
+      "name": "trip_expenses_costs",
+      "version": "20260728012441"
+    },
+    {
+      "name": "seed_common_currencies",
+      "version": "20260728012759"
+    },
+    {
+      "name": "settle_trip_expense_flows",
+      "version": "20260728190638"
+    },
+    {
+      "name": "proposal_governance_foundations",
+      "version": "20260729002628"
+    },
+    {
+      "name": "proposal_governance_rpcs",
+      "version": "20260729005901"
+    },
+    {
+      "name": "workspace_can_mutate_trip",
+      "version": "20260729053857"
+    },
+    {
+      "name": "workspace_change_request_schema",
+      "version": "20260729053910"
+    },
+    {
+      "name": "workspace_change_request_rpcs",
+      "version": "20260729053940"
+    },
+    {
+      "name": "trip_reservations_schedule_item_id",
+      "version": "20260729193904"
+    },
+    {
+      "name": "apply_reservation_update_confirmation_url",
+      "version": "20260730024000"
+    },
+    {
+      "name": "people_avatar_refs_view",
+      "version": "20260730202820"
+    },
+    {
+      "name": "catalog_explore_cover_media",
+      "version": "20260802221015"
+    },
+    {
+      "name": "explore_media_images_only",
+      "version": "20260802231100"
+    },
+    {
+      "name": "explore_p5_add_to_trip",
+      "version": "20260803214500"
+    },
+    {
+      "name": "explore_p51_purview_trip_place",
+      "version": "20260807210000"
+    },
+    {
+      "name": "explore_p6_person_catalog_saves",
+      "version": "20260807230000"
+    },
+    {
+      "name": "trip_tracks",
+      "version": "20260815003454"
+    },
+    {
+      "name": "duplicate_trip",
+      "version": "20260815183000"
+    },
+    {
+      "name": "family_vacay_web",
+      "version": "20260816031500"
+    },
+    {
+      "name": "places_cover_media",
+      "version": "20260816180000"
+    },
+    {
+      "name": "vacay_calendar_rbac",
+      "version": "20260817190000"
+    },
+    {
+      "name": "list_my_catalog_saves_in_countries",
+      "version": "20260817230317"
+    },
+    {
+      "name": "workspace_lists_and_files",
+      "version": "20260818030002"
+    },
+    {
+      "name": "family_named_lists",
+      "version": "20260818201512"
+    },
+    {
+      "name": "family_list_cover_upload",
+      "version": "20260818223636"
+    },
+    {
+      "name": "register_person_avatar",
+      "version": "20260820223819"
+    },
+    {
+      "name": "family_admin_foundation_indexes",
+      "version": "20260821000210"
+    },
+    {
+      "name": "family_permission_matrix_audit",
+      "version": "20260821013508"
+    },
+    {
+      "name": "family_auth_search_path",
+      "version": "20260821023842"
+    },
+    {
+      "name": "family_packing_templates_admin",
+      "version": "20260821030307"
+    },
+    {
+      "name": "family_place_categories_admin",
+      "version": "20260821033128"
+    },
+    {
+      "name": "family_preference_inheritance",
+      "version": "20260821040259"
+    },
+    {
+      "name": "family_notification_delivery",
+      "version": "20260821130000"
+    },
+    {
+      "name": "family_notification_emitters",
+      "version": "20260821130100"
+    },
+    {
+      "name": "family_identity_assurance",
+      "version": "20260821140000"
+    },
+    {
+      "name": "family_private_file_policy",
+      "version": "20260821140100"
+    },
+    {
+      "name": "storage_cleanup_jobs_deny_client",
+      "version": "20260821192652"
+    },
+    {
+      "name": "family_identity_file_enforcement",
+      "version": "20260821202732"
+    },
+    {
+      "name": "workspace_place_categories",
+      "version": "20260822020836"
+    },
+    {
+      "name": "family_feature_rollouts",
+      "version": "20260822022800"
+    },
+    {
+      "name": "family_data_export",
+      "version": "20260822044105"
+    },
+    {
+      "name": "get_private_upload_object_stat",
+      "version": "20260823235509"
+    },
+    {
+      "name": "storage_cleanup_safety",
+      "version": "20260828015138"
+    },
+    {
+      "name": "register_person_avatar_reconciliation",
+      "version": "20260828201624"
+    },
+    {
+      "name": "family_journey_journal",
+      "version": "20260829015000"
+    },
+    {
+      "name": "family_realtime_publication",
+      "version": "20260829222052"
+    },
+    {
+      "name": "family_map_settings",
+      "version": "20260905050119"
+    },
+    {
+      "name": "media_variants",
+      "version": "20261010222112"
+    },
+    {
+      "name": "journey_entry_recovery",
+      "version": "20261104175741"
+    },
+    {
+      "name": "journey_aggregate_recovery",
+      "version": "20261104192908"
+    },
+    {
+      "name": "trip_aggregate_recovery",
+      "version": "20261104200550"
+    },
+    {
+      "name": "trip_plan_locations",
+      "version": "20261104230709"
+    },
+    {
+      "name": "trip_visit_location_bridge",
+      "version": "20261104233950"
+    },
+    {
+      "name": "trip_untimed_visit_commands",
+      "version": "20261105001102"
+    },
+    {
+      "name": "typed_plan_change_proposals",
+      "version": "20261105004710"
+    },
+    {
+      "name": "legacy_visit_time_classification",
+      "version": "20261105012509"
+    },
+    {
+      "name": "named_zone_visit_timing",
+      "version": "20261105015237"
+    },
+    {
+      "name": "visit_timing_proposals",
+      "version": "20261105030029"
+    },
+    {
+      "name": "visit_partial_time_semantics",
+      "version": "20261105040722"
+    },
+    {
+      "name": "atomic_trip_plan_entries",
+      "version": "20261105054629"
+    },
+    {
+      "name": "trip_planner_state_snapshot",
+      "version": "20261105194324"
+    },
+    {
+      "name": "trip_destination_location_bridge",
+      "version": "20261105201625"
+    },
+    {
+      "name": "trip_location_form_commands",
+      "version": "20261105205015"
+    },
+    {
+      "name": "trip_visit_form_commands",
+      "version": "20261105212614"
+    },
+    {
+      "name": "trip_private_planner_snapshot",
+      "version": "20261106005109"
+    },
+    {
+      "name": "native_planner_creation",
+      "version": "20261106023651"
+    },
+    {
+      "name": "native_visit_arrangements",
+      "version": "20261106030729"
+    },
+    {
+      "name": "observed_trip_calendar",
+      "version": "20261106035504"
+    },
+    {
+      "name": "recoverable_trip_day_order",
+      "version": "20261106043206"
+    },
+    {
+      "name": "recoverable_trip_day_insertion",
+      "version": "20261106185358"
+    },
+    {
+      "name": "recoverable_unreferenced_trip_days",
+      "version": "20261106193124"
+    },
+    {
+      "name": "recoverable_trip_day_contents",
+      "version": "20261106201143"
+    },
+    {
+      "name": "recoverable_trip_day_file_links",
+      "version": "20261106213759"
+    },
+    {
+      "name": "booking_calendar_date_facts",
+      "version": "20261106222223"
+    },
+    {
+      "name": "recoverable_day_booking_bindings",
+      "version": "20261106230656"
+    },
+    {
+      "name": "observed_booking_detail_commands",
+      "version": "20261106234140"
+    },
+    {
+      "name": "observed_plan_governance",
+      "version": "20261107021228"
+    },
+    {
+      "name": "observed_trip_task_commands",
+      "version": "20261109000220"
+    },
+    {
+      "name": "observed_trip_packing_commands",
+      "version": "20261109032335"
+    },
+    {
+      "name": "observed_trip_packing_groups",
+      "version": "20261111201637"
+    },
+    {
+      "name": "normalized_trip_packing_categories",
+      "version": "20261111234537"
+    },
+    {
+      "name": "observed_trip_packing_categories",
+      "version": "20261112005447"
+    },
+    {
+      "name": "normalized_packing_category_lifecycle",
+      "version": "20261112050004"
+    },
+    {
+      "name": "category_bound_packing_items",
+      "version": "20261112055647"
+    },
+    {
+      "name": "packing_category_aggregate_commands",
+      "version": "20261112084121"
+    },
+    {
+      "name": "observed_trip_packing_bags",
+      "version": "20261112112956"
+    },
+    {
+      "name": "terminal_trip_packing_restore_cancellation",
+      "version": "20261112132958"
+    },
+    {
+      "name": "terminal_trip_packing_bag_commands",
+      "version": "20261112162520"
+    },
+    {
+      "name": "reconcile_family_api_privileges",
+      "version": "20261112235203"
+    },
+    {
+      "name": "trip_stay_read_foundation",
+      "version": "20261113032434"
+    },
+    {
+      "name": "observed_trip_stay_commands",
+      "version": "20261113220230"
+    },
+    {
+      "name": "original_stay_command_outcomes",
+      "version": "20261113225457"
+    },
+    {
+      "name": "coherent_booking_stay_read",
+      "version": "20261113234914"
+    },
+    {
+      "name": "atomic_stay_booking_bundle",
+      "version": "20261114051232"
+    },
+    {
+      "name": "native_stay_arrival_recovery",
+      "version": "20261114070706"
+    },
+    {
+      "name": "native_stay_calendar_consistency",
+      "version": "20261114110052"
+    }
+  ],
+  "server_version": "17.11"
+}

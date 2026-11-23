@@ -1,0 +1,30 @@
+{
+  "removed_paths": [
+    "client/src/integrations/family/legacy/pages/AtlasPage.tsx",
+    "client/src/integrations/family/legacy/pages/atlas/useAtlas.ts"
+  ],
+  "previous_rows": [
+    {
+      "path": "client/src/integrations/family/legacy/pages/AtlasPage.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "84cda34c2922cd757c2779569304ca2d958268e7",
+        "bytes": 61486
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/pages/AtlasPage.tsx"
+    },
+    {
+      "path": "client/src/integrations/family/legacy/pages/atlas/useAtlas.ts",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "ae205f7d909f8e31a74174e074d0bc1b199d4c04",
+        "bytes": 39851
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/pages/atlas/useAtlas.ts"
+    }
+  ],
+  "new_qualified_commit": "81737fdfeea0c3c38b4e839019f020e7acf92fb7",
+  "reason": "Actual two-file Atlas page/hook island deletion after bounded source/type/test/configuration closure; no guard relaxation or disappearing source row without deletion."
+}

@@ -1,0 +1,42 @@
+[
+  {
+    "name": "rtl",
+    "exit": 0,
+    "cwd": "/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client",
+    "command": [
+      "node",
+      "scripts/rtl-lint.mjs"
+    ],
+    "seconds": 5.51
+  },
+  {
+    "name": "i18n",
+    "exit": 0,
+    "cwd": "/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client",
+    "command": [
+      "node",
+      "scripts/i18n-keys.mjs"
+    ],
+    "seconds": 2.43
+  },
+  {
+    "name": "rtl-scripts-cwd",
+    "exit": 0,
+    "cwd": "/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client/scripts",
+    "command": [
+      "node",
+      "rtl-lint.mjs"
+    ],
+    "seconds": 5.07
+  },
+  {
+    "name": "i18n-scripts-cwd",
+    "exit": 0,
+    "cwd": "/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client/scripts",
+    "command": [
+      "node",
+      "i18n-keys.mjs"
+    ],
+    "seconds": 1.61
+  }
+]

@@ -1,0 +1,4 @@
+FAIL  pages/login/starfield.ts: 16 physical side(s), baseline 0. Use ms-/me-/ps-/pe-/start-/end-/text-start/text-end/border-s/border-e/rounded-s/rounded-e or marginInlineStart/paddingInlineEnd/insetInlineStart/textAlign: start. If the side is geometry, mark the line with rtl-lint-disable in a comment.
+FAIL  pages/LoginPage.tsx is held at 23 in scripts/rtl-baseline.json, but there are 7 now.
+Run npm run lint:rtl -- --update to lower the baseline with the change that made it smaller: an entry above the count lets it grow back unseen.
+rtl: 273 physical side(s) in 102 file(s), baseline allows 273; 12 line(s) marked rtl-lint-disable, baseline allows 12

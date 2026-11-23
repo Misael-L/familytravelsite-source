@@ -1,0 +1,8 @@
+{
+  "command": "../node_modules/.bin/tsc --noEmit",
+  "exit": 0,
+  "seconds": 77.82,
+  "installed_compiler_direct_no_precheck_rebuild": true,
+  "declaration_inputs_hash_fixed": 128,
+  "after_build_no_concurrent_lint_or_build": true
+}

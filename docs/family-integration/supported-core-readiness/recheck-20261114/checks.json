@@ -1,0 +1,86 @@
+{
+  "readiness_diagnostics": {
+    "numTotalTests": 44,
+    "numPassedTests": 44,
+    "numFailedTests": 0,
+    "numPendingTests": 0,
+    "success": true,
+    "actual_exit": 0,
+    "feature_acceptance_claim": false,
+    "scope": "real-module selectors/composition/adapter gap diagnostics; no database/hosted operation"
+  },
+  "connector_navigation_regressions": {
+    "numTotalTests": 116,
+    "numPassedTests": 116,
+    "numFailedTests": 0,
+    "numPendingTests": 0,
+    "success": true,
+    "actual_exit": 0,
+    "files": 8,
+    "paths": [
+      "src/integrations/family/applicationHandler.test.ts",
+      "src/integrations/family/applicationHandler.nav.test.ts",
+      "src/integrations/family/serviceCompatibility.test.ts",
+      "src/integrations/family/plannerBootstrap.test.ts",
+      "src/integrations/family/navigation.test.tsx",
+      "src/components/Layout/Navbar.test.tsx",
+      "src/components/Layout/BottomNav.test.tsx",
+      "src/mobile/components/MBottomNav.test.tsx"
+    ]
+  },
+  "source_gates": [
+    {
+      "name": "carryover",
+      "actual_exit": 0,
+      "known_hold": false
+    },
+    {
+      "name": "source-guard-tests",
+      "actual_exit": 0,
+      "known_hold": false
+    },
+    {
+      "name": "qualified-source",
+      "actual_exit": 1,
+      "known_hold": true
+    },
+    {
+      "name": "native-pin",
+      "actual_exit": 1,
+      "known_hold": true
+    },
+    {
+      "name": "history-pin",
+      "actual_exit": 1,
+      "known_hold": true
+    }
+  ],
+  "source_toolchain_cases": 88,
+  "publisher": {
+    "actual_exit": 1,
+    "candidate": "9f03de03bd82fc15b89aa55ee7f1dd356c862bc5",
+    "refused_path": ".cursor/plans/existing-family-backend-integration.plan.md",
+    "private_plan_sha256": "c4677c13b949e3f714fe3f07f58f10c0a54af72a23537d7bb43e356240512449",
+    "plan_copied_to_sanitized_evidence": false,
+    "credential_scan_reached": false,
+    "push": false,
+    "verify_build_requested": false,
+    "manifest_origin_current_code": "https://familytravelsite.lmisael0721.workers.dev"
+  },
+  "preflight_validated_locally": {
+    "actual_read_only_local_execution": true,
+    "metadata_matches_initial_catalog": true,
+    "function_overloads": 208,
+    "business_rows_read_or_written": false,
+    "hosted_execution": false
+  },
+  "inherited_exact_runtime_acceptance": {
+    "runtime_commit": "9f03de03bd82fc15b89aa55ee7f1dd356c862bc5",
+    "client_cases": 1983,
+    "final_artifact_browser_checkpoints": 20,
+    "source": "u05b2b3d2-v4-private-files-handoff.md",
+    "rerun_in_this_packet": false
+  },
+  "runtime_changed": false,
+  "new_build_needed_for_documentation_review": false
+}

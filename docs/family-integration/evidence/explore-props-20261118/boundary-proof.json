@@ -1,0 +1,97 @@
+{
+  "passed": true,
+  "current_roots": [
+    "client/public/theme-boot.js",
+    "client/public/family-build-contract.js",
+    "client/public/shell-guard.js",
+    "client/src/main.tsx",
+    "client/src/integrations/family/deviceRecovery/main.ts",
+    "client/native-shell/main.ts",
+    "client/public/sw-push.js"
+  ],
+  "current_nodes": 6091,
+  "current_runtime_nodes_edges_and_source_bytes_exact": true,
+  "component_emitted_bytes_exact": true,
+  "emitted_sha256": "5ee17f62cbc6bb8fdcac3ea8104031ac70895a87d4a152d51c529e5e04a3136c",
+  "original_default_and_named_type_exports_preserved": true,
+  "only_new_boundary_edges_are_type_only_import_and_reexport": [
+    {
+      "from": "client/src/integrations/family/legacy/components/Explore/ExploreEntityDetailPanel.tsx",
+      "target": "client/src/integrations/family/legacy/components/Explore/ExploreEntityDetailPanel.types.ts",
+      "kind": "ImportDeclaration",
+      "line": 31,
+      "declaration": "import type { ExploreEntityDetailPanelProps } from './ExploreEntityDetailPanel.types';"
+    },
+    {
+      "from": "client/src/integrations/family/legacy/components/Explore/ExploreEntityDetailPanel.tsx",
+      "target": "client/src/integrations/family/legacy/components/Explore/ExploreEntityDetailPanel.types.ts",
+      "kind": "ExportDeclaration",
+      "line": 59,
+      "declaration": "export type { ExploreEntityDetailPanelProps } from './ExploreEntityDetailPanel.types';"
+    }
+  ],
+  "before_consumers": [
+    {
+      "from": "client/src/integrations/family/legacy/components/Explore/ExploreEntityDetailPanel.test.tsx",
+      "target": "client/src/integrations/family/legacy/components/Explore/ExploreEntityDetailPanel.tsx",
+      "kind": "ImportDeclaration",
+      "line": 9,
+      "declaration": "import ExploreEntityDetailPanel from './ExploreEntityDetailPanel';"
+    },
+    {
+      "from": "client/src/integrations/family/legacy/components/Explore/TripWorkspaceExplorePanel.tsx",
+      "target": "client/src/integrations/family/legacy/components/Explore/ExploreEntityDetailPanel.tsx",
+      "kind": "ImportDeclaration",
+      "line": 18,
+      "declaration": "import ExploreEntityDetailPanel from './ExploreEntityDetailPanel';"
+    }
+  ],
+  "after_consumers": [
+    {
+      "from": "client/src/integrations/family/legacy/components/Explore/ExploreEntityDetailPanel.test.tsx",
+      "target": "client/src/integrations/family/legacy/components/Explore/ExploreEntityDetailPanel.tsx",
+      "kind": "ImportDeclaration",
+      "line": 9,
+      "declaration": "import ExploreEntityDetailPanel from './ExploreEntityDetailPanel';"
+    },
+    {
+      "from": "client/src/integrations/family/legacy/components/Explore/ExploreEntityDetailPanel.tsx",
+      "target": "client/src/integrations/family/legacy/components/Explore/ExploreEntityDetailPanel.types.ts",
+      "kind": "ImportDeclaration",
+      "line": 31,
+      "declaration": "import type { ExploreEntityDetailPanelProps } from './ExploreEntityDetailPanel.types';"
+    },
+    {
+      "from": "client/src/integrations/family/legacy/components/Explore/ExploreEntityDetailPanel.tsx",
+      "target": "client/src/integrations/family/legacy/components/Explore/ExploreEntityDetailPanel.types.ts",
+      "kind": "ExportDeclaration",
+      "line": 59,
+      "declaration": "export type { ExploreEntityDetailPanelProps } from './ExploreEntityDetailPanel.types';"
+    },
+    {
+      "from": "client/src/integrations/family/legacy/components/Explore/TripWorkspaceExplorePanel.tsx",
+      "target": "client/src/integrations/family/legacy/components/Explore/ExploreEntityDetailPanel.tsx",
+      "kind": "ImportDeclaration",
+      "line": 18,
+      "declaration": "import ExploreEntityDetailPanel from './ExploreEntityDetailPanel';"
+    }
+  ],
+  "raw_sources_before_after": [
+    14037,
+    14038
+  ],
+  "application_modules_before_after": [
+    7473,
+    7474
+  ],
+  "boundary_entry_membership": {
+    "client/src/integrations/family/legacy/components/Explore/ExploreEntityDetailPanel.tsx": false,
+    "client/src/integrations/family/legacy/components/Explore/ExploreEntityDetailPanel.types.ts": false
+  },
+  "no_ambient_augmentation": true,
+  "configuration_glob_dynamic_and_legacy_consumer_resolution_preserved": true,
+  "positive_synthetic_import_control_passed": true,
+  "current_runtime_nodes_sha256": "707174ae69d72dc9ff465b63c52329ae38ce4b1da3059e71a8d324746033ecac",
+  "current_runtime_edges_sha256": "4d9503fb398134656b980111ee1767aeb2e72a6c2c78bf259cb8acfadef3926e",
+  "current_runtime_source_inventory_sha256": "1ad6a99bbeffcca9658159c754a561bf12c6ae6ae269a6be8be4a4813a6d6442"
+}

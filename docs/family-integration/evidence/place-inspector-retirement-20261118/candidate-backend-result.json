@@ -1,0 +1,24 @@
+{
+  "exit": 0,
+  "seconds": 0.74,
+  "files": [
+    "src/data/supabase/catalogExploreMedia.test.ts",
+    "src/lib/media/prefetchHeroImages.test.ts"
+  ],
+  "command": [
+    "/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/node_modules/.bin/vitest",
+    "run",
+    "src/data/supabase/catalogExploreMedia.test.ts",
+    "src/lib/media/prefetchHeroImages.test.ts",
+    "--maxWorkers=2",
+    "--reporter=default",
+    "--reporter=json",
+    "--outputFile=/private/tmp/trek-core-place-inspector-retirement-20261118/candidate-backend-tests.json"
+  ],
+  "controlled_ports_only": true,
+  "coverage_not_enabled_or_claimed": true,
+  "numPassedTests": 16,
+  "numFailedTests": 0,
+  "numPendingTests": 0,
+  "numTotalTests": 16
+}

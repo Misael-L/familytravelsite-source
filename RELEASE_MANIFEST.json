@@ -1,0 +1,30 @@
+{
+  "privateSourceCommit": "cf0de6d65f222bedeb9ee272fe13357cb7fb59f7",
+  "privateProductionCommit": "cf0de6d65f222bedeb9ee272fe13357cb7fb59f7",
+  "privateCommitSubject": "Qualify the Family browser update fix",
+  "publicSourceTag": "source-20261123-cf0de6d",
+  "publicSourceRemote": "https://github.com/Misael-L/familytravelsite-source.git",
+  "workersBuildUuid": null,
+  "workersVersionId": "14147a66-db08-49e0-96ee-0a7f458a8291",
+  "node": "24",
+  "buildCommand": "npm run build:web",
+  "origin": "https://familytravelsite-integration-preview.lmisael0721.workers.dev",
+  "license": "AGPL-3.0-only",
+  "createdAtUtc": "2026-11-23T21:33:49.784824+00:00",
+  "deploymentBinding": "caller-supplied-version",
+  "sanitization": {
+    "policy": "family.private-operational-plan.v1",
+    "privateCommit": "cf0de6d65f222bedeb9ee272fe13357cb7fb59f7",
+    "trackedFiles": 18694,
+    "sourceFilesRetained": 18693,
+    "allRetainedBytesAndModesMatchGit": true,
+    "omissions": [
+      {
+        "path": ".cursor/plans/existing-family-backend-integration.plan.md",
+        "sha256": "c4677c13b949e3f714fe3f07f58f10c0a54af72a23537d7bb43e356240512449",
+        "bytes": 12372,
+        "reason": "Private operational plan; not required to build or run the application"
+      }
+    ]
+  }
+}

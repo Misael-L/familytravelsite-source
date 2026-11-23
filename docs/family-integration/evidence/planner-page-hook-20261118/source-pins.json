@@ -1,0 +1,25 @@
+{
+  "incoming": "b99fa21f457e6ec715c04b71d7295fd27787d978",
+  "implementation": "79df88d34ea954ee39ff6cf83c3fa6a15b41b3fb",
+  "build_source": "c2676698c57587f331683b0200b39f5465e55ab2",
+  "original_hook_sha256": "d785b5c0888646c3d8ec535b1287d89224611fde23c2dc6e0ab2469b83ec65e3",
+  "candidate_hook_sha256": "3447b44587f4b057212aebcf8874eccbdd8bfea52a9e2902aa2bc453e89c1005",
+  "new_test_sha256": {
+    "useTripPlannerPage.test.tsx": "1ac72aedcdbc5511084db6fa229599774540d2d907b9c940a8154375ade5ee54"
+  },
+  "unchanged_existing_test_files": {
+    "src/pages/tripPlanner/b4a-wiring.test.ts": "aad9acf3364897d0c7201a7afe6a4a281d34c63ca20dafb8807011f6009c4a6c",
+    "src/pages/TripPlannerPage.wiring.test.tsx": "358ffdb10264099f9f70cd206e83e41184db44eb5e33fe7ee61eb20f62748174",
+    "src/pages/TripPlannerPage.tours.wiring.test.tsx": "33ec85261857e1bd3514bce24e221c335e6e09b537222abe7caa2a80b7fb81ad",
+    "src/pages/TripPlannerPage.leftPanelTab.test.tsx": "98877bed861c9ef519a3cc627d158e9c6e398dd2cbde8d6aa7fc282da814b3e6",
+    "src/pages/tripPlanner/PlanMapStage.test.tsx": "3c8b378a8346e5ee9c15065ff7b573943149a0b9a29cc5a79ac2f5fe036cf244",
+    "src/pages/tripPlanner/TourPlannerMapStage.test.tsx": "e9c7429b5f0f774217e5bb39bd2c7479486f7a025f66d53dc689bbe696490133",
+    "src/pages/tripPlanner/usePlannerFocusPoints.test.ts": "bcb84136f0ac40450205cd67df94c626868ebac26511eb6723fb0fd9cdfa5ae5",
+    "src/pages/tripPlanner/useMapLocationSearch.test.ts": "ff5834383e89a5a523c272d403ea5e5b8468b535290a4d760a63fbebdb96e948",
+    "src/pages/tripPlanner/useTourOverview.test.ts": "0c798286b8d58dcd520bfbd9d396ad917b9ed52973eed974a8126d9cc4497a08",
+    "src/hooks/usePlanMapViewport.test.ts": "a22e7b15b58c2d968a2795c2c418a18d6fb6ee7f4370b7c0a311cf0e802168dc"
+  },
+  "node_runtime": "v24.22.2",
+  "raw_coverage_build_and_declaration_hashes_stage": "/private/tmp/trek-core-planner-page-source-20261118",
+  "no_live_database_provider_browser_requests": true
+}

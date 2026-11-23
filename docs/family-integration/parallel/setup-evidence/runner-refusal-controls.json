@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "controls": [
+    {
+      "control": "wrong-lane",
+      "exit": 2,
+      "expected": 2,
+      "detail": "Wrong worktree for this lane; do not switch the other chat\u2019s branch."
+    },
+    {
+      "control": "unassigned-packet",
+      "exit": 2,
+      "expected": 2,
+      "detail": "Packet is outside this lane\u2019s finite queue."
+    },
+    {
+      "control": "shared-heavy-lease",
+      "exit": 75,
+      "expected": 75,
+      "detail": "Another expensive check holds the lease: {\"lane\": \"worker-b\", \"packet\": \"PB-01\", \"kind\": \"strict\", \"pid\": 96093, \"root\": \"/Users/Misael/.codex/worktrees/family-site-worker-b-20261118/FamilyTravelSite-trek-5.1.4\", \"started_utc\": \"2026-11-18T21:04:49.434490+00:00\"}. Continue independent reading or retry later; do not delete the lock."
+    }
+  ],
+  "initial_coordinator_control_needed_authorized_workspace_cache_write": true
+}

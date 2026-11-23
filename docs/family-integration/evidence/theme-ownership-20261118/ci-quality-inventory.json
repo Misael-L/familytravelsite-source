@@ -1,0 +1,86 @@
+{
+  "workflow": ".github/workflows/test.yml",
+  "workflow_sha256": "c92eb8e059aec4d9763576192dfb297061168ce1415f484b42adb5dadd6b932f",
+  "commands": [
+    {
+      "job": "client-types-checks",
+      "line": 468,
+      "command": "npm run lint:strict",
+      "fresh_Q121_status": "not yet freshly measured in Q121; next readiness inventory, not assumed passing"
+    },
+    {
+      "job": "client-types-checks",
+      "line": 471,
+      "command": "npm run lint:pages",
+      "fresh_Q121_status": "not yet freshly measured in Q121; next readiness inventory, not assumed passing"
+    },
+    {
+      "job": "client-types-checks",
+      "line": 477,
+      "command": "npm run lint:rtl",
+      "fresh_Q121_status": "not yet freshly measured in Q121; next readiness inventory, not assumed passing"
+    },
+    {
+      "job": "client-types-checks",
+      "line": 484,
+      "command": "npm run lint:size",
+      "fresh_Q121_status": "planned measurement"
+    },
+    {
+      "job": "client-types-checks",
+      "line": 489,
+      "command": "npm run lint:format",
+      "fresh_Q121_status": "planned measurement"
+    },
+    {
+      "job": "client-types-checks",
+      "line": 493,
+      "command": "npm run lint:layers",
+      "fresh_Q121_status": "not yet freshly measured in Q121; next readiness inventory, not assumed passing"
+    },
+    {
+      "job": "client-types-checks",
+      "line": 499,
+      "command": "npm run lint:offline",
+      "fresh_Q121_status": "not yet freshly measured in Q121; next readiness inventory, not assumed passing"
+    },
+    {
+      "job": "client-types-checks",
+      "line": 506,
+      "command": "npm run lint:dup",
+      "fresh_Q121_status": "not yet freshly measured in Q121; next readiness inventory, not assumed passing"
+    },
+    {
+      "job": "client-types-checks",
+      "line": 514,
+      "command": "npm run lint:pairs",
+      "fresh_Q121_status": "not yet freshly measured in Q121; next readiness inventory, not assumed passing"
+    },
+    {
+      "job": "client-types-checks",
+      "line": 517,
+      "command": "npm run lint:skips",
+      "fresh_Q121_status": "not yet freshly measured in Q121; next readiness inventory, not assumed passing"
+    },
+    {
+      "job": "client-types-checks",
+      "line": 523,
+      "command": "npm run lint:i18n-keys",
+      "fresh_Q121_status": "not yet freshly measured in Q121; next readiness inventory, not assumed passing"
+    },
+    {
+      "job": "client-types-checks",
+      "line": 531,
+      "command": "npm run theme:lint",
+      "fresh_Q121_status": "planned measurement"
+    },
+    {
+      "job": "client-lint",
+      "line": 575,
+      "command": "npm run lint:warnings",
+      "fresh_Q121_status": "planned measurement"
+    }
+  ],
+  "job_and_path_conditions_must_be_reviewed_before_CI_acceptance": true,
+  "not_a_current_CI_or_release_pass": true
+}

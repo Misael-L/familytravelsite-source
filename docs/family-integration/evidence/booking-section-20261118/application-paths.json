@@ -1,0 +1,5 @@
+[
+  "client/src/integrations/family/legacy/components/Planner/BookingsPanelFamily.tsx",
+  "client/src/integrations/family/legacy/components/Planner/FamilyBookingSection.tsx",
+  "client/src/integrations/family/legacy/components/Planner/BookingsPanelFamily.sections.test.tsx"
+]

@@ -1,0 +1,60 @@
+{
+  "passed": true,
+  "changed_runtime_paths": [
+    "client/src/components/Collections/collectionSharingState.ts",
+    "client/src/repo/collectionSharingRepo.ts"
+  ],
+  "new_test_paths": [
+    "client/src/components/Collections/collectionSharing.read-boundary.test.tsx",
+    "client/src/repo/collectionSharingRepo.test.ts"
+  ],
+  "original_view_restored_byte_exact_by_only_sorted_import_and_call_receiver_inverse": true,
+  "all_other_incoming_tracked_source_and_policy_bytes_exact": true,
+  "no_native_markup_API_store_Family_handler_session_queue_or_schema_change": true,
+  "all_154_original_cases_preserved": true,
+  "all_167_candidate_cases_passed": true,
+  "new_cases": 13,
+  "new_forced_offline_case_red_on_original_green_after": true,
+  "per_file_quality": [
+    {
+      "path": "client/src/components/Collections/collectionSharingState.ts",
+      "formatted": true,
+      "errors": 0,
+      "warnings": 0,
+      "suppressed": 0
+    },
+    {
+      "path": "client/src/repo/collectionSharingRepo.ts",
+      "formatted": true,
+      "errors": 0,
+      "warnings": 0,
+      "suppressed": 0
+    },
+    {
+      "path": "client/src/components/Collections/collectionSharing.read-boundary.test.tsx",
+      "formatted": true,
+      "errors": 0,
+      "warnings": 0,
+      "suppressed": 0
+    },
+    {
+      "path": "client/src/repo/collectionSharingRepo.test.ts",
+      "formatted": true,
+      "errors": 0,
+      "warnings": 0,
+      "suppressed": 0
+    }
+  ],
+  "old_hook_ESLint_messages_and_suppressions_exact": true,
+  "no_new_error_warning_suppression_or_format_violation": true,
+  "actual_view_API_bypass_removed": true,
+  "remaining_new_bypasses": [],
+  "remaining_stale_offline_entries": [
+    "src/components/Collections/useCollectionSharing.ts"
+  ],
+  "offline_allowance_before": 146,
+  "proposed_after": 145,
+  "old_baseline_sha256": "07f1c91e54fa05ed869012e225d79e055e74bc38b6774ecd86d66cb366c9eda8",
+  "proposed_baseline_sha256": "91eb3d7d0805378af6823bad14877612114deed69ef0065fc739ae7bf966a1c5",
+  "proposal_only_not_applied_or_used_to_claim_green": true
+}

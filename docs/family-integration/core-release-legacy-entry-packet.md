@@ -1,0 +1,26 @@
+# Q7 / R: close the retained legacy entry and reference-source inventory
+
+**Completed locally15November2026.** [Decision record](core-legacy-entry-review.md): retain all30; four test consumers/three type-program consumers and overlapping active dependencies prevent blanket separation. No source/policy change. **Next: [DayDetail test split](core-release-day-detail-tests-packet.md)**; do not repeat this completed review.
+
+Prerequisites: [Q6 local acceptance](core-quality-costs-tests-handoff.md), [Q5 complete44-path inventory](core-size-preservation-review.md), clean integration/publication checkouts and current preservation baseline. The size gate now has43 findings; the30 R paths and their bytes are unchanged. Keep upstream5.1.4, current qualification and all completed Family packet work.
+
+## Purpose and scope
+
+Determine whether those30 source/style findings must stay in the active compilation tree or can form a separately reviewed, byte-exact reference-source closure. Q5 proved absence only from the ordinary build. It did not prove global non-use. Five other oversized legacy modules are emitted and remain active; do not include them in a retirement assumption.
+
+This packet permits read-only analysis/private tools and repository Markdown inventory/decision/next-packet updates only. No application/test/helper/source-manifest/baseline/tsconfig/build/retention-policy implementation. Reuse Q6's exact ordinary runtime and the Q5 installed resolved graph at that unchanged scope; do not repeat browser/DB fixtures. Record a new graph only if the inspected entry/profile actually differs.
+
+## Investigation
+
+1. Verify current HEAD, all earlier seals/canonical355 inputs/144 migrations/mixed index, other worktrees, native12/carryover inventory and services. Select the30 exact R paths from the sealed Q5 inventory, preserving each original blob/mode/hash. Match the current43-size list without raising allowances or changing rules.
+2. Inventory actual executable entrypoints and configuration: root/client package scripts, `client/index.html`, `client/vite.config.js`, `client/vite.native.config.js`, conditional `client/device-work-recovery.html`, `client/src/main.tsx`, legacy `main.tsx`/`App.tsx`, test configuration, browser/e2e/harness build loaders and import aliases. Review tsconfig include/type consumers as well as emitted runtime. An un-emitted module can still be a checked/tested public type contract.
+3. Trace the complete transitive importer/dependency closure of the30 paths across those installed entries and retained legacy roots. Include CSS imports/assets, literal lazy imports, aliases/package exports, import types and dynamic retry/import-meta patterns. Use the actual resolver for claimed executable reachability; text scanning is supplementary. Nonliteral future URL possibilities stay explicitly bounded. Do not call a whole legacy directory unused because one entry is dormant.
+4. Identify shared boundaries that must remain active, especially original Auth/API, Family Admin, `FamilyTripBoundary`/fallback controller, MapViewAuto and both map renderers, shared stores/contracts and stored-image variants. Keep every existing direct/propose/deny/session/source/layer/operation/revision/receipt behavior. Emission is not feature enablement; do not enable disabled functionality to inspect it.
+5. Deliver one finite decision record mapping every R file to proven active/test/type/reference consumer or a concrete eligible retained closure. If separation is viable, specify the exact old-path→retained-path/mode/hash inventory and importer/manifest/tsconfig/test/source-archive implications, preserved legal notices/history, guards for missing/tampered retained bytes and new runtime imports, and required before/after tests plus full runtime-byte comparison. No deletion, move, baseline exclusion, generated archive substitution or policy edit is implemented by this review.
+6. Compare preserving/modularizing in place against separately reviewed reference-source separation. Any unresolved consumer keeps that closure in the active repair set. Choose the smallest justified next implementation, or proceed to a bounded DayDetail test split if retention needs a separate reviewed decision. Do not create thirty automatic refactoring packets or leave the next action as an unbounded audit.
+
+## Completion and commands
+
+Every one of30 paths has a consumer/provenance classification and one finite recommendation, with actual installed source references and limitations. All active-source/native/backend behavior remains exact. Record the next executable packet with exact permitted files and commands. Run `git diff --check` and the actual native/qualified-source/Git/backend-carryover guards. Documentation-only changes do not require another full application test/browser/DB run. Save a local commit, clean local publication/check-only retained-source archive and sanitized evidence/continuation; no remote operation. The archive stays unbound.
+
+The scope remains analysis and Markdown. No production/preview/main/push, hosted SQL/settings/billing/schema/dependencies, source-policy weakening, image transformation, backups/media or ignored ETL work. Preserve independent restoration and all remaining operational release holds honestly.

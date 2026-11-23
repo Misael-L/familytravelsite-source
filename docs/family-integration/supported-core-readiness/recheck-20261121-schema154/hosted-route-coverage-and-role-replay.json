@@ -1,0 +1,204 @@
+{
+  "scope": "Read-only hosted observation and a no-network clone of the verified X8 database",
+  "website_source_checkpoint": "b481163e44f24ae2a5b431d88b8a27f3964b4a3e",
+  "backend_source_checkpoint": "b79933be3af1ddcf4b0aa1a06bc8a7ca161a38c5",
+  "deployed_sources_use_same_primary_database": true,
+  "deployed_target_evidence": {
+    "production": {
+      "entry": "/assets/index-rHYsJ9Pc.js",
+      "entry_hash_matches": true,
+      "analyzed_imports": 4,
+      "matching_chunks": [
+        {
+          "path": "/assets/client-EWZkSW0Z.js",
+          "sha256": "f20d08c4f27d1e45a6aceb0b2fb53f2f876e8d5d088c6e47a82e1b19e067f38b",
+          "configured_origin_matches": 1,
+          "nearby_known_fields": [
+            "VITE_SUPABASE_URL"
+          ]
+        }
+      ]
+    },
+    "preview": {
+      "entry": "/assets/index-B8t0kO7G.js",
+      "entry_hash_matches": true,
+      "analyzed_imports": 3,
+      "matching_chunks": [
+        {
+          "path": "/assets/auth-D629k7aN.js",
+          "sha256": "16c06e4cad3a8f933c92fd4a566b5f7ae70a7f2b7c81f3bb71670cc81bc411f8",
+          "configured_origin_matches": 1,
+          "nearby_known_fields": [
+            "VITE_SUPABASE_URL"
+          ]
+        }
+      ]
+    }
+  },
+  "hosted": {
+    "database": {
+      "observation_utc": "2026-11-21T20:34:08.852669+00:00",
+      "engine": "17.12",
+      "migration_count": 88,
+      "last_migration": "20261010222112",
+      "management_sql_role": {
+        "name": "postgres",
+        "superuser": false,
+        "createrole": true
+      },
+      "stored_postgrest_configuration": [],
+      "postgres_may_admin_authenticator": true,
+      "postgrest_parameter_acl": false,
+      "direct_table_owner_role": "supabase_storage_admin",
+      "roled_storage_policy_delegation": true,
+      "supautils_version": "4.0.0",
+      "bootstrapped_policy_table_count": 24,
+      "postgres_can_assume_platform_admin": false,
+      "application_relation_owners": [
+        {
+          "creator": "postgres",
+          "namespace": "family_auth",
+          "object_count": 1
+        },
+        {
+          "creator": "postgres",
+          "namespace": "public",
+          "object_count": 149
+        }
+      ],
+      "platform_admin_restricted_default_entries": 8,
+      "application_owner_restricted_default_entries": 8
+    },
+    "other_write_paths": {
+      "cron": [
+        {
+          "route": "storage cleanup",
+          "active": false,
+          "uses_http": true,
+          "runs_as_management_role": true
+        },
+        {
+          "route": "family exports",
+          "active": true,
+          "uses_http": true,
+          "runs_as_management_role": true
+        }
+      ],
+      "edge_functions": [
+        {
+          "slug": "approve-access-request",
+          "status": "ACTIVE",
+          "verify_jwt": true
+        },
+        {
+          "slug": "deny-access-request",
+          "status": "ACTIVE",
+          "verify_jwt": true
+        },
+        {
+          "slug": "search-unsplash",
+          "status": "ACTIVE",
+          "verify_jwt": true
+        },
+        {
+          "slug": "calendar-feed",
+          "status": "ACTIVE",
+          "verify_jwt": false
+        },
+        {
+          "slug": "manage-calendar-feed",
+          "status": "ACTIVE",
+          "verify_jwt": true
+        },
+        {
+          "slug": "maps-pois",
+          "status": "ACTIVE",
+          "verify_jwt": false
+        },
+        {
+          "slug": "fx-rates",
+          "status": "ACTIVE",
+          "verify_jwt": true
+        },
+        {
+          "slug": "finalize-private-upload",
+          "status": "ACTIVE",
+          "verify_jwt": true
+        },
+        {
+          "slug": "dispatch-storage-cleanup",
+          "status": "ACTIVE",
+          "verify_jwt": false
+        },
+        {
+          "slug": "dispatch-family-exports",
+          "status": "ACTIVE",
+          "verify_jwt": false
+        },
+        {
+          "slug": "get-family-export-download",
+          "status": "ACTIVE",
+          "verify_jwt": true
+        }
+      ],
+      "storage_write_policy_count": 10,
+      "graphQL_extension_installed": false,
+      "graphql_schema_present": true,
+      "realtime_publication_table_count": 6,
+      "auth_and_direct_sql_require_separate_drain": true,
+      "storage_writes_with_service_key_require_separate_drain": true
+    },
+    "development_branches_returned": 0
+  },
+  "first_local_control_without_supautils_delegation": {
+    "version": "20261104175741",
+    "name": "journey_entry_recovery",
+    "sha256": "acbd46debbe99c0dd0a01993e7bc0cc5b621f51ce34655e9c5a6e9ca9fa05d23",
+    "passed": false,
+    "sqlstates": [
+      "42501"
+    ]
+  },
+  "local_replay_with_observed_policy_delegation": {
+    "connection_role": {
+      "name": "postgres",
+      "login": "postgres",
+      "superuser": false,
+      "createrole": true,
+      "authenticator_admin": true
+    },
+    "matched_supautils_policy_delegation": true,
+    "supautils_version": "4.0.0",
+    "tested_paused_role_option_with_rollback": true,
+    "hook_option_accepted_with_restored_grants": false,
+    "hook_option_refusal_sqlstates": [
+      "42501"
+    ],
+    "all_archived_ledger_rows_exact": true,
+    "local_ledger_count": 128,
+    "migrations_succeeded": 40,
+    "total_migrations": 67,
+    "first_refusal": {
+      "version": "20261112235203",
+      "name": "reconcile_family_api_privileges",
+      "sha256": "8ce160ea954fa213efc0b1d8c701754f6c4a7ab2c5b376240edf80e9872965c9",
+      "passed": false,
+      "sqlstates": [
+        "42501"
+      ]
+    },
+    "bootstrap_restore_only_used_role_reconciliation": true,
+    "tested_migrations_or_ledger_inserts_used_role_elevation": false
+  },
+  "managed_default_privilege_refusal": {
+    "statement_class": "ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public",
+    "message": "permission denied to change default privileges",
+    "migration_and_ledger_insert_rolled_back": true
+  },
+  "original_archived_rows_preserved": 296764,
+  "original_archived_projections_verified": 200,
+  "actual_https_preview_and_fallback_qualified": false,
+  "all_managed_write_routes_paused_and_drained": false,
+  "hosted_changes": false,
+  "next": "Reconcile the application privilege migration for the managed Postgres role and replay the complete migration set"
+}

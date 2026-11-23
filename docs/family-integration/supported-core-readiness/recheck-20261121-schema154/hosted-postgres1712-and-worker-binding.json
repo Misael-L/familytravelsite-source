@@ -1,0 +1,157 @@
+{
+  "schema_version": 1,
+  "scope": "Read-only verification after the owner started the Supabase managed upgrade",
+  "website_integration_checkpoint": "120a2c3d88f48384583121a82bb82299fcd97a93",
+  "backend_migration_checkpoint": "b79933be3af1ddcf4b0aa1a06bc8a7ca161a38c5",
+  "hosted": {
+    "extensions": {
+      "pg_net": "0.20.4",
+      "pg_cron": "1.6.4",
+      "plpgsql": "1.0",
+      "pgcrypto": "1.3",
+      "uuid-ossp": "1.1",
+      "supabase_vault": "0.3.2",
+      "pg_stat_statements": "1.11"
+    },
+    "server_version": "17.12",
+    "timezone_probes": {
+      "America/Edmonton": "2027-01-15 06:00:00",
+      "Africa/Casablanca": "2027-01-15 12:00:00",
+      "America/Vancouver": "2027-01-15 05:00:00"
+    },
+    "public_rpc_names": [
+      "apply_packing_template",
+      "catalog_media_variants_for_assets",
+      "ensure_packing_defaults",
+      "get_my_auth_bootstrap",
+      "get_my_effective_features",
+      "get_my_effective_map_settings",
+      "save_packing_template_from_trip"
+    ],
+    "storage_identity": {
+      "rows": 77038,
+      "identity_md5": "cdfd384e0acb0d475350b99c7cf6ff31"
+    },
+    "server_version_num": 170012,
+    "legacy_write_grants": {
+      "todo_delete": true,
+      "todo_insert": true,
+      "todo_update": true,
+      "packing_delete": true,
+      "packing_insert": true,
+      "packing_update": true
+    },
+    "managed_state": "ACTIVE_HEALTHY",
+    "managed_postgres_image": "17.12.0.000",
+    "observed_utc": "2026-11-21T20:13:47.350736+00:00",
+    "archived_ledger_rows_equal_including_statement_hashes": 88,
+    "latest_ledger_version": "20261010222112",
+    "pinned_pending_migrations": 67,
+    "required_sample_names_missing": [
+      "execute_family_trip_packing_v1",
+      "execute_family_trip_task_v1",
+      "get_family_collection_library_v1",
+      "get_family_trip_packing_v1",
+      "get_family_trip_planner_view_v1",
+      "get_family_trip_tasks_v1"
+    ],
+    "all_timezone_checks_pass": true,
+    "storage_identity_matches_archive": true,
+    "actual_signed_in_live_website_smoke_proved": false
+  },
+  "anonymous_https_observation": {
+    "auth_health": {
+      "http": 200,
+      "type": "application/json",
+      "version": "v2.198.0"
+    },
+    "rest_read_anon": {
+      "http": 401,
+      "type": "application/json"
+    },
+    "storage_health": {
+      "http": 200,
+      "type": "text/plain"
+    }
+  },
+  "verified_backup": {
+    "generation": "full-project-20261120-incremental",
+    "capture_utc": "2026-11-20T22:52:27.936722+00:00",
+    "capture_verified_utc": "2026-11-20T22:54:28.000290+00:00",
+    "mounted_independent_copy": true,
+    "complete_receipt_and_dump_and_manifest_match_mac": true,
+    "full_restore_receipt_matches": true,
+    "previous_independent_verified_media_files": 77038,
+    "previous_independent_verified_bytes": 30091756926,
+    "new_snapshot_captured_this_turn": false,
+    "freshness_at_future_schema_cutover_proved": false
+  },
+  "live_worker_sources": {
+    "production": {
+      "active_deployment": "5026f14c-4323-4405-aa8e-a20c30ad7cb3",
+      "deployed_utc": "2026-10-31T17:15:45.67075Z",
+      "active_version": "a5814c29-fe0c-446c-bd89-146e549a4be4",
+      "traffic_percent": 100,
+      "cloudflare_deployment_annotation": "Catalog image variant readers 1bf654b",
+      "corresponding_git_commit": "1bf654b84042208e1be6c351402b6d713f4d4537",
+      "current_entry": {
+        "path": "/assets/index-rHYsJ9Pc.js",
+        "http": 200,
+        "type": "text/javascript",
+        "bytes": 1386904,
+        "sha256": "d86290f9524f856f115b979431ab5a11001a29a107fe403c363cdfe781d9f6b9"
+      },
+      "current_service_worker": {
+        "http": 200,
+        "type": "text/javascript",
+        "bytes": 10119,
+        "sha256": "e3795251074eb4864c413103704716be5e03caac9b7e583b17e34eb0ac04f8e3"
+      },
+      "public_typed_release_receipts_present": false,
+      "archive": {
+        "privateProductionCommit": "1bf654b84042208e1be6c351402b6d713f4d4537",
+        "workersVersionId": "a5814c29-fe0c-446c-bd89-146e549a4be4",
+        "sourceArchiveTag": "source-20261031-1bf654b",
+        "matching_main_and_tag_manifest_git_blob": "ff2cdf85b967b781733b7ca1fc2436b80a300f2b"
+      },
+      "binding_basis": "Active Cloudflare version and annotation agree with the private GitHub commit and the corresponding-source manifest on the public mirror tag and main.",
+      "legacy_direct_task_writer_blob": "e93fcaddc4027317407ab382411983562499a89b",
+      "legacy_direct_packing_writer_blob": "6bdcbe736419eb6dce0554960023e249951ae3e5"
+    },
+    "preview": {
+      "active_deployment": "a1b933d8-6b3f-4fc3-a02b-293d24a447f3",
+      "deployed_utc": "2026-11-01T02:37:32.551671Z",
+      "active_version": "c3813597-c665-4aba-a409-c519b8107c00",
+      "traffic_percent": 100,
+      "cloudflare_deployment_annotation": "Native TREK presentation ef89af599",
+      "corresponding_git_commit": "ef89af59918a3c7376ea48eac49fe80d82def24f",
+      "current_entry": {
+        "path": "/assets/index-B8t0kO7G.js",
+        "http": 200,
+        "type": "text/javascript",
+        "bytes": 621270,
+        "sha256": "0f39eda80b0635b7eba96fb4224d64dde53b2d9a38640a5fd2c533818c854da8"
+      },
+      "current_service_worker": {
+        "http": 200,
+        "type": "text/javascript",
+        "bytes": 40513,
+        "sha256": "9a28090f042420c7aa8ef37ade3c120ecc48879c43f9fa113317a47fe0e7efa7"
+      },
+      "public_typed_release_receipts_present": false,
+      "legacy_direct_task_writer_blob": "e93fcaddc4027317407ab382411983562499a89b",
+      "legacy_direct_packing_writer_blob": "6bdcbe736419eb6dce0554960023e249951ae3e5",
+      "binding_basis": "Active Cloudflare version and annotation agree with the exact source commit, archived deployment receipt and live JavaScript entry path.",
+      "published_corresponding_source_manifest_for_this_preview_observed": false,
+      "previous_preview_version": "d08eb5ec-1fe1-4fff-a61a-d4fe1c647e3b"
+    },
+    "both_sources_contain_legacy_task_and_packing_mutations": true,
+    "both_sources_contain_all_three_legacy_packing_rpcs": true,
+    "post_migration_rollback_compatibility_of_the_current_deployments": false,
+    "candidate_deployed": false
+  },
+  "legacy_task_and_packing_paths_refused_in_prior_isolated_schema155_rehearsal": 9,
+  "hosted_schema_migrations_applied_during_verification": 0,
+  "hosted_website_deployment_during_verification": false,
+  "next_gate": "Prepare the coordinated integration-preview writer cutover and schema-compatible fallback"
+}

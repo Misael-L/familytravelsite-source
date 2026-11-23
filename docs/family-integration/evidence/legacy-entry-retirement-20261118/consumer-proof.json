@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "same_713_names_files_status_and_multiplicity": true,
+  "all_candidate_nonremoved_tracked_bytes_exact": 17770,
+  "candidate_only_four_files_absent": true,
+  "test_config_fixtures_assertions_timeouts_coverage_and_policies_unchanged": true,
+  "no_live_backend_acceptance": true
+}

@@ -1,0 +1,274 @@
+{
+  "passed": true,
+  "files": [
+    {
+      "path": "client/src/integrations/family/creationIntentQueue.ts",
+      "typed_AST_exact_except_import_permutation_parentheses_and_class_tokens": true,
+      "original_runtime_imports": [
+        "axios",
+        "../../db/creationTerminalArchive",
+        "../../db/offlineDb",
+        "./errors"
+      ],
+      "candidate_runtime_imports": [
+        "axios",
+        "../../db/creationTerminalArchive",
+        "../../db/offlineDb",
+        "./errors"
+      ],
+      "effectful_import_relative_order_exact": true
+    },
+    {
+      "path": "client/src/integrations/family/creationTerminalSettlement.ts",
+      "typed_AST_exact_except_import_permutation_parentheses_and_class_tokens": true,
+      "original_runtime_imports": [
+        "zod",
+        "../../db/creationTerminalArchive",
+        "../../db/packingTerminalArchive",
+        "../../sync/networkMode",
+        "../../sync/originalWorkArchive",
+        "../../sync/queueLock",
+        "../../sync/writeSession",
+        "./creationIntentQueue",
+        "./creationTerminalContract",
+        "./creationTerminalTransport",
+        "./packingBagDependencyContract",
+        "./plannerCreationContract",
+        "./repository"
+      ],
+      "candidate_runtime_imports": [
+        "zod",
+        "../../db/creationTerminalArchive",
+        "../../db/packingTerminalArchive",
+        "../../sync/networkMode",
+        "../../sync/originalWorkArchive",
+        "../../sync/queueLock",
+        "../../sync/writeSession",
+        "./creationIntentQueue",
+        "./creationTerminalContract",
+        "./creationTerminalTransport",
+        "./packingBagDependencyContract",
+        "./plannerCreationContract",
+        "./repository"
+      ],
+      "effectful_import_relative_order_exact": true
+    },
+    {
+      "path": "client/src/integrations/family/legacy/components/Admin/plugins/PluginBadges.tsx",
+      "typed_AST_exact_except_import_permutation_parentheses_and_class_tokens": true,
+      "original_runtime_imports": [
+        "react/jsx-runtime",
+        "lucide-react",
+        "./pluginModel"
+      ],
+      "candidate_runtime_imports": [
+        "react/jsx-runtime",
+        "lucide-react",
+        "./pluginModel"
+      ],
+      "effectful_import_relative_order_exact": true
+    },
+    {
+      "path": "client/src/integrations/family/legacy/components/Admin/plugins/PluginInstalledList.tsx",
+      "typed_AST_exact_except_import_permutation_parentheses_and_class_tokens": true,
+      "original_runtime_imports": [
+        "react/jsx-runtime",
+        "lucide-react",
+        "react",
+        "react-dom",
+        "../../../../physicalPosition",
+        "../../Settings/ToggleSwitch",
+        "../../shared/PluginIcon",
+        "./PluginBadges",
+        "./pluginModel"
+      ],
+      "candidate_runtime_imports": [
+        "react/jsx-runtime",
+        "lucide-react",
+        "react",
+        "react-dom",
+        "../../../../physicalPosition",
+        "../../Settings/ToggleSwitch",
+        "../../shared/PluginIcon",
+        "./PluginBadges",
+        "./pluginModel"
+      ],
+      "effectful_import_relative_order_exact": true
+    },
+    {
+      "path": "client/src/integrations/family/legacy/components/Admin/plugins/PluginRegistry.tsx",
+      "typed_AST_exact_except_import_permutation_parentheses_and_class_tokens": true,
+      "original_runtime_imports": [
+        "react/jsx-runtime",
+        "lucide-react",
+        "react",
+        "../../../api/client",
+        "../../shared/PluginIcon",
+        "./PluginBadges",
+        "./pluginModel"
+      ],
+      "candidate_runtime_imports": [
+        "react/jsx-runtime",
+        "lucide-react",
+        "react",
+        "../../../api/client",
+        "../../shared/PluginIcon",
+        "./PluginBadges",
+        "./pluginModel"
+      ],
+      "effectful_import_relative_order_exact": true
+    },
+    {
+      "path": "client/src/integrations/family/legacy/components/Admin/plugins/PluginTrustDialogs.tsx",
+      "typed_AST_exact_except_import_permutation_parentheses_and_class_tokens": true,
+      "original_runtime_imports": [
+        "react/jsx-runtime",
+        "lucide-react",
+        "./PluginBadges",
+        "./pluginModel"
+      ],
+      "candidate_runtime_imports": [
+        "react/jsx-runtime",
+        "lucide-react",
+        "./PluginBadges",
+        "./pluginModel"
+      ],
+      "effectful_import_relative_order_exact": true
+    },
+    {
+      "path": "client/src/integrations/family/plannerReadGuard.ts",
+      "typed_AST_exact_except_import_permutation_parentheses_and_class_tokens": true,
+      "original_runtime_imports": [
+        "../../db/creationTerminalArchive",
+        "dexie",
+        "../../sync/networkMode",
+        "../../sync/queueLock",
+        "./originalStayIntentQueue"
+      ],
+      "candidate_runtime_imports": [
+        "dexie",
+        "../../db/creationTerminalArchive",
+        "../../sync/networkMode",
+        "../../sync/queueLock",
+        "./originalStayIntentQueue"
+      ],
+      "effectful_import_relative_order_exact": true
+    },
+    {
+      "path": "client/src/integrations/family/plannerTaskRecovery.ts",
+      "typed_AST_exact_except_import_permutation_parentheses_and_class_tokens": true,
+      "original_runtime_imports": [
+        "../../api/client",
+        "../../db/offlineDb",
+        "../../sync/networkMode",
+        "../../sync/queueLock",
+        "../../sync/retainedRecovery",
+        "../../sync/writeSession",
+        "../../utils/fileDownload",
+        "./planLocations",
+        "./repository",
+        "./taskCommandHandler",
+        "./taskIntentQueue",
+        "./taskTransport"
+      ],
+      "candidate_runtime_imports": [
+        "../../api/client",
+        "../../db/offlineDb",
+        "../../sync/networkMode",
+        "../../sync/queueLock",
+        "../../sync/retainedRecovery",
+        "../../sync/writeSession",
+        "../../utils/fileDownload",
+        "./planLocations",
+        "./repository",
+        "./taskCommandHandler",
+        "./taskIntentQueue",
+        "./taskTransport"
+      ],
+      "effectful_import_relative_order_exact": true
+    },
+    {
+      "path": "client/src/sync/originalWorkExport.ts",
+      "typed_AST_exact_except_import_permutation_parentheses_and_class_tokens": true,
+      "original_runtime_imports": [
+        "../db/offlineDb",
+        "../db/creationTerminalArchive",
+        "../db/packingTerminalArchive",
+        "../db/privateSessionEvents",
+        "../db/sourceDatabase",
+        "../utils/fileDownload",
+        "./authGate",
+        "./originalWorkArchive",
+        "./retainedCommand"
+      ],
+      "candidate_runtime_imports": [
+        "../db/creationTerminalArchive",
+        "../db/offlineDb",
+        "../db/packingTerminalArchive",
+        "../db/privateSessionEvents",
+        "../db/sourceDatabase",
+        "../utils/fileDownload",
+        "./authGate",
+        "./originalWorkArchive",
+        "./retainedCommand"
+      ],
+      "effectful_import_relative_order_exact": true
+    },
+    {
+      "path": "client/src/sync/queueStatus.ts",
+      "typed_AST_exact_except_import_permutation_parentheses_and_class_tokens": true,
+      "original_runtime_imports": [
+        "dexie",
+        "../db/creationTerminalArchive",
+        "../db/packingTerminalArchive",
+        "../db/sourceDatabase",
+        "./privateSessionEvents",
+        "./readSession",
+        "./retainedCommand"
+      ],
+      "candidate_runtime_imports": [
+        "dexie",
+        "../db/creationTerminalArchive",
+        "../db/packingTerminalArchive",
+        "../db/sourceDatabase",
+        "./privateSessionEvents",
+        "./readSession",
+        "./retainedCommand"
+      ],
+      "effectful_import_relative_order_exact": true
+    },
+    {
+      "path": "client/src/sync/retainedRecovery.ts",
+      "typed_AST_exact_except_import_permutation_parentheses_and_class_tokens": true,
+      "original_runtime_imports": [
+        "../db/offlineDb",
+        "../db/creationTerminalArchive",
+        "../db/packingTerminalArchive",
+        "../db/sourceDatabase",
+        "../utils/fileDownload",
+        "./retainedCommand"
+      ],
+      "candidate_runtime_imports": [
+        "../db/creationTerminalArchive",
+        "../db/offlineDb",
+        "../db/packingTerminalArchive",
+        "../db/sourceDatabase",
+        "../utils/fileDownload",
+        "./retainedCommand"
+      ],
+      "effectful_import_relative_order_exact": true
+    }
+  ],
+  "all_original_typed_bodies_signatures_defaults_hooks_conditions_and_getters_preserved": true,
+  "all_import_declarations_and_bindings_exact": true,
+  "normalization": "Import declaration order is compared separately. Cosmetic parentheses and only className string/template/conditional token permutations are normalized, retaining whitespace boundaries and token multiplicity. All other typed AST is exact.",
+  "pure_reordered_dependency": {
+    "path": "client/src/db/creationTerminalArchive.ts",
+    "sha256": "af58456fe3c442507e3fcdfaf0cddafa67ba9bb3a41b5a7ca0ddaee031ad2413",
+    "runtime_imports": 0,
+    "top_level_effects": 0,
+    "initializers": "numeric literals/arithmetic, arrow-function objects and function/type declarations only"
+  },
+  "new_runtime_functions_or_hooks": 0,
+  "no_policy_or_feature_change": true
+}

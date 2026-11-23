@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "clonefile_API_available": true,
+  "CLONE_NOFOLLOW": true,
+  "independent_file_inodes": true,
+  "copy_on_write_mutation_does_not_modify_source": true,
+  "probe_source_bytes": 16384
+}

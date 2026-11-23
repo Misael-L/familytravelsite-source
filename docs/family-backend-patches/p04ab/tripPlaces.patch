@@ -1,0 +1,33 @@
+--- a/family-backend/src/data/supabase/tripPlaces.ts
++++ b/family-backend/src/data/supabase/tripPlaces.ts
+@@ -1,3 +1,4 @@
++import { captureFamilyOperation } from './operationContext'
+ import { getSupabaseBrowserClient } from './client'
+ import { listCatalogVariantsForAssets } from './catalogExploreMedia'
+ 
+@@ -251,19 +252,20 @@
+   placeId: string,
+   isPrimary = false,
+ ): Promise<boolean> {
++  const operationContext = captureFamilyOperation()
+   const sb = getSupabaseBrowserClient()
+-  const { data: existing, error: selErr } = await sb
++  const { data: existing, error: selErr } = await operationContext.perform(() => sb
+     .from('trip_places')
+     .select('place_id')
+     .eq('trip_id', tripId)
+     .eq('place_id', placeId)
+-    .limit(1)
++    .limit(1))
+   if (selErr) throw selErr
+   if (existing && existing.length > 0) return false
+ 
+-  const { error } = await sb
+-    .from('trip_places')
+-    .insert({ trip_id: tripId, place_id: placeId, is_primary: isPrimary })
++  const { error } = await operationContext.perform(() => sb
++    .from('trip_places')
++    .insert({ trip_id: tripId, place_id: placeId, is_primary: isPrimary }))
+   if (error) throw error
+   return true
+ }

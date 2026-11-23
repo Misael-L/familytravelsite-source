@@ -1,0 +1,106 @@
+begin;
+set local lock_timeout='5s';
+set local statement_timeout='30s';
+do $seed$
+declare t uuid:=__TRIP__;a uuid;b uuid;c uuid;x uuid;other uuid;guest uuid;foreign_person uuid;
+begin
+ assert exists(select 1 from auth.users where id=__USER__ and email like '%@fixture.invalid');
+ insert into public.packing_bags(trip_id,name,weight_limit_grams)values(t,'D1 shared bag',7000)returning id into a;
+ insert into public.packing_bags(trip_id,name)values(t,'D1 shared bag')returning id into b;
+ insert into public.packing_bags(trip_id,name)values(t,'D1 historical reference')returning id into c;
+ insert into public.trips(family_id,name,start_at,end_at,created_by_person_id)values(__FAMILY__,'D1 other Trip','2027-04-01','2027-04-03',__PERSON__)returning id into other;
+ insert into public.packing_bags(trip_id,name)values(other,'Foreign Trip bag')returning id into x;
+ insert into public.packing_bag_members(trip_id,bag_id,person_id)values(t,a,__PERSON__),(t,a,__PEER__);
+ insert into public.packing_items(trip_id,name,quantity,weight_grams,bag_id,is_private,owner_person_id)values
+ (t,'D1 common coat',2,100,a,false,null),(t,'D1 hidden peer item',3,300,a,true,__PEER__),
+ (t,'D1 shared peer item',2,50,a,true,__PEER__),(t,'D1 hidden unassigned',1,1000,null,true,__PEER__),
+ (t,'D1 history item',1,20,c,false,null);
+ insert into public.packing_item_recipients(trip_id,item_id,person_id)select t,id,__PERSON__ from public.packing_items where trip_id=t and name='D1 shared peer item';
+ delete from public.trip_travelers where trip_id=t and person_id=__NONTRAVELER__;guest:=__NONTRAVELER__;
+ select id into foreign_person from public.people where family_id<>__FAMILY__ order by id limit 1;assert foreign_person is not null;
+ perform set_config('d1.bag',a::text,true);perform set_config('d1.empty',b::text,true);perform set_config('d1.history',c::text,true);perform set_config('d1.foreignbag',x::text,true);
+ perform set_config('d1.guest',guest::text,true);perform set_config('d1.foreignperson',foreign_person::text,true);
+ perform set_config('d1.hidden_before',(select to_jsonb(i)::text from public.packing_items i where trip_id=t and name='D1 hidden peer item'),true);
+end $seed$;
+select set_config('request.jwt.claims',__CLAIMS__,true) is not null;
+set local role authenticated;
+do $proof$
+declare t uuid:=__TRIP__;a uuid:=current_setting('d1.bag')::uuid;b uuid:=current_setting('d1.empty')::uuid;p jsonb;row jsonb;r jsonb;original jsonb;op uuid;args jsonb;expected boolean;results jsonb:='[]';
+begin
+ p:=public.get_family_trip_packing_v1(t);
+ assert jsonb_array_length(p->'bags')=3;
+ assert (select count(*)from jsonb_array_elements(p->'bags')z where z->>'name'='D1 shared bag')=2;
+ results:=results||jsonb_build_array('duplicate_bag_labels_remain_distinct_UUIDs');
+ assert (select (z->>'total_weight_grams')::bigint from jsonb_array_elements(p->'bags')z where z->>'id'=a::text)=1200;
+ assert (p->>'unassigned_weight_grams')::bigint=1000;
+ results:=results||jsonb_build_array('authorized_bag_and_unassigned_totals_include_private_weight');
+ assert not exists(select 1 from jsonb_array_elements(p->'items')z where z->>'name'like'D1 hidden%');
+ assert exists(select 1 from jsonb_array_elements(p->'items')z where z->>'name'='D1 shared peer item');
+ results:=results||jsonb_build_array('carrier_membership_does_not_grant_private_item_visibility');
+ assert (select jsonb_array_length(z->'member_person_ids')from jsonb_array_elements(p->'bags')z where z->>'id'=a::text)=2;
+ results:=results||jsonb_build_array('carrier_list_is_visible_metadata_not_a_new_item_ACL');
+ expected:=false;begin insert into public.packing_bags(trip_id,name)values(t,'No raw create');exception when insufficient_privilege then expected:=true;end;assert expected;
+ results:=results||jsonb_build_array('authenticated_raw_bag_create_refused');
+ expected:=false;begin update public.packing_bags set name='No raw update'where id=a;exception when insufficient_privilege then expected:=true;end;assert expected;
+ results:=results||jsonb_build_array('authenticated_raw_bag_update_refused');
+ expected:=false;begin delete from public.packing_bags where id=b;exception when insufficient_privilege then expected:=true;end;assert expected;
+ results:=results||jsonb_build_array('authenticated_raw_bag_delete_refused');
+ expected:=false;begin delete from public.packing_bag_members where bag_id=a;exception when insufficient_privilege then expected:=true;end;assert expected;
+ results:=results||jsonb_build_array('authenticated_raw_membership_delete_refused');
+ expected:=false;begin insert into public.packing_bag_members(trip_id,bag_id,person_id)values(t,b,__PERSON__);exception when insufficient_privilege then expected:=true;end;assert expected;
+ results:=results||jsonb_build_array('authenticated_raw_membership_insert_refused');
+ expected:=false;begin perform public.execute_family_trip_packing_v1(t,gen_random_uuid(),p->'scope','bag-create',gen_random_uuid(),null,null,'{}');exception when sqlstate '22023' then expected:=true;end;assert expected;
+ results:=results||jsonb_build_array('current_item_RPC_has_no_bag_create_domain');
+ row:=(select z from jsonb_array_elements(p->'items')z where z->>'name'='D1 common coat');op:=gen_random_uuid();args:=jsonb_build_object('bag_id',b);
+ r:=public.execute_family_trip_packing_v1(t,op,p->'scope','update',(row->>'id')::uuid,(row->>'revision')::bigint,null,args);original:=r;
+ assert r->'item'->>'bag_id'=b::text;
+ results:=results||jsonb_build_array('existing_typed_item_move_between_active_same_Trip_bags_works');
+ r:=public.execute_family_trip_packing_v1(t,op,p->'scope','update',(row->>'id')::uuid,(row->>'revision')::bigint,null,args);assert r=original;
+ results:=results||jsonb_build_array('exact_item_move_retry_keeps_identity_and_one_receipt');
+ expected:=false;begin perform public.execute_family_trip_packing_v1(t,op,p->'scope','update',(row->>'id')::uuid,(row->>'revision')::bigint,null,jsonb_build_object('bag_id',a));exception when sqlstate 'PT409' then expected:=true;end;assert expected;
+ results:=results||jsonb_build_array('changed_item_move_retry_cannot_replace_original');
+ row:=original->'item';expected:=false;begin perform public.execute_family_trip_packing_v1(t,gen_random_uuid(),p->'scope','update',(row->>'id')::uuid,(row->>'revision')::bigint,null,jsonb_build_object('bag_id',current_setting('d1.foreignbag')::uuid));exception when foreign_key_violation then expected:=true;end;assert expected;
+ results:=results||jsonb_build_array('typed_item_move_to_another_Trip_bag_refused');
+ p:=public.get_family_trip_packing_v1(t);row:=(select z from jsonb_array_elements(p->'items')z where z->>'name'='D1 shared peer item');expected:=false;
+ r:=public.execute_family_trip_packing_v1(t,gen_random_uuid(),p->'scope','update',(row->>'id')::uuid,(row->>'revision')::bigint,null,jsonb_build_object('bag_id',b));
+ assert r->'item'->>'owner_person_id'=__PEER__::text and r->'item'->>'bag_id'=b::text;
+ results:=results||jsonb_build_array('existing_visible_shared_item_plus_direct_permission_can_move_without_transferring_ownership');
+ row:=current_setting('d1.hidden_before')::jsonb;expected:=false;
+ begin perform public.execute_family_trip_packing_v1(t,gen_random_uuid(),p->'scope','update',(row->>'id')::uuid,(row->>'revision')::bigint,null,jsonb_build_object('bag_id',b));exception when insufficient_privilege then expected:=true;end;assert expected;
+ results:=results||jsonb_build_array('carrier_status_alone_cannot_move_a_hidden_peer_item');
+ p:=public.get_family_trip_packing_v1(t);row:=(select z from jsonb_array_elements(p->'items')z where z->>'name'='D1 history item');
+ r:=public.execute_family_trip_packing_v1(t,gen_random_uuid(),p->'scope','trash',(row->>'id')::uuid,(row->>'revision')::bigint,null,'{}');assert r->'item'->>'bag_id'=current_setting('d1.history');
+ results:=results||jsonb_build_array('item_Trash_retains_the_bag_reference');
+ perform set_config('d1.results',results::text,true);
+end $proof$;
+reset role;
+do $structure$
+declare a uuid:=current_setting('d1.bag')::uuid;b uuid:=current_setting('d1.empty')::uuid;t uuid:=__TRIP__;expected boolean;results jsonb:=current_setting('d1.results')::jsonb;r bigint;
+begin
+ assert (select to_jsonb(i)from public.packing_items i where trip_id=t and name='D1 hidden peer item')=current_setting('d1.hidden_before')::jsonb;
+ results:=results||jsonb_build_array('authorized_item_moves_leave_hidden_peer_content_exact');
+ expected:=false;begin insert into public.packing_bag_members(trip_id,bag_id,person_id)values(t,b,current_setting('d1.guest')::uuid);exception when foreign_key_violation then expected:=true;end;assert expected;
+ results:=results||jsonb_build_array('new_carrier_must_be_an_eligible_Trip_traveler');
+ expected:=false;begin insert into public.packing_bag_members(trip_id,bag_id,person_id)values(t,b,current_setting('d1.foreignperson')::uuid);exception when foreign_key_violation then expected:=true;end;assert expected;
+ results:=results||jsonb_build_array('cross_Family_carrier_refused');
+ expected:=false;begin insert into public.packing_items(trip_id,name,bag_id)values(t,'Bad cross Trip FK',current_setting('d1.foreignbag')::uuid);exception when foreign_key_violation then expected:=true;end;assert expected;
+ results:=results||jsonb_build_array('composite_item_bag_FK_guards_direct_same_Trip_integrity');
+ expected:=false;begin delete from public.packing_bags where id=current_setting('d1.history')::uuid;exception when foreign_key_violation then expected:=true;end;assert expected;
+ results:=results||jsonb_build_array('bag_delete_is_restricted_even_by_a_previously_trashed_item');
+ insert into public.packing_bags(trip_id,name)values(t,'D1 physical empty')returning id into b;delete from public.packing_bags where id=b;assert not exists(select 1 from public.packing_bags where id=b);
+ results:=results||jsonb_build_array('privileged_empty_bag_physical_delete_has_no_recovery_lifecycle');
+ select collection_revision into r from family_auth.trip_packing_state where trip_id=t;update public.packing_bags set name='D1 changed bag'where id=a;assert(select collection_revision from family_auth.trip_packing_state where trip_id=t)>r;
+ results:=results||jsonb_build_array('bag_metadata_updates_invalidate_existing_collection_revision');
+ select collection_revision into r from family_auth.trip_packing_state where trip_id=t;delete from public.packing_bag_members where bag_id=a and person_id=__PERSON__;assert(select collection_revision from family_auth.trip_packing_state where trip_id=t)>r;
+ results:=results||jsonb_build_array('carrier_changes_invalidate_collection_revision');
+ delete from public.packing_bag_members where bag_id=a;
+ expected:=false;begin insert into public.packing_bag_members(trip_id,bag_id,person_id)values(t,a,current_setting('d1.guest')::uuid);exception when foreign_key_violation then expected:=true;end;assert expected and not exists(select 1 from public.packing_bag_members where bag_id=a);
+ results:=results||jsonb_build_array('privileged_two_step_member_replacement_can_leave_an_empty_set_after_second_step_failure');
+ insert into public.packing_bags(trip_id,name,color,sort_order)values(t,'','not-a-color',-1);assert exists(select 1 from public.packing_bags where trip_id=t and name=''and sort_order=-1);
+ results:=results||jsonb_build_array('current_legacy_bag_storage_has_no_name_color_or_nonnegative_rank_guard');
+ assert not exists(select 1 from information_schema.columns where table_schema='public'and table_name='packing_bags'and column_name in('revision','deleted_at','deleted_by_person_id','owner_person_id','is_private'));
+ results:=results||jsonb_build_array('bags_are_trip_owned_carrier_containers_without_revision_or_Trash_facts');
+ perform set_config('d1.results',results::text,true);
+end $structure$;
+select current_setting('d1.results')::jsonb;
+rollback;

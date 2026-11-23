@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "acceptance": "Two precisely reviewed response functions change in the index script. Every other index AST node, 405 other application JS payloads, 14 CSS files, and SW logic are preserved with verified metadata, source bindings and chunk-name mapping. No raw-byte identity claim for changed content-addressed assets.",
+  "before_build": "f99266c7205668c58ecd934627ba110512f7dadf",
+  "after_build": "a7033ef64e9ff42fe59e3413d1584645dbbd2310",
+  "all_output_files_accounted_for": 3793,
+  "logical_JS_CSS_chunks": 421,
+  "other_application_JS_payloads_equal_after_only_chunk_names": 405,
+  "all_14_CSS_files_byte_exact": true,
+  "index_only_two_functions_match_reviewed_source": true,
+  "all_other_index_AST_exact_after_binding_and_chunk_name_normalization": true,
+  "SW_logic_equal_and_actual_precache_revisions_verified": true,
+  "HTML_manifest_only_exact_chunk_name_changes": true,
+  "all_entry_and_chunk_hashes_and_sizes_match_actual_files": true,
+  "public_configuration_slot_values_and_non_binding_fields_exact": true,
+  "all_slot_offsets_recomputed_from_actual_source_by_unchanged_scanner": true,
+  "all_other_static_assets_byte_exact": true,
+  "compressed_derivative_check_required": true,
+  "all_JavaScript_CSS_raw_bytes_exact": false
+}

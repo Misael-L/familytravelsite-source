@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "method": "Native APFS clonefile COW copy plus ACL|STAT|XATTR metadata copy; new generated output directory only",
+  "fresh_COW_isolation_probe_passed": true,
+  "all_output_paths_bytes_modes_owners_mtime_and_flags_exact": true,
+  "all_copied_files_have_separate_inodes": true,
+  "source_output_inventory_unchanged": true,
+  "files": 3793,
+  "initial_gid_inheritance_delta_retained": "build-copy-initial-metadata-delta.json",
+  "fix_applies_metadata_only_never_DATA": true,
+  "production_build_not_rerun_or_relabelled": true,
+  "prior_builds_complete_archives_backups_ETL_media_untouched": true
+}

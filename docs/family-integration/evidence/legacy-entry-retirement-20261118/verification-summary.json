@@ -1,0 +1,54 @@
+{
+  "passed": true,
+  "packet": "Q100",
+  "incoming": "9e84f90cfa8c6fdefd7cea45db32c2ef6f2edde0",
+  "implementation": "7cc398ec65581bb9383a43841ea962a0ad43dd72",
+  "build_source": "a04fa405cbac4b4ac8ac9143652daa71ec6d527e",
+  "date": "2026-11-18",
+  "removed_paths": [
+    "client/src/integrations/family/legacy/main.tsx",
+    "client/src/integrations/family/legacy/App.tsx",
+    "client/src/integrations/family/legacy/pages/TripPlannerPage.tsx",
+    "client/src/integrations/family/legacy/pages/FamilyTripWorkspaceShell.tsx"
+  ],
+  "new_or_modified_runtime_source_files": 0,
+  "lines_removed": 4130,
+  "candidate_passed": 713,
+  "same_expanded_cases_before_after": 713,
+  "guard_controls_passed": 146,
+  "current_reachable_nodes_preserved": 5981,
+  "no_outside_runtime_type_test_importer": true,
+  "native_layouts_preserved": 12,
+  "all_3793_dist_paths_exact": true,
+  "all_421_JavaScript_CSS_files_exact": true,
+  "only_public_sourceCommit_changed": true,
+  "fresh_typecheck_and_build_passed": true,
+  "fresh_declarations_fixed_at_current_compiler_generation": 128,
+  "source_guards_passed": 4,
+  "artifact_binding_controls_passed": 3,
+  "warning_gate_pass": true,
+  "source_warnings_actual_limit": [
+    3418,
+    3418
+  ],
+  "source_complexity_actual_limit": [
+    218,
+    218
+  ],
+  "source_length_actual_limit": [
+    130,
+    130
+  ],
+  "size_findings_before_after": [
+    30,
+    28
+  ],
+  "all_other_size_failure_lines_exact": true,
+  "format_gate_pass": false,
+  "format_findings_existing_before_and_after": 11,
+  "all_format_failure_lines_exact": true,
+  "rules_baselines_exclusions_suppressions_unchanged": true,
+  "global_release_gate_pass": false,
+  "live_database_browser_or_writer_admission_acceptance": false,
+  "next": "Q101 real-client-format gate repair for11 existing violations before more unused-source cleanup"
+}

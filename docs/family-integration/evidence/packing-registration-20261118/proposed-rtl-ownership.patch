@@ -1,0 +1,17 @@
+--- a/client/scripts/rtl-baseline.json
++++ b/client/scripts/rtl-baseline.json
+@@ -88,12 +88,13 @@
+   "pages/AtlasPage.tsx": 2,
+   "pages/JourneyDetailPage.tsx": 1,
+   "pages/JourneyPublicPage.tsx": 3,
+-  "pages/LoginPage.tsx": 23,
++  "pages/LoginPage.tsx": 7,
+   "pages/TripPlannerPage.tsx": 11,
+   "pages/VacayPage.tsx": 1,
+   "pages/admin/AdminNotificationsTab.tsx": 1,
+   "pages/admin/AdminSettingsTab.tsx": 1,
+   "pages/atlas/AtlasLayerToggle.tsx": 1,
++  "pages/login/starfield.ts": 16,
+   "pages/sharedTrip/SharedMap.tsx": 4,
+   "styles/collections.css": 1,
+   "styles/studio.css": 7,

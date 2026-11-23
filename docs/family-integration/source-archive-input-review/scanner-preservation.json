@@ -1,0 +1,7 @@
+{
+  "scannerChange": "One canonical Markdown documentation-host helper and one explicit metadata branch only.",
+  "allPriorRejectionRulesAndAllowListsByteExact": true,
+  "credentialsQueriesWrongHostsAndNonDocumentUrlsStillRejected": true,
+  "originalScannerSha256": "7b0383df39368dcf3781d4431aa858ef07b19a62332634c0e618337d690c13a1",
+  "currentScannerSha256": "20bfa8b0abdaf8d39da6f0030dc4d323bb0f4c8caf47aa4a6b0480258f6be380"
+}

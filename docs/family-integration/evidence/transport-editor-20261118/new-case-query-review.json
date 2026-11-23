@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "initial_new_cases_passed": 9,
+  "initial_query_failure": "Existing Modal does not provide an accessible dialog role; use the actual expense button closest form to submit the real form.",
+  "read_only_permission_assertions_preserved": true,
+  "only_new_test_setup_query_changed": true,
+  "original_tests_unchanged": true
+}

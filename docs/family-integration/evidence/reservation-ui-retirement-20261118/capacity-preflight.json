@@ -1,0 +1,9 @@
+{
+  "read_only": true,
+  "available_bytes": 3485696000,
+  "prior_complete_check_archive_bytes": 351861710,
+  "estimated_peak_plus_margin_bytes": 2129326954,
+  "capacity_estimate_passed": true,
+  "estimate_is_not_an_archive_validation_result": true,
+  "protected_archives_backups_ETL_media_and_unverified_copies_untouched": true
+}

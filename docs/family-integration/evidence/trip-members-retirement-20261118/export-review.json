@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "scoped_export_declarations": {
+    "client/src/integrations/family/legacy/components/Trips/TripMembersModal.tsx": [
+      {
+        "line": 523,
+        "declaration": "export default function TripMembersModal({"
+      }
+    ]
+  },
+  "outside_candidate_module_consumers": [],
+  "no_ambient_augmentation": true
+}

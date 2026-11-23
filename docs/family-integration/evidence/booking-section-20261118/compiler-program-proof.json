@@ -1,0 +1,152 @@
+{
+  "passed": true,
+  "ordinary_program_roots_before_after": [
+    5077,
+    5077
+  ],
+  "ordinary_program_sources_before_after": [
+    10260,
+    10260
+  ],
+  "ordinary_program_source_names_and_bytes_exact": true,
+  "explicit_boundary_program_sources_before_after": [
+    10262,
+    10263
+  ],
+  "only_new_boundary_program_member": "client/src/integrations/family/legacy/components/Planner/FamilyBookingSection.tsx",
+  "only_changed_existing_boundary_source": "client/src/integrations/family/legacy/components/Planner/BookingsPanelFamily.tsx",
+  "all_other_boundary_program_sources_exact": true,
+  "parent_default_and_public_props_types_exact": true,
+  "section_effective_props_and_return_type_exact": true,
+  "section_imported_value_bindings_same_modules": [
+    {
+      "name": "ChevronDown",
+      "imported": "ChevronDown",
+      "module": "lucide-react",
+      "type_only": false
+    },
+    {
+      "name": "ChevronRight",
+      "imported": "ChevronRight",
+      "module": "lucide-react",
+      "type_only": false
+    },
+    {
+      "name": "useEffect",
+      "imported": "useEffect",
+      "module": "react",
+      "type_only": false
+    },
+    {
+      "name": "useState",
+      "imported": "useState",
+      "module": "react",
+      "type_only": false
+    }
+  ],
+  "boundary_semantic_syntactic_diagnostics_before_after": [
+    0,
+    0
+  ],
+  "parent_exports": [
+    {
+      "name": "default",
+      "type": "({ tripId, canMutate, familyId, mePersonId, days, places, scheduleItems, currencyCode, onOpenCostsPrefill, onStageDraft, onStageDelete, onStageStatus, }: BookingsPanelFamilyProps) => ReactElement<unknown, string | JSXElementConstructor<any>>",
+      "properties": [],
+      "calls": [
+        {
+          "parameters": [
+            {
+              "name": "__0",
+              "type": "{ tripId: string; canMutate: boolean; familyId: string; mePersonId: string; days: FamilyTripDay[]; places: FamilyTripPlace[]; scheduleItems: FamilyScheduleItem[]; currencyCode: string; onOpenCostsPrefill: (prefill: FamilyExpensePrefill) => void; onStageDraft?: (draft: FamilyBookingDraft) => Promise<boolean>; onStageDelete?: (id: string) => Promise<boolean>; onStageStatus?: (id: string, status: \"pending\" | \"confirmed\") => Promise<boolean>; }"
+            }
+          ],
+          "return_type": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+        }
+      ]
+    },
+    {
+      "name": "BookingsPanelFamilyProps",
+      "type": "{ tripId: string; canMutate: boolean; familyId: string; mePersonId: string; days: FamilyTripDay[]; places: FamilyTripPlace[]; scheduleItems: FamilyScheduleItem[]; currencyCode: string; onOpenCostsPrefill: (prefill: FamilyExpensePrefill) => void; onStageDraft?: (draft: FamilyBookingDraft) => Promise<boolean>; onStageDelete?: (id: string) => Promise<boolean>; onStageStatus?: (id: string, status: \"pending\" | \"confirmed\") => Promise<boolean>; }",
+      "properties": [
+        {
+          "name": "tripId",
+          "optional": false,
+          "type": "string"
+        },
+        {
+          "name": "canMutate",
+          "optional": false,
+          "type": "boolean"
+        },
+        {
+          "name": "familyId",
+          "optional": false,
+          "type": "string"
+        },
+        {
+          "name": "mePersonId",
+          "optional": false,
+          "type": "string"
+        },
+        {
+          "name": "days",
+          "optional": false,
+          "type": "FamilyTripDay[]"
+        },
+        {
+          "name": "places",
+          "optional": false,
+          "type": "FamilyTripPlace[]"
+        },
+        {
+          "name": "scheduleItems",
+          "optional": false,
+          "type": "FamilyScheduleItem[]"
+        },
+        {
+          "name": "currencyCode",
+          "optional": false,
+          "type": "string"
+        },
+        {
+          "name": "onOpenCostsPrefill",
+          "optional": false,
+          "type": "(prefill: FamilyExpensePrefill) => void"
+        },
+        {
+          "name": "onStageDraft",
+          "optional": true,
+          "type": "(draft: FamilyBookingDraft) => Promise<boolean>"
+        },
+        {
+          "name": "onStageDelete",
+          "optional": true,
+          "type": "(id: string) => Promise<boolean>"
+        },
+        {
+          "name": "onStageStatus",
+          "optional": true,
+          "type": "(id: string, status: \"pending\" | \"confirmed\") => Promise<boolean>"
+        }
+      ],
+      "calls": []
+    }
+  ],
+  "section_contract": {
+    "type": "({ title, count, children, accent, storageKey, }: { title: string; count: number; children: ReactNode; accent: \"green\" | \"amber\"; storageKey: string; }) => ReactElement<unknown, string | JSXElementConstructor<any>>",
+    "properties": [],
+    "calls": [
+      {
+        "parameters": [
+          {
+            "name": "__0",
+            "type": "{ title: string; count: number; children: ReactNode; accent: \"green\" | \"amber\"; storageKey: string; }"
+          }
+        ],
+        "return_type": "ReactElement<unknown, string | JSXElementConstructor<any>>"
+      }
+    ]
+  },
+  "no_module_type_contract_weakened": true
+}

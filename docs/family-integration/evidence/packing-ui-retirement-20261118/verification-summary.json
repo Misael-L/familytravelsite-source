@@ -1,0 +1,67 @@
+{
+  "passed": true,
+  "packet": "Q110",
+  "incoming": "caefebdcd764490f570a541c454cb1f661cab59a",
+  "implementation": "e708a6b9a0aafb8a04b62758e2502156c6351637",
+  "build_source": "dcc414ae54c3fce7c74a00511bf4b28c30f75539",
+  "date": "2026-11-18",
+  "removed_paths": [
+    "client/src/integrations/family/legacy/components/Packing/PackingListPanel.tsx",
+    "client/src/integrations/family/legacy/components/Packing/PackingListPanelList.tsx",
+    "client/src/integrations/family/legacy/components/Packing/PackingListPanelCategoryGroup.tsx",
+    "client/src/integrations/family/legacy/components/Packing/PackingListPanelItemRow.tsx"
+  ],
+  "new_or_modified_runtime_source_files": 0,
+  "candidate_passed": 1215,
+  "same_expanded_cases_before_after": 1215,
+  "raw_sources_reviewed": 14048,
+  "application_modules_reviewed": 7484,
+  "current_reachable_nodes_preserved": 6091,
+  "literal_glob_locale_modules": 28,
+  "literal_glob_video_assets": 98,
+  "internal_value_edges": 3,
+  "internal_type_only_edges": 0,
+  "all_exports_and_itemWeight_reexport_reviewed": true,
+  "retained_helper_outside_module_consumers": 5,
+  "retained_helper_outside_type_only_consumers": 2,
+  "original_itemWeight_helper_and_dependency_union_unchanged": true,
+  "no_outside_runtime_type_test_tool_importer": true,
+  "external_modules_without_ambient_augmentation": true,
+  "native_presentation_files_exact": 12,
+  "native_packing_controls_and_Family_contracts_preserved": true,
+  "all_3792_other_generated_files_byte_exact": true,
+  "all_421_generated_JS_CSS_files_byte_exact": true,
+  "all_14_stylesheets_byte_exact": true,
+  "service_worker_and_cache_manifest_byte_exact": true,
+  "public_configuration_only_sourceCommit_changed": true,
+  "fresh_typecheck_and_build_passed": true,
+  "fresh_declarations_fixed_at_current_compiler_generation": 128,
+  "source_guards_passed": 4,
+  "artifact_binding_controls_passed": 3,
+  "warning_gate_pass": true,
+  "source_warnings_actual_limit": [
+    3418,
+    3418
+  ],
+  "source_complexity_actual_limit": [
+    218,
+    218
+  ],
+  "source_length_actual_limit": [
+    130,
+    130
+  ],
+  "size_findings_before_after": [
+    15,
+    14
+  ],
+  "all_other_size_failure_lines_exact": true,
+  "format_gate_pass": true,
+  "unlisted_format_failures": 0,
+  "format_baseline_unchanged_entries": 2134,
+  "rules_baselines_exclusions_suppressions_unchanged": true,
+  "verified_disposable_prototype_removed_after_proofs": true,
+  "global_release_gate_pass": false,
+  "live_database_browser_or_writer_admission_acceptance": false,
+  "next": "Q111 bounded copied SystemNoticeModal/SystemNoticeHost review; preserve native notices, stores, APIs and shared renderers"
+}

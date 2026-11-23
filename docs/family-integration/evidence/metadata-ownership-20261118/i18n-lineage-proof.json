@@ -1,0 +1,39 @@
+{
+  "passed": true,
+  "source_extraction_commit": "066f615055b3be74d6664a260358f9cd6a8f1a37",
+  "old_owner": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+  "new_owner": "client/src/integrations/family/legacy/components/Admin/plugins/PluginBadges.tsx",
+  "current_model": "client/src/integrations/family/legacy/components/Admin/plugins/pluginModel.tsx",
+  "PermLabel_JS_exact_after_only_export_modifier_removal": true,
+  "old_and_current_PERM_KEYS_lists_exact": true,
+  "retained_fixed_permission_count": 58,
+  "all_retained_permissions_resolve_in_Family_catalog": true,
+  "native_generated_permission_count": 66,
+  "native_permissions_not_added_to_retained_list": [
+    "hook:search-provider",
+    "hook:poi-category-provider",
+    "hook:map-layer-provider",
+    "hook:route-provider",
+    "hook:day-schedule-provider",
+    "hook:day-tint-provider",
+    "geolocation:read",
+    "mcp:tools"
+  ],
+  "unknown_permission_raw_fallback_unchanged": true,
+  "before_site": {
+    "file": "integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+    "template": "admin.plugins.perm.${perm}"
+  },
+  "proposed_site": {
+    "file": "integrations/family/legacy/components/Admin/plugins/PluginBadges.tsx",
+    "template": "admin.plugins.perm.${perm}"
+  },
+  "existing_allowance_site_count": 19,
+  "proposed_site_count_same": true,
+  "all_other_allowance_sites_and_native_domains_unchanged": true,
+  "implicit_match_limit_unchanged": 30,
+  "original_scanner_sha256": "aa9889dda9a7ef8fe2a3832776379646a83fc6e7afd5fd3687c99b5415056f2d",
+  "proposed_scanner_sha256": "8570d92409a963bbcc358d970c9e05408b43730944c2d379da46f62e802e3859",
+  "proposal_only_not_imported_or_applied": true,
+  "not_a_current_lint_pass": true
+}

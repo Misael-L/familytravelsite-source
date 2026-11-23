@@ -1,0 +1,9 @@
+{
+  "exit": 1,
+  "seconds": 103.08,
+  "original_findings": 11,
+  "candidate_findings": 11,
+  "all_failure_lines_exact": true,
+  "original_source_reconstructed_only_in_isolated_checkout": true,
+  "installed_rules_baselines_dependencies_unchanged": true
+}

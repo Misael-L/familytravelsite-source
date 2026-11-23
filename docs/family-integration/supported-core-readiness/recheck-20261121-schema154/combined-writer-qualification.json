@@ -1,0 +1,128 @@
+{
+  "date": "2026-11-21",
+  "baseline": "956ee5dc97b22752717f0d7c118c5451f92c8363",
+  "implementation_commit": "fe21bee24096648139ef28f8ec60e234eb46b863",
+  "artifact_source_commit": "d7216244e09a4bd37e221e86884c42f3f3e9a253",
+  "backend_commit": "b79933be3af1ddcf4b0aa1a06bc8a7ca161a38c5",
+  "website_build": {
+    "source_commit": "d7216244e09a4bd37e221e86884c42f3f3e9a253",
+    "configuration": "isolated-task-planner-packing-v1",
+    "artifact_scan": {
+      "correct": 0,
+      "wrong": 1,
+      "missing": 1
+    },
+    "files": 3780
+  },
+  "browser_served_source_commit": "634fd985cd1d4faac407b583910374a8e0366483",
+  "rebound_build_equivalence": {
+    "total_files": 3780,
+    "changed_files": [
+      "family-public-config.json"
+    ],
+    "served_application_files_byte_identical": true
+  },
+  "focused_client_tests": {
+    "passed": 734,
+    "files": 21
+  },
+  "checks": {
+    "typecheck": "pass",
+    "four_source_guards": "pass",
+    "scoped_eslint_no_findings": true,
+    "repository_lint_and_ratchets": "pass",
+    "duplication_lines": 0
+  },
+  "signed_in_isolated_browser": {
+    "schema_ledger": 155,
+    "pg_version": "17.11",
+    "phone_selected_day_untimed_verified": true,
+    "cases": {
+      "browser17": {
+        "checkpoints": [
+          "Desktop native create saved a manual place through planner RPC at AAL2.",
+          "Old task tab lost its committed reply. A fresh tab used the receipt and sent no second command.",
+          "Desktop packing reply lost after commit. Reload and receipt recovered the existing item.",
+          "Native packing Trash and Restore use the original target ID.",
+          "Real logout and sign-in switch to a different Family without publishing the previous trip or item."
+        ],
+        "one_receipt_per_operation": {
+          "create_family_native_plan_v1": 1,
+          "execute_family_trip_task_v1": 1,
+          "execute_family_trip_packing_v1": 3
+        },
+        "successful_browser_auth_aal2": true,
+        "successful_task_receipt_reads": 1,
+        "successful_packing_receipt_reads": 1,
+        "blocked_outside_origins": 3,
+        "javascript_errors": 0
+      },
+      "phone17": {
+        "checkpoints": [
+          "Phone native task sheet saved directly through the same task operation.",
+          "Phone native packing form saved through the same packing operation.",
+          "Phone reload shows the same saved task and packing item.",
+          "Phone native planner saved a manual place through the same planner operation."
+        ],
+        "one_receipt_per_operation": {
+          "execute_family_trip_task_v1": 1,
+          "execute_family_trip_packing_v1": 1,
+          "create_family_native_plan_v1": 1
+        },
+        "successful_browser_auth_aal2": true,
+        "successful_task_receipt_reads": 0,
+        "successful_packing_receipt_reads": 0,
+        "blocked_outside_origins": 4,
+        "javascript_errors": 0
+      },
+      "unknown17": {
+        "checkpoints": [
+          "Before-execution drop leaves a durable original. Check returns unknown without a write.",
+          "Explicit Retry sends the identical original command and returns the saved task.",
+          "Native task Trash and Restore reuse the original target ID."
+        ],
+        "one_receipt_per_operation": {
+          "execute_family_trip_task_v1": 3
+        },
+        "successful_browser_auth_aal2": true,
+        "successful_task_receipt_reads": 2,
+        "successful_packing_receipt_reads": 0,
+        "blocked_outside_origins": 3,
+        "javascript_errors": 0
+      }
+    }
+  },
+  "same_build_handover": true,
+  "account_switch_desktop_verified": true,
+  "successful_operations_with_independent_receipt_check": 11,
+  "browser_checkpoints": 12,
+  "timezone": {
+    "older_image": "17.6.1.141",
+    "selected_day_date_only_refused_sqlstate": "55000",
+    "qualified_image": "17.11.0.003",
+    "selected_day_untimed_commit_on_qualified_image": true
+  },
+  "x8_restore": {
+    "isolated_database_replays": 2,
+    "exact_original_projections_per_replay": 200,
+    "exact_original_rows_per_replay": 296764,
+    "versions_after_replay": 155,
+    "isolated_services_used_ephemeral_credentials": true
+  },
+  "legacy_and_advanced": {
+    "old_grant_refusals_per_restore": 9,
+    "old_profiles_regression_tested": true,
+    "ordinary_or_primary_writers_enabled": false,
+    "advanced_domains_enabled": false
+  },
+  "temporary_database_cleanup": {
+    "both_isolated_stacks_disposed": true
+  },
+  "remaining": {
+    "different_release_handover_unproved": true,
+    "current_hosted_worker_source_unbound": true,
+    "hosted_engine_decision_pending": true,
+    "real_preview_acceptance_pending": true
+  },
+  "hosted_migration_or_deployment": false
+}

@@ -1,0 +1,134 @@
+{
+  "passed": true,
+  "scoped_export_declarations": {
+    "client/src/integrations/family/legacy/components/Packing/PackingListPanel.tsx": [
+      {
+        "line": 12,
+        "declaration": "export { itemWeight } from './packingListPanel.helpers';"
+      },
+      {
+        "line": 14,
+        "declaration": "export default function PackingListPanel(props: PackingListPanelProps) {"
+      }
+    ],
+    "client/src/integrations/family/legacy/components/Packing/PackingListPanelList.tsx": [
+      {
+        "line": 5,
+        "declaration": "export function PackingList(S: PackingState) {"
+      }
+    ],
+    "client/src/integrations/family/legacy/components/Packing/PackingListPanelCategoryGroup.tsx": [
+      {
+        "line": 60,
+        "declaration": "export function KategorieGruppe({"
+      }
+    ],
+    "client/src/integrations/family/legacy/components/Packing/PackingListPanelItemRow.tsx": [
+      {
+        "line": 58,
+        "declaration": "export function ArtikelZeile({"
+      }
+    ]
+  },
+  "outside_candidate_module_consumers": [],
+  "no_ambient_augmentation": true,
+  "itemWeight_original_helper_retained": {
+    "path": "client/src/integrations/family/legacy/components/Packing/packingListPanel.helpers.ts",
+    "sha256": "3632a8ecefe5f06ca78c84d1f1b7370174da6aabe095eefde3b272c7409cdbf0",
+    "raw_direct_module_consumers": [
+      {
+        "from": "client/src/integrations/family/legacy/components/Packing/PackingListPanel.tsx",
+        "target": "client/src/integrations/family/legacy/components/Packing/packingListPanel.helpers.ts",
+        "kind": "ExportDeclaration",
+        "line": 12,
+        "type_only": false
+      },
+      {
+        "from": "client/src/integrations/family/legacy/components/Packing/PackingListPanelBagModal.tsx",
+        "target": "client/src/integrations/family/legacy/components/Packing/packingListPanel.helpers.ts",
+        "kind": "ImportDeclaration",
+        "line": 2,
+        "type_only": false
+      },
+      {
+        "from": "client/src/integrations/family/legacy/components/Packing/PackingListPanelBagSidebar.tsx",
+        "target": "client/src/integrations/family/legacy/components/Packing/packingListPanel.helpers.ts",
+        "kind": "ImportDeclaration",
+        "line": 2,
+        "type_only": false
+      },
+      {
+        "from": "client/src/integrations/family/legacy/components/Packing/PackingListPanelCategoryGroup.tsx",
+        "target": "client/src/integrations/family/legacy/components/Packing/packingListPanel.helpers.ts",
+        "kind": "ImportDeclaration",
+        "line": 22,
+        "type_only": false
+      },
+      {
+        "from": "client/src/integrations/family/legacy/components/Packing/PackingListPanelItemRow.tsx",
+        "target": "client/src/integrations/family/legacy/components/Packing/packingListPanel.helpers.ts",
+        "kind": "ImportDeclaration",
+        "line": 23,
+        "type_only": false
+      },
+      {
+        "from": "client/src/integrations/family/legacy/components/Packing/familyPacking.ts",
+        "target": "client/src/integrations/family/legacy/components/Packing/packingListPanel.helpers.ts",
+        "kind": "ImportDeclaration",
+        "line": 32,
+        "type_only": true
+      },
+      {
+        "from": "client/src/integrations/family/legacy/components/Packing/packingListOps.ts",
+        "target": "client/src/integrations/family/legacy/components/Packing/packingListPanel.helpers.ts",
+        "kind": "ImportDeclaration",
+        "line": 4,
+        "type_only": true
+      },
+      {
+        "from": "client/src/integrations/family/legacy/components/Packing/usePackingListPanel.ts",
+        "target": "client/src/integrations/family/legacy/components/Packing/packingListPanel.helpers.ts",
+        "kind": "ImportDeclaration",
+        "line": 20,
+        "type_only": false
+      }
+    ],
+    "outside_retired_consumers": [
+      {
+        "from": "client/src/integrations/family/legacy/components/Packing/PackingListPanelBagModal.tsx",
+        "target": "client/src/integrations/family/legacy/components/Packing/packingListPanel.helpers.ts",
+        "kind": "ImportDeclaration",
+        "line": 2,
+        "type_only": false
+      },
+      {
+        "from": "client/src/integrations/family/legacy/components/Packing/PackingListPanelBagSidebar.tsx",
+        "target": "client/src/integrations/family/legacy/components/Packing/packingListPanel.helpers.ts",
+        "kind": "ImportDeclaration",
+        "line": 2,
+        "type_only": false
+      },
+      {
+        "from": "client/src/integrations/family/legacy/components/Packing/familyPacking.ts",
+        "target": "client/src/integrations/family/legacy/components/Packing/packingListPanel.helpers.ts",
+        "kind": "ImportDeclaration",
+        "line": 32,
+        "type_only": true
+      },
+      {
+        "from": "client/src/integrations/family/legacy/components/Packing/packingListOps.ts",
+        "target": "client/src/integrations/family/legacy/components/Packing/packingListPanel.helpers.ts",
+        "kind": "ImportDeclaration",
+        "line": 4,
+        "type_only": true
+      },
+      {
+        "from": "client/src/integrations/family/legacy/components/Packing/usePackingListPanel.ts",
+        "target": "client/src/integrations/family/legacy/components/Packing/packingListPanel.helpers.ts",
+        "kind": "ImportDeclaration",
+        "line": 20,
+        "type_only": false
+      }
+    ]
+  }
+}

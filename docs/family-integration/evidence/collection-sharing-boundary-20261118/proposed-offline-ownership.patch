@@ -1,0 +1,10 @@
+--- a/client/scripts/offline-baseline.json
++++ b/client/scripts/offline-baseline.json
+@@ -33,7 +33,6 @@
+   "src/components/Collections/ImportFromTripModal.tsx",
+   "src/components/Collections/useAddPlaceToCollection.ts",
+   "src/components/Collections/useCollectionPlaceForm.ts",
+-  "src/components/Collections/useCollectionSharing.ts",
+   "src/components/Collections/useListEditor.ts",
+   "src/components/Collections/useSaveToCollection.ts",
+   "src/components/Collections/useSaveTripPlacesToList.ts",

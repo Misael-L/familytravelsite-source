@@ -1,0 +1,25 @@
+# Q111 — Copied system-notice host/modal retired
+
+Completed 18 November 2026 on the private integration branch. Incoming `f30ecf0162558f4417334d766b72ffaa46fe3e3a`; implementation `0762a478191c4932aa19f0496e9071f5c55fbdd1`; source-bound fixture build `561b62b7683bb62de1e1bd9fd91bc95518875c51`. [Export/JS-to-TS/source audit, unchanged consumer checks, output comparison and replay](evidence/notice-ui-retirement-20261118/README.md).
+
+Only copied SystemNoticeHost and SystemNoticeModal are removed. The Host's .js import resolves to the selected TSX ModalRenderer module; no outside candidate consumer or augmentation remains. Native notices, auth/session/permission behavior and all copied banner/store/API/action/type/shared dependencies remain intact.
+
+310 identical cases pass before/after. Build/compiler, four source guards and three artifact-source controls pass. All 3,792 outputs other than sourceCommit configuration match byte-for-byte. Format/warning gates pass unchanged. Size14→13 removes only the old modal finding; every other failure line remains exact. G2 and independent release gates remain open.
+
+## Exact next packet — Q112 bounded copied trip-members UI review
+
+Review only this initial candidate before selecting any deletion:
+
+- client/src/integrations/family/legacy/components/Trips/TripMembersModal.tsx
+
+The initial search finds native TripPlannerPage importing the distinct native components/Trips/TripMembersModal, and native tests/share-link-session tests importing that native module. Those are actual consumers to preserve, not references to the copied candidate. Recompute the copied module's complete outside boundary, all default/named/type exports and .js/TS imports; do not infer unused status from similar names or the absence of an old page. If any outside consumer remains, keep the required export and review that exact boundary before changing source.
+
+Preserve native TripMembersModal and its helpers/hooks, TripPlannerPage's members button/dialog wiring and page tests, Family share/invite/clipboard/session continuations, membership/role/access/permission operations, mobile behavior, retained operations/queues/recovery and qualified APIs. Keep copied types/models/auth/trip/store/API/link/shared helpers and all tested/type-program/dependency consumers unless separately reviewed and explicitly selected. No DB/API/provider/writer/profile enablement, permission loosening or UI replacement.
+
+Recompute full raw runtime/import/export/type/ImportTypeNode/JSDoc/mock/require, current root/config/tool/public/source/license and dynamic/glob/cache closure, including JS-to-TS resolution and alternative entries. Inspect augmentation/implicit type dependencies and require actual before/after compiler-program/effective-type proof where applicable. Keep all 6,091 current graph nodes/edges/source bytes, twelve protected native files, all outside tracked bytes and a positive candidate-import control.
+
+Prototype only proved-closed source. Compare unchanged native trip-members dialog, planner member wiring, share/invite/clipboard/session/permission/link-safety and appropriate mobile consumers before/after with exact expanded names/files/status/multiplicity. Never weaken assertions/mocks/fixtures/config/timeouts/skips/coverage. Any demonstrated reachable bug takes priority with red/green proof. Local fixture cases do not admit unsupported Family functionality. Build committed qualified source and review complete generated output; prove any actual CSS/chunk/SW/receipt changes independently rather than reusing Q111's byte-identity conclusion.
+
+Update only actual deleted provenance rows/pins; run fresh compiler/native/source/artifact/actual format/warning/size gates with current generated declarations. Keep all 13 remaining size findings explicit. No rule/baseline/exclusion/suppression/scanner relaxation, blind helper deletion, schema or runtime-admission changes. Finish bounded preservation, check-only archive, normal private checkpoint push and precise continuation pointers.
+
+Use `/private/tmp/trek-core-notice-ui-retirement-20261118/next-baseline-private.json` after verified push. Preserve canonical 151 migrations/370 sources/index/README, all sealed evidence/complete source archives and unrelated checkouts. Disk capacity is low; check capacity before full prototypes/builds/archives, and do not delete backups/media/ETL, complete archives, sealed receipts, authoritative checkouts or unverified source copies. Q105's four unverified copies remain explicitly excluded from safe retirement (see /private/tmp/trek-core-atlas-retirement-20261118/finalized-space-recovery.json). Only newly proved Git-reconstructible disposable copies may be reclaimed after their exact-source and dependency-link proofs; if safe capacity cannot be established, record that constraint before beginning heavy work. Shared backend remains8cc0fe3f. Website only; no main/preview/production/Supabase/schema/settings/billing/transformation/public mirror/backup/ETL/iOS changes.

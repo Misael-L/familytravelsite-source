@@ -1,0 +1,1 @@
+JSON report written to /private/tmp/trek-core-metadata-ownership-20261118/scanner-tests.json

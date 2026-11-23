@@ -1,0 +1,62 @@
+{
+  "schema": 121,
+  "project_id": "family-modernization-20261111-c2a",
+  "ports": [
+    55431,
+    55432
+  ],
+  "server": "17.11",
+  "migration": "20261111234537_normalized_trip_packing_categories.sql",
+  "migration_sha256": "b361c5ad6d313fd8d42a424a4f106a671cc5a4d7afa1bcb45437fd1fd807873b",
+  "earlier_sources": 120,
+  "reviewed_replacements": [
+    "build_family_export_v1(uuid)",
+    "family_auth.packing_execute_entry(uuid,uuid,jsonb,text,uuid,bigint,bigint,jsonb)",
+    "family_auth.packing_group_selected(packing_items,jsonb)",
+    "family_auth.packing_item_json(packing_items)",
+    "family_auth.packing_snapshot(uuid)",
+    "family_auth.tg_packing_collection()",
+    "family_auth.tg_packing_person_context()",
+    "family_auth.tg_packing_version()"
+  ],
+  "new_functions": [
+    "family_auth.packing_category_can_read(uuid)",
+    "family_auth.packing_category_json(packing_categories)",
+    "family_auth.packing_category_resolve(uuid,uuid,text)",
+    "family_auth.packing_with_categories_entry(uuid)",
+    "family_auth.tg_packing_category_assignment()",
+    "family_auth.tg_packing_category_bridge()",
+    "family_auth.tg_packing_category_changed()",
+    "family_auth.tg_packing_category_identity()",
+    "family_auth.tg_packing_category_link()",
+    "family_auth.tg_packing_category_lock()",
+    "get_family_trip_packing_with_categories_v1(uuid)"
+  ],
+  "functions": {
+    "build_family_export_v1(uuid)": "7001150bc41226a78946b00032d3011166d095b6583fa3d458329de583fa62da",
+    "family_auth.packing_category_can_read(uuid)": "be1b07d4a0bf2bbe70bef218e449f15e1227ef9ee7412b1596787bc8560e3236",
+    "family_auth.packing_category_json(packing_categories)": "c8bb5625e44b0f3d0eb0ef1120f671e6938e024527837f5ffce71b79bc956b89",
+    "family_auth.packing_category_resolve(uuid,uuid,text)": "54da401c47f688afa59be61861ba002cdce3c80853d1be5ea33fc34dd67b905e",
+    "family_auth.packing_execute_entry(uuid,uuid,jsonb,text,uuid,bigint,bigint,jsonb)": "9d5e573e0829f07bde1e98f0eed8b8d1e5322174dbc20cd3a103cbd8b6c3135b",
+    "family_auth.packing_group_selected(packing_items,jsonb)": "28c65693199d63559d0cf770654d77686a93206a6a58b6d0ce3af9d555e50877",
+    "family_auth.packing_item_json(packing_items)": "a2b014104ebcaedf8f14e97ff41abfb593b2f884ca09c2ebd2af1a46eaa3da03",
+    "family_auth.packing_snapshot(uuid)": "fe2a5009248d4ef9fd8f64b5928abb528a7966703a501f61fa1a8ffbb4ee4bc2",
+    "family_auth.packing_with_categories_entry(uuid)": "982fe803dbf620b6cf9a0d1cba25c863a57f09c917b162f84001b5f13f78a409",
+    "family_auth.tg_packing_category_assignment()": "b74bf8f5d946678f3438f8cf5f2ed3dfd6e8152627a600ed18d9c0f67c6d84d6",
+    "family_auth.tg_packing_category_bridge()": "97604d745bdaea535f517af4c92c606f6c8e0f76fcc4401e391dd8f1572b276a",
+    "family_auth.tg_packing_category_changed()": "4fd4efe4c95c450d1b43f7112ef0011f173194862deb7531290992b62c7584aa",
+    "family_auth.tg_packing_category_identity()": "e48955a40fef132b0109539f5babbadd670ed313c93591a7445be4c296baa3d5",
+    "family_auth.tg_packing_category_link()": "382f4fcc94b3f507164ac15b31ff3408e8c27f0f3978c1abe5f79345e928dcfd",
+    "family_auth.tg_packing_category_lock()": "12fc5e4ddf417f737b133bb955dcfea7d54a9f763e7da0940816e5f25e94c5c0",
+    "family_auth.tg_packing_collection()": "16df05e3a51e45d33a5b833b293874352e1f8fda5f3b44738db7344a20a514bc",
+    "family_auth.tg_packing_person_context()": "dad6ede8bc3851f42a6a450dc6c8789c0edabb12c1836a5fbcff5184d3b071b2",
+    "family_auth.tg_packing_version()": "6fb23d53f926cb9f4b83016115a2f741733ecff4d530ec541f0f8bbe81c21ee6",
+    "get_family_trip_packing_with_categories_v1(uuid)": "0e9f9b0408839df3e698ded86bddb31a68d76b3c4870559454da46bc45138b20"
+  },
+  "unrelated_functions_exact": true,
+  "old_function_owners_grants_preserved": true,
+  "old_triggers_restored_exact": true,
+  "fresh_replay_function_bodies_exact": true,
+  "schema_contract_sha256": "95b5126de20d3d19c1a8254e8ab132111afc46b02bacdf2b038418970e84157f",
+  "function_privileges_ownership_config_pinned": true
+}

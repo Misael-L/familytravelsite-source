@@ -1,0 +1,53 @@
+{
+  "passed": true,
+  "reason": "TypeScript control-flow recognition needs an explicit variable call signature on these const throw helpers. Their bodies, declarations order and runtime calls remain exact.",
+  "files": [
+    {
+      "path": "client/src/integrations/family/publicVariantCache.ts",
+      "from": "const fail = (code: PublicVariantCacheError['code']): never => {",
+      "to": "const fail: (code: PublicVariantCacheError['code']) => never = (code) => {",
+      "before_sha256": "ef032f962aca12d1ff00846ae74435f6ca73bfc5aee81204398bae337833116c",
+      "after_sha256": "398d5621dfffa5ed9a8f53482b4fe08f12ae2b67c8cf682846c267a3eae8195a",
+      "transpiled_JS_sha256": "9098c5a502782dd75bb1ed74b14e11b9b3330a2943959cfa525915c2d54d808b",
+      "transpiled_JS_byte_exact": true
+    },
+    {
+      "path": "client/src/integrations/family/privateFileMemory.ts",
+      "from": "const fail = (code: PrivateFileMemoryError['code']): never => {",
+      "to": "const fail: (code: PrivateFileMemoryError['code']) => never = (code) => {",
+      "before_sha256": "4de4514a2e701cfbc3f3f28f124b77005246481bef92fd0f44b55aa8b6d2ed53",
+      "after_sha256": "588d1197869b4bd4659367fa47b1d7d44b823aebed9e35df31fe920c844fb6c7",
+      "transpiled_JS_sha256": "efc1b005c1f5ee492ab3234ea1c2ccec50c8c9e52de3fa9ccafb5849bba363f4",
+      "transpiled_JS_byte_exact": true
+    },
+    {
+      "path": "client/src/integrations/family/packingBagDependency.ts",
+      "from": "const fail = (): never => {",
+      "to": "const fail: () => never = () => {",
+      "before_sha256": "88ac8e31019bb52f6a72cb1865536a593db751251fdc8a1bca6c2cbd31fb64cc",
+      "after_sha256": "b07783d83e61fc41aade845c0e5cf88b3d535eefb7e45a5159dc93e4baa8d29b",
+      "transpiled_JS_sha256": "855337cd29e0a0c187a1ad75e870daae07a2ac6d63aa64e5cbbb2a12a2e6ffc2",
+      "transpiled_JS_byte_exact": true
+    },
+    {
+      "path": "client/src/integrations/family/packingDependencyPair.ts",
+      "from": "const fail = (): never => {",
+      "to": "const fail: () => never = () => {",
+      "before_sha256": "201f4fca825453a602a7b368dfdff4865b5973583a694da477783e52b41d7049",
+      "after_sha256": "6c58ef43e28193e36037fd23aa9b52b79ddab2ce766cb220131ffec603b0303e",
+      "transpiled_JS_sha256": "7edc6b59c7af2bb015ef2d0e27f74cee0a21b0fbb92cdcd774b6c25517b00a92",
+      "transpiled_JS_byte_exact": true
+    },
+    {
+      "path": "client/src/integrations/family/creationTerminalSettlement.ts",
+      "from": "const fail = (): never => {",
+      "to": "const fail: () => never = () => {",
+      "before_sha256": "71d53bd19e4ead1eea3bcea96606bbd87e4ed08cf6a44d7fdff5575409bf7528",
+      "after_sha256": "caaf2264c433c2bc9ebae07c78f161f7de1d56f21fd23dcb5fbd64083a61dd44",
+      "transpiled_JS_sha256": "cbafa7fa1569be41117619ac4a684df90b9909a3f18962d722d9e7b3f68c4b22",
+      "transpiled_JS_byte_exact": true
+    }
+  ],
+  "no_assertion_any_non_null_suppression_baseline_or_rule_change": true,
+  "no_runtime_behavior_change": true
+}

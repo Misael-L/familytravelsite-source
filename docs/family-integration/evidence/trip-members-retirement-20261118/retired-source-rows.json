@@ -1,0 +1,19 @@
+{
+  "removed_paths": [
+    "client/src/integrations/family/legacy/components/Trips/TripMembersModal.tsx"
+  ],
+  "previous_rows": [
+    {
+      "path": "client/src/integrations/family/legacy/components/Trips/TripMembersModal.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "123d944a8ac70e28e85c53b851456de5fad58243",
+        "bytes": 39556
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/components/Trips/TripMembersModal.tsx"
+    }
+  ],
+  "new_qualified_commit": "c2ee495ea92b6a269da5fc689ef1893009d537e6",
+  "reason": "Actual unused copied trip-members modal deletion after bounded source/type/test/configuration closure; no guard relaxation or disappearing source row without deletion."
+}

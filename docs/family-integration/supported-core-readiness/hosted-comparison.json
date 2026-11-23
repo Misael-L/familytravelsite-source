@@ -1,0 +1,200 @@
+{
+  "project_ref": "REDACTED_PRODUCTION_PROJECT",
+  "local_ledger_count": 128,
+  "hosted_ledger_count": 88,
+  "canonical_pending_versions": [
+    {
+      "name": "journey_entry_recovery",
+      "version": "20261104175741"
+    },
+    {
+      "name": "journey_aggregate_recovery",
+      "version": "20261104192908"
+    },
+    {
+      "name": "trip_aggregate_recovery",
+      "version": "20261104200550"
+    },
+    {
+      "name": "trip_plan_locations",
+      "version": "20261104230709"
+    },
+    {
+      "name": "trip_visit_location_bridge",
+      "version": "20261104233950"
+    },
+    {
+      "name": "trip_untimed_visit_commands",
+      "version": "20261105001102"
+    },
+    {
+      "name": "typed_plan_change_proposals",
+      "version": "20261105004710"
+    },
+    {
+      "name": "legacy_visit_time_classification",
+      "version": "20261105012509"
+    },
+    {
+      "name": "named_zone_visit_timing",
+      "version": "20261105015237"
+    },
+    {
+      "name": "visit_timing_proposals",
+      "version": "20261105030029"
+    },
+    {
+      "name": "visit_partial_time_semantics",
+      "version": "20261105040722"
+    },
+    {
+      "name": "atomic_trip_plan_entries",
+      "version": "20261105054629"
+    },
+    {
+      "name": "trip_planner_state_snapshot",
+      "version": "20261105194324"
+    },
+    {
+      "name": "trip_destination_location_bridge",
+      "version": "20261105201625"
+    },
+    {
+      "name": "trip_location_form_commands",
+      "version": "20261105205015"
+    },
+    {
+      "name": "trip_visit_form_commands",
+      "version": "20261105212614"
+    },
+    {
+      "name": "trip_private_planner_snapshot",
+      "version": "20261106005109"
+    },
+    {
+      "name": "native_planner_creation",
+      "version": "20261106023651"
+    },
+    {
+      "name": "native_visit_arrangements",
+      "version": "20261106030729"
+    },
+    {
+      "name": "observed_trip_calendar",
+      "version": "20261106035504"
+    },
+    {
+      "name": "recoverable_trip_day_order",
+      "version": "20261106043206"
+    },
+    {
+      "name": "recoverable_trip_day_insertion",
+      "version": "20261106185358"
+    },
+    {
+      "name": "recoverable_unreferenced_trip_days",
+      "version": "20261106193124"
+    },
+    {
+      "name": "recoverable_trip_day_contents",
+      "version": "20261106201143"
+    },
+    {
+      "name": "recoverable_trip_day_file_links",
+      "version": "20261106213759"
+    },
+    {
+      "name": "booking_calendar_date_facts",
+      "version": "20261106222223"
+    },
+    {
+      "name": "recoverable_day_booking_bindings",
+      "version": "20261106230656"
+    },
+    {
+      "name": "observed_booking_detail_commands",
+      "version": "20261106234140"
+    },
+    {
+      "name": "observed_plan_governance",
+      "version": "20261107021228"
+    },
+    {
+      "name": "observed_trip_task_commands",
+      "version": "20261109000220"
+    },
+    {
+      "name": "observed_trip_packing_commands",
+      "version": "20261109032335"
+    },
+    {
+      "name": "observed_trip_packing_groups",
+      "version": "20261111201637"
+    },
+    {
+      "name": "normalized_trip_packing_categories",
+      "version": "20261111234537"
+    },
+    {
+      "name": "observed_trip_packing_categories",
+      "version": "20261112005447"
+    },
+    {
+      "name": "normalized_packing_category_lifecycle",
+      "version": "20261112050004"
+    },
+    {
+      "name": "category_bound_packing_items",
+      "version": "20261112055647"
+    },
+    {
+      "name": "packing_category_aggregate_commands",
+      "version": "20261112084121"
+    },
+    {
+      "name": "observed_trip_packing_bags",
+      "version": "20261112112956"
+    },
+    {
+      "name": "terminal_trip_packing_restore_cancellation",
+      "version": "20261112132958"
+    },
+    {
+      "name": "terminal_trip_packing_bag_commands",
+      "version": "20261112162520"
+    }
+  ],
+  "hosted_only_versions": [],
+  "missing_declared_base_functions": [
+    "get_family_trip_planner_view_v1",
+    "get_family_trip_booking_view_v1",
+    "get_family_trip_tasks_v1",
+    "execute_family_trip_task_v1",
+    "get_family_trip_task_receipt_v1",
+    "get_family_trip_packing_v1",
+    "execute_family_trip_packing_v1",
+    "get_family_trip_packing_receipt_v1",
+    "get_family_plan_governance_v1",
+    "execute_family_plan_governance_v1"
+  ],
+  "present_base_function_signature_or_grant_differences": {},
+  "no_business_rows_read": true,
+  "no_hosted_changes": true,
+  "hosted_versions_match_local_prefix": true,
+  "migration_name_label_differences": [
+    {
+      "version": "20260714000000",
+      "hosted_name": "fix_table_ownership",
+      "local_name": "invite_only_access_requests"
+    }
+  ],
+  "historical_migration_sql_parity": "not established; matching versions and one differing name require provenance reconciliation",
+  "_sourcePublication": {
+    "redactedFields": [
+      "/project_ref"
+    ],
+    "reason": "Operational project and database host identity withheld from public source. Unredacted original retained in private Git history.",
+    "originalPrivateCommit": "2d25cc818b9844e77b693b4cde2393388184b12f",
+    "originalFileSha256": "e478bd8b2b41c7052d041b774dd7c9fa385033b0ae62b9166ee4cf1c415afbf9"
+  }
+}

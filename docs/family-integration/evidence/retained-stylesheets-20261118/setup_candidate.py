@@ -1,0 +1,7 @@
+from pathlib import Path
+import subprocess,json,shutil,hashlib
+T=Path(__file__).parent;W=Path('/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4');D=T/'candidate-checkout';b=json.loads((T/'before-private.json').read_text());removed=json.loads((T/'removed-paths.json').read_text());assert len(removed)==5 and not D.exists();assert subprocess.check_output(['git','rev-parse','HEAD'],cwd=W,text=True).strip()==b['head']and not subprocess.check_output(['git','status','--porcelain'],cwd=W);free=shutil.disk_usage(T).free;total=sum((W/f).stat().st_size for f in b['website_tracked']);r={'capacity_estimate_passed':free>2*total+32*2**20+2**30,'available_bytes':free,'tracked_bytes':total,'prototype_plus_future_archive_estimate_not_acceptance':True};(T/'capacity-preflight.json').write_text(json.dumps(r,indent=2)+'\n');assert r['capacity_estimate_passed'];D.mkdir();p=subprocess.Popen(['git','archive',b['head']],cwd=W,stdout=subprocess.PIPE);result=subprocess.run(['tar','-xf','-','-C',str(D)],stdin=p.stdout);p.stdout.close();assert p.wait()==result.returncode==0
+for n in ['node_modules','client/node_modules','family-backend/node_modules']:
+ if(W/n).exists():(D/n).symlink_to(W/n,target_is_directory=True)
+for p in removed:(D/p).unlink()
+sha=lambda f:hashlib.sha256(f.read_bytes()).hexdigest();assert all(sha(D/f)==h for f,h in b['website_tracked'].items()if f not in removed);print('Five-file candidate ready; every other tracked byte is exact.')

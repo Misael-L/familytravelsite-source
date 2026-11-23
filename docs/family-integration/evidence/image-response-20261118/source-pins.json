@@ -1,0 +1,12 @@
+{
+  "incoming": "e8006f384249ca9bc9b4fed7d99cd89045ab9000",
+  "implementation": "bf6393c14e9949b7ab6740aa0e9fca4022499e7d",
+  "build_source": "a7033ef64e9ff42fe59e3413d1584645dbbd2310",
+  "previous_build_source": "f99266c7205668c58ecd934627ba110512f7dadf",
+  "runtime": "v24.22.2",
+  "original_source_and_tests_available_from_incoming_Git": true,
+  "original_source_path": "client/src/integrations/family/publicVariantCache.ts",
+  "test_path": "client/src/integrations/family/publicVariantCache.test.ts",
+  "build_target": "es2022",
+  "no_hosted_operation": true
+}

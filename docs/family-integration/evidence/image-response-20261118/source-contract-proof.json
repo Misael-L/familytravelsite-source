@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "exported_declaration_nodes_byte_exact": 7,
+  "all_original_test_bytes_preserved_after_removing_only_new_block": true,
+  "only_private_response_validator_and_caller_changed": true,
+  "intentional_body_property_reads_before_after": [
+    2,
+    1
+  ],
+  "existing_header_order_before_reader_acquisition_preserved": true,
+  "reader_finally_cancellation_and_release_code_byte_exact": true,
+  "no_unsafe_assertion_any_or_ignored_diagnostic_added": true
+}

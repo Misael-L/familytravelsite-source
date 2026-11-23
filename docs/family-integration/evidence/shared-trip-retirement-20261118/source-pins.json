@@ -1,0 +1,13 @@
+{
+  "incoming": "feb56bf699f40a43abdda763618bc772146e930a",
+  "implementation": "eb2fde5b272d7200c284722cb3d802e2fef47014",
+  "build_source": "7ddfc453061766432bde9f0efda18929660f6873",
+  "removed_original_sha256": {
+    "client/src/integrations/family/legacy/pages/SharedTripPage.tsx": "aa2ca18ca6d900e2133cb1208c7efac4bde339997647b951bfe62a2ee76e05ae"
+  },
+  "prior_runtime_build": "2637422d4ff152fe93782dc3d6bb5825df81f249",
+  "fresh_current_compiler_declarations": 128,
+  "no_old_generated_declaration_identity_assumption": true,
+  "test_runtime": "v24.22.2",
+  "no_hosted_operation": true
+}

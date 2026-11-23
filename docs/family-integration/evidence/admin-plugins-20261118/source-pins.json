@@ -1,0 +1,19 @@
+{
+  "incoming": "c59c9d23a5fe7750872695cfe26d3eb1fb994876",
+  "implementation": "066f615055b3be74d6664a260358f9cd6a8f1a37",
+  "build_source": "a0d896e186f3374d1c1122e6eb805cbd842c66e8",
+  "original_panel_sha256": "b9a5437a2dc9914d82c2829e171e35cb6c67716f6291ca0ffb5e5d8641cd23eb",
+  "candidate_sources_sha256": {
+    "AdminPluginsPanel.tsx": "c7fcd1f25ae3d70ade2ac5831434e3a099cdcb78002e3e1ee634ae9057675acd",
+    "plugins/pluginModel.tsx": "0056c7280529469265b7cec28919fcb2fc7a45ca9bc87195e3c3052205ae477a",
+    "plugins/PluginBadges.tsx": "b1254e99a74d02a269615f05aaff19ee3aef0ec57dff603e037f6cc18e478f23",
+    "plugins/PluginInstalledList.tsx": "c260cb4d9b1a922bf6dfff1ac7b14fac6453f7464b04d35cc58b10e4cb6f9d50",
+    "plugins/PluginRegistry.tsx": "5e48efb12df71d5f25ae5bd8f182f76b1ea9cb32e7fd91aca9984c03c1f02b4b",
+    "plugins/PluginTrustDialogs.tsx": "3fc1cd938015fde05a2702da02879302a24c5ed6c775466ec14336a2b6b3b4dc"
+  },
+  "test_sha256": "0fb8dc427b1c08db8f59eba57b4a545eba72c950da428b2094cda23896582929",
+  "node_runtime": "v24.22.2",
+  "private_prototype_build_declaration_hashes": "/private/tmp/trek-core-admin-plugins-source-20261118",
+  "no_live_database_provider_browser_requests": true,
+  "injected_regression_file_identical_in_both_archives": true
+}

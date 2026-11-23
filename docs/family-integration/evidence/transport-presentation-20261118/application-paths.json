@@ -1,0 +1,6 @@
+[
+  "client/src/integrations/family/legacy/components/Planner/TransportsPanelFamily.tsx",
+  "client/src/integrations/family/legacy/components/Planner/FamilyTransportCards.tsx",
+  "client/src/integrations/family/legacy/components/Planner/familyTransportTypeMeta.ts",
+  "client/src/integrations/family/legacy/components/Planner/TransportsPanelFamily.presentation.test.tsx"
+]

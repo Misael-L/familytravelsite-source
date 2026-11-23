@@ -1,0 +1,29 @@
+# U04-F3b2 — source ACL reconciliation and canonical corrective migration
+
+**Execution update:** the correction is accepted locally at schema 129; all seven grant mismatches are closed. Read [the handoff](source-acl-correction-handoff.md). Next is U05 pinned 5.1.4 reconciliation; the specification below is historical.
+
+Immediate prerequisite before U05 TREK5.1.4 reconciliation. Read F3b handoff and sealed receipts; do not repeat its historical reconciliation or40 successful replays. This packet exists because authentic-data acceptance exposed real grant drift, not because another feature is being added. Backend release acceptance remains false.
+
+## Inputs and boundaries
+
+Use the final exact guarded17.11 authentic128 candidate from `/private/tmp/trek-u04f3b-upgrade-20261112/qualified17_11-candidate`, plus preserved source/reference and F3a archive. Keep source snapshot, all historical128 files/ledger arrays and previous evidence unchanged. The old qualified128 fixture is a read-only metadata reference, never a reset/migration target. No hosted DDL/data/ledger/settings/billing, source-user login, provider/cleanup worker, Storage bytes/transformations, backup refresh, main/push/deploy or upstream merge. The canonical repository's existing mixed index must remain exact.
+
+Useful receipts are `final-contract-receipt.json`, `preflight-contract-differences.json`, `source-grant-drift.json`, `acl-comparison-summary.json`, `previous-qualified-acls.json`, `restored128-acls.json`, `post-fixture-original-preservation.json`, the two SQL manifests/receipts, and `timezone-qualification.json`. Full source/bootstrap ACL comparison reproduces the broad grants; a canonical replay on source ACLs alone is not proof of the qualified128 privilege contract.
+
+## 1. Specify intended rights, not snapshot imitation
+
+Resolve the seven demonstrated extra fields explicitly: anonymous catalog_media_urls EXECUTE; authenticated table INSERT on Trips, INSERT/UPDATE on schedule_items and media_assets INSERT/UPDATE/DELETE. Review current website/legacy writers and supported direct/propose/deny behavior. Capture the exact already-matching column ACLs and preserve intended old columns while denying identity/lifecycle/relationship/system-column bypass. Establish whether Trip creation uses a qualified command or a reviewed column insert contract; do not blindly revoke all create access. Identify catalog import/ETL versus user media upload and their legitimate service/RPC lanes without running those jobs.
+
+Classify the broader183 relation/198 routine raw ACL/default differences into effective rights, role inheritance, grantor and platform defaults. Prioritize nonadministrative TRUNCATE/REFERENCES/TRIGGER/MAINTAIN rights across application-owned tables, since row policies do not make those administrative privileges appropriate. In particular the earlier qualified fixture also has TRUNCATE on Trips/media: copying it wholesale is insufficient. Public catalog reads, authenticated gallery/thumb/hero reads, required SECURITY DEFINER/invoker chains and deliberate service-role operations must remain explicit. Never replace unknown grants with blanket GRANT ALL, blanket privilege denial, or an array of fabricated passing statuses.
+
+## 2. New bounded canonical correction
+
+Write a new versioned additive corrective migration after the128 pinned files; retain all historical sources/preimages and ledger. Pin exact target/source and transaction boundaries. Explicitly revoke table-level rights before granting approved columns, remove unwanted direct roles as well as PUBLIC, and handle new-object default ACLs deliberately. Review effective privileges including memberships and column-level rights after REVOKE; RLS and grants are separate checks. Avoid unrelated schema redesign, data changes, UI changes or enabling unsupported features. Stage only this packet's deliberate sources/evidence; do not stage the mixed canonical index.
+
+First apply/test on a new guarded derivative or rollback-proved transaction, preserving the accepted128 candidate and original data commitments. Rehearse against source-platform ACLs and a clean intended-platform bootstrap; define the minimum deployment preparation rather than silently modifying a managed platform. Carry the new migration/permission contract through schema hashes, strict qualification guards and release manifests using the established reviewed procedure. Do not relax old guards or regenerate expected permissions from arbitrary current output.
+
+## 3. Proof and finish
+
+Prove both allowed and refused behavior using fresh roots: approved legacy Trip create/update and visit writes; denied protected columns; anonymous and cross-Family denial; direct/propose/deny and AAL/session revocation; original operation/revision retries; tasks/packing recovery; ready catalog variants and explicit originals. Test raw grant absence for administrative bypass operations without truncating source/user tables, even in a rollback transaction. Verify service/RPC/media read/upload permissions required by real callers. Reuse208 F3b SQL executions as inherited evidence, and rerun affected original assertions on the actual corrected candidate; label simulatedJWT separately from real Auth/SDK/HTTP proof.
+
+Compare every original archived row/ledger array with multiplicity after correction, constraints/triggers/owners/policies, immutable histories and catalog/media identities. Recheck exact API/default/column/table/function permissions, restartable target guard, source/native/history/carryover checks and earlier seals. Preserve explicit R5 engine/tzdata and real-service/files/hosted gaps. Only after the permission gate genuinely passes should the next handoff advance to the full pinned U05 source reconciliation. This packet does not authorize a production migration or preview update.

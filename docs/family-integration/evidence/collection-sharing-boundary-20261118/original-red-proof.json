@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "original_existing_tests_passed": 154,
+  "new_cases_before_passed": 6,
+  "expected_new_case_failed": {
+    "file": "/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client/src/components/Collections/collectionSharing.read-boundary.test.tsx",
+    "name": "collection sharing reads through the online data boundary does not send the invitee lookup while forced offline"
+  },
+  "tests_skipped": 0,
+  "original_runtime_source_at_incoming_pin": true
+}

@@ -1,0 +1,17 @@
+{
+  "eight_other_checks_attempted": true,
+  "passed": false,
+  "passed_commands": [
+    "pages",
+    "layers",
+    "skips"
+  ],
+  "failed_commands": [
+    "rtl",
+    "offline",
+    "dup",
+    "pairs",
+    "i18n-keys"
+  ],
+  "no_source_policy_baseline_or_declaration_change": true
+}

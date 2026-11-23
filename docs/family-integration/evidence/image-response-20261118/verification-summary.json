@@ -1,0 +1,81 @@
+{
+  "passed": false,
+  "repair_verified": true,
+  "packet": "Q123",
+  "scope": "Validated public response stream contract only; six quality gates and full release acceptance remain blocked.",
+  "incoming": "e8006f384249ca9bc9b4fed7d99cd89045ab9000",
+  "implementation": "bf6393c14e9949b7ab6740aa0e9fca4022499e7d",
+  "build_source": "a7033ef64e9ff42fe59e3413d1584645dbbd2310",
+  "application_paths": [
+    "client/src/integrations/family/publicVariantCache.ts",
+    "client/src/integrations/family/publicVariantCache.test.ts"
+  ],
+  "intentional_response_body_gets_before_after": [
+    2,
+    1
+  ],
+  "source_exported_declarations_byte_exact": 7,
+  "original_existing_focused_cases_preserved": 209,
+  "new_meaningful_test_cases": 4,
+  "focused_passed": 213,
+  "regression_passed": 2316,
+  "disjoint_passed_cases": 2529,
+  "unchanged_preexisting_skipped_cases": 38,
+  "no_removed_or_changed_existing_cases": true,
+  "new_test_failures_or_skips": 0,
+  "new_single_read_test_red_on_original_green_after": true,
+  "strict_errors_resolved": 1,
+  "strict_diagnostics_before_after": [
+    637,
+    636
+  ],
+  "strict_target_module_diagnostics_after": 0,
+  "all_other_strict_grown_counts_exact": true,
+  "strict_gate_pass": false,
+  "additional_passed_commands": [
+    "pages",
+    "layers",
+    "skips"
+  ],
+  "additional_failed_commands": [
+    "strict",
+    "rtl",
+    "offline",
+    "dup",
+    "pairs",
+    "i18n-keys"
+  ],
+  "all_nine_quality_commands_remeasured": true,
+  "all_rules_baselines_exclusions_and_suppressions_exact": true,
+  "ordinary_build_typecheck_source_artifact_size_format_warning_checks_pass": true,
+  "current_declarations_fixed": 128,
+  "source_guards_passed": 4,
+  "artifact_binding_controls_passed": 3,
+  "generated_artifact_review_pass": true,
+  "all_generated_output_files_accounted_for": 3793,
+  "only_two_index_functions_change_with_reviewed_source": true,
+  "all_other_index_AST_and_private_dependency_bindings_exact": true,
+  "other_application_JS_payloads_equal_after_only_chunk_names": 405,
+  "all_14_CSS_files_byte_exact": true,
+  "SW_logic_and_verified_cache_manifest_preserved": true,
+  "compressed_derivatives_verified": 628,
+  "public_slot_values_exact_with_offsets_recomputed": true,
+  "all_generated_raw_bytes_identical": false,
+  "size_findings": 0,
+  "format_unlisted_failures": 0,
+  "source_warnings_actual_limit": [
+    3418,
+    3418
+  ],
+  "test_warnings_actual_limit": [
+    2859,
+    2859
+  ],
+  "suppressed_warnings_actual_limit": [
+    83,
+    83
+  ],
+  "no_new_writer_profile_provider_schema_transformation_or_hosted_admission": true,
+  "global_release_gate_pass": false,
+  "next": "Q124 metadata lineage and native phone packing row registration review; preserve remaining strict and duplication blockers."
+}

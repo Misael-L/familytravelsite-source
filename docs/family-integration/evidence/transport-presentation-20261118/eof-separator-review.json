@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "initial_git_diff_check_refused": "new blank line at EOF",
+  "removed_only_trailing_intercomponent_separator": true,
+  "all_original_parent_declarations_and_component_body_exact": true,
+  "initial_results_retained": true,
+  "fresh_final_candidate_tests_and_compiler_required": true
+}

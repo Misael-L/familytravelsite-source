@@ -1,0 +1,29 @@
+
+> @trek/client@5.1.4 lint:size
+> node scripts/size-lint.mjs
+
+FAIL  src/integrations/family/legacy/components/Explore/ExploreEntityDetailPanel.tsx: 1003 lines (wrapped at 120 columns), the limit for a source file is 1000. Move a concern into a module of its own instead of growing the file or packing its lines.
+FAIL  src/integrations/family/legacy/components/Packing/PackingListPanelItemRow.tsx: 1115 lines (wrapped at 120 columns), the limit for a source file is 1000. Move a concern into a module of its own instead of growing the file or packing its lines.
+FAIL  src/integrations/family/legacy/components/Planner/BookingsPanelFamily.tsx: 1034 lines (wrapped at 120 columns), the limit for a source file is 1000. Move a concern into a module of its own instead of growing the file or packing its lines.
+FAIL  src/integrations/family/legacy/components/Planner/FamilyTransportEditor.tsx: 1557 lines (wrapped at 120 columns), the limit for a source file is 1000. Move a concern into a module of its own instead of growing the file or packing its lines.
+FAIL  src/integrations/family/legacy/components/Planner/PlaceInspector.tsx: 1842 lines (wrapped at 120 columns), the limit for a source file is 1000. Move a concern into a module of its own instead of growing the file or packing its lines.
+FAIL  src/integrations/family/legacy/components/Planner/ReservationModal.tsx: 1085 lines (wrapped at 120 columns), the limit for a source file is 1000. Move a concern into a module of its own instead of growing the file or packing its lines.
+FAIL  src/integrations/family/legacy/components/Planner/ReservationsPanel.tsx: 1556 lines (wrapped at 120 columns), the limit for a source file is 1000. Move a concern into a module of its own instead of growing the file or packing its lines.
+FAIL  src/integrations/family/legacy/components/Planner/TransitSearchPanel.tsx: 1132 lines (wrapped at 120 columns), the limit for a source file is 1000. Move a concern into a module of its own instead of growing the file or packing its lines.
+FAIL  src/integrations/family/legacy/components/Planner/TransportModal.tsx: 1703 lines (wrapped at 120 columns), the limit for a source file is 1000. Move a concern into a module of its own instead of growing the file or packing its lines.
+FAIL  src/integrations/family/legacy/components/Planner/TransportsPanelFamily.tsx: 1127 lines (wrapped at 120 columns), the limit for a source file is 1000. Move a concern into a module of its own instead of growing the file or packing its lines.
+FAIL  src/integrations/family/legacy/components/SystemNotices/SystemNoticeModal.tsx: 1100 lines (wrapped at 120 columns), the limit for a source file is 1000. Move a concern into a module of its own instead of growing the file or packing its lines.
+FAIL  src/integrations/family/legacy/components/Todo/TodoListPanel.tsx: 1454 lines (wrapped at 120 columns), the limit for a source file is 1000. Move a concern into a module of its own instead of growing the file or packing its lines.
+FAIL  src/integrations/family/legacy/components/Trips/TripMembersModal.tsx: 1109 lines (wrapped at 120 columns), the limit for a source file is 1000. Move a concern into a module of its own instead of growing the file or packing its lines.
+FAIL  src/integrations/family/legacy/index.css: 1740 lines (wrapped at 120 columns), the limit for a stylesheet file is 1000. Move a concern into a module of its own instead of growing the file or packing its lines.
+FAIL  src/integrations/family/legacy/pages/tripPlanner/useTripPlanner.ts: 1351 lines (wrapped at 120 columns), the limit for a source file is 1000. Move a concern into a module of its own instead of growing the file or packing its lines.
+FAIL  src/integrations/family/legacy/styles/collections.css: 1750 lines (wrapped at 120 columns), the limit for a stylesheet file is 1000. Move a concern into a module of its own instead of growing the file or packing its lines.
+FAIL  src/integrations/family/legacy/styles/dashboard.css: 2023 lines (wrapped at 120 columns), the limit for a stylesheet file is 1000. Move a concern into a module of its own instead of growing the file or packing its lines.
+size: 5831 file(s), 22 past their limit held at their baseline
+npm error Lifecycle script `lint:size` failed with error:
+npm error code 1
+npm error path /Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client
+npm error workspace @trek/client@5.1.4
+npm error location /Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client
+npm error command failed
+npm error command sh -c node scripts/size-lint.mjs

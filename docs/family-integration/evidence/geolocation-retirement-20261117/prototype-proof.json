@@ -1,0 +1,101 @@
+{
+  "passed": true,
+  "unchanged_imports_exports_one_shot_and_projection_helpers": true,
+  "state_ref_effect_call_order_exact": true,
+  "callback_dependencies_exact": true,
+  "watch_options_exact": true,
+  "new_async_boundaries": 0,
+  "callback_retirement_and_watch_adoption_intentionally_changed": true,
+  "new_test_warnings": 0,
+  "new_regressions": 25,
+  "existing_regressions": 393,
+  "total_candidate_passed": 418,
+  "original_new_regression_failures": [
+    {
+      "path": "src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "location watch lifetime ignores retired error 1 without changing the replacement watch"
+    },
+    {
+      "path": "src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "location watch lifetime ignores retired error 2 without changing the replacement watch"
+    },
+    {
+      "path": "src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "location watch lifetime ignores retired error 3 without changing the replacement watch"
+    },
+    {
+      "path": "src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "location watch lifetime ignores retired error 99 without changing the replacement watch"
+    },
+    {
+      "path": "src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "location watch lifetime ignores a retired position after off"
+    },
+    {
+      "path": "src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "location watch lifetime ignores a retired position after replacement"
+    },
+    {
+      "path": "src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "location watch lifetime does not read payload properties from retired callbacks"
+    },
+    {
+      "path": "src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "location watch lifetime ignores a held orientation callback after replacement"
+    },
+    {
+      "path": "src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "location watch lifetime retires callbacks before clearWatch can deliver one synchronously"
+    },
+    {
+      "path": "src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "location watch lifetime releases an id returned after a synchronous permission denial"
+    },
+    {
+      "path": "src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "location watch lifetime survives clearWatch throwing while releasing a synchronous denial"
+    },
+    {
+      "path": "src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "location watch lifetime does not reopen tracking when a pending cycle is retired (unmount=false)"
+    },
+    {
+      "path": "src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "location watch lifetime does not overwrite a newer follow mode when the older cycle settles"
+    }
+  ],
+  "source_sha256": "fdf3a6afb5ad5133778683433333b3cd76bb2f49e9bd8c877a3dc4ba2e64127a",
+  "test_sha256": "b66f3cdc379a57cfe207e3e70c7e3ac138c561b07a7ed1c08e4b38bf718936e2",
+  "coverage": {
+    "lines": {
+      "total": 119,
+      "covered": 119,
+      "skipped": 0,
+      "pct": 100
+    },
+    "statements": {
+      "total": 132,
+      "covered": 131,
+      "skipped": 0,
+      "pct": 99.24
+    },
+    "functions": {
+      "total": 20,
+      "covered": 20,
+      "skipped": 0,
+      "pct": 100
+    },
+    "branches": {
+      "total": 96,
+      "covered": 94,
+      "skipped": 0,
+      "pct": 97.91
+    },
+    "branchesTrue": {
+      "total": 0,
+      "covered": 0,
+      "skipped": 0,
+      "pct": "Unknown"
+    }
+  }
+}

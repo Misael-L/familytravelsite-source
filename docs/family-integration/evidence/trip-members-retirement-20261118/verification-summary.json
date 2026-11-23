@@ -1,0 +1,62 @@
+{
+  "passed": true,
+  "packet": "Q112",
+  "incoming": "e93b86567f6a46ca7f5a84a476fcb2ca5389c82c",
+  "implementation": "c2ee495ea92b6a269da5fc689ef1893009d537e6",
+  "build_source": "1a0079d64634a5e46bb52982215a6fcc0dbbe428",
+  "date": "2026-11-18",
+  "removed_paths": [
+    "client/src/integrations/family/legacy/components/Trips/TripMembersModal.tsx"
+  ],
+  "new_or_modified_runtime_source_files": 0,
+  "candidate_passed": 500,
+  "same_expanded_cases_before_after": 500,
+  "raw_sources_reviewed": 14042,
+  "application_modules_reviewed": 7478,
+  "current_reachable_nodes_preserved": 6091,
+  "literal_glob_locale_modules": 28,
+  "literal_glob_video_assets": 98,
+  "all_exports_reviewed": true,
+  "no_outside_runtime_type_test_tool_importer": true,
+  "external_module_without_ambient_augmentation": true,
+  "native_presentation_files_exact": 12,
+  "native_trip_members_share_dialog_phone_and_Family_contracts_preserved": true,
+  "copied_API_store_model_shared_dependencies_preserved": true,
+  "all_3792_other_generated_files_byte_exact": true,
+  "all_421_generated_JS_CSS_files_byte_exact": true,
+  "all_14_stylesheets_byte_exact": true,
+  "service_worker_and_cache_manifest_byte_exact": true,
+  "public_configuration_only_sourceCommit_changed": true,
+  "fresh_typecheck_and_build_passed": true,
+  "fresh_declarations_fixed_at_current_compiler_generation": 128,
+  "source_guards_passed": 4,
+  "artifact_binding_controls_passed": 3,
+  "warning_gate_pass": true,
+  "source_warnings_actual_limit": [
+    3418,
+    3418
+  ],
+  "source_complexity_actual_limit": [
+    218,
+    218
+  ],
+  "source_length_actual_limit": [
+    130,
+    130
+  ],
+  "size_findings_before_after": [
+    13,
+    12
+  ],
+  "all_other_size_failure_lines_exact": true,
+  "format_gate_pass": true,
+  "unlisted_format_failures": 0,
+  "format_baseline_unchanged_entries": 2134,
+  "rules_baselines_exclusions_suppressions_unchanged": true,
+  "verified_disposable_prototype_removed_after_proofs": true,
+  "capacity_estimate_passed_not_a_validation_result": true,
+  "seven_prior_builds_storage_shared_with_all_logical_bytes_and_metadata_preserved": true,
+  "global_release_gate_pass": false,
+  "live_database_browser_or_writer_admission_acceptance": false,
+  "next": "Q113 bounded copied ReservationModal/ReservationsPanel review; preserve native bookings, tested BookingsPanelFamily, Family writers/queues/recovery and helpers"
+}

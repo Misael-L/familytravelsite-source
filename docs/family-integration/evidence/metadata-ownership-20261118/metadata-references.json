@@ -1,0 +1,25 @@
+{
+  "i18n-keys": [
+    ".github/workflows/test.yml",
+    "CLAUDE.md",
+    "client/CLAUDE.md",
+    "client/package.json",
+    "client/scripts/i18n-keys.mjs",
+    "client/src/components/Studio/stickerLibrary.test.ts",
+    "client/tests/unit/i18n/i18nKeysScript.test.ts",
+    "client/tests/unit/scripts/family-scanner-ownership.test.ts",
+    "server/src/nest/assistant/assistant-attach-answer.ts",
+    "server/src/nest/assistant/assistant-words.ts",
+    "server/src/nest/notifications/notifications.service.ts",
+    "shared/CLAUDE.md",
+    "shared/src/book/book-shape-catalogue.spec.ts",
+    "wiki/Development-environment.md"
+  ],
+  "rtl-baseline": [
+    ".github/workflows/test.yml",
+    "CLAUDE.md",
+    "client/scripts/lib/rtl.mjs",
+    "client/scripts/rtl-lint.mjs",
+    "client/tests/unit/scripts/rtl-lint.test.ts"
+  ]
+}

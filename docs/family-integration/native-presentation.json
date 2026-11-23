@@ -1,0 +1,56 @@
+{
+  "upstream_commit": "2bcfc1bfcbbff0affd097c0f789c835396389572",
+  "exact_files": [
+    "client/src/components/Map/MapViewAuto.tsx",
+    "client/src/pages/tripPlanner/PlanMapStage.tsx",
+    "client/src/mobile/screens/trip/map/MMapArea.tsx",
+    "client/src/mobile/screens/trip/sheets/MMehrSheet.tsx",
+    "client/src/components/Journey/JourneyMapAuto.tsx",
+    "client/src/components/Settings/MapSettingsTab.tsx",
+    "client/src/pages/sharedTrip/SharedMap.tsx"
+  ],
+  "source_repository": "https://github.com/liketrek/TREK",
+  "source_version": "5.1.4",
+  "reason": "Seven native files match reviewed TREK 5.1.4. The Sidebar async callback derivation is still verified, with the Family timeline changes pinned on top. The four Family Transport overlays retain their full-file pins.",
+  "type_only_overlays": [
+    {
+      "path": "client/src/components/Planner/DayPlanSidebar.tsx",
+      "upstream_commit": "2bcfc1bfcbbff0affd097c0f789c835396389572",
+      "upstream_sha256": "fdbb934b0ebe02190b3b68b8cf7c4eec526ad6d387970e44ec7b3e634a94340d",
+      "derived_sha256": "fc9f3da5c00e543afea019aee34e44c116bd6b2814ce9d6ef67347de9f3a26f2",
+      "id": "sidebar-onReorder-awaitable-v1"
+    }
+  ],
+  "family_transport_overlays": [
+    {
+      "id": "family-transport-desktop-planner-v1",
+      "path": "client/src/pages/TripPlannerPage.tsx",
+      "upstream_sha256": "fba01c173d850fa91719ea4692df5357fa2d11395eb05404e6328d5b5dd01179",
+      "derived_sha256": "2bc0af21413b6088f11f4b2ce317b8b8c425711168358d5a81b1e90829c644a2"
+    },
+    {
+      "id": "family-transport-phone-trip-shell-v1",
+      "path": "client/src/mobile/screens/trip/MTripShell.tsx",
+      "upstream_sha256": "09a75fc09b538232b923596c98232761de838a6d749da1e8d5dd6c97ec0ca3db",
+      "derived_sha256": "4c65c00478885b38d4f666b2c0d9e39e51e34f390f075fed0ac631ed077839b4"
+    },
+    {
+      "id": "family-transport-phone-day-timeline-v1",
+      "path": "client/src/mobile/screens/trip/plan/MPlanTimeline.tsx",
+      "upstream_sha256": "7b291d2ee80fe219c9a26c197de3fbaf5a0a676c490407bf4491d5df3fc7627a",
+      "derived_sha256": "6808585c553dae4503d0799a61de08d0cb991e6ffe21381d938d757953d9647f"
+    },
+    {
+      "id": "family-transport-phone-trip-sheets-v1",
+      "path": "client/src/mobile/screens/trip/sheets/MTripSheets.tsx",
+      "upstream_sha256": "51bc9d0494e879b8d70fb8df2c2029f49282f831b219e5d53abe52c89bae1ae3",
+      "derived_sha256": "5093ad215e10c4197ed278aec4ed41a6cba55894ef4346b68b9db2858443241d"
+    }
+  ],
+  "family_timeline_overlay": {
+    "id": "family-visit-only-timeline-reorder-v1",
+    "path": "client/src/components/Planner/DayPlanSidebar.tsx",
+    "base_sha256": "fc9f3da5c00e543afea019aee34e44c116bd6b2814ce9d6ef67347de9f3a26f2",
+    "derived_sha256": "897d7c0e4fb9660ca027828f831ab294c45eee16ddd29ecc834a58fdc0ae8efc"
+  }
+}

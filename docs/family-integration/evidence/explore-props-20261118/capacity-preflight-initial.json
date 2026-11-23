@@ -1,0 +1,12 @@
+{
+  "available_bytes": 2809856000,
+  "incoming_tracked_source_bytes": 353720656,
+  "previous_check_only_archive_bytes": 353710049,
+  "previous_generated_build_bytes": 241912078,
+  "largest_sequential_phase_bytes": 353720656,
+  "estimated_largest_sequential_phase_plus_1GiB": 1427462480,
+  "capacity_estimate_passed": true,
+  "prototype_retired_before_build": true,
+  "new_build_copy_will_use_fresh_COW_isolation_probe": true,
+  "estimate_not_actual_validation": true
+}

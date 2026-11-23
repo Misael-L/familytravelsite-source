@@ -1,0 +1,13 @@
+{
+  "origin": "https://familytravelsite-integration-preview.lmisael0721.workers.dev",
+  "checked_at": "2026-11-12T20:32:09.333987+00:00",
+  "authenticated": false,
+  "paths": {
+    "/dashboard": {
+      "error": "HTTP Error 403: Forbidden"
+    },
+    "/family-build.json": {
+      "error": "HTTP Error 403: Forbidden"
+    }
+  }
+}

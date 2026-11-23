@@ -1,0 +1,5 @@
+
+> @trek/client@5.1.4 lint:format
+> node scripts/format-lint.mjs
+
+format: 2134 unformatted file(s), 2134 listed in the baseline

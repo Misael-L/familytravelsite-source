@@ -1,0 +1,30 @@
+{
+  "removed_paths": [
+    "client/src/integrations/family/legacy/components/Planner/ReservationModal.tsx",
+    "client/src/integrations/family/legacy/components/Planner/ReservationsPanel.tsx"
+  ],
+  "previous_rows": [
+    {
+      "path": "client/src/integrations/family/legacy/components/Planner/ReservationModal.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "4ef4878dd39092c4d8b4d567ee33fb11d5c1c5a5",
+        "bytes": 45436
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/components/Planner/ReservationModal.tsx"
+    },
+    {
+      "path": "client/src/integrations/family/legacy/components/Planner/ReservationsPanel.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "23111a24fdc130701777f6b192e14672b8ef0e42",
+        "bytes": 58480
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/components/Planner/ReservationsPanel.tsx"
+    }
+  ],
+  "new_qualified_commit": "ce5c3bcad5eeb5aa0d64e2a4246f529186cd423b",
+  "reason": "Actual two unused copied reservation UI modules deleted after bounded source/type/test/configuration closure; no guard relaxation or disappearing source row without deletion."
+}

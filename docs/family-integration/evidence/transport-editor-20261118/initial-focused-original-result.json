@@ -1,0 +1,22 @@
+{
+  "exit": 1,
+  "seconds": 4.17,
+  "files": [
+    "src/integrations/family/legacy/components/Planner/FamilyTransportEditor.behavior.test.tsx"
+  ],
+  "command": [
+    "/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/node_modules/.bin/vitest",
+    "run",
+    "src/integrations/family/legacy/components/Planner/FamilyTransportEditor.behavior.test.tsx",
+    "--maxWorkers=2",
+    "--reporter=default",
+    "--reporter=json",
+    "--outputFile=/private/tmp/trek-core-transport-editor-20261118/focused-original-tests.json"
+  ],
+  "controlled_ports_only": true,
+  "coverage_not_enabled_or_claimed": true,
+  "numPassedTests": 9,
+  "numFailedTests": 1,
+  "numPendingTests": 0,
+  "numTotalTests": 10
+}

@@ -1,0 +1,29 @@
+{
+  "scopes": [
+    "src/components/Budget/BudgetPanel.constants.ts",
+    "src/integrations/family/legacy/components/Budget/BudgetPanel.constants.ts"
+  ],
+  "nativeSha256": "d6ba0571510b16f4edd28f0562b958ced26cc75e9f4b6d535dbd65598282f530",
+  "legacySha256": "56fe06c030de34666a76c7a4d5b5255df073be09d1455a0b83d0a68b0958f88a",
+  "candidateSha256": "ba5916008ccc6dfabe708c5fd07596c07bd6b100f57f50899c729264357a3d7c",
+  "catalogEntries": 165,
+  "symbolEntries": 165,
+  "functionInputCases": 174,
+  "preservesSeparateMutableArrayAndMap": true,
+  "retainedFunctionAndPalettesPreservedByteForByte": true,
+  "fixtureRules": {
+    "before": {
+      "pairs": 2,
+      "counts": {
+        "src/components/Budget/BudgetPanel.constants.ts": 55,
+        "src/integrations/family/legacy/components/Budget/BudgetPanel.constants.ts": 319
+      },
+      "lines": 374
+    },
+    "candidate": {
+      "pairs": 0,
+      "counts": {},
+      "lines": 0
+    }
+  }
+}

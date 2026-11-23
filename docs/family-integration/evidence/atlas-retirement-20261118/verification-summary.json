@@ -1,0 +1,55 @@
+{
+  "passed": true,
+  "packet": "Q105",
+  "incoming": "05dc969be525a765bc4e367149dd3c66e32281c7",
+  "implementation": "81737fdfeea0c3c38b4e839019f020e7acf92fb7",
+  "build_source": "a4e9f2197a600840c7cbfefbeb59def1e3f8acb4",
+  "date": "2026-11-18",
+  "removed_paths": [
+    "client/src/integrations/family/legacy/pages/AtlasPage.tsx",
+    "client/src/integrations/family/legacy/pages/atlas/useAtlas.ts"
+  ],
+  "new_or_modified_runtime_source_files": 0,
+  "candidate_passed": 611,
+  "same_expanded_cases_before_after": 611,
+  "raw_sources_reviewed": 14061,
+  "application_modules_reviewed": 7497,
+  "current_reachable_nodes_preserved": 6091,
+  "literal_glob_locale_modules": 28,
+  "literal_glob_video_assets": 98,
+  "only_internal_page_to_hook_import": true,
+  "no_outside_runtime_type_test_tool_importer": true,
+  "native_presentation_files_exact": 12,
+  "all_3793_output_paths_exact": true,
+  "all_421_JavaScript_CSS_files_exact": true,
+  "only_public_sourceCommit_changed": true,
+  "fresh_typecheck_and_build_passed": true,
+  "fresh_declarations_fixed_at_current_compiler_generation": 128,
+  "source_guards_passed": 4,
+  "artifact_binding_controls_passed": 3,
+  "warning_gate_pass": true,
+  "source_warnings_actual_limit": [
+    3418,
+    3418
+  ],
+  "source_complexity_actual_limit": [
+    218,
+    218
+  ],
+  "source_length_actual_limit": [
+    130,
+    130
+  ],
+  "size_findings_before_after": [
+    23,
+    21
+  ],
+  "all_other_size_failure_lines_exact": true,
+  "format_gate_pass": true,
+  "unlisted_format_failures": 0,
+  "format_baseline_unchanged_entries": 2134,
+  "rules_baselines_exclusions_suppressions_unchanged": true,
+  "global_release_gate_pass": false,
+  "live_database_browser_or_writer_admission_acceptance": false,
+  "next": "Q106 bounded old SettingsPage/AccountTab/IntegrationsTab review; preserve native settings, shared hooks, auth/MFA/session and actual consumers"
+}

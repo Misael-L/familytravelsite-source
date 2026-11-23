@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "only_verified_disposable_prototype_removed": "/private/tmp/trek-core-explore-props-20261118/candidate-checkout",
+  "pinned_incoming_source": "6f2a83b615b86cb588351d3b3c6cfb979ede04cc",
+  "exact_two_source_contract_paths": [
+    "client/src/integrations/family/legacy/components/Explore/ExploreEntityDetailPanel.tsx",
+    "client/src/integrations/family/legacy/components/Explore/ExploreEntityDetailPanel.types.ts"
+  ],
+  "all_other_tracked_source_bytes_exact": 18229,
+  "dependency_symlinks_unlinked_without_following": true,
+  "logs_evidence_complete_archives_backups_ETL_media_and_retained_builds_preserved": true,
+  "free_bytes_before": 2420736000,
+  "free_bytes_after": 2822144000
+}

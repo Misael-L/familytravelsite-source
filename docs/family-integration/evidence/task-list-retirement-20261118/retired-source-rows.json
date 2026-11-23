@@ -1,0 +1,52 @@
+{
+  "removed_paths": [
+    "client/src/integrations/family/legacy/components/Todo/TodoListPanel.tsx",
+    "client/src/integrations/family/legacy/components/Todo/ListsContainer.tsx",
+    "client/src/integrations/family/legacy/components/Todo/ListsPanelFamily.tsx",
+    "client/src/integrations/family/legacy/components/Todo/useFamilyLists.ts"
+  ],
+  "previous_rows": [
+    {
+      "path": "client/src/integrations/family/legacy/components/Todo/TodoListPanel.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "3eb675f068c5afcb8faf4844730d5db07c60ac4b",
+        "bytes": 49968
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/components/Todo/TodoListPanel.tsx"
+    },
+    {
+      "path": "client/src/integrations/family/legacy/components/Todo/ListsContainer.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "8f029e3826285ab9b69daa973048dc49d83ae932",
+        "bytes": 10112
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/components/Todo/ListsContainer.tsx"
+    },
+    {
+      "path": "client/src/integrations/family/legacy/components/Todo/ListsPanelFamily.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "bfb7d4f3696bfdd734d883acdf40a20a6de29017",
+        "bytes": 465
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/components/Todo/ListsPanelFamily.tsx"
+    },
+    {
+      "path": "client/src/integrations/family/legacy/components/Todo/useFamilyLists.ts",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "e2fc67424875948e501a2462c1a57fdc6e8ef2ee",
+        "bytes": 2841
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/components/Todo/useFamilyLists.ts"
+    }
+  ],
+  "new_qualified_commit": "a0b9f76fd376a3baeb0873e35d4eda9f40417e11",
+  "reason": "Actual four-file copied task/list-container island deletion after bounded source/type/test/configuration closure; no guard relaxation or disappearing source row without deletion."
+}

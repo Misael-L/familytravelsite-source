@@ -1,0 +1,58 @@
+{
+  "passed": true,
+  "packet": "Q98",
+  "incoming": "c59c9d23a5fe7750872695cfe26d3eb1fb994876",
+  "implementation": "066f615055b3be74d6664a260358f9cd6a8f1a37",
+  "build_source": "a0d896e186f3374d1c1122e6eb805cbd842c66e8",
+  "date": "2026-11-18",
+  "runtime_files_changed": 6,
+  "new_product_test_files": 1,
+  "candidate_passed": 42,
+  "identical_consumer_tests_before_after": 42,
+  "functional_behavior_change": null,
+  "original_declarations_runtime_AST_qualified": 56,
+  "className_only_token_permutations": true,
+  "new_runtime_functions": 0,
+  "type_only_state_aliases": 2,
+  "panel_wrapped_lines": [
+    2669,
+    999
+  ],
+  "companion_wrapped_lines": [
+    489,
+    89,
+    479,
+    394,
+    306
+  ],
+  "inherited_forced_legacy_warnings_unchanged": 22,
+  "new_test_findings": 0,
+  "ordinary_legacy_policy_unchanged": true,
+  "typecheck_passed": true,
+  "fixture_build_passed": true,
+  "source_guards_passed": 4,
+  "artifact_binding_controls_passed": 3,
+  "source_complexity_actual_limit": [
+    218,
+    218
+  ],
+  "source_length_actual_limit": [
+    130,
+    130
+  ],
+  "source_warnings_actual_limit": [
+    3418,
+    3418
+  ],
+  "warning_gate_pass": true,
+  "all_rules_baselines_suppressions_unchanged": true,
+  "size_findings_before_after": [
+    31,
+    30
+  ],
+  "other_size_failure_lines_exact": true,
+  "global_quality_gate_pass": false,
+  "Family_plugin_surface_hidden": true,
+  "live_database_provider_browser_or_writer_admission_acceptance": false,
+  "next": "Q99 retained size inventory/consumer review, starting with CostsPanelFamily; no blanket cleanup or deletion"
+}

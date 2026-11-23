@@ -1,0 +1,577 @@
+{
+  "source": "sealed accepted143 logical baseline; version/name only, no statements or business rows retained",
+  "ledger": [
+    {
+      "version": "20260818223636",
+      "name": "family_list_cover_upload"
+    },
+    {
+      "version": "20260820223819",
+      "name": "register_person_avatar"
+    },
+    {
+      "version": "20260821140000",
+      "name": "family_identity_assurance"
+    },
+    {
+      "version": "20260821140100",
+      "name": "family_private_file_policy"
+    },
+    {
+      "version": "20260821192652",
+      "name": "storage_cleanup_jobs_deny_client"
+    },
+    {
+      "version": "20260821202732",
+      "name": "family_identity_file_enforcement"
+    },
+    {
+      "version": "20260822020836",
+      "name": "workspace_place_categories"
+    },
+    {
+      "version": "20260718234420",
+      "name": "trip_days_spine"
+    },
+    {
+      "version": "20260718234610",
+      "name": "trip_days_table_and_sync"
+    },
+    {
+      "version": "20260718234638",
+      "name": "trip_days_create_proposal_hook"
+    },
+    {
+      "version": "20260718234927",
+      "name": "trip_days_update_proposal_hook"
+    },
+    {
+      "version": "20260822022800",
+      "name": "family_feature_rollouts"
+    },
+    {
+      "version": "20260722040053",
+      "name": "profile_clock_zones"
+    },
+    {
+      "version": "20260724213522",
+      "name": "media_assets_storage"
+    },
+    {
+      "version": "20260727032453",
+      "name": "trip_reservations_day_integrity"
+    },
+    {
+      "version": "20260727032506",
+      "name": "day_accommodations"
+    },
+    {
+      "version": "20260822044105",
+      "name": "family_data_export"
+    },
+    {
+      "version": "20260823235509",
+      "name": "get_private_upload_object_stat"
+    },
+    {
+      "version": "20260802221015",
+      "name": "catalog_explore_cover_media"
+    },
+    {
+      "version": "20260802231100",
+      "name": "explore_media_images_only"
+    },
+    {
+      "version": "20260713000000",
+      "name": "auth_family_core"
+    },
+    {
+      "version": "20260713000001",
+      "name": "seed_admin_template"
+    },
+    {
+      "version": "20260714000000",
+      "name": "fix_table_ownership"
+    },
+    {
+      "version": "20260714150000",
+      "name": "additive_travel_enums_auth_people"
+    },
+    {
+      "version": "20260714150100",
+      "name": "additive_travel_geography"
+    },
+    {
+      "version": "20260714150200",
+      "name": "additive_travel_poi"
+    },
+    {
+      "version": "20260714150300",
+      "name": "additive_travel_trips_planning"
+    },
+    {
+      "version": "20260714150400",
+      "name": "additive_travel_rls_views"
+    },
+    {
+      "version": "20260828015138",
+      "name": "storage_cleanup_safety"
+    },
+    {
+      "version": "20260714150500",
+      "name": "revoke_anon_helper_rpc"
+    },
+    {
+      "version": "20260714180000",
+      "name": "etl_sync_state"
+    },
+    {
+      "version": "20260716000000",
+      "name": "additive_trip_places_stats"
+    },
+    {
+      "version": "20260716000100",
+      "name": "additive_vacay_calendar"
+    },
+    {
+      "version": "20260716140000",
+      "name": "additive_propose_trip_rpcs"
+    },
+    {
+      "version": "20260716150000",
+      "name": "additive_trip_occasion"
+    },
+    {
+      "version": "20260716160000",
+      "name": "additive_trip_cover_reminder"
+    },
+    {
+      "version": "20260716170000",
+      "name": "additive_people_calendar_feed_token"
+    },
+    {
+      "version": "20260716171000",
+      "name": "additive_resolve_my_person_id"
+    },
+    {
+      "version": "20260716223727",
+      "name": "additive_people_accent_hex"
+    },
+    {
+      "version": "20260717000000",
+      "name": "additive_play_game_schema"
+    },
+    {
+      "version": "20260717000100",
+      "name": "migrate_reward_ledger"
+    },
+    {
+      "version": "20260717010000",
+      "name": "additive_family_person_relationships"
+    },
+    {
+      "version": "20260717120000",
+      "name": "family_tree_soft_rels_and_seed"
+    },
+    {
+      "version": "20260718225411",
+      "name": "schedule_sort_order_and_day_notes"
+    },
+    {
+      "version": "20260828201624",
+      "name": "register_person_avatar_reconciliation"
+    },
+    {
+      "version": "20260717220000",
+      "name": "traveler_preset_branches"
+    },
+    {
+      "version": "20260717230000",
+      "name": "datetime_foundation_zones"
+    },
+    {
+      "version": "20260718010000",
+      "name": "update_trip_proposal"
+    },
+    {
+      "version": "20260718020000",
+      "name": "travel_stats_completed_and_person"
+    },
+    {
+      "version": "20260718221510",
+      "name": "places_destination_coordinates"
+    },
+    {
+      "version": "20260720012200",
+      "name": "places_coord_provenance"
+    },
+    {
+      "version": "20260722044346",
+      "name": "trip_reservations_transport"
+    },
+    {
+      "version": "20260725211059",
+      "name": "sync_trip_days_strict_spine"
+    },
+    {
+      "version": "20260728012441",
+      "name": "trip_expenses_costs"
+    },
+    {
+      "version": "20260728012759",
+      "name": "seed_common_currencies"
+    },
+    {
+      "version": "20260728190638",
+      "name": "settle_trip_expense_flows"
+    },
+    {
+      "version": "20260729002628",
+      "name": "proposal_governance_foundations"
+    },
+    {
+      "version": "20260729005901",
+      "name": "proposal_governance_rpcs"
+    },
+    {
+      "version": "20260729053857",
+      "name": "workspace_can_mutate_trip"
+    },
+    {
+      "version": "20260729053910",
+      "name": "workspace_change_request_schema"
+    },
+    {
+      "version": "20260729053940",
+      "name": "workspace_change_request_rpcs"
+    },
+    {
+      "version": "20260729193904",
+      "name": "trip_reservations_schedule_item_id"
+    },
+    {
+      "version": "20260730024000",
+      "name": "apply_reservation_update_confirmation_url"
+    },
+    {
+      "version": "20260730202820",
+      "name": "people_avatar_refs_view"
+    },
+    {
+      "version": "20260713595900",
+      "name": "fix_table_ownership"
+    },
+    {
+      "version": "20260829015000",
+      "name": "family_journey_journal"
+    },
+    {
+      "version": "20260803214500",
+      "name": "explore_p5_add_to_trip"
+    },
+    {
+      "version": "20260807210000",
+      "name": "explore_p51_purview_trip_place"
+    },
+    {
+      "version": "20260807230000",
+      "name": "explore_p6_person_catalog_saves"
+    },
+    {
+      "version": "20260815003454",
+      "name": "trip_tracks"
+    },
+    {
+      "version": "20260829222052",
+      "name": "family_realtime_publication"
+    },
+    {
+      "version": "20260817230317",
+      "name": "list_my_catalog_saves_in_countries"
+    },
+    {
+      "version": "20260905050119",
+      "name": "family_map_settings"
+    },
+    {
+      "version": "20261010222112",
+      "name": "media_variants"
+    },
+    {
+      "version": "20260815183000",
+      "name": "duplicate_trip"
+    },
+    {
+      "version": "20260816031500",
+      "name": "family_vacay_web"
+    },
+    {
+      "version": "20260816180000",
+      "name": "places_cover_media"
+    },
+    {
+      "version": "20260817190000",
+      "name": "vacay_calendar_rbac"
+    },
+    {
+      "version": "20260818030002",
+      "name": "workspace_lists_and_files"
+    },
+    {
+      "version": "20260818201512",
+      "name": "family_named_lists"
+    },
+    {
+      "version": "20260821000210",
+      "name": "family_admin_foundation_indexes"
+    },
+    {
+      "version": "20260821013508",
+      "name": "family_permission_matrix_audit"
+    },
+    {
+      "version": "20260821023842",
+      "name": "family_auth_search_path"
+    },
+    {
+      "version": "20260821030307",
+      "name": "family_packing_templates_admin"
+    },
+    {
+      "version": "20260821033128",
+      "name": "family_place_categories_admin"
+    },
+    {
+      "version": "20260821040259",
+      "name": "family_preference_inheritance"
+    },
+    {
+      "version": "20260821130000",
+      "name": "family_notification_delivery"
+    },
+    {
+      "version": "20260821130100",
+      "name": "family_notification_emitters"
+    },
+    {
+      "version": "20261104175741",
+      "name": "journey_entry_recovery"
+    },
+    {
+      "version": "20261104192908",
+      "name": "journey_aggregate_recovery"
+    },
+    {
+      "version": "20261104200550",
+      "name": "trip_aggregate_recovery"
+    },
+    {
+      "version": "20261104230709",
+      "name": "trip_plan_locations"
+    },
+    {
+      "version": "20261104233950",
+      "name": "trip_visit_location_bridge"
+    },
+    {
+      "version": "20261105001102",
+      "name": "trip_untimed_visit_commands"
+    },
+    {
+      "version": "20261105004710",
+      "name": "typed_plan_change_proposals"
+    },
+    {
+      "version": "20261105012509",
+      "name": "legacy_visit_time_classification"
+    },
+    {
+      "version": "20261105015237",
+      "name": "named_zone_visit_timing"
+    },
+    {
+      "version": "20261105030029",
+      "name": "visit_timing_proposals"
+    },
+    {
+      "version": "20261105040722",
+      "name": "visit_partial_time_semantics"
+    },
+    {
+      "version": "20261105054629",
+      "name": "atomic_trip_plan_entries"
+    },
+    {
+      "version": "20261105194324",
+      "name": "trip_planner_state_snapshot"
+    },
+    {
+      "version": "20261105201625",
+      "name": "trip_destination_location_bridge"
+    },
+    {
+      "version": "20261105205015",
+      "name": "trip_location_form_commands"
+    },
+    {
+      "version": "20261105212614",
+      "name": "trip_visit_form_commands"
+    },
+    {
+      "version": "20261106005109",
+      "name": "trip_private_planner_snapshot"
+    },
+    {
+      "version": "20261106023651",
+      "name": "native_planner_creation"
+    },
+    {
+      "version": "20261106030729",
+      "name": "native_visit_arrangements"
+    },
+    {
+      "version": "20261106035504",
+      "name": "observed_trip_calendar"
+    },
+    {
+      "version": "20261106043206",
+      "name": "recoverable_trip_day_order"
+    },
+    {
+      "version": "20261106185358",
+      "name": "recoverable_trip_day_insertion"
+    },
+    {
+      "version": "20261106193124",
+      "name": "recoverable_unreferenced_trip_days"
+    },
+    {
+      "version": "20261106201143",
+      "name": "recoverable_trip_day_contents"
+    },
+    {
+      "version": "20261106213759",
+      "name": "recoverable_trip_day_file_links"
+    },
+    {
+      "version": "20261106222223",
+      "name": "booking_calendar_date_facts"
+    },
+    {
+      "version": "20261106230656",
+      "name": "recoverable_day_booking_bindings"
+    },
+    {
+      "version": "20261106234140",
+      "name": "observed_booking_detail_commands"
+    },
+    {
+      "version": "20261107021228",
+      "name": "observed_plan_governance"
+    },
+    {
+      "version": "20261109000220",
+      "name": "observed_trip_task_commands"
+    },
+    {
+      "version": "20261109032335",
+      "name": "observed_trip_packing_commands"
+    },
+    {
+      "version": "20261111201637",
+      "name": "observed_trip_packing_groups"
+    },
+    {
+      "version": "20261111234537",
+      "name": "normalized_trip_packing_categories"
+    },
+    {
+      "version": "20261112005447",
+      "name": "observed_trip_packing_categories"
+    },
+    {
+      "version": "20261112050004",
+      "name": "normalized_packing_category_lifecycle"
+    },
+    {
+      "version": "20261112055647",
+      "name": "category_bound_packing_items"
+    },
+    {
+      "version": "20261112084121",
+      "name": "packing_category_aggregate_commands"
+    },
+    {
+      "version": "20261112112956",
+      "name": "observed_trip_packing_bags"
+    },
+    {
+      "version": "20261112132958",
+      "name": "terminal_trip_packing_restore_cancellation"
+    },
+    {
+      "version": "20261112162520",
+      "name": "terminal_trip_packing_bag_commands"
+    },
+    {
+      "version": "20261112235203",
+      "name": "reconcile_family_api_privileges"
+    },
+    {
+      "version": "20261113032434",
+      "name": "trip_stay_read_foundation"
+    },
+    {
+      "version": "20261113220230",
+      "name": "observed_trip_stay_commands"
+    },
+    {
+      "version": "20261113225457",
+      "name": "original_stay_command_outcomes"
+    },
+    {
+      "version": "20261113234914",
+      "name": "coherent_booking_stay_read"
+    },
+    {
+      "version": "20261114051232",
+      "name": "atomic_stay_booking_bundle"
+    },
+    {
+      "version": "20261114070706",
+      "name": "native_stay_arrival_recovery"
+    },
+    {
+      "version": "20261114110052",
+      "name": "native_stay_calendar_consistency"
+    },
+    {
+      "version": "20261114230948",
+      "name": "recoverable_family_collections"
+    },
+    {
+      "version": "20261115000913",
+      "name": "collection_manual_item_kind"
+    },
+    {
+      "version": "20261115000914",
+      "name": "normalized_collection_location_content"
+    },
+    {
+      "version": "20261115010522",
+      "name": "bounded_family_collection_content_reads"
+    },
+    {
+      "version": "20261115015406",
+      "name": "observed_family_collection_item_authoring"
+    },
+    {
+      "version": "20261115021715",
+      "name": "bounded_family_collection_library_reads"
+    },
+    {
+      "version": "20261115052800",
+      "name": "cancel_unprepared_family_collection_requests"
+    }
+  ]
+}

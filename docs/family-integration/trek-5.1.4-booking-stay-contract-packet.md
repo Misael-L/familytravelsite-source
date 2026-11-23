@@ -1,0 +1,38 @@
+# U05-B2 — canonical booking/stay and admitted native editor contracts
+
+**Current status:** [B2 editor repairs](trek-5.1.4-booking-editor-handoff.md) are locally qualified. Independent stay/timing facts remain a demonstrated blocker. Next is [B2b canonical foundation](trek-5.1.4-stay-timing-foundation-packet.md); no schema/feature or source-pin activation has occurred.
+
+Next coherent substep after [U05-B1](trek-5.1.4-holiday-contract-handoff.md), under [U05-B](trek-5.1.4-family-contract-packet.md). Start from the latest complete `codex/trek-v5.1.4-family-reconcile` in `/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4`. Do not return to/reset the old 5.1.2 branch. Preserve full Family history, holiday commit 7e3b342a4, immutable upstream 5.1.4 `2bcfc1bfcbbff0affd097c0f789c835396389572`, original identities/revisions/operations/files and all twelve protected native layouts.
+
+## Establish actual facts first
+
+The preliminary source audit proves only these facts; it is not a completed booking qualification:
+
+1. `plannerBookings.ts` projects canonical reservations via FamilyViews and reservationSchema; it supplies no linked-accommodation fields. `applicationHandler.ts` returns empty accommodations both in the bundle and endpoint. Inspect existing planner/accommodation read ports and saved/coherent snapshot paths before deciding the missing mapping.
+2. Canonical migration `20260727032453_trip_reservations_day_integrity.sql` expressly puts lodging in `trip_reservations` type=hotel and validates same-Trip/ordered day FKs. `20260727032506_day_accommodations.sql` is a historical no-op. Read subsequent migrations and actual canonical129 signatures; do not recreate a rejected duplicate table or replay native MikroORM migrations.
+3. Upstream reservationSchema adds optional accommodation_check_in/check_in_end/check_out. Native `client/src/components/Planner/bookings/bookingsModel.ts:hotelStayTimes` prefers explicit booking clocks; a window end must come from the same check-in source. Optional DTO fields do not prove canonical facts or their ownership.
+4. Legacy `client/src/integrations/family/legacy/components/Planner/FamilyBookingEditor.tsx` writes metadata.check_in_until from checkInUntil. Its timeFromIso hides 00:00 and combineIso creates Z timestamps/unknown-time midnight. Inspect reachability and existing qualified command guards before claiming these are current writes or adopting their semantics. Do not reuse them as new timing authority or reinterpret check_in_until without its full reader/writer contract.
+5. `nativeBookingDetails.nativeBookingChanges` deliberately refuses changes to existing confirmed timestamps and non-date clock inputs. Preserve that refusal until an explicit qualified timezone-aware writer exists. Text-only/untimed-date commands must retain all untouched facts. `useEditorInitialization` preserves Family initial values by record.id; actual Trip/actor/source/operation lifetime also depends on the admitted native form and booking port, not that hook alone.
+
+## Permitted investigation/implementation boundary
+
+Begin with `useEditorInitialization.ts`, `usePlannerBookingForm.ts`, `observedBookingEditor.ts`, `nativeBookingDetails.ts`, `plannerBookings.ts`, `plannerBookingContract.ts`, `bookingCalendarContract.ts`, actual ReservationModal/TransportModal and their existing tests, corresponding FamilyViews, saved/complete-trip read DTOs and the canonical backend reader actually imported. The legacy editor above is reference evidence, not permission to enable unsafe writes. Trace imports and record every additional runtime path/reason/test/hash before expanding. Do not change protected native layout files as a shortcut.
+
+Reconcile full upstream form-seeding behavior with Family's admitted session. Refreshes of days/places/stays/costs and same-ID canonical reads must not erase typed text/files; closing/reopening or deliberately selecting another record must seed correctly. A stale form must not become a write for another Trip/actor/source/revision. Keep original retained command/file ownership, interrupted receipt lookup and replay idempotency.
+
+Trace accommodation semantics across canonical RPC→live projection→saved/shared DTO→desktop and phone consumer. Use existing verified same-Trip identities where a genuine relationship exists; never join by labels, nearby city/day or coordinates. Do not make a hotel reservation itself a second independently editable stay record merely to fill a native join. If a necessary fact is absent, document an exact normalized schema/read-API proposal separately, including ownership/FKs, timing semantics, RLS/grants, recovery, transactional/idempotent commands, compatibility and local migration/restore tests. No hosted schema change is authorized here. Do not fabricate three columns because native output has three optional fields.
+
+## Required regression matrix
+
+- Draft notes/files survive refresh; intentional identity changes re-seed; source/Trip/actor changes retire the original action. Late responses, unknown outcomes/retries and exact original operation/revision/file recovery stay fenced.
+- Notes-only update preserves timing/day identities. Omission differs from explicit null. Actual midnight differs from an untimed date. Overnight dates/named-zone/DST and airport-free flights preserve real facts; unsupported timing changes fail explicitly, without partial text save or manufacturedUTC/midnight.
+- Correct stay belongs to the same Trip and exact canonical record. Check-in window/check-out map only from real facts. Explicit booking override wins and its window end stays paired with its own check-in. Missing/foreign/deleted facts are not invented or borrowed.
+- Live, saved and shared shapes agree; snapshot version/expiry and legacy snapshot rejection/refresh are explicit. Native desktop/phone cards render the admitted values. Schema/type permissiveness alone is not proof.
+
+Discover current runnable tests rather than invent filenames. Existing starting cohort: `useEditorInitialization.test.tsx`, `accommodationSession.test.tsx`, `stayConsumersSession.test.tsx`, `bookingCalendarHandler.test.ts`, `bookingDetails.test.tsx`, `nativeBookingCallbacks.test.tsx`, `nativeBookingCallbacks.live.test.tsx`; upstream ReservationModal/TransportModal/bookings-model tests and saved read tests reached by changed imports. Run focused tests first, then one final combined affected cohort, configured types, unchanged quality/carryover gates and ordinary committed-source build/scan. Native/server real-service acceptance needs its own receipts; `.live` in a filename does not establish a live database proof.
+
+## Finish and stop conditions
+
+Retain exact file/hash/command/assertion/exit receipts and old seals; never stage/reset/commit the mixed canonical index. Use individual carryover patches for imported backend changes. Save bounded local commits and update U05/F2 handoffs with proven/pending cases. U05-B finishes only when forms/stays are qualified or a demonstrated missing canonical fact becomes a separately specified blocking packet. A blocked supported contract cannot silently become an empty successful endpoint.
+
+No production/preview/main deployment, push/source publication, hosted SQL/settings/billing, package drift, backfill, media download/transform, ETL or original-backup mutation. Source/native/history adoption gates intentionally remain qualified 5.1.2 until later explicit adoption. Following work stays F4 publication/F5 typed catalog, then final U05-C/F3c real-service/browser/engine/source/release qualification on the actual committed candidate.

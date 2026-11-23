@@ -1,0 +1,142 @@
+{
+  "passed": true,
+  "packet": "Q96",
+  "incoming": "67f622d2fe52f117a8eca77775a5eb8852f3e52f",
+  "implementation": "547c927cd5b22da8af25033d2f1a4177c2e9c09c",
+  "build_source": "6658353d35e53f2ffea79f695ebf6350ef4830b2",
+  "date": "2026-11-18",
+  "runtime_files_changed": 2,
+  "new_product_test_files": 3,
+  "existing_native_cases": 38,
+  "new_cases": 40,
+  "new_Family_gate_cases": 15,
+  "original_passed": 57,
+  "original_failed": 21,
+  "candidate_passed": 78,
+  "all_original_failures_in_new_lifetime_or_consumer_cases": true,
+  "retired_replies_and_same_turn_duplicate_actions_fixed": true,
+  "Family_sharing_remains_unavailable": true,
+  "public_result_roles_and_action_payload_AST_preserved": true,
+  "coverage": {
+    "total": {
+      "lines": {
+        "total": 125,
+        "covered": 125,
+        "skipped": 0,
+        "pct": 100
+      },
+      "statements": {
+        "total": 175,
+        "covered": 174,
+        "skipped": 0,
+        "pct": 99.42
+      },
+      "functions": {
+        "total": 48,
+        "covered": 48,
+        "skipped": 0,
+        "pct": 100
+      },
+      "branches": {
+        "total": 108,
+        "covered": 104,
+        "skipped": 0,
+        "pct": 96.29
+      },
+      "branchesTrue": {
+        "total": 0,
+        "covered": 0,
+        "skipped": 0,
+        "pct": "Unknown"
+      }
+    },
+    "/private/tmp/trek-core-collection-sharing-source-20261118/candidate-checkout/client/src/components/Collections/collectionSharingState.ts": {
+      "lines": {
+        "total": 61,
+        "covered": 61,
+        "skipped": 0,
+        "pct": 100
+      },
+      "functions": {
+        "total": 21,
+        "covered": 21,
+        "skipped": 0,
+        "pct": 100
+      },
+      "statements": {
+        "total": 77,
+        "covered": 76,
+        "skipped": 0,
+        "pct": 98.7
+      },
+      "branches": {
+        "total": 51,
+        "covered": 48,
+        "skipped": 0,
+        "pct": 94.11
+      }
+    },
+    "/private/tmp/trek-core-collection-sharing-source-20261118/candidate-checkout/client/src/components/Collections/useCollectionSharing.ts": {
+      "lines": {
+        "total": 64,
+        "covered": 64,
+        "skipped": 0,
+        "pct": 100
+      },
+      "functions": {
+        "total": 27,
+        "covered": 27,
+        "skipped": 0,
+        "pct": 100
+      },
+      "statements": {
+        "total": 98,
+        "covered": 98,
+        "skipped": 0,
+        "pct": 100
+      },
+      "branches": {
+        "total": 57,
+        "covered": 56,
+        "skipped": 0,
+        "pct": 98.24
+      }
+    }
+  },
+  "root_counted_lines": [
+    125,
+    118
+  ],
+  "all_new_helpers_within_20_120_5": true,
+  "new_or_modified_source_test_warnings": 0,
+  "typecheck_passed": true,
+  "fixture_build_passed": true,
+  "source_guards_passed": 4,
+  "artifact_binding_controls_passed": 3,
+  "source_complexity_actual_limit": [
+    218,
+    218
+  ],
+  "source_length_actual_limit": [
+    130,
+    130
+  ],
+  "source_warnings_actual_limit": [
+    3418,
+    3418
+  ],
+  "warning_gate_pass": true,
+  "required_one_count_tightening": {
+    "src": {
+      "react-hooks/set-state-in-effect": [
+        185,
+        184
+      ]
+    }
+  },
+  "size_findings_unchanged": 32,
+  "all_other_policies_baselines_suppressions_unchanged": true,
+  "global_quality_gate_pass": false,
+  "live_database_provider_browser_or_server_idempotency_acceptance": false,
+  "next": "Q97 complete ordinary-entry FamilyFrontendController size/boundary review; preserve retained-source inventory and native/permission/variant/recovery contracts"
+}

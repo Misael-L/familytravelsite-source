@@ -1,0 +1,26 @@
+[
+  {
+    "name": "layers",
+    "exit": 0,
+    "expected": 0,
+    "seconds": 2.62
+  },
+  {
+    "name": "offline",
+    "exit": 1,
+    "expected": 1,
+    "seconds": 2.63
+  },
+  {
+    "name": "size",
+    "exit": 0,
+    "expected": 0,
+    "seconds": 0.5
+  },
+  {
+    "name": "pairs",
+    "exit": 0,
+    "expected": 0,
+    "seconds": 1.05
+  }
+]

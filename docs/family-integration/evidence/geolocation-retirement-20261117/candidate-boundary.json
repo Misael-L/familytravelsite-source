@@ -1,0 +1,1035 @@
+{
+  "passed": true,
+  "diagnostics": [],
+  "measurements": [
+    {
+      "file": "client/src/hooks/useGeolocation.ts",
+      "name": "smoothAngle",
+      "line": 40,
+      "parameters": 3,
+      "complexity": 5,
+      "lines": 7
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.ts",
+      "name": "Constructor",
+      "line": 54,
+      "parameters": 2,
+      "complexity": 2,
+      "lines": 5
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.ts",
+      "name": "getCurrentPositionOnce",
+      "line": 67,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 31
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.ts",
+      "name": "ArrowFunction",
+      "line": 70,
+      "parameters": 2,
+      "complexity": 4,
+      "lines": 27
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.ts",
+      "name": "ArrowFunction",
+      "line": 82,
+      "parameters": 1,
+      "complexity": 3,
+      "lines": 8
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.ts",
+      "name": "ArrowFunction",
+      "line": 90,
+      "parameters": 1,
+      "complexity": 3,
+      "lines": 6
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.ts",
+      "name": "readCompassHeading",
+      "line": 101,
+      "parameters": 1,
+      "complexity": 5,
+      "lines": 12
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.ts",
+      "name": "watchErrorCode",
+      "line": 117,
+      "parameters": 1,
+      "complexity": 4,
+      "lines": 6
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.ts",
+      "name": "clearLocationWatch",
+      "line": 124,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 3
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.ts",
+      "name": "retainLocationWatch",
+      "line": 130,
+      "parameters": 4,
+      "complexity": 2,
+      "lines": 13
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.ts",
+      "name": "useGeolocation",
+      "line": 144,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 119
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.ts",
+      "name": "ArrowFunction",
+      "line": 164,
+      "parameters": 0,
+      "complexity": 3,
+      "lines": 14
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.ts",
+      "name": "ArrowFunction",
+      "line": 179,
+      "parameters": 0,
+      "complexity": 10,
+      "lines": 67
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.ts",
+      "name": "ArrowFunction",
+      "line": 221,
+      "parameters": 1,
+      "complexity": 4,
+      "lines": 7
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.ts",
+      "name": "ArrowFunction",
+      "line": 227,
+      "parameters": 1,
+      "complexity": 3,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.ts",
+      "name": "ArrowFunction",
+      "line": 236,
+      "parameters": 1,
+      "complexity": 4,
+      "lines": 13
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.ts",
+      "name": "ArrowFunction",
+      "line": 253,
+      "parameters": 1,
+      "complexity": 4,
+      "lines": 9
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.ts",
+      "name": "ArrowFunction",
+      "line": 273,
+      "parameters": 1,
+      "complexity": 4,
+      "lines": 11
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.ts",
+      "name": "ArrowFunction",
+      "line": 288,
+      "parameters": 0,
+      "complexity": 5,
+      "lines": 12
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.ts",
+      "name": "ArrowFunction",
+      "line": 301,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "fix",
+      "line": 19,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 13
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 28,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 30,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "failure",
+      "line": 33,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 3
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "watch",
+      "line": 37,
+      "parameters": 1,
+      "complexity": 3,
+      "lines": 5
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "orientation",
+      "line": 43,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "orientationListener",
+      "line": 47,
+      "parameters": 1,
+      "complexity": 4,
+      "lines": 5
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 48,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "deferPermission",
+      "line": 53,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 8
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "grant",
+      "line": 62,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 7
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 65,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 70,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 21
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 81,
+      "parameters": 2,
+      "complexity": 3,
+      "lines": 6
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 82,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 92,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 7
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 100,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 219
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 101,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 15
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 102,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 103,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 105,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 106,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 108,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 110,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 117,
+      "parameters": 1,
+      "complexity": 4,
+      "lines": 16
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 118,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 119,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 121,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 123,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 124,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 128,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 134,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 20
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 135,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 136,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 138,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 141,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 142,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 147,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 155,
+      "parameters": 1,
+      "complexity": 5,
+      "lines": 19
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 156,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 157,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 158,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 160,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 162,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 163,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 167,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 170,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 175,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 16
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 176,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 177,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 180,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 5
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 185,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 192,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 14
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 193,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 197,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 198,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 207,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 10
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 208,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 209,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 210,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 218,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 9
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 219,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 220,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 221,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 224,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 228,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 10
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 229,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 232,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 233,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 234,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 241,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 11
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 242,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 243,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 6
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 254,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 12
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 255,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 256,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 6
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 270,
+      "parameters": 2,
+      "complexity": 1,
+      "lines": 13
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 272,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 273,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 274,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 275,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 280,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 284,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 8
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 286,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 287,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 293,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 15
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 294,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 295,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 296,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 298,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 6
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 299,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 309,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 23
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 310,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 312,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 314,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 316,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 317,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 320,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "name": "ArrowFunction",
+      "line": 327,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    }
+  ],
+  "files": [
+    {
+      "file": "client/src/hooks/useGeolocation.ts",
+      "errors": 0,
+      "warnings": 2,
+      "messages": [
+        {
+          "ruleId": null,
+          "message": "Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-explicit-any').",
+          "line": 6,
+          "column": 1,
+          "severity": 1,
+          "fix": {
+            "range": [
+              265,
+              327
+            ],
+            "text": " "
+          }
+        },
+        {
+          "ruleId": "react-hooks/refs",
+          "severity": 1,
+          "message": "Error: Cannot access refs during render\n\nReact refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).\n\n/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client/src/hooks/useGeolocation.ts:151:3\n  149 |   // inside one would leak a watch (see setMode below).\n  150 |   const modeRef = useRef<TrackingMode>(mode)\n> 151 |   modeRef.current = mode\n      |   ^^^^^^^^^^^^^^^ Cannot update ref during render\n  152 |   const [error, setError] = useState<string | null>(null)\n  153 |   const [errorCode, setErrorCode] = useState<GeoWatchErrorCode | null>(null)\n  154 |   const watchIdRef = useRef<number | null>(null)",
+          "line": 151,
+          "column": 3,
+          "endLine": 151,
+          "endColumn": 18
+        }
+      ],
+      "suppressedMessages": [
+        {
+          "ruleId": "@typescript-eslint/no-explicit-any",
+          "severity": 1,
+          "message": "Unexpected any. Specify a different type.",
+          "line": 103,
+          "column": 19,
+          "messageId": "unexpectedAny",
+          "endLine": 103,
+          "endColumn": 22,
+          "suggestions": [
+            {
+              "messageId": "suggestUnknown",
+              "fix": {
+                "range": [
+                  4119,
+                  4122
+                ],
+                "text": "unknown"
+              },
+              "desc": "Use `unknown` instead, this will force you to explicitly, and safely assert the type is correct."
+            },
+            {
+              "messageId": "suggestNever",
+              "fix": {
+                "range": [
+                  4119,
+                  4122
+                ],
+                "text": "never"
+              },
+              "desc": "Use `never` instead, this is useful when instantiating generic type parameters that you don't need to know the type of."
+            }
+          ],
+          "suppressions": [
+            {
+              "kind": "directive",
+              "justification": ""
+            }
+          ]
+        }
+      ],
+      "wrapped": 305,
+      "formatted": false
+    },
+    {
+      "file": "client/src/hooks/useGeolocation.lifecycle.test.ts",
+      "errors": 0,
+      "warnings": 0,
+      "messages": [],
+      "suppressedMessages": [],
+      "wrapped": 332,
+      "formatted": true
+    }
+  ]
+}

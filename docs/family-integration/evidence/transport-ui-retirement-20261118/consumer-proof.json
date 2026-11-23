@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "same_expanded_cases_before_after": 1277,
+  "same_names_files_status_multiplicity_after_one_proved_generated_UUID_label_normalization": true,
+  "exact_raw_title_cases": 1276,
+  "one_generated_label_review": "generated-test-label-review.json",
+  "expanded_cases_sha256": "7ae6afa25bc0f928319ac59742845bfcb1b4c2a1db40656faf1248fad49ddeef",
+  "candidate_only_two_files_absent": true,
+  "all_other_candidate_tracked_files_byte_exact": 18190,
+  "assertions_fixtures_config_timeouts_coverage_skips_unchanged": true,
+  "no_live_backend_browser_or_writer_admission": true
+}

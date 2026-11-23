@@ -1,0 +1,27 @@
+{
+  "passed": true,
+  "source_extraction_commit": "c8875044399f8433a1c9571bf2c31887cc154351",
+  "extraction_is_ancestor_of_pinned_upstream": false,
+  "parent": "client/src/pages/LoginPage.tsx",
+  "child": "client/src/pages/login/starfield.ts",
+  "constant_initializer_AST_exact": true,
+  "old_extracted_16_rule_matches_identical": true,
+  "parent_remaining_7_rule_matches_identical": true,
+  "before": {
+    "pages/LoginPage.tsx": 23,
+    "pages/login/starfield.ts": 0
+  },
+  "proposed": {
+    "pages/LoginPage.tsx": 7,
+    "pages/login/starfield.ts": 16
+  },
+  "aggregate_allowance_before_after": [
+    273,
+    273
+  ],
+  "disable_baseline_unchanged_sha256": "bcce7c8b639b3503c8b55e94d03a488770f0caae3112aa1f630a7d35ba48e02a",
+  "original_baseline_sha256": "665b6450c8123a82e9c473521370fbf6cae46529bd6993d4c3276a42e285b95c",
+  "proposed_baseline_sha256": "133e7a981981d44a9b3668475b663cf04a71f06045c430a36accca2cc8977370",
+  "proposed_only_not_applied": true,
+  "no_class_geometry_layout_or_rule_change": true
+}

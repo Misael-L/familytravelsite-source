@@ -1,0 +1,8 @@
+{
+  "capacity_estimate_passed": true,
+  "incoming_tracked_bytes": 354091181,
+  "available_bytes_after_source_prototypes": 1925120000,
+  "COW_prototypes_independence_required": true,
+  "operational_reserve_bytes": 1073741824,
+  "estimates_not_archive_acceptance": true
+}

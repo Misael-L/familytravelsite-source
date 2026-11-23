@@ -1,0 +1,14 @@
+
+> @trek/client@5.1.4 lint:offline
+> node scripts/offline-lint.mjs
+
+FAIL  src/components/Collections/useCollectionSharing.ts is listed in scripts/offline-baseline.json but no longer imports src/api/ (or is gone).
+Run npm run lint:offline -- --update to take it off the list.
+offline: 145 view file(s) import src/api/ directly, 146 listed in the baseline
+npm error Lifecycle script `lint:offline` failed with error:
+npm error code 1
+npm error path /Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client
+npm error workspace @trek/client@5.1.4
+npm error location /Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client
+npm error command failed
+npm error command sh -c node scripts/offline-lint.mjs

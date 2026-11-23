@@ -1,0 +1,274 @@
+{
+  "passed": true,
+  "original_program_roots": 5077,
+  "candidate_program_roots": 5077,
+  "original_program_sources": 10259,
+  "candidate_program_sources": 10259,
+  "selected_external_modules_absent_from_both_ordinary_programs": true,
+  "all_program_source_names_and_bytes_exact": true,
+  "selected_effective_export_types_and_properties_exact": {
+    "client/src/integrations/family/legacy/components/Planner/TransportsPanelFamily.tsx": [
+      {
+        "name": "default",
+        "type": "({ tripId, canMutate, familyId, mePersonId, days, places, scheduleItems, currencyCode, onOpenCostsPrefill, createRequest, onCreateRequestConsumed, }: TransportsPanelFamilyProps) => ReactElement<unknown, string | JSXElementConstructor<any>>",
+        "properties": []
+      },
+      {
+        "name": "TransportCreateRequest",
+        "type": "{ dayId: string; automated: boolean; }",
+        "properties": [
+          {
+            "name": "dayId",
+            "optional": false,
+            "type": "string"
+          },
+          {
+            "name": "automated",
+            "optional": false,
+            "type": "boolean"
+          }
+        ]
+      },
+      {
+        "name": "TransportsPanelFamilyProps",
+        "type": "{ tripId: string; canMutate: boolean; familyId: string; mePersonId: string; days: FamilyTripDay[]; places: FamilyTripPlace[]; scheduleItems: FamilyScheduleItem[]; currencyCode: string; onOpenCostsPrefill: (prefill: FamilyExpensePrefill) => void; createRequest?: TransportCreateRequest; onCreateRequestConsumed?: () => void; }",
+        "properties": [
+          {
+            "name": "tripId",
+            "optional": false,
+            "type": "string"
+          },
+          {
+            "name": "canMutate",
+            "optional": false,
+            "type": "boolean"
+          },
+          {
+            "name": "familyId",
+            "optional": false,
+            "type": "string"
+          },
+          {
+            "name": "mePersonId",
+            "optional": false,
+            "type": "string"
+          },
+          {
+            "name": "days",
+            "optional": false,
+            "type": "FamilyTripDay[]"
+          },
+          {
+            "name": "places",
+            "optional": false,
+            "type": "FamilyTripPlace[]"
+          },
+          {
+            "name": "scheduleItems",
+            "optional": false,
+            "type": "FamilyScheduleItem[]"
+          },
+          {
+            "name": "currencyCode",
+            "optional": false,
+            "type": "string"
+          },
+          {
+            "name": "onOpenCostsPrefill",
+            "optional": false,
+            "type": "(prefill: FamilyExpensePrefill) => void"
+          },
+          {
+            "name": "createRequest",
+            "optional": true,
+            "type": "TransportCreateRequest"
+          },
+          {
+            "name": "onCreateRequestConsumed",
+            "optional": true,
+            "type": "() => void"
+          }
+        ]
+      }
+    ],
+    "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx": [
+      {
+        "name": "default",
+        "type": "({ children }: { children?: ReactNode; }) => ReactElement<unknown, string | JSXElementConstructor<any>>",
+        "properties": []
+      }
+    ],
+    "client/src/components/Planner/TransportModal.tsx": [
+      {
+        "name": "TransportModal",
+        "type": "({ isOpen, onClose, onSave, reservation, days, selectedDayId, files, onFileUpload, onFileDelete, onDelete, onOpenExpense, prefill, places, assignments, accommodations, initialAutomated, transitPrefill, tripHasDates, tripMembers }: TransportModalProps) => Element",
+        "properties": []
+      }
+    ],
+    "client/src/components/Planner/TransitSearchPanel.tsx": [
+      {
+        "name": "dayBookingStops",
+        "type": "(day: Pick<{ id: number; trip_id: number; day_number?: number; date?: string; title?: string; notes?: string; default_transport_mode?: string; assignments?: { id: number; day_id: number; place_id: number; order_index: number; place: { id: number; name: string; description?: string; lat?: number; lng?: number; address?: string; category_id?: number; price?: number; currency?: string; place_time?: string; end_time?: string; duration_minutes?: number; notes?: string; image_url?: string; transport_mode?: string; google_place_id?: string; google_ftid?: string; osm_id?: string; amap_poi_id?: string; website?: string; phone?: string; stop_type?: \"fuel\" | \"charging\" | \"rest_area\" | \"campsite\" | \"restaurant\" | \"sights\" | \"hotel\"; fill_percent?: number; category?: { id: number; name?: string; color?: string; icon?: string; }; tags?: { id?: number; user_id?: number; name?: string; color?: string; created_at?: string; }[]; }; notes?: string; assignment_time?: string; assignment_end_time?: string; end_day?: boolean; leg_transport_mode?: string; incoming_leg_transport_mode?: string; route_excluded?: boolean; accommodation_id?: number; tour_place_id?: number; tour_route_geometry?: string; tour_stage_key?: string; participants?: { user_id: number; username: string; avatar?: string; }[]; created_at?: string; }[]; notes_items?: { id: number; day_id: number; text: string; trip_id?: number; time?: string; icon?: string; color?: string; sort_order?: number; created_at?: string; }[]; }, \"id\" | \"date\">, reservations: { id: number; trip_id: number; title: string; status: string; type: string; day_id?: number; end_day_id?: number; place_id?: number; assignment_id?: number; reservation_time?: string; reservation_end_time?: string; location?: string; confirmation_number?: string; notes?: string; url?: string; accommodation_id?: string | number; metadata?: string; needs_review?: number; ingest_state?: string; day_plan_position?: number; created_at?: string; external_source?: string; external_id?: string; external_owner_user_id?: number; external_synced_at?: string; sync_enabled?: number; day_number?: number; place_name?: string; accommodation_place_id?: number; accommodation_name?: string; accommodation_start_day_id?: number; accommodation_end_day_id?: number; accommodation_check_in?: string; accommodation_check_in_end?: string; accommodation_check_out?: string; day_positions?: Record<string, number>; endpoints?: { role: \"from\" | \"to\" | \"stop\"; sequence: number; name: string; lat: number; lng: number; id?: number; reservation_id?: number; code?: string; timezone?: string; local_time?: string; local_date?: string; }[]; travelers?: { user_id: number; username: string; avatar_url?: string; avatar?: string; is_guest?: number; }[]; }[]) => PickedPlace[]",
+        "properties": []
+      },
+      {
+        "name": "buildQuickPicks",
+        "type": "(day: { id: number; trip_id: number; day_number?: number; date?: string; title?: string; notes?: string; default_transport_mode?: string; assignments?: { id: number; day_id: number; place_id: number; order_index: number; place: { id: number; name: string; description?: string; lat?: number; lng?: number; address?: string; category_id?: number; price?: number; currency?: string; place_time?: string; end_time?: string; duration_minutes?: number; notes?: string; image_url?: string; transport_mode?: string; google_place_id?: string; google_ftid?: string; osm_id?: string; amap_poi_id?: string; website?: string; phone?: string; stop_type?: \"fuel\" | \"charging\" | \"rest_area\" | \"campsite\" | \"restaurant\" | \"sights\" | \"hotel\"; fill_percent?: number; category?: { id: number; name?: string; color?: string; icon?: string; }; tags?: { id?: number; user_id?: number; name?: string; color?: string; created_at?: string; }[]; }; notes?: string; assignment_time?: string; assignment_end_time?: string; end_day?: boolean; leg_transport_mode?: string; incoming_leg_transport_mode?: string; route_excluded?: boolean; accommodation_id?: number; tour_place_id?: number; tour_route_geometry?: string; tour_stage_key?: string; participants?: { user_id: number; username: string; avatar?: string; }[]; created_at?: string; }[]; notes_items?: { id: number; day_id: number; text: string; trip_id?: number; time?: string; icon?: string; color?: string; sort_order?: number; created_at?: string; }[]; }, days: { id: number; trip_id: number; day_number?: number; date?: string; title?: string; notes?: string; default_transport_mode?: string; assignments?: { id: number; day_id: number; place_id: number; order_index: number; place: { id: number; name: string; description?: string; lat?: number; lng?: number; address?: string; category_id?: number; price?: number; currency?: string; place_time?: string; end_time?: string; duration_minutes?: number; notes?: string; image_url?: string; transport_mode?: string; google_place_id?: string; google_ftid?: string; osm_id?: string; amap_poi_id?: string; website?: string; phone?: string; stop_type?: \"fuel\" | \"charging\" | \"rest_area\" | \"campsite\" | \"restaurant\" | \"sights\" | \"hotel\"; fill_percent?: number; category?: { id: number; name?: string; color?: string; icon?: string; }; tags?: { id?: number; user_id?: number; name?: string; color?: string; created_at?: string; }[]; }; notes?: string; assignment_time?: string; assignment_end_time?: string; end_day?: boolean; leg_transport_mode?: string; incoming_leg_transport_mode?: string; route_excluded?: boolean; accommodation_id?: number; tour_place_id?: number; tour_route_geometry?: string; tour_stage_key?: string; participants?: { user_id: number; username: string; avatar?: string; }[]; created_at?: string; }[]; notes_items?: { id: number; day_id: number; text: string; trip_id?: number; time?: string; icon?: string; color?: string; sort_order?: number; created_at?: string; }[]; }[], places: { id: number; trip_id: number; name: string; description?: string; lat?: number; lng?: number; address?: string; category_id?: number; price?: number; currency?: string; reservation_status?: string; reservation_notes?: string; reservation_datetime?: string; place_time?: string; end_time?: string; duration_minutes?: number; notes?: string; image_url?: string; google_place_id?: string; google_ftid?: string; osm_id?: string; amap_poi_id?: string; source?: string; route_geometry?: string; tour_place_id?: number; route_color?: string; stop_type?: \"fuel\" | \"charging\" | \"rest_area\" | \"campsite\" | \"restaurant\" | \"sights\" | \"hotel\"; fill_percent?: number; website?: string; phone?: string; email?: string; opening_hours?: string; transport_mode?: string; created_at?: string; updated_at?: string; category?: { id: number; name?: string; color?: string; icon?: string; }; tags?: { id?: number; user_id?: number; name?: string; color?: string; created_at?: string; }[]; ratings?: { user_id: number; username: string; rating: number; avatar?: string; }[]; rating_avg?: number; rating_count?: number; country_code?: string; region_name?: string; }[], accommodations: { id: number; trip_id: number; start_day_id: number; end_day_id: number; place_id?: number; check_in?: string; check_in_end?: string; check_out?: string; confirmation?: string; notes?: string; created_at?: string; place_name?: string; place_address?: string; place_image?: string; place_lat?: number; place_lng?: number; reservation_title?: string; }[], bookingStops?: PickedPlace[]) => PickedPlace[]",
+        "properties": []
+      },
+      {
+        "name": "default",
+        "type": "({ day, days, places, accommodations, onAdd, initialFrom, initialTo, initialTime, walk }: TransitSearchPanelProps) => Element",
+        "properties": []
+      },
+      {
+        "name": "TransitItinerary",
+        "type": "TransitItinerary",
+        "properties": [
+          {
+            "name": "startTime",
+            "optional": false,
+            "type": "string"
+          },
+          {
+            "name": "endTime",
+            "optional": false,
+            "type": "string"
+          },
+          {
+            "name": "duration",
+            "optional": false,
+            "type": "number"
+          },
+          {
+            "name": "transfers",
+            "optional": false,
+            "type": "number"
+          },
+          {
+            "name": "walkSeconds",
+            "optional": false,
+            "type": "number"
+          },
+          {
+            "name": "legs",
+            "optional": false,
+            "type": "TransitLeg[]"
+          }
+        ]
+      },
+      {
+        "name": "PickedPlace",
+        "type": "PickedPlace",
+        "properties": [
+          {
+            "name": "name",
+            "optional": false,
+            "type": "string"
+          },
+          {
+            "name": "lat",
+            "optional": false,
+            "type": "number"
+          },
+          {
+            "name": "lng",
+            "optional": false,
+            "type": "number"
+          }
+        ]
+      }
+    ],
+    "client/src/components/Planner/transitLeg.ts": [
+      {
+        "name": "buildTransitNameIndex",
+        "type": "(assignments: Record<string, { id: number; day_id: number; place_id: number; order_index: number; place: { id: number; name: string; description?: string; lat?: number; lng?: number; address?: string; category_id?: number; price?: number; currency?: string; place_time?: string; end_time?: string; duration_minutes?: number; notes?: string; image_url?: string; transport_mode?: string; google_place_id?: string; google_ftid?: string; osm_id?: string; amap_poi_id?: string; website?: string; phone?: string; stop_type?: \"fuel\" | \"charging\" | \"rest_area\" | \"campsite\" | \"restaurant\" | \"sights\" | \"hotel\"; fill_percent?: number; category?: { id: number; name?: string; color?: string; icon?: string; }; tags?: { id?: number; user_id?: number; name?: string; color?: string; created_at?: string; }[]; }; notes?: string; assignment_time?: string; assignment_end_time?: string; end_day?: boolean; leg_transport_mode?: string; incoming_leg_transport_mode?: string; route_excluded?: boolean; accommodation_id?: number; tour_place_id?: number; tour_route_geometry?: string; tour_stage_key?: string; participants?: { user_id: number; username: string; avatar?: string; }[]; created_at?: string; }[]>, accommodations: { id: number; trip_id: number; start_day_id: number; end_day_id: number; place_id?: number; check_in?: string; check_in_end?: string; check_out?: string; confirmation?: string; notes?: string; created_at?: string; place_name?: string; place_address?: string; place_image?: string; place_lat?: number; place_lng?: number; reservation_title?: string; }[], reservations: { id: number; trip_id: number; title: string; status: string; type: string; day_id?: number; end_day_id?: number; place_id?: number; assignment_id?: number; reservation_time?: string; reservation_end_time?: string; location?: string; confirmation_number?: string; notes?: string; url?: string; accommodation_id?: string | number; metadata?: string; needs_review?: number; ingest_state?: string; day_plan_position?: number; created_at?: string; external_source?: string; external_id?: string; external_owner_user_id?: number; external_synced_at?: string; sync_enabled?: number; day_number?: number; place_name?: string; accommodation_place_id?: number; accommodation_name?: string; accommodation_start_day_id?: number; accommodation_end_day_id?: number; accommodation_check_in?: string; accommodation_check_in_end?: string; accommodation_check_out?: string; day_positions?: Record<string, number>; endpoints?: { role: \"from\" | \"to\" | \"stop\"; sequence: number; name: string; lat: number; lng: number; id?: number; reservation_id?: number; code?: string; timezone?: string; local_time?: string; local_date?: string; }[]; travelers?: { user_id: number; username: string; avatar_url?: string; avatar?: string; is_guest?: number; }[]; }[]) => Map<string, string>",
+        "properties": []
+      },
+      {
+        "name": "buildTransitLeg",
+        "type": "(seg: RouteSegment, dayId: number, names: Map<string, string>, assignments: Record<string, { id: number; day_id: number; place_id: number; order_index: number; place: { id: number; name: string; description?: string; lat?: number; lng?: number; address?: string; category_id?: number; price?: number; currency?: string; place_time?: string; end_time?: string; duration_minutes?: number; notes?: string; image_url?: string; transport_mode?: string; google_place_id?: string; google_ftid?: string; osm_id?: string; amap_poi_id?: string; website?: string; phone?: string; stop_type?: \"fuel\" | \"charging\" | \"rest_area\" | \"campsite\" | \"restaurant\" | \"sights\" | \"hotel\"; fill_percent?: number; category?: { id: number; name?: string; color?: string; icon?: string; }; tags?: { id?: number; user_id?: number; name?: string; color?: string; created_at?: string; }[]; }; notes?: string; assignment_time?: string; assignment_end_time?: string; end_day?: boolean; leg_transport_mode?: string; incoming_leg_transport_mode?: string; route_excluded?: boolean; accommodation_id?: number; tour_place_id?: number; tour_route_geometry?: string; tour_stage_key?: string; participants?: { user_id: number; username: string; avatar?: string; }[]; created_at?: string; }[]>, reservations: { id: number; trip_id: number; title: string; status: string; type: string; day_id?: number; end_day_id?: number; place_id?: number; assignment_id?: number; reservation_time?: string; reservation_end_time?: string; location?: string; confirmation_number?: string; notes?: string; url?: string; accommodation_id?: string | number; metadata?: string; needs_review?: number; ingest_state?: string; day_plan_position?: number; created_at?: string; external_source?: string; external_id?: string; external_owner_user_id?: number; external_synced_at?: string; sync_enabled?: number; day_number?: number; place_name?: string; accommodation_place_id?: number; accommodation_name?: string; accommodation_start_day_id?: number; accommodation_end_day_id?: number; accommodation_check_in?: string; accommodation_check_in_end?: string; accommodation_check_out?: string; day_positions?: Record<string, number>; endpoints?: { role: \"from\" | \"to\" | \"stop\"; sequence: number; name: string; lat: number; lng: number; id?: number; reservation_id?: number; code?: string; timezone?: string; local_time?: string; local_date?: string; }[]; travelers?: { user_id: number; username: string; avatar_url?: string; avatar?: string; is_guest?: number; }[]; }[]) => TransitLeg",
+        "properties": []
+      },
+      {
+        "name": "TransitLeg",
+        "type": "TransitLeg",
+        "properties": [
+          {
+            "name": "from",
+            "optional": false,
+            "type": "PickedPlace"
+          },
+          {
+            "name": "to",
+            "optional": false,
+            "type": "PickedPlace"
+          },
+          {
+            "name": "time",
+            "optional": false,
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "name": "PlannedTransitLeg",
+        "type": "PlannedTransitLeg",
+        "properties": [
+          {
+            "name": "dayId",
+            "optional": false,
+            "type": "number"
+          },
+          {
+            "name": "walk",
+            "optional": true,
+            "type": "WalkTransitContext"
+          },
+          {
+            "name": "from",
+            "optional": false,
+            "type": "PickedPlace"
+          },
+          {
+            "name": "to",
+            "optional": false,
+            "type": "PickedPlace"
+          },
+          {
+            "name": "time",
+            "optional": false,
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "name": "TransitPrefill",
+        "type": "TransitPrefill",
+        "properties": [
+          {
+            "name": "from",
+            "optional": true,
+            "type": "PickedPlace"
+          },
+          {
+            "name": "to",
+            "optional": true,
+            "type": "PickedPlace"
+          },
+          {
+            "name": "time",
+            "optional": true,
+            "type": "string"
+          },
+          {
+            "name": "walk",
+            "optional": true,
+            "type": "WalkTransitContext"
+          }
+        ]
+      }
+    ]
+  },
+  "fresh_actual_compiler_gate_still_required": true
+}

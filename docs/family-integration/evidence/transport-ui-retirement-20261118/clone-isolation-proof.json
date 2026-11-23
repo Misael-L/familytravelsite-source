@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "native_APFS_clonefile": true,
+  "different_inodes_and_single_links": true,
+  "writing_clone_leaves_source_bytes_unchanged": true,
+  "fresh_current_packet_probe": true
+}

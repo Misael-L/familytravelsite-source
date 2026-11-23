@@ -1,0 +1,18 @@
+{
+  "incoming": "3b84a6b6ec4f3d02fe2021bc18632ff5cd41cf01",
+  "implementation": "26fb14153156399db490c5dfa89809b484d3a11f",
+  "build_source": "4e1ab46ae2bfc799ed71f2b4b826905fd7263fed",
+  "prior_runtime_build": "ec6d56328a274ef7bc0088788138dc9e2a81b576",
+  "retired_source_sha256": {
+    "client/src/integrations/family/legacy/index.css": "0402c909d76c1d9add9915d73abad9b8299f667126f0f4dc1f0ad6676d62e9ce",
+    "client/src/integrations/family/legacy/styles/collections.css": "128c53912cbbfb9065ff8eec278f959adfd5c159d756ec0ad8ffde99d68378de",
+    "client/src/integrations/family/legacy/styles/dashboard.css": "24db66200334e3f2a5b5253be42901b5d540fbd08c0adac0aef812d717627c07",
+    "client/src/integrations/family/legacy/styles/collectionsPage.css": "de08ba2ec8184db337b673a8051132a7d9ed7f6e69bb9d8a3727d9024c09967b",
+    "client/src/integrations/family/legacy/pages/CollectionsPage.tsx": "38c56c2cdad73ccdb2f7b3535b75e39e29384bd90d09badd0a7d9b344c5b78a0"
+  },
+  "original_blobs_available_from_incoming_commit": true,
+  "fresh_current_declarations": 128,
+  "runtime": "v24.22.2",
+  "external_synthetic_fixture_inputs": true,
+  "no_hosted_operation": true
+}

@@ -1,0 +1,30 @@
+{
+  "privateSourceCommit": "32b3b64ef44bfe9988cd24ae347b41e5529624bc",
+  "privateProductionCommit": "32b3b64ef44bfe9988cd24ae347b41e5529624bc",
+  "privateCommitSubject": "Read the Journal photo origin from the shared browser config",
+  "publicSourceTag": "source-20261123-32b3b64",
+  "publicSourceRemote": "https://github.com/Misael-L/familytravelsite-source.git",
+  "workersBuildUuid": null,
+  "workersVersionId": "cd1ba385-8ad4-4b1a-9e30-c323699a1d32",
+  "node": "24",
+  "buildCommand": "npm run build:web",
+  "origin": "https://familytravelsite-integration-preview.lmisael0721.workers.dev",
+  "license": "AGPL-3.0-only",
+  "createdAtUtc": "2026-11-23T00:40:26.513169+00:00",
+  "deploymentBinding": "caller-supplied-version",
+  "sanitization": {
+    "policy": "family.private-operational-plan.v1",
+    "privateCommit": "32b3b64ef44bfe9988cd24ae347b41e5529624bc",
+    "trackedFiles": 18690,
+    "sourceFilesRetained": 18689,
+    "allRetainedBytesAndModesMatchGit": true,
+    "omissions": [
+      {
+        "path": ".cursor/plans/existing-family-backend-integration.plan.md",
+        "sha256": "c4677c13b949e3f714fe3f07f58f10c0a54af72a23537d7bb43e356240512449",
+        "bytes": 12372,
+        "reason": "Private operational plan; not required to build or run the application"
+      }
+    ]
+  }
+}

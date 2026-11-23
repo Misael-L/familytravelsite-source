@@ -1,0 +1,22 @@
+[
+  "src/pages/SettingsPage.test.tsx",
+  "src/components/Settings/AccountTab.test.tsx",
+  "src/components/Settings/useAccountSettings.test.tsx",
+  "src/components/Settings/AccountDemoLock.test.tsx",
+  "src/components/Settings/IntegrationsTab.test.tsx",
+  "src/components/Settings/useIntegrationGates.test.ts",
+  "src/components/Settings/useMcpIntegration.test.ts",
+  "tests/unit/mobile/settings/MSettingsAccount.test.tsx",
+  "tests/unit/mobile/settings/MSettingsIntegrations.test.tsx",
+  "tests/unit/mobile/settings/MSettingsMcp.test.tsx",
+  "tests/unit/mobile/settings/MScopeGroupPicker.test.tsx",
+  "src/integrations/family/logoutRecovery.test.tsx",
+  "src/integrations/family/retainedRecovery.test.tsx",
+  "src/integrations/family/authContinuations.test.ts",
+  "src/integrations/family/applicationHandler.test.ts",
+  "src/integrations/family/directWriteSession.test.ts",
+  "src/store/authStore.validation.test.ts",
+  "tests/unit/stores/settingsStore.test.ts",
+  "tests/unit/scripts/family-scanner-ownership.test.ts",
+  "tests/unit/family/secretScan.test.ts"
+]

@@ -1,0 +1,152 @@
+{
+  "passed": true,
+  "removed_ambient_declarations": [
+    {
+      "source": "client/src/integrations/family/legacy/components/Planner/DayPlanSidebar.tsx",
+      "member": "Window.__dragData",
+      "text": "__dragData: DragDataPayload | null;"
+    }
+  ],
+  "before": {
+    "shape": {
+      "properties": [
+        {
+          "name": "assignmentId",
+          "optional": true,
+          "readonly": false,
+          "type": "string"
+        },
+        {
+          "name": "fromDayId",
+          "optional": true,
+          "readonly": false,
+          "type": "string"
+        },
+        {
+          "name": "noteId",
+          "optional": true,
+          "readonly": false,
+          "type": "string"
+        },
+        {
+          "name": "phase",
+          "optional": true,
+          "readonly": false,
+          "type": {
+            "union": [
+              {
+                "stringLiteral": "end"
+              },
+              {
+                "stringLiteral": "middle"
+              },
+              {
+                "stringLiteral": "single"
+              },
+              {
+                "stringLiteral": "start"
+              }
+            ]
+          }
+        },
+        {
+          "name": "placeId",
+          "optional": true,
+          "readonly": false,
+          "type": "string"
+        },
+        {
+          "name": "poiOsmId",
+          "optional": true,
+          "readonly": false,
+          "type": "string"
+        },
+        {
+          "name": "reservationId",
+          "optional": true,
+          "readonly": false,
+          "type": "string"
+        }
+      ]
+    },
+    "declaration_sources": [
+      "client/src/components/Planner/DayPlanSidebar.tsx"
+    ],
+    "compiler_root_files": 5077,
+    "retired_modules_in_actual_program": []
+  },
+  "after": {
+    "shape": {
+      "properties": [
+        {
+          "name": "assignmentId",
+          "optional": true,
+          "readonly": false,
+          "type": "string"
+        },
+        {
+          "name": "fromDayId",
+          "optional": true,
+          "readonly": false,
+          "type": "string"
+        },
+        {
+          "name": "noteId",
+          "optional": true,
+          "readonly": false,
+          "type": "string"
+        },
+        {
+          "name": "phase",
+          "optional": true,
+          "readonly": false,
+          "type": {
+            "union": [
+              {
+                "stringLiteral": "end"
+              },
+              {
+                "stringLiteral": "middle"
+              },
+              {
+                "stringLiteral": "single"
+              },
+              {
+                "stringLiteral": "start"
+              }
+            ]
+          }
+        },
+        {
+          "name": "placeId",
+          "optional": true,
+          "readonly": false,
+          "type": "string"
+        },
+        {
+          "name": "poiOsmId",
+          "optional": true,
+          "readonly": false,
+          "type": "string"
+        },
+        {
+          "name": "reservationId",
+          "optional": true,
+          "readonly": false,
+          "type": "string"
+        }
+      ]
+    },
+    "declaration_sources": [
+      "client/src/components/Planner/DayPlanSidebar.tsx"
+    ],
+    "compiler_root_files": 5077,
+    "retired_modules_in_actual_program": []
+  },
+  "effective_global_type_equal_without_any_unknown_or_index_widening": true,
+  "native_corridor_poi_and_original_drag_fields_preserved": true,
+  "canonical_type_sha256": "9c47a0ca149c70c90afc486d68b2ef3ca037eaffaf0bc821064af7c1adc28d16",
+  "retired_ambient_declaration_was_not_in_the_actual_compiler_program": true,
+  "native_declaration_source_unchanged": true,
+  "no_type_bridge_or_runtime_modification": true
+}

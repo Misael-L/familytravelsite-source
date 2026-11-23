@@ -1,0 +1,13 @@
+{
+  "exit": 0,
+  "seconds": 104.29,
+  "command": [
+    "/Users/Misael/.nvm/versions/node/v24.22.2/bin/node",
+    "--test",
+    "scripts/family/check-qualified-source.test.mjs",
+    "scripts/family/check-backend-carryover.test.mjs",
+    "scripts/family/native-presentation-contract.test.mjs",
+    "scripts/family/release-contract.test.mjs"
+  ],
+  "tests": 146
+}

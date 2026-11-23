@@ -1,0 +1,150 @@
+{
+  "website_source_commit": "021be98460c2c3af7c15c1b9fce2f22cea0c0f1e",
+  "backend_source_commit": "c14ba0a8c0b2c505584a80150743b77bca65b812",
+  "builds": [
+    {
+      "mode": "fallback",
+      "profile": "primary-core-fallback-v1",
+      "version": "family-2026.11.21.1-rc.1",
+      "target": "familytravelsite",
+      "source_commit": "021be98460c2c3af7c15c1b9fce2f22cea0c0f1e",
+      "files": 3778,
+      "asset_tree_sha256": "d12ba678ba252c9ea96d48b411e3f233fc406d7242e14922e99d8d2a50af5e71",
+      "entry": {
+        "path": "/assets/index-CtJUpDtc.js",
+        "bytes": 1222115,
+        "sha256": "e00ae609849dbb296a04d932747a2101dca3c8e9759039945f8ce9592e185e69"
+      },
+      "service_worker_sha256": "d4297b4e02fb3f40a94b980de96d7562195ed11d818677c0aaa2416692c23fd4",
+      "artifact_scan": "passed",
+      "wrangler_dry_run": "passed"
+    },
+    {
+      "mode": "preview",
+      "profile": "primary-core-preview-v1",
+      "version": "family-2026.11.21.2-rc.1",
+      "target": "familytravelsite-integration-preview",
+      "source_commit": "021be98460c2c3af7c15c1b9fce2f22cea0c0f1e",
+      "files": 3778,
+      "asset_tree_sha256": "e749249220e3aba70929bf90357589633eb3d4751952d3105c820c4d0561a481",
+      "entry": {
+        "path": "/assets/index-CCJhGXaJ.js",
+        "bytes": 1222112,
+        "sha256": "119dda99c1d95988e0b6ead1ba4385cec784382b6ea91c2290cd3c889e0d7658"
+      },
+      "service_worker_sha256": "bde78199e6b70427623254263e1751afe9c8c421ff0a14757e39f18452e14c64",
+      "artifact_scan": "passed",
+      "wrangler_dry_run": "passed"
+    },
+    {
+      "mode": "production",
+      "profile": "primary-core-production-v1",
+      "version": "family-2026.11.21.3-rc.1",
+      "target": "familytravelsite",
+      "source_commit": "021be98460c2c3af7c15c1b9fce2f22cea0c0f1e",
+      "files": 3778,
+      "asset_tree_sha256": "7e96bde8d9b25a18d18898b796ee02dfe918f57bbc569438e0a68d8d7deb64e2",
+      "entry": {
+        "path": "/assets/index-B6lrn0f9.js",
+        "bytes": 1222121,
+        "sha256": "74a45b42550b976c6d577eaccf4480b61a851621528ef8bd4d4a9a88de4424d5"
+      },
+      "service_worker_sha256": "3133f4f93e5ba1363aef21debe9f2de96e1bc011245c6a225d29e712bd82c83f",
+      "artifact_scan": "passed",
+      "wrangler_dry_run": "passed"
+    }
+  ],
+  "fallback_dry_run_both_workers": true,
+  "assets_are_local": true,
+  "checks": {
+    "unit_and_integration_cases": 252,
+    "client_typecheck": "passed",
+    "source_archive_scan": "passed",
+    "chromium_origin_and_startup_cases": [
+      {
+        "artifact": "fallback",
+        "origin": "production",
+        "expected_origin": true,
+        "entry_loaded": true,
+        "login_visible": true,
+        "intercepted_network_calls": 1,
+        "blocked_workers": true,
+        "sent_to_hosted_backend": 0
+      },
+      {
+        "artifact": "fallback",
+        "origin": "preview",
+        "expected_origin": true,
+        "entry_loaded": true,
+        "login_visible": true,
+        "intercepted_network_calls": 1,
+        "blocked_workers": true,
+        "sent_to_hosted_backend": 0
+      },
+      {
+        "artifact": "preview",
+        "origin": "preview",
+        "expected_origin": true,
+        "entry_loaded": true,
+        "login_visible": true,
+        "intercepted_network_calls": 1,
+        "blocked_workers": true,
+        "sent_to_hosted_backend": 0
+      },
+      {
+        "artifact": "production",
+        "origin": "production",
+        "expected_origin": true,
+        "entry_loaded": true,
+        "login_visible": true,
+        "intercepted_network_calls": 1,
+        "blocked_workers": true,
+        "sent_to_hosted_backend": 0
+      },
+      {
+        "artifact": "production",
+        "origin": "preview",
+        "expected_origin": false,
+        "entry_loaded": true,
+        "login_visible": true,
+        "intercepted_network_calls": 0,
+        "blocked_workers": true,
+        "sent_to_hosted_backend": 0
+      },
+      {
+        "artifact": "preview",
+        "origin": "production",
+        "expected_origin": false,
+        "entry_loaded": true,
+        "login_visible": true,
+        "intercepted_network_calls": 0,
+        "blocked_workers": true,
+        "sent_to_hosted_backend": 0
+      }
+    ],
+    "fallback_existing_queue_and_retry_counters_preserved": true
+  },
+  "hosted_observation": {
+    "postgres": "17.12",
+    "applied_migrations": 88,
+    "latest_applied": "20261010222112",
+    "pinned_pending": 67,
+    "workers": {
+      "production": {
+        "entry_path": "/assets/index-rHYsJ9Pc.js",
+        "service_worker_hash_matches_recorded_release": true
+      },
+      "preview": {
+        "entry_path": "/assets/index-B8t0kO7G.js",
+        "service_worker_hash_matches_recorded_release": true
+      }
+    }
+  },
+  "pending": [
+    "same-origin detached browser draft handover on the actual affected origins",
+    "fresh independent database and media protection for the selected window",
+    "authorized managed write pause and drain before the first migration",
+    "hosted signed-in acceptance and actual Worker version binding"
+  ],
+  "hosted_settings_or_deployments_changed": false
+}

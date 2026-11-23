@@ -1,0 +1,6 @@
+FAIL  mobile/screens/trip/tabs/MPackingItemRow.tsx: 13 styling bypass(es) of the theme tokens, baseline 0.
+        raw-text-size: use a type tier (text-title, text-subtitle, text-body, text-caption), which follows the text size setting.
+Run npm run theme:lint -- --list to see each hit. A colour CSS variables cannot reach (map paint, PDF, brand) is marked with theme-lint-disable in a comment on its line. See src/theme/README.md.
+FAIL  mobile/screens/trip/tabs/MPackingListTab.tsx is held at 32 in scripts/theme-baseline.json, but there are 19 now.
+Run npm run theme:lint -- --update to lower the baseline with the change that made it smaller: an entry above the count lets it grow back unseen.
+theme: 3388 styling bypass(es) in 310 file(s), baseline allows 3388; 147 line(s) marked theme-lint-disable, baseline allows 147

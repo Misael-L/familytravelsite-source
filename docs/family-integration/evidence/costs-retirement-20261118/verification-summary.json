@@ -1,0 +1,54 @@
+{
+  "passed": true,
+  "packet": "Q102",
+  "incoming": "42d56a4d4e3a241529e162ce04e2ec5e523abcd2",
+  "implementation": "7f64a69080dcc9f0a545f8f0a46a7d1352a9a47b",
+  "build_source": "70a794cf0a2fe44c73faee902369f1b0f0e45b1e",
+  "date": "2026-11-18",
+  "removed_paths": [
+    "client/src/integrations/family/legacy/components/Budget/CostsPanelFamily.tsx",
+    "client/src/integrations/family/legacy/components/Budget/CostsPanel.tsx"
+  ],
+  "new_or_modified_runtime_source_files": 0,
+  "candidate_passed": 713,
+  "same_expanded_cases_before_after": 713,
+  "raw_sources_reviewed": 14066,
+  "application_modules_reviewed": 7502,
+  "current_reachable_nodes_preserved": 6091,
+  "literal_glob_locale_modules": 28,
+  "literal_glob_video_assets": 98,
+  "no_outside_runtime_type_test_importer": true,
+  "native_presentation_files_exact": 12,
+  "all_3793_dist_paths_exact": true,
+  "all_421_JavaScript_CSS_files_exact": true,
+  "only_public_sourceCommit_changed": true,
+  "fresh_typecheck_and_build_passed": true,
+  "fresh_declarations_fixed_at_current_compiler_generation": 128,
+  "source_guards_passed": 4,
+  "artifact_binding_controls_passed": 3,
+  "warning_gate_pass": true,
+  "source_warnings_actual_limit": [
+    3418,
+    3418
+  ],
+  "source_complexity_actual_limit": [
+    218,
+    218
+  ],
+  "source_length_actual_limit": [
+    130,
+    130
+  ],
+  "size_findings_before_after": [
+    28,
+    26
+  ],
+  "all_other_size_failure_lines_exact": true,
+  "format_gate_pass": true,
+  "unlisted_format_failures": 0,
+  "format_baseline_unchanged_entries": 2134,
+  "rules_baselines_exclusions_suppressions_unchanged": true,
+  "global_release_gate_pass": false,
+  "live_database_browser_or_writer_admission_acceptance": false,
+  "next": "Q103 bounded old Login/Dashboard entry review; do not remove helpers or historical scanner fixtures by default"
+}

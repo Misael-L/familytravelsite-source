@@ -1,0 +1,104 @@
+{
+  "passed": true,
+  "entire_original_controller_AST_restored_after_only_factory_projection_inline_import_and_type_alias_reversal": true,
+  "all_17_original_callback_runtime_bodies_parameters_and_defaults_exact": true,
+  "all_four_projection_bodies_exact": true,
+  "original_runtime_dependency_import_order_exact_and_helper_uses_only_already_imported_runtime_modules": true,
+  "all_original_hooks_order_exact_no_new_hooks": true,
+  "assignment_useCallback_dependency_array_exact_and_inline_delegate_returns_original_body_promise_without_an_async_wrapper": true,
+  "readonly_captured_context_is_plain_shorthand_frame_values": 42,
+  "helper_has_no_top_level_execution_or_feature_activation": true,
+  "original_existing_consumer_cases": 49,
+  "candidate_existing_consumer_cases": 49,
+  "new_factory_contract_cases": 60,
+  "candidate_total": 109,
+  "coverage": {
+    "total": {
+      "lines": {
+        "total": 264,
+        "covered": 262,
+        "skipped": 0,
+        "pct": 99.24
+      },
+      "statements": {
+        "total": 324,
+        "covered": 313,
+        "skipped": 0,
+        "pct": 96.6
+      },
+      "functions": {
+        "total": 82,
+        "covered": 77,
+        "skipped": 0,
+        "pct": 93.9
+      },
+      "branches": {
+        "total": 158,
+        "covered": 137,
+        "skipped": 0,
+        "pct": 86.7
+      },
+      "branchesTrue": {
+        "total": 0,
+        "covered": 0,
+        "skipped": 0,
+        "pct": "Unknown"
+      }
+    },
+    "/private/tmp/trek-core-controller-actions-source-20261118/candidate-checkout/client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts": {
+      "lines": {
+        "total": 264,
+        "covered": 262,
+        "skipped": 0,
+        "pct": 99.24
+      },
+      "functions": {
+        "total": 82,
+        "covered": 77,
+        "skipped": 0,
+        "pct": 93.9
+      },
+      "statements": {
+        "total": 324,
+        "covered": 313,
+        "skipped": 0,
+        "pct": 96.6
+      },
+      "branches": {
+        "total": 158,
+        "covered": 137,
+        "skipped": 0,
+        "pct": 86.7
+      }
+    }
+  },
+  "source_sha256": "da67d49ab3651f2e4286b4c67e7dc66554678102fbbf197669a850bc3ab50be5",
+  "helper_sha256": "63b073a7e92f4de19961da09f94fb60d373dc2290fc73d261ba50eaa913e4f6c",
+  "test_sha256": {
+    "controllerItineraryActions.test.ts": "adb50aee85a4f7b6fbab5ebf9386b9626e2e8e7251922269b2c5f26c5f2140ac",
+    "controllerItineraryFixture.ts": "022f34706ee23d5ed28f238bdc6e201f0930f8b15e51f5ec21cae196cd170e7d"
+  },
+  "source_wrapped_lines": [
+    1322,
+    987
+  ],
+  "helper_wrapped_lines": 783,
+  "forced_legacy_root_findings_unchanged": {
+    "max-lines-per-function/1": 1,
+    "complexity/1": 1,
+    "@typescript-eslint/no-unused-vars/1": 35,
+    "react-hooks/refs/1": 1,
+    "react-hooks/set-state-in-effect/1": 3,
+    "@typescript-eslint/no-misused-promises/1": 1,
+    "prefer-const/2": 1,
+    "trek/no-swallowed-catch/1": 1,
+    "@typescript-eslint/no-floating-promises/1": 2,
+    "react-hooks/exhaustive-deps/1": 3,
+    "react-hooks/immutability/1": 4,
+    "react-hooks/preserve-manual-memoization/1": 4
+  },
+  "new_helper_test_and_fixture_findings": 0,
+  "ordinary_legacy_lint_policy_unchanged": true,
+  "deliberate_functional_change": null,
+  "live_or_writer_admission_acceptance": false
+}

@@ -1,0 +1,792 @@
+{
+  "scope": "literal function-name references in backend/client integration source, excluding tests; not full transitive/dynamic call graph",
+  "references": {
+    "update_family_feature_overrides": [
+      "family-backend/src/data/supabase/familyFeatures.ts"
+    ],
+    "get_my_effective_features": [
+      "family-backend/src/data/supabase/familyFeatures.ts"
+    ],
+    "update_feature_rollout": [
+      "family-backend/src/data/supabase/familyFeatures.ts"
+    ],
+    "list_feature_rollout_events": [
+      "family-backend/src/data/supabase/familyFeatures.ts"
+    ],
+    "list_family_feature_controls": [
+      "family-backend/src/data/supabase/familyFeatures.ts"
+    ],
+    "list_family_trip_packing_category_trash_v2": [
+      "family-backend/src/data/supabase/packingCategoryV2Rpc.ts",
+      "client/src/integrations/family/packingCategoryV2Transport.ts"
+    ],
+    "get_family_trip_packing_category_lifecycle_receipt_v2": [
+      "family-backend/src/data/supabase/packingCategoryV2Rpc.ts",
+      "client/src/integrations/family/packingCategoryV2Transport.ts"
+    ],
+    "lookup_family_trip_packing_category_v2": [
+      "family-backend/src/data/supabase/packingCategoryV2Rpc.ts",
+      "client/src/integrations/family/packingCategoryV2Transport.ts"
+    ],
+    "get_family_trip_packing_with_categories_v2": [
+      "family-backend/src/data/supabase/packingCategoryV2Rpc.ts",
+      "client/src/integrations/family/packingCategoryV2Transport.ts"
+    ],
+    "execute_family_trip_packing_category_lifecycle_v2": [
+      "family-backend/src/data/supabase/packingCategoryV2Rpc.ts",
+      "client/src/integrations/family/packingCategoryV2Transport.ts"
+    ],
+    "get_family_trip_packing_category_item_receipt_v2": [
+      "family-backend/src/data/supabase/packingCategoryV2Rpc.ts",
+      "client/src/integrations/family/packingCategoryV2Transport.ts"
+    ],
+    "execute_family_trip_packing_category_item_v2": [
+      "family-backend/src/data/supabase/packingCategoryV2Rpc.ts",
+      "client/src/integrations/family/packingCategoryV2Transport.ts"
+    ],
+    "execute_family_trip_packing_v1": [
+      "family-backend/src/data/supabase/packingCommandRpc.ts",
+      "client/src/integrations/family/packingCommandTransport.ts"
+    ],
+    "update_family_permission_policies": [
+      "family-backend/src/data/supabase/familyPermissions.ts"
+    ],
+    "reset_family_permission_policies": [
+      "family-backend/src/data/supabase/familyPermissions.ts"
+    ],
+    "list_family_permission_policies": [
+      "family-backend/src/data/supabase/familyPermissions.ts"
+    ],
+    "list_family_audit_events": [
+      "family-backend/src/data/supabase/familyPermissions.ts"
+    ],
+    "can_trip_action_direct": [
+      "family-backend/src/data/supabase/familyPermissions.ts"
+    ],
+    "list_trip_action_outcomes": [
+      "family-backend/src/data/supabase/familyPermissions.ts"
+    ],
+    "list_family_packing_templates": [
+      "family-backend/src/data/supabase/familyPackingTemplates.ts"
+    ],
+    "upsert_family_packing_template": [
+      "family-backend/src/data/supabase/familyPackingTemplates.ts"
+    ],
+    "delete_family_packing_template": [
+      "family-backend/src/data/supabase/familyPackingTemplates.ts",
+      "family-backend/src/data/supabase/packing.ts"
+    ],
+    "register_person_avatar": [
+      "family-backend/src/data/supabase/personAvatars.ts"
+    ],
+    "list_family_export_jobs": [
+      "family-backend/src/data/supabase/familyExport.ts"
+    ],
+    "request_family_export": [
+      "family-backend/src/data/supabase/familyExport.ts"
+    ],
+    "get_family_trip_booking_view_v2": [
+      "family-backend/src/data/supabase/bookingStayReadRpc.ts"
+    ],
+    "get_family_map_settings": [
+      "family-backend/src/data/supabase/familyMaps.ts"
+    ],
+    "get_my_effective_map_settings": [
+      "family-backend/src/data/supabase/familyMaps.ts"
+    ],
+    "update_family_map_settings": [
+      "family-backend/src/data/supabase/familyMaps.ts"
+    ],
+    "update_my_map_preference": [
+      "family-backend/src/data/supabase/familyMaps.ts"
+    ],
+    "catalog_media_urls": [
+      "family-backend/src/data/supabase/catalogExploreMedia.ts"
+    ],
+    "catalog_media_variants": [
+      "family-backend/src/data/supabase/catalogExploreMedia.ts"
+    ],
+    "catalog_media_variants_for_assets": [
+      "family-backend/src/data/supabase/catalogExploreMedia.ts",
+      "client/src/integrations/family/plannerView.ts",
+      "client/src/integrations/family/coherentPlannerBundle.ts"
+    ],
+    "get_family_trip_packing_restore_cancellation_v1": [
+      "family-backend/src/data/supabase/packingRestoreRpc.ts",
+      "client/src/integrations/family/packingTerminalTransport.ts"
+    ],
+    "cancel_family_trip_packing_restore_v1": [
+      "family-backend/src/data/supabase/packingRestoreRpc.ts",
+      "client/src/integrations/family/packingTerminalTransport.ts"
+    ],
+    "count_my_unread_notifications": [
+      "family-backend/src/data/supabase/familyNotifications.ts"
+    ],
+    "get_family_notification_defaults": [
+      "family-backend/src/data/supabase/familyNotifications.ts"
+    ],
+    "update_family_notification_defaults": [
+      "family-backend/src/data/supabase/familyNotifications.ts"
+    ],
+    "mark_notifications_unread": [
+      "family-backend/src/data/supabase/familyNotifications.ts"
+    ],
+    "mark_all_notifications_read": [
+      "family-backend/src/data/supabase/familyNotifications.ts"
+    ],
+    "get_my_notification_preferences": [
+      "family-backend/src/data/supabase/familyNotifications.ts"
+    ],
+    "mark_notifications_read": [
+      "family-backend/src/data/supabase/familyNotifications.ts"
+    ],
+    "dismiss_all_notifications": [
+      "family-backend/src/data/supabase/familyNotifications.ts"
+    ],
+    "list_my_notifications": [
+      "family-backend/src/data/supabase/familyNotifications.ts"
+    ],
+    "dismiss_notifications": [
+      "family-backend/src/data/supabase/familyNotifications.ts"
+    ],
+    "update_my_notification_preferences": [
+      "family-backend/src/data/supabase/familyNotifications.ts"
+    ],
+    "list_family_trip_packing_trash_v1": [
+      "family-backend/src/data/supabase/packingReadRpc.ts",
+      "client/src/integrations/family/packingTransport.ts"
+    ],
+    "get_family_trip_packing_v1": [
+      "family-backend/src/data/supabase/packingReadRpc.ts",
+      "client/src/integrations/family/packingTransport.ts"
+    ],
+    "get_family_trip_packing_receipt_v1": [
+      "family-backend/src/data/supabase/packingReadRpc.ts",
+      "client/src/integrations/family/packingTransport.ts"
+    ],
+    "create_family_stay_bundle_v1": [
+      "family-backend/src/data/supabase/stayBundleRpc.ts",
+      "client/src/integrations/family/stayBundleTransport.ts"
+    ],
+    "cancel_family_stay_bundle_v1": [
+      "family-backend/src/data/supabase/stayBundleRpc.ts",
+      "client/src/integrations/family/stayBundleTransport.ts"
+    ],
+    "get_family_stay_bundle_outcome_v1": [
+      "family-backend/src/data/supabase/stayBundleRpc.ts",
+      "client/src/integrations/family/stayBundleTransport.ts"
+    ],
+    "get_family_stay_bundle_context_v1": [
+      "family-backend/src/data/supabase/stayBundleRpc.ts",
+      "client/src/integrations/family/stayBundleTransport.ts"
+    ],
+    "apply_packing_template": [
+      "family-backend/src/data/supabase/packing.ts"
+    ],
+    "save_packing_template_from_trip": [
+      "family-backend/src/data/supabase/packing.ts"
+    ],
+    "ensure_packing_defaults": [
+      "family-backend/src/data/supabase/packing.ts"
+    ],
+    "can_mutate_trip": [
+      "family-backend/src/data/supabase/capabilities.ts"
+    ],
+    "can_draft_trip_changes": [
+      "family-backend/src/data/supabase/capabilities.ts"
+    ],
+    "get_family_stay_command_outcome_v1": [
+      "family-backend/src/data/supabase/stayRpc.ts",
+      "client/src/integrations/family/stayTransport.ts"
+    ],
+    "set_family_stay_booking_link_v1": [
+      "family-backend/src/data/supabase/stayRpc.ts",
+      "client/src/integrations/family/stayTransport.ts"
+    ],
+    "get_family_stay_command_context_v1": [
+      "family-backend/src/data/supabase/stayRpc.ts",
+      "client/src/integrations/family/stayTransport.ts"
+    ],
+    "trash_family_stay_v1": [
+      "family-backend/src/data/supabase/stayRpc.ts",
+      "client/src/integrations/family/stayTransport.ts"
+    ],
+    "get_family_trip_stay_view_v1": [
+      "family-backend/src/data/supabase/stayRpc.ts",
+      "client/src/integrations/family/stayTransport.ts"
+    ],
+    "get_family_stay_editor_v1": [
+      "family-backend/src/data/supabase/stayRpc.ts",
+      "client/src/integrations/family/stayTransport.ts"
+    ],
+    "restore_family_stay_v1": [
+      "family-backend/src/data/supabase/stayRpc.ts",
+      "client/src/integrations/family/stayTransport.ts"
+    ],
+    "get_family_stay_history_v1": [
+      "family-backend/src/data/supabase/stayRpc.ts",
+      "client/src/integrations/family/stayTransport.ts"
+    ],
+    "save_family_stay_v1": [
+      "family-backend/src/data/supabase/stayRpc.ts",
+      "client/src/integrations/family/stayTransport.ts"
+    ],
+    "cancel_family_stay_command_v1": [
+      "family-backend/src/data/supabase/stayRpc.ts",
+      "client/src/integrations/family/stayTransport.ts"
+    ],
+    "cancel_family_trip_packing_bag_command_v1": [
+      "family-backend/src/data/supabase/packingBagCancellationRpc.ts",
+      "client/src/integrations/family/packingBagTerminalTransport.ts"
+    ],
+    "get_family_trip_packing_bag_command_cancellation_v1": [
+      "family-backend/src/data/supabase/packingBagCancellationRpc.ts",
+      "client/src/integrations/family/packingBagTerminalTransport.ts"
+    ],
+    "sync_trip_days": [
+      "family-backend/src/data/supabase/tripDays.ts"
+    ],
+    "settle_trip_expense_flows": [
+      "family-backend/src/data/supabase/tripExpenseSettlements.ts"
+    ],
+    "link_family_member_person": [
+      "family-backend/src/data/supabase/familyIdentity.ts"
+    ],
+    "get_family_file_policy": [
+      "family-backend/src/data/supabase/familyIdentity.ts"
+    ],
+    "get_family_identity_assurance": [
+      "family-backend/src/data/supabase/familyIdentity.ts"
+    ],
+    "get_family_trip_packing_category_lane_v3": [
+      "family-backend/src/data/supabase/packingCategoryAggregateRpc.ts",
+      "client/src/integrations/family/packingCategoryAggregateTransport.ts"
+    ],
+    "get_family_trip_packing_category_aggregate_v3": [
+      "family-backend/src/data/supabase/packingCategoryAggregateRpc.ts",
+      "client/src/integrations/family/packingCategoryAggregateTransport.ts"
+    ],
+    "execute_family_trip_packing_category_aggregate_v3": [
+      "family-backend/src/data/supabase/packingCategoryAggregateRpc.ts",
+      "client/src/integrations/family/packingCategoryAggregateTransport.ts"
+    ],
+    "list_family_trip_packing_category_batches_v3": [
+      "family-backend/src/data/supabase/packingCategoryAggregateRpc.ts",
+      "client/src/integrations/family/packingCategoryAggregateTransport.ts"
+    ],
+    "get_family_trip_packing_category_aggregate_receipt_v3": [
+      "family-backend/src/data/supabase/packingCategoryAggregateRpc.ts",
+      "client/src/integrations/family/packingCategoryAggregateTransport.ts"
+    ],
+    "link_trip_file": [
+      "family-backend/src/data/supabase/tripFiles.ts"
+    ],
+    "purge_trip_file": [
+      "family-backend/src/data/supabase/tripFiles.ts"
+    ],
+    "trash_trip_file": [
+      "family-backend/src/data/supabase/tripFiles.ts"
+    ],
+    "unlink_trip_file": [
+      "family-backend/src/data/supabase/tripFiles.ts"
+    ],
+    "patch_trip_file_metadata": [
+      "family-backend/src/data/supabase/tripFiles.ts"
+    ],
+    "restore_trip_file": [
+      "family-backend/src/data/supabase/tripFiles.ts"
+    ],
+    "get_family_trip_packing_with_categories_v1": [
+      "family-backend/src/data/supabase/packingCategoryRpc.ts",
+      "client/src/integrations/family/packingCategoryTransport.ts"
+    ],
+    "get_family_trip_packing_category_receipt_v1": [
+      "family-backend/src/data/supabase/packingCategoryRpc.ts",
+      "client/src/integrations/family/packingCategoryTransport.ts"
+    ],
+    "execute_family_trip_packing_category_v1": [
+      "family-backend/src/data/supabase/packingCategoryRpc.ts",
+      "client/src/integrations/family/packingCategoryTransport.ts"
+    ],
+    "get_family_trip_packing_group_receipt_v1": [
+      "family-backend/src/data/supabase/packingGroupRpc.ts",
+      "client/src/integrations/family/packingGroupTransport.ts"
+    ],
+    "execute_family_trip_packing_group_v1": [
+      "family-backend/src/data/supabase/packingGroupRpc.ts",
+      "client/src/integrations/family/packingGroupTransport.ts"
+    ],
+    "get_family_native_stay_outcome_v1": [
+      "family-backend/src/data/supabase/nativeStayRpc.ts",
+      "client/src/integrations/family/nativeStayTransport.ts"
+    ],
+    "list_family_trashed_stays_v1": [
+      "family-backend/src/data/supabase/nativeStayRpc.ts",
+      "client/src/integrations/family/nativeStayTransport.ts"
+    ],
+    "cancel_family_native_stay_v1": [
+      "family-backend/src/data/supabase/nativeStayRpc.ts",
+      "client/src/integrations/family/nativeStayTransport.ts"
+    ],
+    "execute_family_native_stay_v1": [
+      "family-backend/src/data/supabase/nativeStayRpc.ts",
+      "client/src/integrations/family/nativeStayTransport.ts"
+    ],
+    "get_family_native_stay_view_v1": [
+      "family-backend/src/data/supabase/nativeStayRpc.ts",
+      "client/src/integrations/family/bookingStayRead.ts"
+    ],
+    "get_family_native_stay_context_v1": [
+      "family-backend/src/data/supabase/nativeStayRpc.ts",
+      "client/src/integrations/family/nativeStayTransport.ts"
+    ],
+    "withdraw_trip_change_request": [
+      "family-backend/src/data/supabase/tripChangeRequests.ts"
+    ],
+    "ensure_trip_change_draft": [
+      "family-backend/src/data/supabase/tripChangeRequests.ts"
+    ],
+    "resolve_trip_change_request": [
+      "family-backend/src/data/supabase/tripChangeRequests.ts"
+    ],
+    "delete_trip_change_draft_op": [
+      "family-backend/src/data/supabase/tripChangeRequests.ts"
+    ],
+    "submit_trip_change_request": [
+      "family-backend/src/data/supabase/tripChangeRequests.ts"
+    ],
+    "resolve_trip_change_op": [
+      "family-backend/src/data/supabase/tripChangeRequests.ts"
+    ],
+    "upsert_trip_change_draft_op": [
+      "family-backend/src/data/supabase/tripChangeRequests.ts"
+    ],
+    "list_my_catalog_saves_in_countries": [
+      "family-backend/src/data/supabase/catalogSaves.ts"
+    ],
+    "toggle_person_catalog_save": [
+      "family-backend/src/data/supabase/catalogSaves.ts"
+    ],
+    "update_family_preference_defaults": [
+      "family-backend/src/data/supabase/familyPreferences.ts"
+    ],
+    "get_my_effective_preferences": [
+      "family-backend/src/data/supabase/familyPreferences.ts"
+    ],
+    "update_my_family_preferences": [
+      "family-backend/src/data/supabase/familyPreferences.ts"
+    ],
+    "get_family_preference_defaults": [
+      "family-backend/src/data/supabase/familyPreferences.ts"
+    ],
+    "sync_my_linked_person_email": [
+      "family-backend/src/data/supabase/familySettings.ts",
+      "family-backend/src/data/supabase/auth.ts"
+    ],
+    "upsert_family_place_category": [
+      "family-backend/src/data/supabase/familyPlaceCategories.ts"
+    ],
+    "delete_family_place_category": [
+      "family-backend/src/data/supabase/familyPlaceCategories.ts"
+    ],
+    "list_family_place_categories": [
+      "family-backend/src/data/supabase/familyPlaceCategories.ts"
+    ],
+    "duplicate_trip": [
+      "family-backend/src/data/supabase/tripProposals.ts"
+    ],
+    "cast_proposal_vote": [
+      "family-backend/src/data/supabase/tripProposals.ts"
+    ],
+    "proposal_eligible_voters": [
+      "family-backend/src/data/supabase/tripProposals.ts"
+    ],
+    "can_escalate_proposal": [
+      "family-backend/src/data/supabase/tripProposals.ts"
+    ],
+    "can_decide_proposal": [
+      "family-backend/src/data/supabase/tripProposals.ts"
+    ],
+    "escalate_trip_proposal": [
+      "family-backend/src/data/supabase/tripProposals.ts"
+    ],
+    "update_trip_proposal": [
+      "family-backend/src/data/supabase/tripProposals.ts"
+    ],
+    "create_trip_proposal": [
+      "family-backend/src/data/supabase/tripProposals.ts"
+    ],
+    "decide_trip_proposal": [
+      "family-backend/src/data/supabase/tripProposals.ts"
+    ],
+    "get_family_trip_packing_bags_v1": [
+      "family-backend/src/data/supabase/packingBagRpc.ts",
+      "client/src/integrations/family/packingBagTransport.ts"
+    ],
+    "get_family_trip_packing_bag_v1": [
+      "family-backend/src/data/supabase/packingBagRpc.ts",
+      "client/src/integrations/family/packingBagTransport.ts"
+    ],
+    "list_family_trip_packing_bag_trash_v1": [
+      "family-backend/src/data/supabase/packingBagRpc.ts",
+      "client/src/integrations/family/packingBagTransport.ts"
+    ],
+    "get_family_trip_packing_bag_receipt_v1": [
+      "family-backend/src/data/supabase/packingBagRpc.ts",
+      "client/src/integrations/family/packingBagTransport.ts"
+    ],
+    "execute_family_trip_packing_bag_v1": [
+      "family-backend/src/data/supabase/packingBagRpc.ts",
+      "client/src/integrations/family/packingBagTransport.ts"
+    ],
+    "get_my_auth_bootstrap": [
+      "family-backend/src/data/supabase/auth.ts"
+    ],
+    "get_family_trip_planner_state_v1": [
+      "client/src/integrations/family/destinationBridge.ts",
+      "client/src/integrations/family/plannerState.ts"
+    ],
+    "bridge_family_trip_destinations_v1": [
+      "client/src/integrations/family/destinationBridge.ts"
+    ],
+    "get_family_trip_visit_form_v1": [
+      "client/src/integrations/family/visitFormHandler.ts"
+    ],
+    "save_family_trip_visit_form_v1": [
+      "client/src/integrations/family/visitFormHandler.ts"
+    ],
+    "arrange_family_native_visits_v1": [
+      "client/src/integrations/family/plannerArrangementHandler.ts"
+    ],
+    "get_family_trip_location_v1": [
+      "client/src/integrations/family/planLocations.ts"
+    ],
+    "list_family_trip_locations_v1": [
+      "client/src/integrations/family/planLocations.ts"
+    ],
+    "revise_family_trip_calendar_v1": [
+      "client/src/integrations/family/plannerCalendarHandler.ts"
+    ],
+    "get_family_trip_calendar_v1": [
+      "client/src/integrations/family/plannerCalendarHandler.ts"
+    ],
+    "list_family_journey_entry_trash": [
+      "client/src/integrations/family/journeyRecovery.ts"
+    ],
+    "restore_family_journey": [
+      "client/src/integrations/family/journeyRecovery.ts"
+    ],
+    "restore_family_journey_entry": [
+      "client/src/integrations/family/journeyRecovery.ts"
+    ],
+    "list_family_journey_entry_versions": [
+      "client/src/integrations/family/journeyRecovery.ts"
+    ],
+    "restore_family_journey_entry_version": [
+      "client/src/integrations/family/journeyRecovery.ts"
+    ],
+    "list_family_journey_trash": [
+      "client/src/integrations/family/journeyRecovery.ts"
+    ],
+    "review_family_plan_change_v2": [
+      "client/src/integrations/family/planChanges.ts"
+    ],
+    "stage_family_plan_change_v2": [
+      "client/src/integrations/family/planChanges.ts"
+    ],
+    "submit_family_plan_change_draft_v2": [
+      "client/src/integrations/family/planChanges.ts"
+    ],
+    "save_family_trip_location_form_v1": [
+      "client/src/integrations/family/locationFormHandler.ts"
+    ],
+    "get_family_trip_location_form_v1": [
+      "client/src/integrations/family/locationFormHandler.ts"
+    ],
+    "get_family_booking_details_v1": [
+      "client/src/integrations/family/bookingDetailsHandler.ts"
+    ],
+    "save_family_booking_details_v1": [
+      "client/src/integrations/family/bookingDetailsHandler.ts"
+    ],
+    "list_family_trip_visits_v1": [
+      "client/src/integrations/family/planVisits.ts"
+    ],
+    "create_family_native_plan_v1": [
+      "client/src/integrations/family/plannerCreationHandler.ts"
+    ],
+    "execute_family_plan_governance_v1": [
+      "client/src/integrations/family/governanceHandler.ts"
+    ],
+    "get_family_plan_governance_v1": [
+      "client/src/integrations/family/governanceHandler.ts"
+    ],
+    "get_family_trip_planner_view_v1": [
+      "client/src/integrations/family/plannerView.ts"
+    ],
+    "set_family_trip_visit_timing_v1": [
+      "client/src/integrations/family/visitTiming.ts"
+    ],
+    "get_family_trip_visit_timing_revision_v1": [
+      "client/src/integrations/family/visitTiming.ts"
+    ],
+    "create_family_trip_plan_entry_v1": [
+      "client/src/integrations/family/planEntries.ts"
+    ],
+    "get_family_trip_tasks_v1": [
+      "client/src/integrations/family/taskTransport.ts"
+    ],
+    "get_family_trip_task_receipt_v1": [
+      "client/src/integrations/family/taskTransport.ts"
+    ],
+    "list_family_trip_task_trash_v1": [
+      "client/src/integrations/family/taskTransport.ts"
+    ],
+    "execute_family_trip_task_v1": [
+      "client/src/integrations/family/taskTransport.ts"
+    ],
+    "restore_family_trip": [
+      "client/src/integrations/family/tripRecovery.ts"
+    ],
+    "list_family_trip_trash": [
+      "client/src/integrations/family/tripRecovery.ts"
+    ],
+    "trash_family_trip": [
+      "client/src/integrations/family/tripRecovery.ts"
+    ],
+    "get_family_trip_visit_classification_v1": [
+      "client/src/integrations/family/visitCommands.ts"
+    ],
+    "get_family_trip_visit_v1": [
+      "client/src/integrations/family/visitCommands.ts"
+    ],
+    "mutate_family_trip_visit_v1": [
+      "client/src/integrations/family/visitCommands.ts"
+    ],
+    "classify_family_trip_visit_untimed_v1": [
+      "client/src/integrations/family/visitCommands.ts"
+    ],
+    "mutate_family_trip_location_v1": [
+      "client/src/integrations/family/planLocationHandler.ts"
+    ],
+    "get_family_trip_booking_view_v1": [
+      "client/src/integrations/family/plannerBookings.ts"
+    ],
+    "set_family_booking_calendar_v1": [
+      "client/src/integrations/family/bookingCalendarHandler.ts"
+    ],
+    "get_family_booking_calendar_v1": [
+      "client/src/integrations/family/bookingCalendarHandler.ts"
+    ],
+    "remove_list_item": [
+      "client/src/integrations/family/legacy/data/supabase/familyLists.ts"
+    ],
+    "archive_family_list": [
+      "client/src/integrations/family/legacy/data/supabase/familyLists.ts"
+    ],
+    "set_list_item_status": [
+      "client/src/integrations/family/legacy/data/supabase/familyLists.ts"
+    ],
+    "add_list_item": [
+      "client/src/integrations/family/legacy/data/supabase/familyLists.ts"
+    ],
+    "update_family_list": [
+      "client/src/integrations/family/legacy/data/supabase/familyLists.ts"
+    ],
+    "create_family_list": [
+      "client/src/integrations/family/legacy/data/supabase/familyLists.ts"
+    ],
+    "unlink_family_journey_trip": [
+      "client/src/integrations/family/legacy/data/supabase/journeys.ts"
+    ],
+    "create_family_journey": [
+      "client/src/integrations/family/legacy/data/supabase/journeys.ts"
+    ],
+    "delete_family_journey_media": [
+      "client/src/integrations/family/legacy/data/supabase/journeys.ts"
+    ],
+    "reorder_family_journey_entry_media": [
+      "client/src/integrations/family/legacy/data/supabase/journeys.ts"
+    ],
+    "upsert_family_journey_entry": [
+      "client/src/integrations/family/legacy/data/supabase/journeys.ts"
+    ],
+    "archive_family_journey": [
+      "client/src/integrations/family/legacy/data/supabase/journeys.ts"
+    ],
+    "remove_family_journey_member": [
+      "client/src/integrations/family/legacy/data/supabase/journeys.ts"
+    ],
+    "set_family_journey_member_preferences": [
+      "client/src/integrations/family/legacy/data/supabase/journeys.ts"
+    ],
+    "link_family_journey_trip": [
+      "client/src/integrations/family/legacy/data/supabase/journeys.ts"
+    ],
+    "set_family_journey_cover": [
+      "client/src/integrations/family/legacy/data/supabase/journeys.ts"
+    ],
+    "delete_family_journey": [
+      "client/src/integrations/family/legacy/data/supabase/journeys.ts"
+    ],
+    "attach_family_journey_entry_media": [
+      "client/src/integrations/family/legacy/data/supabase/journeys.ts"
+    ],
+    "list_family_journey_available_trips": [
+      "client/src/integrations/family/legacy/data/supabase/journeys.ts"
+    ],
+    "add_family_journey_member": [
+      "client/src/integrations/family/legacy/data/supabase/journeys.ts"
+    ],
+    "get_family_journey": [
+      "client/src/integrations/family/legacy/data/supabase/journeys.ts"
+    ],
+    "list_family_journeys": [
+      "client/src/integrations/family/legacy/data/supabase/journeys.ts"
+    ],
+    "reorder_family_journey_entries": [
+      "client/src/integrations/family/legacy/data/supabase/journeys.ts"
+    ],
+    "update_family_journey": [
+      "client/src/integrations/family/legacy/data/supabase/journeys.ts"
+    ],
+    "delete_family_journey_entry": [
+      "client/src/integrations/family/legacy/data/supabase/journeys.ts"
+    ],
+    "detach_family_journey_entry_media": [
+      "client/src/integrations/family/legacy/data/supabase/journeys.ts"
+    ],
+    "submit_access_request": [
+      "client/src/integrations/family/legacy/data/supabase/familyAdmin.ts"
+    ],
+    "update_family_membership": [
+      "client/src/integrations/family/legacy/data/supabase/familyAdmin.ts"
+    ],
+    "deny_access_request": [
+      "client/src/integrations/family/legacy/data/supabase/familyAdmin.ts"
+    ],
+    "decide_calendar_access": [
+      "client/src/integrations/family/legacy/data/supabase/vacay.ts"
+    ],
+    "request_calendar_access": [
+      "client/src/integrations/family/legacy/data/supabase/vacay.ts"
+    ],
+    "revoke_calendar_access": [
+      "client/src/integrations/family/legacy/data/supabase/vacay.ts"
+    ],
+    "list_viewable_person_ids": [
+      "client/src/integrations/family/legacy/data/supabase/vacay.ts"
+    ],
+    "list_overlayable_branch_ids": [
+      "client/src/integrations/family/legacy/data/supabase/vacay.ts"
+    ]
+  },
+  "direct_rpc_literals": [
+    "add_list_item",
+    "apply_packing_template",
+    "archive_family_list",
+    "can_draft_trip_changes",
+    "can_mutate_trip",
+    "can_trip_action_direct",
+    "cast_proposal_vote",
+    "catalog_media_urls",
+    "catalog_media_variants",
+    "catalog_media_variants_for_assets",
+    "count_my_unread_notifications",
+    "create_family_list",
+    "create_trip_proposal",
+    "decide_calendar_access",
+    "decide_trip_proposal",
+    "delete_family_journey",
+    "delete_family_packing_template",
+    "delete_family_place_category",
+    "delete_trip_change_draft_op",
+    "deny_access_request",
+    "dismiss_all_notifications",
+    "dismiss_notifications",
+    "duplicate_trip",
+    "ensure_packing_defaults",
+    "ensure_trip_change_draft",
+    "escalate_trip_proposal",
+    "get_family_file_policy",
+    "get_family_identity_assurance",
+    "get_family_map_settings",
+    "get_family_notification_defaults",
+    "get_family_preference_defaults",
+    "get_family_trip_booking_view_v2",
+    "get_my_auth_bootstrap",
+    "get_my_effective_features",
+    "get_my_effective_map_settings",
+    "get_my_effective_preferences",
+    "get_my_notification_preferences",
+    "link_family_member_person",
+    "link_trip_file",
+    "list_family_audit_events",
+    "list_family_export_jobs",
+    "list_family_feature_controls",
+    "list_family_packing_templates",
+    "list_family_permission_policies",
+    "list_family_place_categories",
+    "list_feature_rollout_events",
+    "list_my_catalog_saves_in_countries",
+    "list_my_notifications",
+    "list_trip_action_outcomes",
+    "mark_all_notifications_read",
+    "mark_notifications_read",
+    "mark_notifications_unread",
+    "patch_trip_file_metadata",
+    "proposal_eligible_voters",
+    "purge_trip_file",
+    "remove_list_item",
+    "request_calendar_access",
+    "request_family_export",
+    "reset_family_permission_policies",
+    "resolve_trip_change_op",
+    "resolve_trip_change_request",
+    "restore_trip_file",
+    "revoke_calendar_access",
+    "save_packing_template_from_trip",
+    "set_list_item_status",
+    "settle_trip_expense_flows",
+    "submit_access_request",
+    "submit_trip_change_request",
+    "sync_my_linked_person_email",
+    "sync_trip_days",
+    "toggle_person_catalog_save",
+    "trash_trip_file",
+    "unlink_trip_file",
+    "update_family_feature_overrides",
+    "update_family_list",
+    "update_family_map_settings",
+    "update_family_membership",
+    "update_family_notification_defaults",
+    "update_family_permission_policies",
+    "update_family_preference_defaults",
+    "update_feature_rollout",
+    "update_my_family_preferences",
+    "update_my_map_preference",
+    "update_my_notification_preferences",
+    "update_trip_proposal",
+    "upsert_family_packing_template",
+    "upsert_family_place_category",
+    "upsert_trip_change_draft_op",
+    "withdraw_trip_change_request"
+  ],
+  "declared_startup_and_base_core": [
+    "get_family_trip_planner_view_v1",
+    "get_family_trip_booking_view_v1",
+    "get_family_trip_tasks_v1",
+    "execute_family_trip_task_v1",
+    "get_family_trip_task_receipt_v1",
+    "get_family_trip_packing_v1",
+    "execute_family_trip_packing_v1",
+    "get_family_trip_packing_receipt_v1",
+    "get_family_plan_governance_v1",
+    "execute_family_plan_governance_v1",
+    "catalog_media_variants_for_assets",
+    "get_my_auth_bootstrap",
+    "get_my_effective_features",
+    "get_my_effective_preferences",
+    "get_my_effective_map_settings"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "only_verified_disposable_source_prototype_removed": "/private/tmp/trek-core-planner-hook-retirement-20261118/candidate-checkout",
+  "pinned_original_source": "4b898e190b68f50cbccbb93d4d666d6e883c9a24",
+  "explicit_candidate_deletions": [
+    "client/src/integrations/family/legacy/pages/tripPlanner/useTripPlanner.ts"
+  ],
+  "all_other_tracked_bytes_verified": 18454,
+  "dependency_links_unlinked_without_following": true,
+  "test_logs_evidence_compiled_artifacts_source_checkouts_backups_ETL_media_preserved": true,
+  "free_bytes_before": 3403776000,
+  "free_bytes_after": 3809280000
+}

@@ -1,0 +1,184 @@
+{
+  "passed": true,
+  "entire_original_module_AST_restored_by_only_inlining_cleanup_and_removing_private_helper": true,
+  "unchanged_route_memo_dependencies_and_hook_order": true,
+  "cleanup_editor_lookup_cancellation_and_five_local_setter_calls_exact": true,
+  "unchanged_public_wrapper_phone_planner_reuse_and_return_model": true,
+  "new_async_boundaries": 0,
+  "functional_behavior_change": null,
+  "candidate_passed": 207,
+  "original_passed": 207,
+  "new_hook_consumer_cases": 25,
+  "existing_cases": 182,
+  "source_sha256": "3447b44587f4b057212aebcf8874eccbdd8bfea52a9e2902aa2bc453e89c1005",
+  "test_sha256": {
+    "useTripPlannerPage.test.tsx": "1ac72aedcdbc5511084db6fa229599774540d2d907b9c940a8154375ade5ee54"
+  },
+  "coverage": {
+    "total": {
+      "lines": {
+        "total": 61,
+        "covered": 61,
+        "skipped": 0,
+        "pct": 100
+      },
+      "statements": {
+        "total": 71,
+        "covered": 71,
+        "skipped": 0,
+        "pct": 100
+      },
+      "functions": {
+        "total": 13,
+        "covered": 13,
+        "skipped": 0,
+        "pct": 100
+      },
+      "branches": {
+        "total": 61,
+        "covered": 61,
+        "skipped": 0,
+        "pct": 100
+      },
+      "branchesTrue": {
+        "total": 0,
+        "covered": 0,
+        "skipped": 0,
+        "pct": "Unknown"
+      }
+    },
+    "/private/tmp/trek-core-planner-page-source-20261118/candidate-checkout/client/src/pages/tripPlanner/useTripPlannerPage.ts": {
+      "lines": {
+        "total": 61,
+        "covered": 61,
+        "skipped": 0,
+        "pct": 100
+      },
+      "functions": {
+        "total": 13,
+        "covered": 13,
+        "skipped": 0,
+        "pct": 100
+      },
+      "statements": {
+        "total": 71,
+        "covered": 71,
+        "skipped": 0,
+        "pct": 100
+      },
+      "branches": {
+        "total": 61,
+        "covered": 61,
+        "skipped": 0,
+        "pct": 100
+      }
+    }
+  },
+  "boundary": [
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.ts",
+      "name": "clearPlaceForm",
+      "line": 26,
+      "parameters": 5,
+      "complexity": 2,
+      "lines": 14
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.ts",
+      "name": "useTripPlannerPage",
+      "line": 42,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.ts",
+      "name": "useTripPlannerPageOf",
+      "line": 51,
+      "parameters": 1,
+      "complexity": 23,
+      "lines": 117
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.ts",
+      "name": "ArrowFunction",
+      "line": 76,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.ts",
+      "name": "ArrowFunction",
+      "line": 82,
+      "parameters": 0,
+      "complexity": 14,
+      "lines": 14
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.ts",
+      "name": "ArrowFunction",
+      "line": 90,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.ts",
+      "name": "ArrowFunction",
+      "line": 94,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.ts",
+      "name": "ArrowFunction",
+      "line": 126,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 3
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.ts",
+      "name": "ArrowFunction",
+      "line": 134,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.ts",
+      "name": "ArrowFunction",
+      "line": 139,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 5
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.ts",
+      "name": "ArrowFunction",
+      "line": 147,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.ts",
+      "name": "ArrowFunction",
+      "line": 152,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.ts",
+      "name": "ArrowFunction",
+      "line": 154,
+      "parameters": 2,
+      "complexity": 5,
+      "lines": 4
+    }
+  ],
+  "existing_root_complexity_unchanged": 23
+}

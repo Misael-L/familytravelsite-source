@@ -1,0 +1,17 @@
+[
+  {
+    "profile": "bound",
+    "exit": 0,
+    "expected": 0
+  },
+  {
+    "profile": "wrong-source",
+    "exit": 1,
+    "expected": 1
+  },
+  {
+    "profile": "no-source",
+    "exit": 1,
+    "expected": 1
+  }
+]

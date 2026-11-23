@@ -1,0 +1,14 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "familytravelsite-integration-preview",
+  "main": "./scripts/family/scoped-acceptance-worker.mjs",
+  "compatibility_date": "2026-08-22",
+  "workers_dev": true,
+  "assets": {
+    "directory": "./client/dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "html_handling": "none",
+    "run_worker_first": ["/release-acceptance.html"],
+  },
+}

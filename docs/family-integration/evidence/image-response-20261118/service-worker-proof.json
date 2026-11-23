@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "precache_entries": 521,
+  "URL_multiset_preserved_under_chunk_renames": true,
+  "unique_URLs": 515,
+  "existing_duplicate_entries_preserved": 6,
+  "non_null_revisions_match_actual_file_MD5_in_both_builds": true,
+  "renamed_precache_URLs": 132,
+  "changed_verified_revisions": 1,
+  "SW_code_AST_equal_after_only_local_binding_alpha_renaming_and_verified_manifest_substitution": true,
+  "lexical_bindings": 18,
+  "global_names_properties_control_flow_operators_flags_and_other_literals_exact": true,
+  "canonical_code_sha256": "c1ad16f00709cfedc9d14f2a5295bce4846273d0d92a0cfcee86e41531544fe0",
+  "before_SW_sha256": "beb790310dd4c7f43ebdd07d8ea181ed73b7edf66a007fcbcd8a711a5ab3a5e9",
+  "after_SW_sha256": "3f7df030c17ede2bd04bec7707783a99d3c9931da0ca8ea832c420d4177d0caa"
+}

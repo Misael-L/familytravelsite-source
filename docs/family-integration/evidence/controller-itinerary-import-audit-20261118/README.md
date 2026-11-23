@@ -1,0 +1,7 @@
+# Q97 import-initialization clarification
+
+The original Q97 prototype compared the relative order of original import specifiers after filtering the added helper. Its wording “runtime import evaluation order exact” was broader than that check. The historical sealed receipt is preserved; this audit supersedes that wording only. Runtime source, tests, build, compiler, source protections, size/warning results and writer admission are unchanged.
+
+The formatter places the new helper before the later place-category imports. All its runtime dependencies have already been initialized by earlier imports except workspacePlaceCategoryModel. That shim reexports the exact backend package entry recorded in audit.json. Its implementation has only type imports, one string-literal constant and function declarations: no runtime dependency or top-level effect. Thus this pure model may initialize earlier, while effectful initialization, requests and rendered behavior remain unchanged. The helper itself has only imports, types and function declarations, as the original prototype already proves. This is a static exact-source check, not dynamic hosted or browser acceptance.
+
+Replay `node audit_imports.mjs` in the recorded checkout/staging context. Paths and hashes identify the exact source. The previous controller-itinerary evidence remains byte-for-byte sealed. No runtime fix, exclusion, allowance or deployment is introduced by this documentation correction.

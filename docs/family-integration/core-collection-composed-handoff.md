@@ -1,0 +1,35 @@
+# Composed core Collections — cold-route repair and bounded local acceptance
+
+15 November 2026, branch `codex/trek-v5.1.4-family-reconcile`, parent `f54b256a1206ef0be84d1affda579f02d1356efd`. The exact review commit and repaired artifact/source hashes are recorded in the sealed canonical evidence. This is the supported Collection subset of the existing composed-core packet; preview release acceptance remains held.
+
+## Demonstrated defect and repair
+
+Hard navigation to a valid canonical Collection UUID could discard the requested route and show the All saved union. Earlier item-text-only assertions could pass on that union and therefore did not prove root selection. Three new native-hook regression cases fail on the parent. The repair waits for the current Collection owner's complete library before treating a route as missing, and consults that current index rather than a lagging or retired native projection. An empty, failed or retired first read cannot borrow another owner's readiness. No TREK native layout, stylesheet, schema, API, identity mapping, permission or source-qualification change is involved. The real phone walkthrough also exposed the existing Family launcher below the native sheet; its Family-only stacking level is raised above that sheet and below modal dialogs.
+
+Four additional cohort lifetime cases distinguish pending/empty/failed reads and late/retired ownership. The final affected suite passes384/384 across13 files with no pending cases;117 focused cases include the110 retained hook cases plus these7 regressions. Client typecheck passes. Scoped lint remains26 warnings before/after and zero errors across6 changed files; eight structural/offline/localization/style gates pass. Inherited global size debt and the5.1.2 source-adoption metadata hold are unchanged; these are not claims that every repository gate is green.
+
+## Fresh composed browser and database evidence
+
+The ordinary repaired3797-file build uses the same existing explicit HTTP loopback core source and local-v1 profile; advanced markers remain empty. No App/store/SDK replacement or fabricated successful API result. A newly owned isolated schema144 database is reconstructed from the pinned accepted142 export plus exact143/144 statements. Real local GoTrue password/TOTP, PostgREST and RLS process the native UI's requests. Desktop1440×1000 and Chromium phone390×844 each pass14 checkpoints,28 total:
+
+- Real sign-in/dashboard and populated native Trip with repeated restaurant visits and decoded1080px local stored hero fixture.
+- Cold canonical UUID route retains the exact URL and requested root title, rather than merely finding an item anywhere in All saved. Desktop has a heading; native phone uses a title control.
+- Collection description and personal notes stay independent. Native notes/status edits, explicit catalog-to-snapshot materialization and manual creation settle through real observed commands. The native desktop Add form intentionally resets for another item; phone Add closes its sheet. The harness follows those distinct native behaviors.
+- Native item Trash and reachable original Restore retain its identity. Full observed reorder places the manual item first; ordinary reload retains both items and notes.
+- Whole-Collection Trash returns to the index. Recovery explicitly selects the deleted root, restores the original, then cold-reloads its UUID. Both children, order and notes survive.
+
+Final accepted execution issues10 content,4 item-lifecycle and4 root-lifecycle commands. Canonical postflight confirms exactly2 active physical rows per final root, the original reference identity now intentionally materialized as snapshot, root lifecycle revision2, manual first, status Want to go and unchanged shared catalog description. Diagnostic attempts used distinct retained synthetic roots; they are not counted in28. All HTTP/worker egress passes the owned proxy; provider/background connections and websockets are blocked. Accepted runs have zero page/API errors, gateway refusals, hosted requests or image transformation attempts.
+
+## Image/source limitation — keep explicit
+
+The existing core source is HTTP loopback. Collection transport/library and SQL ready-image guards require HTTPS and the configured source origin. Thus ready Collection images cannot be accepted on this unchanged profile: safe placeholders are the valid result. A diagnostic HTTPS-form fixture then derived-URL rewrite was rejected by the unchanged client guard; that experiment is excluded from acceptance. The final accepted gateway returns API results unchanged and SQL returns null cover URLs. Trip hero bytes are small local fixtures; no real Storage-byte or independent backup recovery proof is claimed. Earlier separate Collection image-lease192px/1080px evidence retains its original scope and is not added to28.
+
+Before release, explicitly qualify one HTTPS source/profile and prove actual Collection192px/1080px stored objects with the same source, permission, command-original, retirement and transformation protections. Do not relax HTTPS, invent a successful API response, alias a hosted source silently, add another local marker merely for this proof, or call placeholders full image acceptance. This is a concrete composed-release prerequisite alongside source adoption.
+
+## Preservation, scope and next
+
+Original362,464 rows/256 COPY projections,144 migration statement arrays,676 existing routines and complete security/catalog contracts remain exact.355 canonical schema/test/support files, mixed canonical index,136 prior seals/9,405 members, other worktrees, entire backend carryover and12 pinned native layouts are protected. All1,494 other pre-existing non-test client TSX/CSS files are unchanged; three runtime TS files, the existing Family-only launcher stacking class and two regression-test files change. The exact final preservation and owned-service stop receipts are sealed separately. Stop only the three services created by this packet, retaining162 prior service states and101 prior volume names, plus the new private data/socket. No prior target restart is allowed.
+
+Collection metadata/cover/root ordering/sharing/labels/ratings/import/export/private bytes and all Trip transfers remain unavailable as before. This ordinary online/reload walkthrough does not freshly prove cold queue, lost replies, actor/source retirement or worker update; keep original feature-local evidence at its original scope. Continue the same core packet with honest Atlas/Vacay/Journey/files/cost availability, then retained-original retry/retirement/update journeys. Carry the HTTPS Collection image/source prerequisite into the final source-adoption/release packet. Current hosted backend/engine/timezone/protection/recovery and actual source-to-Worker binding remain separate prerequisites; do not start preview deployment merely because this subset passes.
+
+Local commit, publication companion and source archive are check-only/unbound. No main/remote push/publication/deployment, hosted SQL/settings/billing, original backup, ignored ETL, media regeneration or transformation changes.

@@ -1,0 +1,17 @@
+from pathlib import Path
+import subprocess,json,ctypes,os,shutil,hashlib
+T=Path(__file__).parent;W=Path('/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4');A=T/'original-checkout';B=T/'candidate-checkout';assert not A.exists()and not B.exists();A.mkdir();p=subprocess.Popen(['git','archive','HEAD'],cwd=W,stdout=subprocess.PIPE);r=subprocess.run(['tar','-xf','-','-C',str(A)],stdin=p.stdout);p.stdout.close();assert p.wait()==r.returncode==0
+view,helper,test=json.loads((T/'application-paths.json').read_text());shutil.copyfile(T/'sections.test.tsx',A/test)
+lib=ctypes.CDLL('/usr/lib/libSystem.B.dylib',use_errno=True);clone=lib.clonefile;clone.argtypes=[ctypes.c_char_p,ctypes.c_char_p,ctypes.c_uint32];clone.restype=ctypes.c_int;meta=lib.copyfile;meta.argtypes=[ctypes.c_char_p,ctypes.c_char_p,ctypes.c_void_p,ctypes.c_uint32];meta.restype=ctypes.c_int
+P=T/'prototype-copy-probe';P.mkdir();s=P/'source';c=P/'clone';s.write_bytes(b'Q116 independent source-prototype clone');assert clone(os.fsencode(s),os.fsencode(c),1)==0 and s.stat().st_ino!=c.stat().st_ino;c.write_bytes(b'changed clone');assert s.read_bytes()==b'Q116 independent source-prototype clone';shutil.rmtree(P)
+def copy(source,target):
+ assert clone(os.fsencode(source),os.fsencode(target),1)==0;assert meta(os.fsencode(source),os.fsencode(target),None,7|(1<<18)|(1<<19))==0;return target
+shutil.copytree(A,B,copy_function=copy)
+for D in [A,B]:
+ for n in ['node_modules','client/node_modules','family-backend/node_modules']:
+  if(W/n).exists():(D/n).symlink_to(W/n,target_is_directory=True)
+original=(A/view).read_text();start=original.index('function BookingSection(');end=original.index('\nfunction BookingCard(',start);section=original[start:end].rstrip()+'\n';assert section.count('function BookingSection(')==1
+new="import { ChevronDown, ChevronRight } from 'lucide-react';\nimport { useEffect, useState, type ReactElement, type ReactNode } from 'react';\n\nexport "+section
+(B/helper).write_text(new);s=original[:start]+original[end+1:];s=s.replace('  ChevronDown,\n','').replace('  ChevronRight,\n','').replace(', type ReactNode','');anchor="import FamilyBookingEditor from './FamilyBookingEditor';";assert s.count(anchor)==1;s=s.replace(anchor,anchor+"\nimport { BookingSection } from './FamilyBookingSection';");(B/view).write_text(s)
+sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest();b=json.loads((T/'before-private.json').read_text());assert all(sha(A/p)==h for p,h in b['website_tracked'].items());assert all(sha(B/p)==h for p,h in b['website_tracked'].items()if p!=view);assert sha(A/test)==sha(B/test)
+(T/'section-original.tsx').write_text(section);(T/'prototype-proof.json').write_text(json.dumps({'passed':True,'changed_source':view,'new_source':helper,'new_test':test,'original_sha256':sha(A/view),'prototype_sha256':sha(B/view),'new_component_sha256':sha(B/helper),'new_test_sha256':sha(A/test),'old_section_sha256':hashlib.sha256(section.encode()).hexdigest(),'original_existing_source_files_exact':len(b['website_tracked']),'other_candidate_tracked_files_exact':len(b['website_tracked'])-1,'entire_extracted_function_byte_exact_except_export_modifier':True,'only_removed_original_import_bindings':['ChevronDown','ChevronRight','ReactNode'],'no_original_test_modified_or_retired':True,'fresh_COW_probe_for_new_source_prototypes_passed':True,'source_prototype_clones_have_independent_writes':True},indent=2)+'\n');print('Pinned before/after prototypes prepared; six identical functional cases added to both.')

@@ -1,0 +1,10 @@
+{
+  "read_only": true,
+  "available_bytes": 3457024000,
+  "prior_complete_check_archive_bytes": 350927908,
+  "estimated_peak_plus_margin_bytes": 2126525548,
+  "capacity_estimate_passed": true,
+  "estimate_is_not_an_archive_validation_result": true,
+  "Q111_initial_extraction_failure_cause_remains_unconfirmed": true,
+  "no_archive_backup_ETL_media_or_unverified_copy_removed": true
+}

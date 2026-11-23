@@ -1,0 +1,23 @@
+{
+  "passed": true,
+  "changed_source": "client/src/integrations/family/legacy/components/Explore/ExploreEntityDetailPanel.tsx",
+  "new_source": "client/src/integrations/family/legacy/components/Explore/ExploreEntityDetailPanel.types.ts",
+  "original_props_declaration": "export type ExploreEntityDetailPanelProps = {\n  kind: ExploreCatalogKind;\n  entityId: string;\n  onBack: () => void;\n  tripId: string;\n  canMutate: boolean;\n  writeMode?: 'direct' | 'draft' | 'nudge' | 'deny';\n  nextSortOrder?: number;\n  stageOp?: StageExploreOp;\n  tripPlaceIds: readonly string[];\n  days: FamilyTripDay[];\n  scheduleItems: FamilyScheduleItem[];\n  onItineraryChanged: () => Promise<void>;\n  familyId: string | null;\n  personId: string | null;\n};",
+  "extracted_declaration_byte_exact": true,
+  "default_component_declaration_and_entire_body_byte_exact": true,
+  "removed_imports_only_moved_type_references": [
+    "StageExploreOp",
+    "FamilyScheduleItem"
+  ],
+  "old_named_type_export_preserved_by_type_only_reexport": true,
+  "all_other_tracked_bytes_exact": 18229,
+  "original_sha256": "b97146ac3ac1658cd298ee101519387b93e55211d51a20538b0597bda6069e66",
+  "prototype_sha256": "b5b7fbc8e314af518d3ca108d51083f3893d5ee740efdb2b7ed2ddb79507e2df",
+  "new_type_sha256": "dbcadeeeeb8e77d6e3f5f77450e7f0d7afff789016c2cc02e5e76d39c595988e",
+  "files_before_after_lines": {
+    "before": 1002,
+    "after": 986,
+    "new_types": 21
+  },
+  "only_explicit_two_application_paths_changed_or_added": true
+}

@@ -1,0 +1,61 @@
+{
+  "passed": false,
+  "repair_verified": true,
+  "packet": "Q124",
+  "scope": "One existing shared-pair phone-row registration; remaining ownership work is read-only proposal.",
+  "incoming": "14ff5f7f8c5eabdbf153fb6776bdb046f5574008",
+  "implementation": "a8b698f4eb075be727bb5b8bbefa85df799b57c1",
+  "application_metadata_paths": [
+    "client/scripts/feature-pairs.json"
+  ],
+  "native_layout_runtime_and_test_source_changed": false,
+  "existing_guard_tests_passed": 15,
+  "existing_guard_tests_failed": 0,
+  "existing_guard_tests_skipped": 0,
+  "actual_pair_guard_before_exit": 1,
+  "actual_pair_guard_after_both_cwds_exit": [
+    0,
+    0
+  ],
+  "real_source_missing_value_import_type_only_import_and_missing_registration_refuse": true,
+  "no_phone_only_exception_or_new_shared_feature": true,
+  "source_guards_passed": 4,
+  "new_build_performed": false,
+  "runtime_build_source_commit": "a7033ef64e9ff42fe59e3413d1584645dbbd2310",
+  "prior_Q123_runtime_results_reused_not_rerun_or_relabelled": true,
+  "retained_disjoint_runtime_tests_passed": 2529,
+  "retained_historical_skips": 38,
+  "all_3793_runtime_outputs_and_128_declarations_exact": true,
+  "additional_passed_commands": [
+    "pages",
+    "layers",
+    "pairs",
+    "skips"
+  ],
+  "additional_failed_commands": [
+    "strict",
+    "rtl",
+    "offline",
+    "dup",
+    "i18n-keys"
+  ],
+  "only_pairs_reexecuted_this_packet_other_eight_inputs_exact": true,
+  "strict_diagnostics_remaining": 636,
+  "strict_allowance": 467,
+  "strict_excess": 172,
+  "strict_excess_files": 59,
+  "strict_stale_entries": 2,
+  "duplication_lines": 17619,
+  "duplication_files": 285,
+  "RTL_aggregate_proposed_before_after": [
+    273,
+    273
+  ],
+  "i18n_retained_fixed_domain": 58,
+  "i18n_native_generated_domain": 66,
+  "two_file_ownership_patch_applied": false,
+  "all_quality_baselines_thresholds_scanner_logic_and_suppressions_exact": true,
+  "current_continuation_pointer_was_stale_Q122_handoff": "correct to this Q124 handoff after verified private push; preserve sealed Q123 receipt",
+  "global_release_gate_pass": false,
+  "next": "Review/approve exact RTL and retained i18n ownership patch; then repair the Collection sharing API boundary without a new view exemption. Remaining strict/duplication and hosted gates stay explicit."
+}

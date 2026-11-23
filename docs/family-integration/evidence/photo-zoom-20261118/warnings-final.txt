@@ -1,0 +1,14 @@
+
+> @trek/client@5.1.4 lint:warnings
+> node scripts/eslint-ratchet.mjs
+
+FAIL  src: 132 max-lines-per-function warning(s), baseline 130. Most in: src/components/Planner/DayPlanSidebar.tsx (4), src/pages/JourneyPublicPage.tsx (3), src/pages/atlas/useAtlas.ts (3), src/components/Admin/storage/useStoragePanel.ts (2), src/components/Budget/CostsPanel.tsx (2)
+Fix the new warning rather than silencing it: an eslint-disable comment is counted under "suppressed". Run npx eslint <file> to see each one.
+eslint: 0 error(s); warnings src 3421/3419, tests 2859/2859, suppressed 83/83 (now/baseline)
+npm error Lifecycle script `lint:warnings` failed with error:
+npm error code 1
+npm error path /Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client
+npm error workspace @trek/client@5.1.4
+npm error location /Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client
+npm error command failed
+npm error command sh -c node scripts/eslint-ratchet.mjs

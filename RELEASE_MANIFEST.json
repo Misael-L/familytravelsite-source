@@ -1,0 +1,42 @@
+{
+  "privateSourceCommit": "b390c07bad08d6710145e28a9ab70c15eb047352",
+  "privateProductionCommit": "b390c07bad08d6710145e28a9ab70c15eb047352",
+  "privateCommitSubject": "Qualify the ordinary-trip Road trip and Tours candidate",
+  "publicSourceTag": "source-20261123-b390c07",
+  "publicSourceRemote": "https://github.com/Misael-L/familytravelsite-source.git",
+  "workersBuildUuid": null,
+  "workersVersionId": "65d2df60-8520-498c-9fac-d13d8a44fe5e",
+  "node": "24",
+  "buildCommand": "npm run build:web",
+  "origin": "https://familytravelsite.lmisael0721.workers.dev",
+  "license": "AGPL-3.0-only",
+  "createdAtUtc": "2026-11-23T23:45:59.182966+00:00",
+  "deploymentBinding": "caller-supplied-version",
+  "sanitization": {
+    "policy": "family.private-operational-plan.v1",
+    "privateCommit": "b390c07bad08d6710145e28a9ab70c15eb047352",
+    "trackedFiles": 18695,
+    "sourceFilesRetained": 18694,
+    "allRetainedBytesAndModesMatchGit": true,
+    "omissions": [
+      {
+        "path": ".cursor/plans/existing-family-backend-integration.plan.md",
+        "sha256": "c4677c13b949e3f714fe3f07f58f10c0a54af72a23537d7bb43e356240512449",
+        "bytes": 12372,
+        "reason": "Private operational plan; not required to build or run the application"
+      }
+    ]
+  },
+  "coveredWorkerVersions": [
+    {
+      "origin": "https://familytravelsite.lmisael0721.workers.dev",
+      "workerVersionId": "65d2df60-8520-498c-9fac-d13d8a44fe5e",
+      "release": "family-2026.11.23.8-rc.1"
+    },
+    {
+      "origin": "https://familytravelsite-integration-preview.lmisael0721.workers.dev",
+      "workerVersionId": "93268165-5679-47b4-b990-f7fc65d3e6ae",
+      "release": "family-2026.11.23.8-rc.1"
+    }
+  ]
+}

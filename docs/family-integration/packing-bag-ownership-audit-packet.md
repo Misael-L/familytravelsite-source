@@ -1,0 +1,15 @@
+# U04-D1 — packing bag ownership and writer audit
+
+Prerequisite: accepted [native category aggregate handoff](packing-category-aggregate-native-handoff.md), exact qualified application source, unchanged strict125 guard and retained earlier targets/evidence. Continue only in the separate reconciliation checkout. This packet is an audit and executable contract before any new schema or native activation.
+
+1. Trace TREK5.1.2 desktop/phone bag create/edit/delete, item bag moves, member selection and weight-limit readers to the Family adapters. Inventory actual public packing/bag/member relationships, functions, policies, grants, audit/history and recovery behavior in canonical migrations and the marked local125 database. Reference the existing F15/S25 onboarding and fixture plans. Treat current implementation as requirements, not a reason to retain a broken relationship.
+2. Specify common versus personal/shared bag visibility and edit authority, member removal, private-inclusive authoritative weights, item moves, deleting a nonempty bag, recoverable removal/restore, stale observations and concurrent edits. A visible total must not reveal private item content. Never turn an acknowledged operation into authorization or reassign another owner's data through a bag membership edit.
+3. Decide whether existing normalized relations suffice. Prefer existing identities with explicit constraints and validated transactional APIs; do not add tables or JSON state merely to copy TREK's server implementation. Do not introduce names containing `road`. List exact columns/FKs/indexes/grants/RLS/deletion and idempotency/receipt requirements only where a witnessed gap exists.
+4. Add bounded database rollback witnesses and actual native hook/model probes for those decisions, including permissions, private/shared bags, unassigned weight, duplicate retries, membership changes, lost replies, Trash/restore and saved read-only views. Preserve all existing rows, commands, media identities and evidence. Use fresh synthetic data and keep private fixtures out of the evidence seal.
+5. Produce the smallest coherent implementation prerequisite with permitted files, concrete signatures/constraints, migration rehearsal if genuinely required, tests, commands and acceptance criteria. Native bag controls stay gated until their writer/queue/recovery contract passes. Sharing, clone, templates/import and Tours do not get enabled as a side effect.
+
+No push/main merge/deploy, hosted SQL/settings/billing, dependency/image upgrade, transformations/backfill, actual backup rewrite or ignored ETL work. Independent full-project database-plus-files/off-device recovery and incremental backup scheduling remain separate outstanding operations. Do not repeat accepted category packets or invent a follow-up without a concrete witnessed dependency.
+
+## D1 audit accepted locally
+
+See [actual findings and proof](packing-bag-ownership-audit-handoff.md). The next handoff is the [D2a observed bag database/read foundation](packing-bag-foundation-packet.md), using a new guarded126 target. Existing125 and application source remain unchanged; bag management stays gated.

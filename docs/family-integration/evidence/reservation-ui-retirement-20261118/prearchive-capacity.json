@@ -1,0 +1,8 @@
+{
+  "read_only": true,
+  "available_bytes_after_quality_checks": 2002944000,
+  "previous_complete_archive_bytes": 351861710,
+  "estimated_tar_plus_extract_plus_1GiB": 1777465244,
+  "capacity_estimate_passed": true,
+  "estimate_is_not_archive_validation": true
+}

@@ -1,0 +1,9 @@
+{
+  "initial_full_run_existing_passed": 962,
+  "initial_new_cases_failed": 6,
+  "initial_result_retained": "initial-original-result.json",
+  "change": "New section-heading role queries match optional rendered whitespace between the exact status and count 1. Both labels and exact count remain required. New test file formatted before qualification.",
+  "original_application_unchanged": true,
+  "no_existing_tests_mocks_assertions_or_configuration_changed": true,
+  "same_corrected_new_test_bytes_used_before_and_after": true
+}

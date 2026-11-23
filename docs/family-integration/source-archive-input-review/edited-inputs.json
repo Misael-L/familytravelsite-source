@@ -1,0 +1,226 @@
+[
+  {
+    "path": "client/src/components/Settings/MapSettingsTab.test.tsx",
+    "sha256Before": "16708815fe301b51c12786b2713b9b188395c39731e8e088728403d30c5ddd52",
+    "sha256After": "148d5d50dcb38deb6c72e296fb1908ab578944378840d9f910a20d765ae66466",
+    "upstream514Owned": true,
+    "scope": "synthetic fixture only"
+  },
+  {
+    "path": "client/src/components/Settings/mapSettingsModel.test.ts",
+    "sha256Before": "b2f739a9886187c2e470d7bf67d5a06ebff24b9475ee8da2a1a8ce575cf7f6d1",
+    "sha256After": "2086f6178a83c3d3610333102e77848f442e1051a334152e85ba072d86be86b9",
+    "upstream514Owned": true,
+    "scope": "synthetic fixture only"
+  },
+  {
+    "path": "client/src/integrations/family/FamilyPlannerBoundary.test.tsx",
+    "sha256Before": "19ac271468562c34a68ff2b07d058a222445b23f4af95f4defd7376772c278ca",
+    "sha256After": "fd59684f443f513d2fc24773ff29f90a4f1eb2a5b72fc4f8d6e608fe8554bec7",
+    "upstream514Owned": false,
+    "scope": "synthetic fixture only"
+  },
+  {
+    "path": "client/src/integrations/family/bookingCalendarHandler.test.ts",
+    "sha256Before": "4e2ce89e1660d529dc47a0eaeb9a66dfd30b7ff305a077a3f8fa34d3561e0265",
+    "sha256After": "f7b608234edec7486162c287c9b5f2dd9f526ab80277c245e5256287a26965de",
+    "upstream514Owned": false,
+    "scope": "synthetic fixture only"
+  },
+  {
+    "path": "client/src/integrations/family/bookingDetails.test.tsx",
+    "sha256Before": "57d29df815cac5fbdec720cf585ed3542d599dbc71809a7cb6a3af3591f1e5d6",
+    "sha256After": "241ecbdb6e472f56d7fc740466bbc1306bf8ac21a8ca7553eb852f04f8bf9e63",
+    "upstream514Owned": false,
+    "scope": "synthetic fixture only"
+  },
+  {
+    "path": "client/src/integrations/family/completeTripRead.test.ts",
+    "sha256Before": "23bcdbc34343a6ee75cf3f376e6bf06f333eab4eeffd1ef260a29d8f42f706b1",
+    "sha256After": "3de4590c9da2851b72522efd1e157b060449a7cd596c941be66444bde396499e",
+    "upstream514Owned": false,
+    "scope": "synthetic fixture only"
+  },
+  {
+    "path": "client/src/integrations/family/deviceRecoveryGate.test.ts",
+    "sha256Before": "55481c23dbfcd8bd03b45b950cb9890ba03043651587944305adf502e3cbb9b1",
+    "sha256After": "8859742e62f977193c62054791a44107758607f691bee821d80d32c1654da658",
+    "upstream514Owned": false,
+    "scope": "synthetic fixture only"
+  },
+  {
+    "path": "client/src/integrations/family/familyOriginalWorkExport.test.ts",
+    "sha256Before": "e80a1823b700da82ec5a2b1f347a2d174c84173d3e5f2ebc044b73a897312cb0",
+    "sha256After": "ecd4b0d88066b69f2080735fbbbc4780f6a8338a39f097e79ddb1e5958365abd",
+    "upstream514Owned": false,
+    "scope": "synthetic fixture only"
+  },
+  {
+    "path": "client/src/integrations/family/governanceControls.test.tsx",
+    "sha256Before": "f80bcd7cedc2e892c1f8646b2476720bfdbe6027a2d75a8edfbf3bb912f1191e",
+    "sha256After": "9fb24a614a30c110ee08906bc4cc7c9398768396fe3afa2be545ded10fc0068d",
+    "upstream514Owned": false,
+    "scope": "synthetic fixture only"
+  },
+  {
+    "path": "client/src/integrations/family/logoutRecovery.test.tsx",
+    "sha256Before": "17ec9a83e0f943850758b311560c4facae9781b4487ba15e36379122d7407eda",
+    "sha256After": "9584efd2d6f92374bd0e9f6d7c04555799924770714fe5e019c4e08b948de284",
+    "upstream514Owned": false,
+    "scope": "synthetic fixture only"
+  },
+  {
+    "path": "client/src/integrations/family/nativeBookingCallbacks.test.tsx",
+    "sha256Before": "80f42edc1b007dac55a5856661aace031991a0a4b1a033d5a083d6cca8ffaa3d",
+    "sha256After": "1146347ac111097f8d87b500ecd9834d39e627103b216f093ec40bddf16c1ba9",
+    "upstream514Owned": false,
+    "scope": "synthetic fixture only"
+  },
+  {
+    "path": "client/src/integrations/family/nativeStayControls.test.ts",
+    "sha256Before": "3c5c3f697c4a3f64f7203de78b5387db22759ed39161e0c96ee0abbede783044",
+    "sha256After": "5423df73daca63abd17551a6f23c0c385377331eef59138d5238e7f185a56a70",
+    "upstream514Owned": false,
+    "scope": "synthetic fixture only"
+  },
+  {
+    "path": "client/src/integrations/family/nativeStayCreation.test.tsx",
+    "sha256Before": "920269bb1cc62c5564083a791a275935275d276509e432697ffe11a2ef2997ed",
+    "sha256After": "1e19f0b7ea387fd7b6263de7ce70fb3b4fd4c15042689bfd8cf2d996449a608d",
+    "upstream514Owned": false,
+    "scope": "synthetic fixture only"
+  },
+  {
+    "path": "client/src/integrations/family/nativeStayQueueQualification.test.ts",
+    "sha256Before": "d42a2bd6bfae6539d6260711d0c3478d05b99cb29ecc3fdccd7f0d7025d418d1",
+    "sha256After": "a635f05d9f6bffdd359adb529267587ebb537d81ddc8c806c40b4c434d9c9fd2",
+    "upstream514Owned": false,
+    "scope": "synthetic fixture only"
+  },
+  {
+    "path": "client/src/integrations/family/nativeStayWriter.test.tsx",
+    "sha256Before": "af9116877370a19ed205ad82eea9a24faa88e4a971020dfa029d8e32ab40af21",
+    "sha256After": "e927e6465d72db6f643df54fdab6945ec6391008a574a61958458272fe9e4d73",
+    "upstream514Owned": false,
+    "scope": "synthetic fixture only"
+  },
+  {
+    "path": "client/src/integrations/family/offlineCategoryQualification.test.ts",
+    "sha256Before": "4743e72d62736e1de0cd730f24018624c9ead853ba5cfb786d10ff8ed73d5280",
+    "sha256After": "9f31adeb61590500a9850214feb6e8a3c849f4eccf78dd1dae47a9aee0793be7",
+    "upstream514Owned": false,
+    "scope": "synthetic fixture only"
+  },
+  {
+    "path": "client/src/integrations/family/packingAggregateQualification.test.ts",
+    "sha256Before": "3a633880e7b87578994b73824d68fe662b9e9164c560fb88624e38529a57df19",
+    "sha256After": "e331a8b31af981697b52e71e3b26e6d8f5872357fd176d94f8426c5658b357da",
+    "upstream514Owned": false,
+    "scope": "synthetic fixture only"
+  },
+  {
+    "path": "client/src/integrations/family/packingRecoveryQualification.test.ts",
+    "sha256Before": "82d52f1483281a3cacab0d7bf04b300ee6fadbf67f93d227528c9c09b885b592",
+    "sha256After": "3782edcb1e50ad33af52bf0b68d96e9e1908447053496fc1aa74a76de334575b",
+    "upstream514Owned": false,
+    "scope": "synthetic fixture only"
+  },
+  {
+    "path": "client/src/integrations/family/plannerCohort.test.tsx",
+    "sha256Before": "dfbe10805e7a577e0527987e3a17f281f88388984c5895ce584b0e261aefd1f6",
+    "sha256After": "3f7cf4904342753204698ea637364792ebea4116c728af8e334137e7383ffb88",
+    "upstream514Owned": false,
+    "scope": "synthetic fixture only"
+  },
+  {
+    "path": "client/src/integrations/family/plannerState.test.ts",
+    "sha256Before": "2d4c6dfad00ffa29c7eda52f1e4500ffd796b5d89ebcbd4af1a21bbc5be51a07",
+    "sha256After": "b7fe778b9fa6746fa36b9d2291e891642a72eff47ef82d4bd6775bb678ab376c",
+    "upstream514Owned": false,
+    "scope": "synthetic fixture only"
+  },
+  {
+    "path": "client/src/integrations/family/plannerViews.test.ts",
+    "sha256Before": "67919e3b31752c767086a5b07d31e2e7fb6f98884ba67e31e6f5e1572163573a",
+    "sha256After": "4b019cea7cc49b32566c94c3ab4fe604bae4c9d4b109f43265da59f65c1723a8",
+    "upstream514Owned": false,
+    "scope": "synthetic fixture only"
+  },
+  {
+    "path": "client/src/integrations/family/privateFilePreparationV4.test.ts",
+    "sha256Before": "3dcf032395834ea31954c645287657ddb9fd86b17831d0869123c83188b765fa",
+    "sha256After": "35097de3b86683b359146e070845d87d9298d0e46eca0f0e7cbeda67d47ce1be",
+    "upstream514Owned": false,
+    "scope": "synthetic fixture only"
+  },
+  {
+    "path": "client/src/integrations/family/publicImagePreparation.test.ts",
+    "sha256Before": "a3188e625eb333ae6280bd22026f44cb8395f3789426d860d9e7c8c43e5d6791",
+    "sha256After": "464a678429bf69dc687e4f960eac3a3dd1e16dd6dbfd87e2f463ab73c800ec8d",
+    "upstream514Owned": false,
+    "scope": "synthetic fixture only"
+  },
+  {
+    "path": "client/src/integrations/family/publicImagePreparationV4.test.ts",
+    "sha256Before": "b80c160066afc2bb87d328ded64ac83940b6784a83e45d7235ba88126dd1417f",
+    "sha256After": "72743753ded4dc4aa088ba393ee72a6cd0f05c03cc2fbe0d333a9585cc97ee33",
+    "upstream514Owned": false,
+    "scope": "synthetic fixture only"
+  },
+  {
+    "path": "client/src/integrations/family/publicVariantCache.test.ts",
+    "sha256Before": "1caaac3d148d24b0c1726db3b8d4d4b49bba4e71319742c343aac85cb0372b2f",
+    "sha256After": "af4c2ab68f8eff74e1d910ded3a8f29d44e0ea9945f61cd44af341bbdae37752",
+    "upstream514Owned": false,
+    "scope": "synthetic fixture only"
+  },
+  {
+    "path": "client/src/integrations/family/startupReadSession.test.ts",
+    "sha256Before": "b7b82fd85d2aceffb98e19afafef736d5d357aa99f3602a765888c327dc2c865",
+    "sha256After": "c111c42ac8fe8db9ca54f977296fc9baa4c9a6033231c6db404a51ba6cc9b2bf",
+    "upstream514Owned": false,
+    "scope": "synthetic fixture only"
+  },
+  {
+    "path": "docs/family-integration/supported-core-preview-readiness.md",
+    "sha256Before": "79c57ed5e1d33c424c7bb10255a8bc5c18d6412e2adf540b48c9fce98db67d1f",
+    "sha256After": "ac731a5c890c3917b52931e33a4b2692fc3afc69cceaecaa7427cbfc96264ca6",
+    "upstream514Owned": false,
+    "scope": "explicit operational metadata redaction"
+  },
+  {
+    "path": "docs/family-integration/supported-core-readiness/hosted-comparison.json",
+    "sha256Before": "e478bd8b2b41c7052d041b774dd7c9fa385033b0ae62b9166ee4cf1c415afbf9",
+    "sha256After": "458b5edc8e60158c1ee1091be84bdc51f8c720ff2a40f7eccf9c6af88d4c979d",
+    "upstream514Owned": false,
+    "scope": "explicit operational metadata redaction"
+  },
+  {
+    "path": "docs/family-integration/supported-core-readiness/hosted-core-schema.json",
+    "sha256Before": "1f96f1c233287b46519fcef6b39fc9a1a4114479bb015884872d75032c7b3e44",
+    "sha256After": "2675dace6ffe22690a3dcb905a5ae3d67ebe4ed238a548d7fce2a7749928ac5d",
+    "upstream514Owned": false,
+    "scope": "explicit operational metadata redaction"
+  },
+  {
+    "path": "docs/family-integration/supported-core-readiness/hosted-recovery-schema.json",
+    "sha256Before": "5b5ca3867d70d2eafa106f801e42e6b8d1400dcbd589a063d1798687ab38bd3d",
+    "sha256After": "f98e72dffedc82cd82bbaafc2afac0462064119288df2293fe9f8af46b6502ee",
+    "upstream514Owned": false,
+    "scope": "explicit operational metadata redaction"
+  },
+  {
+    "path": "docs/family-integration/supported-core-readiness/inventory.json",
+    "sha256Before": "c9d8df4a891b6d0b7ad71c72cda84a8ce502cdf20e63e29245dfd9c483ec5e90",
+    "sha256After": "d426a99af38675aafd4859c85c9face07c425b4c3b90831279293170f370a0a7",
+    "upstream514Owned": false,
+    "scope": "explicit operational metadata redaction"
+  },
+  {
+    "path": "docs/family-integration/supported-core-readiness/recheck-20261114/hosted-project.json",
+    "sha256Before": "d109ef7550d1acc21c5c617106cf5210eff2d167911d65b01ca27d35d2ba0c43",
+    "sha256After": "411f46051157dae4531008aa676d609dd2170179dff5717546fe090658e9eafd",
+    "upstream514Owned": false,
+    "scope": "explicit operational metadata redaction"
+  }
+]

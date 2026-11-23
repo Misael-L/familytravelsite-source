@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "existing_regression_cases": 2354,
+  "passed_cases": 2316,
+  "failed_cases": 0,
+  "unchanged_preexisting_skipped_cases": 38,
+  "same_expanded_case_outcomes_and_multiplicities": true,
+  "one_source_defined_generated_UUID_label_only_normalized": true,
+  "focused_cases": 209,
+  "focused_suite_overlap_with_core": [],
+  "no_tests_skips_mocks_fixtures_timeouts_or_config_changed": true,
+  "not_full_CI_browser_or_live_backend_acceptance": true
+}

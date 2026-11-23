@@ -1,0 +1,34 @@
+{
+  "exit": 1,
+  "seconds": 7.52,
+  "files": [
+    "src/components/Journey/PhotoLightbox.test.tsx",
+    "src/components/Journey/photoZoom.test.ts",
+    "src/components/Journey/usePhotoZoom.test.ts",
+    "src/components/Journey/PhotoLightbox.zoomReset.test.tsx"
+  ],
+  "command": [
+    "/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/node_modules/.bin/vitest",
+    "run",
+    "src/components/Journey/PhotoLightbox.test.tsx",
+    "src/components/Journey/photoZoom.test.ts",
+    "src/components/Journey/usePhotoZoom.test.ts",
+    "src/components/Journey/PhotoLightbox.zoomReset.test.tsx",
+    "--maxWorkers=2",
+    "--reporter=default",
+    "--reporter=json",
+    "--outputFile=/private/tmp/trek-core-photo-zoom-source-20261117/original-tests.json",
+    "--coverage.enabled",
+    "--coverage.include=src/components/Journey/usePhotoZoom.ts",
+    "--coverage.include=src/components/Journey/photoZoom.ts",
+    "--coverage.include=src/components/Journey/PhotoLightbox.tsx",
+    "--coverage.reporter=json",
+    "--coverage.reporter=json-summary",
+    "--coverage.reporter=text",
+    "--coverage.reportsDirectory=/private/tmp/trek-core-photo-zoom-source-20261117/original-coverage"
+  ],
+  "thresholds_unchanged": 85,
+  "numPassedTests": 47,
+  "numFailedTests": 5,
+  "numTotalTests": 52
+}

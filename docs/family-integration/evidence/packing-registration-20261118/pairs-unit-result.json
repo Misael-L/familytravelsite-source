@@ -1,0 +1,10 @@
+{
+  "exit": 0,
+  "seconds": 2.87,
+  "passed": 15,
+  "failed": 0,
+  "skipped": 0,
+  "files": 1,
+  "unchanged_existing_guard_tests": true,
+  "initial_relative_bin_launch_failed_before_tests": true
+}

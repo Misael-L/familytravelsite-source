@@ -1,0 +1,17 @@
+[
+  "src/pages/AtlasPage.test.tsx",
+  "src/pages/AtlasPage.wiring.test.tsx",
+  "src/pages/atlas",
+  "tests/unit/mobile/atlas",
+  "src/mobile/screens/atlas/MAtlasCountryPopup.test.tsx",
+  "src/components/Atlas/AtlasCountryPlaces.test.tsx",
+  "src/integrations/family/applicationHandler.test.ts",
+  "src/integrations/family/plannerApplicationReads.test.ts",
+  "src/integrations/family/completeTripRead.test.ts",
+  "src/integrations/family/identity.test.ts",
+  "src/integrations/family/directWriteSession.test.ts",
+  "src/integrations/family/publicVariantProjection.test.ts",
+  "src/integrations/family/publicVariantImages.test.ts",
+  "tests/unit/scripts/family-scanner-ownership.test.ts",
+  "tests/unit/family/secretScan.test.ts"
+]

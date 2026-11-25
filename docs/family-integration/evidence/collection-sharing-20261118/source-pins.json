@@ -1,0 +1,20 @@
+{
+  "incoming": "67f622d2fe52f117a8eca77775a5eb8852f3e52f",
+  "implementation": "547c927cd5b22da8af25033d2f1a4177c2e9c09c",
+  "build_source": "6658353d35e53f2ffea79f695ebf6350ef4830b2",
+  "original_hook_sha256": "089552fd8e7a05e284db702237165f45268f81a9c9e15f5120928dc3709a8b11",
+  "candidate_hook_sha256": "7085c0f5ede10e99c81327d4bd3a35e3723343a82c0cf75ecb7d30b263fb8519",
+  "companion_sha256": "2df54137c35cf485f6eddd6e1a222008f900ab7607eb89a3bc0574561a7a0edc",
+  "new_test_sha256": {
+    "useCollectionSharing.lifetime.test.tsx": "4dc0280f1e4a16a5675654085304c488cf3d07dc420cadab0e35c7a1bc8dbdb2",
+    "collectionSharing.consumers.test.tsx": "30e17c9a5817122f5835457e71762bf9411413c2c13ac51a23889b325e412c3e",
+    "collectionSharing.gates.test.ts": "a73a4b533b3a6e911a971a133b396ffed4d35263678c73d2ea18c6e9a11daf28"
+  },
+  "unchanged_existing_test_files": {
+    "src/components/Collections/useCollectionSharing.test.ts": "08fc0f7545a60b7ebf3c5ff7f9c66391552c55ce42024194a4b1d275830911ea",
+    "src/components/Collections/ShareCollectionModal.test.tsx": "53a5fdbd54ba073e0ea49586715027cd8ae5a0e8dd84fee92fd17a8c0b79c37c"
+  },
+  "node_runtime": "v24.22.2",
+  "private_raw_build_coverage_and_declaration_hashes": "/private/tmp/trek-core-collection-sharing-source-20261118",
+  "no_live_database_provider_browser_requests": true
+}

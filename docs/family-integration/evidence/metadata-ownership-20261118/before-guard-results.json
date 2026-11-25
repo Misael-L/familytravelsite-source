@@ -1,0 +1,22 @@
+[
+  {
+    "name": "rtl",
+    "exit": 1,
+    "cwd": "/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client",
+    "command": [
+      "node",
+      "scripts/rtl-lint.mjs"
+    ],
+    "seconds": 4.38
+  },
+  {
+    "name": "i18n",
+    "exit": 1,
+    "cwd": "/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client",
+    "command": [
+      "node",
+      "scripts/i18n-keys.mjs"
+    ],
+    "seconds": 2.19
+  }
+]

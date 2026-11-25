@@ -1,0 +1,13 @@
+{
+  "migration_sha256": "99dcc3aa50af153ff245d70283e5b1ac0f6e7af97325cb3eb08bb485e79e09a6",
+  "functions": {
+    "execute_family_trip_packing_group_v1(uuid,uuid,jsonb,text,bigint,jsonb,jsonb,jsonb)": "1c35ea723b919812d546b13150d5aad433e2fb6b5f71c505e3bc37bb953e7d6d",
+    "get_family_trip_packing_group_receipt_v1(uuid,uuid)": "4c5f294d31eec5168383f23b5e1329220453ce3fbf4f07bd3c11eb1fc1a71721",
+    "family_auth.packing_group_execute_entry(uuid,uuid,jsonb,text,bigint,jsonb,jsonb,jsonb)": "8c5b8a6e3c237177f4e334441a9a3bb9ce01f53080ae48404d084369f673e6ac",
+    "family_auth.packing_group_receipt_entry(uuid,uuid)": "b2ebf12dc317ac56f2599655781d6e233cebda74ac337e5cb74c140ea85df6c6",
+    "family_auth.packing_group_selected(packing_items,jsonb)": "5c998f3e72ea15df12ee27ef5de71f8cac8feef68c1277ff30080208d70d4d73",
+    "family_auth.packing_receipt_entry(uuid,uuid)": "55e49b944e3ea53d9b70b28b5b74b9bbd9cf4158abe159523d6c4ad2dead8473",
+    "family_auth.packing_result_visible(jsonb)": "cb373cbccb792e606c3baab27e25b091acbe76bc64fe4ae5748441979dfa8e00",
+    "family_auth.validate_packing_group_request(text,jsonb,jsonb,jsonb)": "bfaf1191371a0f7589c9d58de05e985a3ec98960c23c754cf5abbb62953b8428"
+  }
+}

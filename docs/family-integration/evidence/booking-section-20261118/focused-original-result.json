@@ -1,0 +1,22 @@
+{
+  "exit": 0,
+  "seconds": 3.83,
+  "files": [
+    "src/integrations/family/legacy/components/Planner/BookingsPanelFamily.sections.test.tsx"
+  ],
+  "command": [
+    "/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/node_modules/.bin/vitest",
+    "run",
+    "src/integrations/family/legacy/components/Planner/BookingsPanelFamily.sections.test.tsx",
+    "--maxWorkers=2",
+    "--reporter=default",
+    "--reporter=json",
+    "--outputFile=/private/tmp/trek-core-booking-section-20261118/focused-original-tests.json"
+  ],
+  "controlled_ports_only": true,
+  "coverage_not_enabled_or_claimed": true,
+  "numPassedTests": 6,
+  "numFailedTests": 0,
+  "numPendingTests": 0,
+  "numTotalTests": 6
+}

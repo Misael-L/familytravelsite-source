@@ -1,0 +1,3 @@
+FAIL  integrations/family/legacy/components/Admin/plugins/PluginBadges.tsx:79: `admin.plugins.perm.${perm}` reaches 58 catalog keys, more than 30: narrow the prefix, or add a DYNAMIC_ALLOWED entry saying what bounds the value
+FAIL  DYNAMIC_ALLOWED lists `admin.plugins.perm.${perm}` in integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx, which that file no longer uses, whose keys en lacks, or which is narrow enough to pass without it: remove or fix the entry
+i18n keys: 7784 literal and 371 template reference(s) checked against 13845 en keys; 722 en key(s) reached by neither, baseline allows 722 (--unused lists them)

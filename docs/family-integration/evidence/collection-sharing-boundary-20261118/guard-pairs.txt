@@ -1,0 +1,5 @@
+
+> @trek/client@5.1.4 lint:pairs
+> node scripts/pairs-lint.mjs
+
+pairs: 143 shared feature(s), 83 phone-only screen file(s), 0 problem(s)

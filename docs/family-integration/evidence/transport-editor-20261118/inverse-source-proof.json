@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "actual_candidate_parent_components_lookup_constants_types_factories_and_conversion_used": true,
+  "only_original_import_prefix_exports_and_EOF_separator_restored": true,
+  "all_nonimport_source_bytes_exact": true,
+  "reconstructed_sha256": "f1cdd38d8990f12262f9c141c52bf97a72ba53c43f983c2e288793232c59fc45"
+}

@@ -1,0 +1,6 @@
+{
+  "passed": true,
+  "ACL_STAT_XATTR_copy_only_no_DATA": true,
+  "mode_owner_mtime_flags_xattrs_ACL_and_bytes_verified": true,
+  "separate_COW_isolation_probe": true
+}

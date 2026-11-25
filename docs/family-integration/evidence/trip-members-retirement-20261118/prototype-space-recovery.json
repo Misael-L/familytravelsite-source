@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "only_verified_disposable_source_prototype_removed": "/private/tmp/trek-core-trip-members-retirement-20261118/candidate-checkout",
+  "pinned_original_source": "e93b86567f6a46ca7f5a84a476fcb2ca5389c82c",
+  "explicit_candidate_deletions": [
+    "client/src/integrations/family/legacy/components/Trips/TripMembersModal.tsx"
+  ],
+  "all_other_tracked_bytes_verified": 18114,
+  "dependency_links_unlinked_without_following": true,
+  "test_logs_evidence_compiled_artifacts_source_checkouts_backups_ETL_media_preserved": true,
+  "free_bytes_before": 3062132736,
+  "free_bytes_after": 3463180288
+}

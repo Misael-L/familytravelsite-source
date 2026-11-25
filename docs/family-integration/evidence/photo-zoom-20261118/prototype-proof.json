@@ -1,0 +1,153 @@
+{
+  "passed": true,
+  "original_module_AST_restored_after_only_measurement_inline_and_four_reset_assignments_removed": true,
+  "measurement_body_argument_ref_read_order_and_callback_dependencies_exact": true,
+  "deliberate_behavior_change": "clear photo-owned pinch, drag, tap timestamp and touch origin in the existing reset-key effect and retire the parent swipe origin on the same photo-id boundary",
+  "new_async_boundaries": 0,
+  "existing_lightbox_and_math_tests": 32,
+  "new_hook_cases": 15,
+  "new_consumer_regressions": 5,
+  "candidate_passed": 52,
+  "original_failed": 5,
+  "failures": [
+    {
+      "path": "src/components/Journey/PhotoLightbox.zoomReset.test.tsx",
+      "name": "photo-specific gesture reset does not combine taps on different photos into one double tap"
+    },
+    {
+      "path": "src/components/Journey/PhotoLightbox.zoomReset.test.tsx",
+      "name": "photo-specific gesture reset discards a drag from the previous photo"
+    },
+    {
+      "path": "src/components/Journey/PhotoLightbox.zoomReset.test.tsx",
+      "name": "photo-specific gesture reset does not continue the old pinch on the next photo"
+    },
+    {
+      "path": "src/components/Journey/PhotoLightbox.zoomReset.test.tsx",
+      "name": "photo-specific gesture reset does not swipe the new photo with a gesture started on the previous one"
+    },
+    {
+      "path": "src/components/Journey/PhotoLightbox.zoomReset.test.tsx",
+      "name": "photo-specific gesture reset discards a touch started on the previous photo"
+    }
+  ],
+  "source_sha256": "a02fa079cf35d6be0b615d56e0560d111f9b3be0a25cf990b880b3125819e029",
+  "lightbox_sha256": "d2f4f777b22b9fa9d02f055cd9b05983d3bf7d126ff618288bc082492b0ad91f",
+  "parent_lightbox_AST_exact_after_removing_only_swipe_reset_effect": true,
+  "test_sha256": {
+    "usePhotoZoom.test.ts": "09ef9702e710744dbba5be0bd399a796c90698d74cec631f18945f1f427db574",
+    "PhotoLightbox.zoomReset.test.tsx": "a22aa05019fb24a5f78da8af080ae1376d6ff96645cefa23f87ddcad1c0984b3"
+  },
+  "coverage": {
+    "total": {
+      "lines": {
+        "total": 164,
+        "covered": 164,
+        "skipped": 0,
+        "pct": 100
+      },
+      "statements": {
+        "total": 202,
+        "covered": 201,
+        "skipped": 0,
+        "pct": 99.5
+      },
+      "functions": {
+        "total": 42,
+        "covered": 42,
+        "skipped": 0,
+        "pct": 100
+      },
+      "branches": {
+        "total": 137,
+        "covered": 132,
+        "skipped": 0,
+        "pct": 96.35
+      },
+      "branchesTrue": {
+        "total": 0,
+        "covered": 0,
+        "skipped": 0,
+        "pct": "Unknown"
+      }
+    },
+    "/private/tmp/trek-core-photo-zoom-source-20261117/candidate-checkout/client/src/components/Journey/PhotoLightbox.tsx": {
+      "lines": {
+        "total": 50,
+        "covered": 50,
+        "skipped": 0,
+        "pct": 100
+      },
+      "functions": {
+        "total": 16,
+        "covered": 16,
+        "skipped": 0,
+        "pct": 100
+      },
+      "statements": {
+        "total": 70,
+        "covered": 70,
+        "skipped": 0,
+        "pct": 100
+      },
+      "branches": {
+        "total": 71,
+        "covered": 69,
+        "skipped": 0,
+        "pct": 97.18
+      }
+    },
+    "/private/tmp/trek-core-photo-zoom-source-20261117/candidate-checkout/client/src/components/Journey/photoZoom.ts": {
+      "lines": {
+        "total": 13,
+        "covered": 13,
+        "skipped": 0,
+        "pct": 100
+      },
+      "functions": {
+        "total": 4,
+        "covered": 4,
+        "skipped": 0,
+        "pct": 100
+      },
+      "statements": {
+        "total": 14,
+        "covered": 14,
+        "skipped": 0,
+        "pct": 100
+      },
+      "branches": {
+        "total": 4,
+        "covered": 4,
+        "skipped": 0,
+        "pct": 100
+      }
+    },
+    "/private/tmp/trek-core-photo-zoom-source-20261117/candidate-checkout/client/src/components/Journey/usePhotoZoom.ts": {
+      "lines": {
+        "total": 101,
+        "covered": 101,
+        "skipped": 0,
+        "pct": 100
+      },
+      "functions": {
+        "total": 22,
+        "covered": 22,
+        "skipped": 0,
+        "pct": 100
+      },
+      "statements": {
+        "total": 118,
+        "covered": 117,
+        "skipped": 0,
+        "pct": 99.15
+      },
+      "branches": {
+        "total": 62,
+        "covered": 59,
+        "skipped": 0,
+        "pct": 95.16
+      }
+    }
+  }
+}

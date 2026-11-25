@@ -1,0 +1,154 @@
+{
+  "backend_base": "3e7087e0a5f9e51cad169cd0e074babacc6cbb84",
+  "backend_candidate": "b79933be3af1ddcf4b0aa1a06bc8a7ca161a38c5",
+  "migration": {
+    "version": "20261121184611",
+    "name": "qualify_vacay_permissions_and_collection_authoring_index",
+    "file": "supabase/migrations/20261121184611_qualify_vacay_permissions_and_collection_authoring_index.sql",
+    "sha256": "6f7e694f175a8b1fd58ae4316825e2c03c36c7aa8f2b163a91904853f5854cbe"
+  },
+  "ledger_before": 154,
+  "ledger_after": 155,
+  "first_154_records_exact": true,
+  "injected_rollback": {
+    "version": "20261121184611",
+    "name": "qualify_vacay_permissions_and_collection_authoring_index",
+    "sha256": "6f7e694f175a8b1fd58ae4316825e2c03c36c7aa8f2b163a91904853f5854cbe",
+    "exit_code": 3,
+    "sqlstates": [
+      "22012"
+    ],
+    "seconds": 0.12
+  },
+  "migration_execution": {
+    "version": "20261121184611",
+    "name": "qualify_vacay_permissions_and_collection_authoring_index",
+    "sha256": "6f7e694f175a8b1fd58ae4316825e2c03c36c7aa8f2b163a91904853f5854cbe",
+    "exit_code": 0,
+    "sqlstates": [],
+    "seconds": 0.08
+  },
+  "contract_tests": [
+    {
+      "file": "family_holiday_calendar_grants.sql",
+      "phase": "before",
+      "exit": 3,
+      "sqlstates": [
+        "P0001"
+      ],
+      "expected_failure": "Unexpected holiday calendar access for SELECT",
+      "sql_sha256": "c76ba80d2bdacd85d5bf181b1a4aec8b8f2e7fb33f8aedf234e0501f5a039125"
+    },
+    {
+      "file": "family_vacay_calendar_entry_grants.sql",
+      "phase": "before",
+      "exit": 3,
+      "sqlstates": [
+        "P0001"
+      ],
+      "expected_failure": "Unexpected calendar entry grant for SELECT",
+      "sql_sha256": "350f2ed6fa0b2a200d16d40a14e1c6976622ad370ae767dc4e6a0eaf364f8b6f"
+    },
+    {
+      "file": "collection_authoring_schema_contract.sql",
+      "phase": "before",
+      "exit": 3,
+      "sqlstates": [
+        "P0004"
+      ],
+      "expected_failure": "Collection authoring context requires a leading command foreign-key index",
+      "sql_sha256": "0ca1111b72d091054d90a0b6f7608e24e8473ef2ccb45e15d2ef30472eac9a78"
+    },
+    {
+      "file": "family_holiday_calendar_grants.sql",
+      "phase": "after",
+      "exit": 0,
+      "sqlstates": [],
+      "expected_failure": null,
+      "sql_sha256": "c76ba80d2bdacd85d5bf181b1a4aec8b8f2e7fb33f8aedf234e0501f5a039125"
+    },
+    {
+      "file": "family_vacay_calendar_entry_grants.sql",
+      "phase": "after",
+      "exit": 0,
+      "sqlstates": [],
+      "expected_failure": null,
+      "sql_sha256": "350f2ed6fa0b2a200d16d40a14e1c6976622ad370ae767dc4e6a0eaf364f8b6f"
+    },
+    {
+      "file": "collection_authoring_schema_contract.sql",
+      "phase": "after",
+      "exit": 0,
+      "sqlstates": [],
+      "expected_failure": null,
+      "sql_sha256": "0ca1111b72d091054d90a0b6f7608e24e8473ef2ccb45e15d2ef30472eac9a78"
+    }
+  ],
+  "index": "CREATE INDEX collection_authoring_context_command_fk_idx ON family_auth.collection_authoring_context USING btree (actor_user_id, operation_id)",
+  "rls_policies_exact": true,
+  "other_compared_grants_exact": true,
+  "hosted_writes": false,
+  "qualification_date": "2026-11-21",
+  "checked_hosted_snapshot_was_88_versions": true,
+  "pending_against_last_hosted_snapshot": 67,
+  "previous_66_migrations": "migration-delta.json",
+  "original_rows": {
+    "original_projections": 200,
+    "original_rows": 296764,
+    "changed_or_missing_projections": [],
+    "added_rows_on_original_projections": [
+      {
+        "projection": "family_auth.rls_aal_coverage",
+        "original_rows": 153,
+        "missing_rows": 0,
+        "additional_rows": 3
+      },
+      {
+        "projection": "supabase_migrations.schema_migrations",
+        "original_rows": 88,
+        "missing_rows": 0,
+        "additional_rows": 67
+      }
+    ],
+    "original_rows_retained_exactly": 296764
+  },
+  "legacy_writer_compatibility": {
+    "older_main_source": "247b76ea94942e511a663f3f840c81821c556fc5",
+    "older_preview_source": "cede145a2e1963c59b667498e99e5056eaf65266",
+    "live_worker_source_binding_verified": false,
+    "legacy_task_packing_table_write_grants_present_on_baseline": true,
+    "legacy_task_packing_insert_update_delete_refusals": 6,
+    "legacy_packing_initialization_template_rpc_refusals": 3,
+    "sqlstate": "42501",
+    "by_role": "authenticated",
+    "successful_legacy_mutations": 0,
+    "production_or_preview_used_for_testing": false,
+    "catalog": {
+      "enum": [
+        "country",
+        "place",
+        "experience",
+        "hotel",
+        "airport",
+        "airline",
+        "guide",
+        "food",
+        "manual"
+      ],
+      "location_foreign_keys": 8,
+      "collection_helpers_authenticated_can_execute": [
+        "collection_authoring_entry",
+        "collection_entry",
+        "collection_library_entry",
+        "collection_read_entry",
+        "collection_request_entry"
+      ],
+      "critical_rpc_presence": 8,
+      "not_valid_constraints": [
+        "realtime.messages.messages_payload_exclusive"
+      ]
+    }
+  },
+  "backend_private_checkpoint_verified": true,
+  "deployed": false
+}

@@ -1,0 +1,21 @@
+{
+  "passed": true,
+  "only_fresh_verified_source_prototypes_retired": [
+    {
+      "prototype": "/private/tmp/trek-core-transport-presentation-20261118/original-checkout",
+      "mode": "original",
+      "files_verified": 18336
+    },
+    {
+      "prototype": "/private/tmp/trek-core-transport-presentation-20261118/candidate-checkout",
+      "mode": "candidate",
+      "files_verified": 18338
+    }
+  ],
+  "all_other_tracked_bytes_verified": true,
+  "new_test_bytes_exact_before_after": true,
+  "dependency_links_unlinked_without_following": true,
+  "retained_builds_complete_archives_prior_evidence_other_checkouts_backups_ETL_media_untouched": true,
+  "free_bytes_before": 2908160000,
+  "free_bytes_after": 3321856000
+}

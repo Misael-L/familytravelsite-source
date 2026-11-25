@@ -1,0 +1,61 @@
+{
+  "passed": true,
+  "scoped_export_declarations": {
+    "client/src/integrations/family/legacy/components/Planner/TransportModal.tsx": [
+      {
+        "line": 240,
+        "declaration": "export function TransportModal({"
+      }
+    ],
+    "client/src/integrations/family/legacy/components/Planner/TransitSearchPanel.tsx": [
+      {
+        "line": 62,
+        "declaration": "export interface TransitItinerary {"
+      },
+      {
+        "line": 79,
+        "declaration": "export interface PickedPlace {"
+      },
+      {
+        "line": 644,
+        "declaration": "export default function TransitSearchPanel({"
+      }
+    ]
+  },
+  "internal_mixed_value_and_type_import": {
+    "line": 49,
+    "declaration": "import TransitSearchPanel, { type PickedPlace } from './TransitSearchPanel';",
+    "value_binding": "TransitSearchPanel",
+    "type_binding": "PickedPlace"
+  },
+  "outside_candidate_module_consumers": [],
+  "no_ambient_augmentation": true,
+  "tested_and_type_consumed_Family_transports_preserved": {
+    "path": "client/src/integrations/family/legacy/components/Planner/TransportsPanelFamily.tsx",
+    "sha256": "911fdd2bc5cc87a74fd8166b19cd2351ce105b8c75fa29d45edfdda9de7314ff",
+    "test": "client/src/integrations/family/legacy/components/Planner/TransportsPanelFamily.test.tsx",
+    "test_sha256": "2db0dd6f71bb9d6c7d3736e6666c3d05101931a7b183120cfae254e327d12504",
+    "raw_consumers": [
+      {
+        "from": "client/src/integrations/family/legacy/components/Planner/TransportsPanelFamily.test.tsx",
+        "target": "client/src/integrations/family/legacy/components/Planner/TransportsPanelFamily.tsx",
+        "kind": "ImportDeclaration",
+        "line": 19,
+        "type_only": false
+      },
+      {
+        "from": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+        "target": "client/src/integrations/family/legacy/components/Planner/TransportsPanelFamily.tsx",
+        "kind": "ImportDeclaration",
+        "line": 23,
+        "type_only": false
+      }
+    ],
+    "ordinary_entry_member": false
+  },
+  "tested_Family_bookings_preserved": {
+    "client/src/integrations/family/legacy/components/Planner/BookingsPanelFamily.tsx": "27682ec331a59d18545df0be9da3618e51e77f29404228bc96a93d2755835673",
+    "client/src/integrations/family/legacy/components/Planner/BookingsPanelFamily.test.tsx": "1e290019c1813c462744faa653467e92a2e62f83220a0def8e5f871f5e2b5b92"
+  },
+  "full_current_source_graph_identical": true
+}

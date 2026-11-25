@@ -1,0 +1,49 @@
+{
+  "schema": 122,
+  "project_id": "family-modernization-20261111-c2a",
+  "server": "17.11",
+  "migration": "20261112005447_observed_trip_packing_categories.sql",
+  "migration_sha256": "ca5381fc403eed90809c9ae9c92a94785d58b2cd09e36602af466a27d1e2f031",
+  "earlier_sources": 121,
+  "functions": {
+    "build_family_export_v1(uuid)": "7001150bc41226a78946b00032d3011166d095b6583fa3d458329de583fa62da",
+    "execute_family_trip_packing_category_v1(uuid,uuid,jsonb,text,bigint,jsonb,jsonb)": "61bfc62b091311ae16f861e7438b6f66ae56bec37f9db47b9479337703cae2a9",
+    "family_auth.packing_category_can_read(uuid)": "be1b07d4a0bf2bbe70bef218e449f15e1227ef9ee7412b1596787bc8560e3236",
+    "family_auth.packing_category_execute_entry(uuid,uuid,jsonb,text,bigint,jsonb,jsonb)": "f6a8384a6d7b85697dda574a56be4147c29f2bc572896059fd5ba6c12eaf6a05",
+    "family_auth.packing_category_json(packing_categories)": "c8bb5625e44b0f3d0eb0ef1120f671e6938e024527837f5ffce71b79bc956b89",
+    "family_auth.packing_category_receipt_entry(uuid,uuid)": "8a868cb43077bad705ae1ef1c14f4fc870342c6d66aac74ac772c208ebbc1813",
+    "family_auth.packing_category_resolve(uuid,uuid,text)": "54da401c47f688afa59be61861ba002cdce3c80853d1be5ea33fc34dd67b905e",
+    "family_auth.packing_execute_entry(uuid,uuid,jsonb,text,uuid,bigint,bigint,jsonb)": "9d5e573e0829f07bde1e98f0eed8b8d1e5322174dbc20cd3a103cbd8b6c3135b",
+    "family_auth.packing_group_selected(packing_items,jsonb)": "28c65693199d63559d0cf770654d77686a93206a6a58b6d0ce3af9d555e50877",
+    "family_auth.packing_item_json(packing_items)": "a2b014104ebcaedf8f14e97ff41abfb593b2f884ca09c2ebd2af1a46eaa3da03",
+    "family_auth.packing_receipt_entry(uuid,uuid)": "b06999f1bddc2ce744f9a5652e96c570c427cfaaf5eb3fe3b0ee81d0887f9fc8",
+    "family_auth.packing_result_visible(jsonb)": "99b2ec6b6762e3f1837c1aa6448408e80f08fb7fecfde5af6d476961225f5b77",
+    "family_auth.packing_snapshot(uuid)": "fe2a5009248d4ef9fd8f64b5928abb528a7966703a501f61fa1a8ffbb4ee4bc2",
+    "family_auth.packing_with_categories_entry(uuid)": "982fe803dbf620b6cf9a0d1cba25c863a57f09c917b162f84001b5f13f78a409",
+    "family_auth.tg_packing_category_assignment()": "b74bf8f5d946678f3438f8cf5f2ed3dfd6e8152627a600ed18d9c0f67c6d84d6",
+    "family_auth.tg_packing_category_bridge()": "97604d745bdaea535f517af4c92c606f6c8e0f76fcc4401e391dd8f1572b276a",
+    "family_auth.tg_packing_category_changed()": "4fd4efe4c95c450d1b43f7112ef0011f173194862deb7531290992b62c7584aa",
+    "family_auth.tg_packing_category_identity()": "e48955a40fef132b0109539f5babbadd670ed313c93591a7445be4c296baa3d5",
+    "family_auth.tg_packing_category_link()": "382f4fcc94b3f507164ac15b31ff3408e8c27f0f3978c1abe5f79345e928dcfd",
+    "family_auth.tg_packing_category_lock()": "12fc5e4ddf417f737b133bb955dcfea7d54a9f763e7da0940816e5f25e94c5c0",
+    "family_auth.tg_packing_collection()": "16df05e3a51e45d33a5b833b293874352e1f8fda5f3b44738db7344a20a514bc",
+    "family_auth.tg_packing_person_context()": "dad6ede8bc3851f42a6a450dc6c8789c0edabb12c1836a5fbcff5184d3b071b2",
+    "family_auth.tg_packing_version()": "6fb23d53f926cb9f4b83016115a2f741733ecff4d530ec541f0f8bbe81c21ee6",
+    "family_auth.validate_packing_category_request(text,jsonb,jsonb)": "25b46c29f4e52c08a3833e2c1d9c48ba4bb51bd9b2c83753968d699b4290d917",
+    "get_family_trip_packing_category_receipt_v1(uuid,uuid)": "30dea8f0e2c4909b1bedbef9d27aae81eb92057c84379a11007f3f877ae3f98a",
+    "get_family_trip_packing_with_categories_v1(uuid)": "0e9f9b0408839df3e698ded86bddb31a68d76b3c4870559454da46bc45138b20"
+  },
+  "schema_contract_sha256": "cc3706a707d4377cce5034e324f99f6d96adda829383dfb234505ad7e79a24bb",
+  "new_functions": [
+    "execute_family_trip_packing_category_v1(uuid,uuid,jsonb,text,bigint,jsonb,jsonb)",
+    "family_auth.packing_category_execute_entry(uuid,uuid,jsonb,text,bigint,jsonb,jsonb)",
+    "family_auth.packing_category_receipt_entry(uuid,uuid)",
+    "family_auth.validate_packing_category_request(text,jsonb,jsonb)",
+    "get_family_trip_packing_category_receipt_v1(uuid,uuid)"
+  ],
+  "reviewed_replacements": [
+    "family_auth.packing_result_visible(jsonb)",
+    "family_auth.packing_receipt_entry(uuid,uuid)"
+  ],
+  "old_function_owners_grants_configs_exact": true
+}

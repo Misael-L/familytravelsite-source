@@ -1,0 +1,69 @@
+{
+  "passed": false,
+  "repair_verified": true,
+  "packet": "Q126",
+  "scope": "Online Collection sharing repository and preserved original view/session/collection ownership. Stale baseline removal remains a separate proposal.",
+  "incoming": "e6a7ec30760530b37212386daddfd4503014a9f0",
+  "implementation": "84e722d1c5a760bfca263f0c69fea3d568550eff",
+  "build_source_commit": "b5164ce88b736dffe20ae5c46a22869e64187f96",
+  "runtime_paths": [
+    "client/src/components/Collections/collectionSharingState.ts",
+    "client/src/repo/collectionSharingRepo.ts"
+  ],
+  "new_test_paths": [
+    "client/src/components/Collections/collectionSharing.read-boundary.test.tsx",
+    "client/src/repo/collectionSharingRepo.test.ts"
+  ],
+  "original_cases_preserved": 154,
+  "new_cases": 13,
+  "focused_cases_passed": 167,
+  "focused_cases_failed": 0,
+  "focused_cases_skipped": 0,
+  "new_forced_offline_case_red_on_original_green_after": true,
+  "native_markup_and_API_store_Family_handlers_and_session_queue_sources_exact": true,
+  "old_hook_lifecycle_logic_exact_except_sorted_import_and_call_receiver": true,
+  "no_persistent_roster_cache_queued_read_or_new_endpoint": true,
+  "existing_Family_sharing_refusals_preserved_and_tested": true,
+  "scoped_format_ESLint_zero_errors_warnings_suppressions": true,
+  "ordinary_typecheck_pass": true,
+  "strict_total": 636,
+  "strict_all_existing_scored_file_counts_exact": true,
+  "all_four_scoped_paths_zero_strict_diagnostics": true,
+  "strict_global_gate_pass": false,
+  "fresh_source_guards_passed": 4,
+  "local_committed_source_build_pass": true,
+  "artifact_correct_wrong_missing_source_controls_passed": 3,
+  "generated_output_files_retained_in_verified_copy": 3793,
+  "all_14_CSS_files_byte_exact": true,
+  "all_five_public_slot_context_pair_policy_values_exact": true,
+  "all_JavaScript_bytes_identical": false,
+  "fresh_passed_relevant_quality_commands": [
+    "layers",
+    "pairs",
+    "size"
+  ],
+  "fresh_failed_quality_commands": [
+    "strict",
+    "offline"
+  ],
+  "offline_new_bypasses": 0,
+  "offline_remaining_stale_entries": [
+    "src/components/Collections/useCollectionSharing.ts"
+  ],
+  "offline_baseline_before": 146,
+  "offline_baseline_proposed": 145,
+  "offline_baseline_proposal_applied": false,
+  "all_quality_policies_baselines_exclusions_and_suppressions_byte_exact": true,
+  "other_older_quality_receipts_are_dated_not_fresh_reexecutions": true,
+  "remaining_quality_gate_names": [
+    "strict",
+    "offline",
+    "dup"
+  ],
+  "duplication_last_measured_lines": 17619,
+  "duplication_last_measured_files": 285,
+  "duplication_not_remeasured_in_Q126": true,
+  "global_release_gate_pass": false,
+  "new_browser_or_hosted_writer_acceptance": false,
+  "next": "Review/approve the exact one-line stale offline exemption removal. Then continue the measured strict and duplication repairs while retaining separate backend/protection/source/preview release gates."
+}

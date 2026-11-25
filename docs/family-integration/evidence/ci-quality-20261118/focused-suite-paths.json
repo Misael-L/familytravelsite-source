@@ -1,0 +1,6 @@
+[
+  "src/integrations/family/publicVariantCache.test.ts",
+  "src/integrations/family/privateFileMemory.test.ts",
+  "src/integrations/family/creationTerminalSettlement.test.ts",
+  "src/integrations/family/packingBagDependency.test.ts"
+]

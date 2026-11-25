@@ -1,0 +1,9 @@
+# C5b2c2 native Collection qualification sources
+
+Review copies of the exact isolated browser/setup/lint scripts used for this packet. The runtime test entry is client/src/integrations/family/collectionCohort.test.tsx and its real SDK/native harness is client/tests/qualification/collectionCohort.live.tsx. It uses the same guarded cold schema143 fixture contract as C5b2c1, with a new owned target; no production host or arbitrary SQL gateway is admitted.
+
+These are review sources, not a one-command production runner. Recreate the owned cold fixture from the accepted exports and prior source guards, supply its private local Auth/REST configuration, then run sequential synthetic phases. Never copy private tokens/configurations/dumps into the repository. The browser uses the ordinary build and Playwright network interception to the real local services; source eligibility stays bounded by the existing local-v1 policy. The read-only image run uses a separate synthetic Supabase-shaped source with every request intercepted. No product state injection, Storage upload or transformation is used.
+
+The handoff and sealed canonical evidence record final logs, source preservation and artifact-specific results. Do not rerun against hosted Supabase or restart retained fixtures. Build shared packages before running Vitest, not concurrently.
+
+The export scanner refused an embedded image-fixture hostname. That source now comes explicitly from FAMILY_BROWSER_IMAGE_SOURCE plus an exact FAMILY_BROWSER_IMAGE_HOST and is validated before any fixture work. Eight offline configuration/refusal guards pass. The executed fixture SQL/authoring AST is identical; only source-configuration extraction changed after the browser runs. The original executed script remains private. No scanner rule or application source was weakened or changed by this metadata repair.

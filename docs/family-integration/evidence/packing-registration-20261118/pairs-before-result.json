@@ -1,0 +1,5 @@
+{
+  "exit": 1,
+  "command": "npm run lint:pairs",
+  "source": "incoming14ff5f7f8"
+}

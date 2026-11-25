@@ -1,0 +1,17 @@
+{
+  "incoming": "daeac2539e1f81ef26aaae94178433b8c0b0828a",
+  "implementation": "179fdccdbde2e3755e7efdca790a67e5a18b4932",
+  "build_source": "898e0b38f2e31e645976782309b39b87b678cd2b",
+  "prior_runtime_build": "08eb09938b5e476370de2f8bc544b21bbed91ae5",
+  "original_parent_sha256": "f1cdd38d8990f12262f9c141c52bf97a72ba53c43f983c2e288793232c59fc45",
+  "qualified_parent_sha256": "4605973208d20383bb81830d1aaa34a6764f44c61d34c879e6ae809aed519201",
+  "new_source_sha256": {
+    "client/src/integrations/family/legacy/components/Planner/FamilyTransportManualForm.tsx": "57627064d88863457e7e278768a57223e189d691149d5b53e1502af08fbf9560",
+    "client/src/integrations/family/legacy/components/Planner/familyTransportWaypoints.ts": "fd5a9b28a1c1dadb4fb60e2b53c39a8ebe153b9c6bfd4a9695db35db641e8002"
+  },
+  "new_test_sha256": "ba3663fee72b9a469b26c0c0f2462c42ba790b2de756c373218700583199a592",
+  "fresh_current_declarations": 128,
+  "runtime": "v24.22.2",
+  "fixture_inputs_external": true,
+  "no_hosted_operation": true
+}

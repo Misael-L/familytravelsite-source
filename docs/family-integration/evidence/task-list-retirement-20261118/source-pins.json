@@ -1,0 +1,16 @@
+{
+  "incoming": "4808891b1a5d0a1f0ec40ba59deba194ae0671af",
+  "implementation": "a0b9f76fd376a3baeb0873e35d4eda9f40417e11",
+  "build_source": "1778046e78d42072d259e6637a20d82edfa40b65",
+  "removed_original_sha256": {
+    "client/src/integrations/family/legacy/components/Todo/TodoListPanel.tsx": "e697611d33967a4ad218eab12fc64ee7e6453aae1271ee6cac1de1e87b94636d",
+    "client/src/integrations/family/legacy/components/Todo/ListsContainer.tsx": "3080815b6d0e58b04f696b4b152b873a22c8ca7e770a1ad0aa90f1074a804b5e",
+    "client/src/integrations/family/legacy/components/Todo/ListsPanelFamily.tsx": "99d4b5a48e87ea3e11bd2311a47485fb5e4abc285904735f827ba4696aa75824",
+    "client/src/integrations/family/legacy/components/Todo/useFamilyLists.ts": "efbab6e4a2c244c4177c5066b38715f8780a6cb08b2bb5d3d5ba532b7bfcd78f"
+  },
+  "prior_runtime_build": "f134e9b254f64db1f394f91cf7949f7417167934",
+  "fresh_current_compiler_declarations": 128,
+  "no_old_generated_declaration_identity_assumption": true,
+  "test_runtime": "v24.22.2",
+  "no_hosted_operation": true
+}

@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "exact_raw_title_cases": 2353,
+  "only_normalized_case": 1,
+  "source": "src/integrations/family/stayTransport.test.ts",
+  "source_sha256": "4d42de9bacb6b0294d4525d52167571e32a6abf65a5a6a20ae1dd45ef09ada7c",
+  "raw_label_before": [
+    [
+      "src/integrations/family/stayTransport.test.ts",
+      [],
+      "refuses false acknowledgements {\"stay_id\":\"e9f7acf5-264e-46c4-8c0f-d74641cd7155\"}",
+      "passed"
+    ]
+  ],
+  "raw_label_after": [
+    [
+      "src/integrations/family/stayTransport.test.ts",
+      [],
+      "refuses false acknowledgements {\"stay_id\":\"0f95a445-5d07-45b3-b749-a65a1df62d4b\"}",
+      "passed"
+    ]
+  ],
+  "no_global_name_normalization": true
+}

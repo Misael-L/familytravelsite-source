@@ -1,0 +1,14 @@
+{
+  "incoming": "0c2d5e6462c60183945c313806b5e362c9d5bee8",
+  "implementation": "7d1628d09843d187146ad7a927f923b9ac35a61c",
+  "build_source": "03244b66ddb4b0fbffff4687fde529f1de498f59",
+  "removed_original_sha256": {
+    "client/src/integrations/family/legacy/components/Planner/DayPlanSidebar.tsx": "141d3d1a969a0777fa8a9e018861c9458b58c851b81bfdb9f314af8ab087eadd",
+    "client/src/integrations/family/legacy/components/Planner/DayDetailPanel.tsx": "3458482374248456736f32a97c7cf9d937969cadbfad755b26213b71b515f9e7"
+  },
+  "prior_runtime_build": "726a0c8d6de803169579c51462cd59d6f916d447",
+  "fresh_current_compiler_declarations": 128,
+  "no_old_generated_declaration_identity_assumption": true,
+  "test_runtime": "v24.22.2",
+  "no_hosted_operation": true
+}

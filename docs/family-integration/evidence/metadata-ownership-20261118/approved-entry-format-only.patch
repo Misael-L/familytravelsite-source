@@ -1,0 +1,14 @@
+--- a/client/scripts/i18n-keys.mjs
++++ b/client/scripts/i18n-keys.mjs
+@@ -131,10 +131,7 @@
+     template: 'reservations.${s}',
+     because: "s iterates the literal ['pending', 'confirmed'] as const; reservations.pending/confirmed exist",
+   },
+-  ...[
+-    'components/Admin/AdminPluginsPanel.tsx',
+-    'mobile/screens/admin/MAdminPluginsPanel.tsx',
+-  ].map((file) => ({
++  ...['components/Admin/AdminPluginsPanel.tsx', 'mobile/screens/admin/MAdminPluginsPanel.tsx'].map((file) => ({
+     file,
+     template: 'admin.plugins.perm.${perm}',
+     because:

@@ -1,0 +1,16 @@
+{
+  "runtime_candidate": "e287b4c53d3bc7ad88177c566bd936240c95f64f",
+  "source_profile_admission_diagnostics": 34,
+  "retained_regressions": 68,
+  "fresh_test_total": 102,
+  "failures": 0,
+  "pending": 0,
+  "new_full_build_or_browser_or_SQL_run": false,
+  "source_structure_exit": 1,
+  "source_structure_expected_hold": "Unqualified source drift: .github/workflows/docker-dev.yml; inherited5.1.2 adoption metadata",
+  "runtime_schema_dependency_source_policy_changes": false,
+  "Docker_services_started": 0,
+  "hosted_SQL_executed": false,
+  "read_only_remote_metadata_and_anonymous_GETs": true,
+  "production_preview_push_main_settings_billing_changes": false
+}

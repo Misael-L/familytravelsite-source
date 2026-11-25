@@ -1,0 +1,30 @@
+{
+  "privateSourceCommit": "f2a0b450065d8f9d99d0e0fc9e29b1ef7368c912",
+  "privateProductionCommit": "f2a0b450065d8f9d99d0e0fc9e29b1ef7368c912",
+  "privateCommitSubject": "Restore hosted profile photos and Admin reads",
+  "publicSourceTag": "source-20261125-f2a0b45",
+  "publicSourceRemote": "https://github.com/Misael-L/familytravelsite-source.git",
+  "workersBuildUuid": null,
+  "workersVersionId": "9296b138-b5b1-4c12-81fe-8a7bb0e13cb9",
+  "node": "24",
+  "buildCommand": "npm run build:web",
+  "origin": "https://familytravelsite.lmisael0721.workers.dev",
+  "license": "AGPL-3.0-only",
+  "createdAtUtc": "2026-11-25T22:59:46.327771+00:00",
+  "deploymentBinding": "caller-supplied-version",
+  "sanitization": {
+    "policy": "family.private-operational-plan.v1",
+    "privateCommit": "f2a0b450065d8f9d99d0e0fc9e29b1ef7368c912",
+    "trackedFiles": 18704,
+    "sourceFilesRetained": 18703,
+    "allRetainedBytesAndModesMatchGit": true,
+    "omissions": [
+      {
+        "path": ".cursor/plans/existing-family-backend-integration.plan.md",
+        "sha256": "c4677c13b949e3f714fe3f07f58f10c0a54af72a23537d7bb43e356240512449",
+        "bytes": 12372,
+        "reason": "Private operational plan; not required to build or run the application"
+      }
+    ]
+  }
+}

@@ -1,0 +1,11 @@
+# Q5 local size/preservation review — 15 November 2026
+
+[Complete inventory and decisions](core-size-preservation-review.md); [next executable packet, Costs tests](core-release-costs-tests-packet.md).
+
+Q5 is complete as a documentation-only review. The actual size gate still has **44 failures**: 3 tests, 11 emitted JavaScript modules (6 native-derived exceptions and 5 legacy additions), and 30 retained legacy files outside the ordinary build. No finding overlaps the twelve exact native files or complete backend carryover inventory. All 44 current blobs equal the qualified Q4 source; nine upstream paths are already reviewed exceptions. Source preservation does not require leaving these files oversized, but changes still need bounded behavior/provenance acceptance.
+
+The installed non-emitting Vite analysis traces resolved static/lazy imports; 410 generated code/CSS/HTML outputs match Q4 exactly. This proves ordinary-profile composition only, not global unused code, enabled features or a new complete PWA/browser qualification. Thirty outside-build files still have retained incoming references; a separate entry/test/profile closure is required before any retirement proposal. The active Family Auth/API/Admin/map/controller chains must remain intact.
+
+Fresh unchanged test baseline: **429 passed /0 failed /0 pending** — Costs116, DayDetail126, planner hook187. Next is the compatible test-only Costs split, preserving all116 cases, with expected size44→43 and only exact stale size/format baseline contractions. No application/test/backend/schema/baseline/qualification/policy changes in Q5. Qualified source stays `9db9f48a898f24963b931dee5610478c23801257`, 376 exceptions/2,697 additions, upstream5.1.4.
+
+Local finish requires the four actual source guards, all prior preservation seals/canonical index/355 inputs/144 migrations/other worktrees, unchanged services, clean publication companion and full check-only source archive. Concrete receipts and final local commit are in the sealed canonical evidence/continuation; check-only archive is unbound, no Worker or hosted acceptance claim. No fresh browser/SQL/service, deployment/push/main, hosted/settings/billing, backup/ETL/media or transformation operation. Quality and separate operational release gates remain held.

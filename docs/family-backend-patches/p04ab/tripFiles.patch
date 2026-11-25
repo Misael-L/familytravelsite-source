@@ -1,0 +1,297 @@
+--- a/family-backend/src/data/supabase/tripFiles.ts
++++ b/family-backend/src/data/supabase/tripFiles.ts
+@@ -1,3 +1,4 @@
++import { captureFamilyOperation } from './operationContext'
+ import { getSupabaseBrowserClient } from './client'
+ import { normalizeImageFile } from '../../utils/convertHeic'
+ import { finalizePrivateUpload } from './privateUploads'
+@@ -6,15 +7,22 @@
+ export const TRIP_FILES_BUCKET = 'trip-files'
+ 
+ export const TRIP_FILE_ACCEPT = [
+-  'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/avif',
+-  'image/heic', 'image/heif',
++  'image/jpeg',
++  'image/png',
++  'image/gif',
++  'image/webp',
++  'image/avif',
++  'image/heic',
++  'image/heif',
+   'video/mp4',
+   'application/pdf',
+   'application/msword',
+   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+   'application/vnd.ms-excel',
+   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+-  'text/plain', 'text/markdown', 'text/csv',
++  'text/plain',
++  'text/markdown',
++  'text/csv',
+   'application/vnd.apple.pkpass',
+ ]
+ 
+@@ -123,16 +131,28 @@
+   return base.replace(/[^a-zA-Z0-9._-]+/g, '_').slice(0, 80) || 'file'
+ }
+ 
+-export async function listTripFiles(tripId: string, opts?: { trash?: boolean }): Promise<FamilyTripFile[]> {
++export async function listTripFiles(
++  tripId: string,
++  opts?: { trash?: boolean }
++): Promise<FamilyTripFile[]> {
++  const operationContext = captureFamilyOperation()
+   const sb = getSupabaseBrowserClient()
+-  let q = sb.from('trip_files').select(
+-    'id,trip_id,storage_path,original_name,mime_type,size_bytes,uploaded_by,starred,description,deleted_at,created_at',
+-  ).eq('trip_id', tripId)
++  let q = sb
++    .from('trip_files')
++    .select(
++      'id,trip_id,storage_path,original_name,mime_type,size_bytes,uploaded_by,starred,description,deleted_at,created_at'
++    )
++    .eq('trip_id', tripId)
+   q = opts?.trash ? q.not('deleted_at', 'is', null) : q.is('deleted_at', null)
+-  const [filesRes, linksRes] = await Promise.all([
+-    q.order('created_at', { ascending: false }),
+-    sb.from('trip_file_links').select('id,file_id,place_id,reservation_id,trip_day_id').eq('trip_id', tripId),
+-  ])
++  const [filesRes, linksRes] = await operationContext.perform(async () =>
++    Promise.all([
++      q.order('created_at', { ascending: false }),
++      sb
++        .from('trip_file_links')
++        .select('id,file_id,place_id,reservation_id,trip_day_id')
++        .eq('trip_id', tripId),
++    ])
++  )
+   if (filesRes.error) throw filesRes.error
+   if (linksRes.error) throw linksRes.error
+   const byFile = new Map<string, FamilyTripFileLink[]>()
+@@ -147,13 +167,16 @@
+     })
+     byFile.set(row.file_id, list)
+   }
+-  return ((filesRes.data ?? []) as FileRow[]).map(row => mapFile(row, byFile.get(row.id) ?? []))
++  return ((filesRes.data ?? []) as FileRow[]).map((row) => mapFile(row, byFile.get(row.id) ?? []))
+ }
+ 
+ export async function signedTripFileUrl(storagePath: string, expiresIn = 120): Promise<string> {
+-  const { data, error } = await getSupabaseBrowserClient()
+-    .storage.from(TRIP_FILES_BUCKET)
+-    .createSignedUrl(storagePath, expiresIn)
++  const operationContext = captureFamilyOperation()
++  const { data, error } = await operationContext.perform(async () =>
++    getSupabaseBrowserClient()
++      .storage.from(TRIP_FILES_BUCKET)
++      .createSignedUrl(storagePath, expiresIn)
++  )
+   if (error) throw error
+   if (!data?.signedUrl) throw new Error('signed url missing')
+   return data.signedUrl
+@@ -161,14 +184,15 @@
+ 
+ export async function signedTripFileUrls(
+   storagePaths: string[],
+-  expiresIn = 120,
++  expiresIn = 120
+ ): Promise<Map<string, string>> {
++  const operationContext = captureFamilyOperation()
+   const unique = [...new Set(storagePaths.filter(Boolean))]
+   const out = new Map<string, string>()
+   if (unique.length === 0) return out
+-  const { data, error } = await getSupabaseBrowserClient()
+-    .storage.from(TRIP_FILES_BUCKET)
+-    .createSignedUrls(unique, expiresIn)
++  const { data, error } = await operationContext.perform(async () =>
++    getSupabaseBrowserClient().storage.from(TRIP_FILES_BUCKET).createSignedUrls(unique, expiresIn)
++  )
+   if (error) throw error
+   for (let i = 0; i < unique.length; i++) {
+     const signed = data?.[i]?.signedUrl
+@@ -178,12 +202,15 @@
+ }
+ 
+ export async function listTripFileLinks(fileId: string): Promise<FamilyTripFileLink[]> {
+-  const { data, error } = await getSupabaseBrowserClient()
+-    .from('trip_file_links')
+-    .select('id,file_id,place_id,reservation_id,trip_day_id')
+-    .eq('file_id', fileId)
+-  if (error) throw error
+-  return ((data ?? []) as LinkRow[]).map(row => ({
++  const operationContext = captureFamilyOperation()
++  const { data, error } = await operationContext.perform(async () =>
++    getSupabaseBrowserClient()
++      .from('trip_file_links')
++      .select('id,file_id,place_id,reservation_id,trip_day_id')
++      .eq('file_id', fileId)
++  )
++  if (error) throw error
++  return ((data ?? []) as LinkRow[]).map((row) => ({
+     id: row.id,
+     fileId: row.file_id,
+     placeId: row.place_id,
+@@ -198,90 +225,120 @@
+   file: File
+   uploadedBy: string | null
+ }): Promise<string> {
+-  const file = await normalizeImageFile(input.file)
++  const operationContext = captureFamilyOperation()
++  const file = await operationContext.perform(async () => normalizeImageFile(input.file))
+   if (file.size > TRIP_FILE_MAX_BYTES) {
+     throw new Error('File exceeds 50 MB')
+   }
+   const contentType = resolvedTripFileMime(file)
+   const path = `${input.familyId}/${input.tripId}/${crypto.randomUUID()}_${safeFileName(file.name)}`
+   const sb = getSupabaseBrowserClient()
+-  const { error: upErr } = await sb.storage.from(TRIP_FILES_BUCKET).upload(path, file, {
+-    contentType,
+-    upsert: false,
+-  })
++  const { error: upErr } = await operationContext.perform(async () =>
++    sb.storage.from(TRIP_FILES_BUCKET).upload(path, file, {
++      contentType,
++      upsert: false,
++    })
++  )
+   if (upErr) throw upErr
+-  try {
+-    const result = await finalizePrivateUpload({
++  // A lost finalizer response may follow a committed registration. Only server-side,
++  // reference-aware cleanup may remove this source; never compensate by deleting it here.
++  const result = await operationContext.perform(async () =>
++    finalizePrivateUpload({
+       kind: 'trip_file',
+       path,
+       tripId: input.tripId,
+       originalName: file.name,
+     })
+-    const id = String(result.id ?? '')
+-    if (!id) throw new Error('register_trip_file returned no id')
+-    return id
+-  } catch (err) {
+-    await sb.storage.from(TRIP_FILES_BUCKET).remove([path]).catch(() => {})
+-    throw err
+-  }
++  )
++  const id = String(result.id ?? '')
++  if (!id) throw new Error('register_trip_file returned no id')
++  return id
+ }
+ 
+ export async function patchTripFile(
+   fileId: string,
+-  patch: Partial<{ starred: boolean; description: string | null }>,
++  patch: Partial<{ starred: boolean; description: string | null }>
+ ): Promise<void> {
+-  const { error } = await getSupabaseBrowserClient().rpc('patch_trip_file_metadata', {
+-    p_file_id: fileId,
+-    p_starred: patch.starred ?? null,
+-    p_description: patch.description === undefined ? null : patch.description,
+-  })
++  const operationContext = captureFamilyOperation()
++  const { error } = await operationContext.perform(async () =>
++    getSupabaseBrowserClient().rpc('patch_trip_file_metadata', {
++      p_file_id: fileId,
++      p_starred: patch.starred ?? null,
++      p_description: patch.description === undefined ? null : patch.description,
++    })
++  )
+   if (error) throw error
+ }
+ 
+ export async function softDeleteTripFile(fileId: string): Promise<void> {
+-  const { error } = await getSupabaseBrowserClient().rpc('trash_trip_file', { p_file_id: fileId })
++  const operationContext = captureFamilyOperation()
++  const { error } = await operationContext.perform(async () =>
++    getSupabaseBrowserClient().rpc('trash_trip_file', { p_file_id: fileId })
++  )
+   if (error) throw error
+ }
+ 
+ export async function restoreTripFile(fileId: string): Promise<void> {
+-  const { error } = await getSupabaseBrowserClient().rpc('restore_trip_file', { p_file_id: fileId })
+-  if (error) throw error
+-}
+-
+-export async function permanentlyDeleteTripFile(file: Pick<FamilyTripFile, 'id' | 'storagePath'>): Promise<void> {
+-  const { error } = await getSupabaseBrowserClient().rpc('purge_trip_file', { p_file_id: file.id })
++  const operationContext = captureFamilyOperation()
++  const { error } = await operationContext.perform(async () =>
++    getSupabaseBrowserClient().rpc('restore_trip_file', { p_file_id: fileId })
++  )
++  if (error) throw error
++}
++
++export async function permanentlyDeleteTripFile(
++  file: Pick<FamilyTripFile, 'id' | 'storagePath'>
++): Promise<void> {
++  const operationContext = captureFamilyOperation()
++  const { error } = await operationContext.perform(async () =>
++    getSupabaseBrowserClient().rpc('purge_trip_file', { p_file_id: file.id })
++  )
+   if (error) throw error
+ }
+ 
+ export async function emptyTripFileTrash(tripId: string): Promise<void> {
+-  const trash = await listTripFiles(tripId, { trash: true })
++  const operationContext = captureFamilyOperation()
++  const trash = await operationContext.perform(async () => listTripFiles(tripId, { trash: true }))
+   for (const file of trash) {
+-    await permanentlyDeleteTripFile(file)
++    await operationContext.perform(async () => permanentlyDeleteTripFile(file))
+   }
+ }
+ 
+ export async function addTripFileLink(
+   fileId: string,
+-  target: { placeId?: string | null; reservationId?: string | null; tripDayId?: string | null },
++  target: {
++    placeId?: string | null
++    reservationId?: string | null
++    tripDayId?: string | null
++  }
+ ): Promise<void> {
+-  const { error } = await getSupabaseBrowserClient().rpc('link_trip_file', {
+-    p_file_id: fileId,
+-    p_place_id: target.placeId || null,
+-    p_reservation_id: target.reservationId || null,
+-    p_trip_day_id: target.tripDayId || null,
+-  })
++  const operationContext = captureFamilyOperation()
++  const { error } = await operationContext.perform(async () =>
++    getSupabaseBrowserClient().rpc('link_trip_file', {
++      p_file_id: fileId,
++      p_place_id: target.placeId || null,
++      p_reservation_id: target.reservationId || null,
++      p_trip_day_id: target.tripDayId || null,
++    })
++  )
+   if (error) throw error
+ }
+ 
+ export async function removeTripFileLink(linkId: string): Promise<void> {
+-  const { error } = await getSupabaseBrowserClient().rpc('unlink_trip_file', { p_link_id: linkId })
++  const operationContext = captureFamilyOperation()
++  const { error } = await operationContext.perform(async () =>
++    getSupabaseBrowserClient().rpc('unlink_trip_file', { p_link_id: linkId })
++  )
+   if (error) throw error
+ }
+ 
+ export function filesForPlace(files: FamilyTripFile[], placeId: string): FamilyTripFile[] {
+-  return files.filter(f => f.links.some(l => l.placeId === placeId))
+-}
+-
+-export function filesForReservation(files: FamilyTripFile[], reservationId: string): FamilyTripFile[] {
+-  return files.filter(f => f.links.some(l => l.reservationId === reservationId))
+-}
++  return files.filter((f) => f.links.some((l) => l.placeId === placeId))
++}
++
++export function filesForReservation(
++  files: FamilyTripFile[],
++  reservationId: string
++): FamilyTripFile[] {
++  return files.filter((f) => f.links.some((l) => l.reservationId === reservationId))
++}

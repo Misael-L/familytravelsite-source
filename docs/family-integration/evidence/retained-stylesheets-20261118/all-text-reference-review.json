@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "all_non_documentation_non_candidate_tracked_text_files": 14720,
+  "binary_files_not_treated_as_source_loaders": 2165,
+  "outside_candidate_specific_path_references": [],
+  "includes_Python_shell_HTML_CSS_JSON_and_nonstandard_text_extensions": true,
+  "native_same_basename_style_imports_and_reads_resolve_to_native_files": true,
+  "source_graph_CSS_rules_HTML_links_and_runtime_loaders_reviewed_separately": true
+}

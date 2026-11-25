@@ -1,0 +1,63 @@
+{
+  "passed": true,
+  "packet": "Q108",
+  "incoming": "4760072b180e365a00f91280f56379d9c551271f",
+  "implementation": "f11acf7ea23c898838d62982abdac28ac3eb4994",
+  "build_source": "f134e9b254f64db1f394f91cf7949f7417167934",
+  "date": "2026-11-18",
+  "removed_paths": [
+    "client/src/integrations/family/legacy/components/Planner/PlaceInspector.tsx",
+    "client/src/integrations/family/legacy/components/Planner/family/FamilyPlaceInspector.tsx"
+  ],
+  "new_or_modified_runtime_source_files": 0,
+  "candidate_passed": 401,
+  "client_cases": 385,
+  "backend_cases": 16,
+  "same_expanded_cases_before_after": 401,
+  "raw_sources_reviewed": 14054,
+  "application_modules_reviewed": 7490,
+  "current_reachable_nodes_preserved": 6091,
+  "literal_glob_locale_modules": 28,
+  "literal_glob_video_assets": 98,
+  "internal_ActionButton_import_only": true,
+  "no_outside_runtime_type_test_tool_importer": true,
+  "external_modules_without_ambient_augmentation": true,
+  "native_presentation_files_exact": 12,
+  "native_inspector_gallery_phone_map_and_active_Family_controller_preserved": true,
+  "retained_Explore_and_generic_map_bridge_files_not_current_entry_nodes": true,
+  "all_3792_other_generated_files_byte_exact": true,
+  "all_421_generated_JS_CSS_files_byte_exact": true,
+  "all_14_stylesheets_byte_exact": true,
+  "service_worker_and_cache_manifest_byte_exact": true,
+  "public_configuration_only_sourceCommit_changed": true,
+  "fresh_typecheck_and_build_passed": true,
+  "fresh_declarations_fixed_at_current_compiler_generation": 128,
+  "source_guards_passed": 4,
+  "artifact_binding_controls_passed": 3,
+  "warning_gate_pass": true,
+  "source_warnings_actual_limit": [
+    3418,
+    3418
+  ],
+  "source_complexity_actual_limit": [
+    218,
+    218
+  ],
+  "source_length_actual_limit": [
+    130,
+    130
+  ],
+  "size_findings_before_after": [
+    17,
+    16
+  ],
+  "all_other_size_failure_lines_exact": true,
+  "format_gate_pass": true,
+  "unlisted_format_failures": 0,
+  "format_baseline_unchanged_entries": 2134,
+  "rules_baselines_exclusions_suppressions_unchanged": true,
+  "verified_disposable_prototype_removed_after_proofs": true,
+  "global_release_gate_pass": false,
+  "live_database_browser_or_writer_admission_acceptance": false,
+  "next": "Q109 bounded copied Todo/list-container boundary review; preserve native task/packing controls, writers/queues/recovery, models and type consumers"
+}

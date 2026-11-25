@@ -1,0 +1,236 @@
+import fs from 'node:fs';
+import { StrictMode } from 'react';
+import { act, cleanup, renderHook } from '@testing-library/react';
+import { afterAll, afterEach, beforeEach, expect, it, vi } from 'vitest';
+import { GeoOnceError, getCurrentPositionOnce, useGeolocation } from './useGeolocation';
+
+const records: Record<string, unknown[]> = {};
+let trace: unknown[];
+let watches: { ok: PositionCallback; fail: PositionErrorCallback; id: number }[];
+let grants: ((value: string) => void)[];
+let originalAdd: typeof window.addEventListener;
+let originalRemove: typeof window.removeEventListener;
+let latest: ReturnType<typeof renderHook<ReturnType<typeof useGeolocation>, unknown>> | null;
+
+function fix(heading: number | null = null): GeolocationPosition {
+  return { coords: { latitude: 19.04, longitude: -98.19, accuracy: 12, heading, speed: null }, timestamp: 123 } as GeolocationPosition;
+}
+
+function error(code: number, message = 'test failure'): GeolocationPositionError {
+  return { code, message, PERMISSION_DENIED: 1, POSITION_UNAVAILABLE: 2, TIMEOUT: 3 } as GeolocationPositionError;
+}
+
+function orientation(props: Record<string, unknown>, type = 'deviceorientationabsolute'): void {
+  const event = new Event(type);
+  Object.assign(event, props);
+  act(() => window.dispatchEvent(event));
+}
+
+function snapshot(label: string): void {
+  const current = latest!.result.current;
+  trace.push([label, { mode: current.mode, position: current.position, error: current.error, code: current.errorCode }]);
+}
+
+function mount(strict = false): void {
+  latest = renderHook(() => useGeolocation(), strict ? { wrapper: StrictMode } : undefined);
+  snapshot('mount');
+}
+
+function pendingPermission(): void {
+  vi.stubGlobal('DeviceOrientationEvent', Object.assign(function () {}, {
+    requestPermission: () => {
+      trace.push(['permission']);
+      return new Promise<string>(resolve => grants.push(resolve));
+    },
+  }));
+}
+
+beforeEach((context) => {
+  trace = [];
+  records[context.task.name] = trace;
+  watches = [];
+  grants = [];
+  latest = null;
+  vi.stubGlobal('isSecureContext', true);
+  Object.defineProperty(navigator, 'geolocation', { configurable: true, value: {
+    watchPosition: (ok: PositionCallback, fail: PositionErrorCallback, options: PositionOptions) => {
+      const id = watches.length + 10;
+      watches.push({ ok, fail, id });
+      trace.push(['watch', id, options]);
+      return id;
+    },
+    clearWatch: (id: number) => trace.push(['clear', id]),
+  } });
+  originalAdd = window.addEventListener;
+  originalRemove = window.removeEventListener;
+  const handlers: EventListenerOrEventListenerObject[] = [];
+  vi.spyOn(window, 'addEventListener').mockImplementation(function (type, handler, options) {
+    if (type.startsWith('deviceorientation')) {
+      if (!handlers.includes(handler!)) handlers.push(handler!);
+      trace.push(['add', type, handlers.indexOf(handler!), options]);
+    }
+    return originalAdd.call(window, type, handler!, options);
+  });
+  vi.spyOn(window, 'removeEventListener').mockImplementation(function (type, handler, options) {
+    if (type.startsWith('deviceorientation')) trace.push(['remove', type, handlers.indexOf(handler!), options]);
+    return originalRemove.call(window, type, handler!, options);
+  });
+});
+
+afterEach(() => {
+  cleanup();
+  vi.restoreAllMocks();
+  vi.unstubAllGlobals();
+});
+
+afterAll(() => fs.writeFileSync(process.env.GEO_TRACE_PATH!, JSON.stringify(records, null, 2) + '\n'));
+
+it.each([
+  { name: 'webkit wins', props: { webkitCompassHeading: 120, alpha: 20, absolute: true } },
+  { name: 'absolute alpha', props: { alpha: 90, absolute: true } },
+  { name: 'relative alpha', props: { alpha: 90, absolute: false } },
+  { name: 'missing angle', props: {} },
+  { name: 'null alpha', props: { alpha: null, absolute: true } },
+  { name: 'NaN webkit', props: { webkitCompassHeading: NaN, alpha: 90 } },
+  { name: 'NaN alpha', props: { alpha: NaN } },
+  { name: 'non-number webkit', props: { webkitCompassHeading: '90', alpha: 20 } },
+  { name: 'zero heading', props: { webkitCompassHeading: 0 } },
+  { name: 'clockwise seam', props: { webkitCompassHeading: 10 } },
+  { name: 'counterclockwise seam', props: { webkitCompassHeading: 350 } },
+])('heading projection: $name', async ({ props }) => {
+  mount();
+  const before = latest!.result.current;
+  await act(() => before.cycleMode());
+  const started = latest!.result.current;
+  expect(started.setMode).toBe(before.setMode);
+  expect(started.cycleMode).not.toBe(before.cycleMode);
+  orientation(props); // Compass can arrive before the first position.
+  snapshot('before fix');
+  act(() => watches[0].ok(fix()));
+  snapshot('fix');
+  orientation({ webkitCompassHeading: 350 });
+  snapshot('350');
+  orientation(props, 'deviceorientation');
+  snapshot('smoothed');
+  act(() => watches[0].ok(fix(0))); // Real GPS zero must beat the compass.
+  snapshot('gps zero');
+  act(() => latest!.result.current.setMode('off'));
+  orientation(props);
+  snapshot('stopped');
+});
+
+it.each([1, 2, 3, 9])('watch failure/recovery %i', async code => {
+  mount();
+  await act(() => latest!.result.current.cycleMode());
+  act(() => watches[0].fail(error(code, '')));
+  snapshot('error');
+  act(() => watches[0].ok(fix())); // Characterizes retained callbacks, including denial.
+  snapshot('late success');
+  await act(() => latest!.result.current.cycleMode());
+  snapshot('next cycle');
+});
+
+it.each(['missing', 'insecure'])('unavailable capability: %s', async mode => {
+  if (mode === 'missing') delete (navigator as { geolocation?: Geolocation }).geolocation;
+  else vi.stubGlobal('isSecureContext', false);
+  pendingPermission();
+  mount();
+  await act(() => latest!.result.current.cycleMode());
+  snapshot('refused');
+  expect(watches).toHaveLength(0);
+  expect(grants).toHaveLength(0);
+});
+
+it.each(['granted', 'denied', 'throw', 'reject'])('orientation permission: %s', async result => {
+  vi.stubGlobal('DeviceOrientationEvent', Object.assign(function () {}, {
+    requestPermission: () => {
+      trace.push(['permission']);
+      if (result === 'throw') throw new Error('webkit');
+      return result === 'reject' ? Promise.reject(new Error('webkit')) : Promise.resolve(result);
+    },
+  }));
+  mount();
+  expect(trace.some(row => (row as unknown[])[0] === 'permission')).toBe(false);
+  await act(() => latest!.result.current.cycleMode());
+  snapshot('permitted location');
+  expect(watches).toHaveLength(1);
+});
+
+it.each([
+  { name: 'stop', order: [0], unmount: false, restart: false },
+  { name: 'unmount', order: [0], unmount: true, restart: false },
+  { name: 'restart old first', order: [0, 1], unmount: false, restart: true },
+  { name: 'restart new first', order: [1, 0], unmount: false, restart: true },
+])('pending permission lifetime: $name', async scenario => {
+  pendingPermission();
+  mount(true);
+  act(() => latest!.result.current.setMode('show'));
+  if (scenario.unmount) latest!.unmount();
+  else act(() => latest!.result.current.setMode('off'));
+  if (scenario.restart) act(() => latest!.result.current.setMode('show'));
+  for (const index of scenario.order) {
+    await act(async () => { grants[index]('granted'); await Promise.resolve(); });
+    snapshot('grant ' + index);
+  }
+  expect(watches).toHaveLength(scenario.restart ? 1 : 0);
+});
+
+it('keeps updater batching, callback identities, listener lifetime and held callbacks', async () => {
+  pendingPermission();
+  mount(true);
+  const before = latest!.result.current;
+  act(() => {
+    before.setMode('show');
+    before.setMode(previous => previous === 'show' ? 'follow' : 'off');
+  });
+  await act(async () => { grants[0]('granted'); });
+  expect(watches).toHaveLength(1);
+  snapshot('batched');
+  const started = latest!.result.current;
+  act(() => watches[0].ok(fix()));
+  expect(latest!.result.current.setMode).toBe(started.setMode);
+  expect(latest!.result.current.cycleMode).toBe(started.cycleMode);
+  act(() => latest!.result.current.setMode('off'));
+  act(() => latest!.result.current.setMode('show'));
+  await act(async () => { grants[1]('granted'); });
+  act(() => watches[0].ok(fix(90)));
+  snapshot('old success during new watch');
+  act(() => watches[0].fail(error(3)));
+  snapshot('old error during new watch');
+  act(() => watches[1].ok(fix()));
+  snapshot('new success');
+  latest!.unmount();
+  act(() => watches[1].ok(fix(180)));
+  orientation({ alpha: 0 });
+  snapshot('unmounted');
+});
+
+it('retains property-read order for native orientation event getters', async () => {
+  mount();
+  await act(() => latest!.result.current.cycleMode());
+  act(() => watches[0].ok(fix()));
+  const event = new Event('deviceorientation');
+  const readings: Record<string, unknown[]> = { webkitCompassHeading: [undefined], absolute: [true], alpha: [90, 100] };
+  for (const [key, values] of Object.entries(readings)) {
+    Object.defineProperty(event, key, { get: () => {
+      const value = values.length > 1 ? values.shift() : values[0];
+      trace.push(['get', key, value]);
+      return value;
+    } });
+  }
+  act(() => window.dispatchEvent(event));
+  snapshot('getter heading');
+});
+
+it.each([null, 0, 1, 2, 3, 9])('one-shot contract %s', async code => {
+  const options = { enableHighAccuracy: false, maximumAge: 17, timeout: 19 };
+  Object.defineProperty(navigator, 'geolocation', { configurable: true, value: {
+    getCurrentPosition: (ok: PositionCallback, fail: PositionErrorCallback, received: PositionOptions) => {
+      trace.push(['once options', received, received === options]);
+      if (code === null) ok(fix(0));
+      else fail(error(code));
+    },
+  } });
+  try { trace.push(['resolved', await getCurrentPositionOnce(options)]); }
+  catch (err) { trace.push(['rejected', err instanceof GeoOnceError, (err as GeoOnceError).name, (err as GeoOnceError).code, (err as Error).message]); }
+});

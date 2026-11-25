@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "only_verified_disposable_source_prototype_removed": "/private/tmp/trek-core-retained-stylesheets-20261118/candidate-checkout",
+  "pinned_original_source": "3b84a6b6ec4f3d02fe2021bc18632ff5cd41cf01",
+  "explicit_candidate_deletions": [
+    "client/src/integrations/family/legacy/index.css",
+    "client/src/integrations/family/legacy/pages/CollectionsPage.tsx",
+    "client/src/integrations/family/legacy/styles/collections.css",
+    "client/src/integrations/family/legacy/styles/collectionsPage.css",
+    "client/src/integrations/family/legacy/styles/dashboard.css"
+  ],
+  "all_other_tracked_bytes_verified": 18490,
+  "dependency_links_unlinked_without_following": true,
+  "test_logs_evidence_compiled_artifacts_source_checkouts_backups_ETL_media_preserved": true,
+  "free_bytes_before": 2636533760,
+  "free_bytes_after": 3043491840
+}

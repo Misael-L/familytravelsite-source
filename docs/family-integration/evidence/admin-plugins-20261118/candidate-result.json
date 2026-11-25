@@ -1,0 +1,20 @@
+{
+  "exit": 0,
+  "seconds": 2.92,
+  "files": [
+    "src/integrations/family/adminPluginBoundary.test.tsx"
+  ],
+  "command": [
+    "/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/node_modules/.bin/vitest",
+    "run",
+    "src/integrations/family/adminPluginBoundary.test.tsx",
+    "--maxWorkers=2",
+    "--reporter=default",
+    "--reporter=json",
+    "--outputFile=/private/tmp/trek-core-admin-plugins-source-20261118/candidate-tests.json"
+  ],
+  "thresholds_unchanged": 85,
+  "numPassedTests": 42,
+  "numFailedTests": 0,
+  "numTotalTests": 42
+}

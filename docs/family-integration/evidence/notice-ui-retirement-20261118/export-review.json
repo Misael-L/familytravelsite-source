@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "scoped_export_declarations": {
+    "client/src/integrations/family/legacy/components/SystemNotices/SystemNoticeModal.tsx": [
+      {
+        "line": 1047,
+        "declaration": "export function ModalRenderer({ notices }: Props) {"
+      }
+    ],
+    "client/src/integrations/family/legacy/components/SystemNotices/SystemNoticeHost.tsx": [
+      {
+        "line": 21,
+        "declaration": "export function SystemNoticeHost() {"
+      }
+    ]
+  },
+  "outside_candidate_module_consumers": [],
+  "no_ambient_augmentation": true,
+  "actual_JS_to_TSX_import": [
+    {
+      "from": "client/src/integrations/family/legacy/components/SystemNotices/SystemNoticeHost.tsx",
+      "target": "client/src/integrations/family/legacy/components/SystemNotices/SystemNoticeModal.tsx",
+      "kind": "ImportDeclaration",
+      "line": 4,
+      "type_only": false,
+      "specifier": "./SystemNoticeModal.js"
+    }
+  ]
+}

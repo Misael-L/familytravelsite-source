@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "ordinary_roots_before_after": [
+    5077,
+    5077
+  ],
+  "ordinary_sources_before_after": [
+    10264,
+    10264
+  ],
+  "all_program_member_paths_and_source_bytes_exact": true,
+  "active_native_Collections_Dashboard_Journey_theme_and_Family_public_contracts_exact": true,
+  "selected_export_modules": 5,
+  "candidate_not_an_ordinary_root_or_source": true,
+  "explicit_root_positive_control_detects_candidate": true,
+  "absolute_checkout_prefix_only_normalized_in_type_displays": true,
+  "no_type_contract_weakening_or_ambient_augmentation": true
+}

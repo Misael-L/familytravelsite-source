@@ -1,0 +1,3 @@
+# Backend129 reviewed release snapshot
+
+Exact new canonical migration plus read-only SQL contract and locally measured API/permission metadata. Historical128 migration files are unchanged. This snapshot preserves the new SQL in the private website branch while the canonical checkout has a pre-existing mixed index that must not be staged. The canonical paths remain the schema source of truth. Runtime API definitions/types remain compatible; no local feature qualifier or hosted activation is inferred. Read the parent source-acl-correction-handoff.md for actual test bounds and managed-executor/R5 prerequisites.

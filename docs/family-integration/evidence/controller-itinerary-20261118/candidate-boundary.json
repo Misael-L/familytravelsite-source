@@ -1,0 +1,2528 @@
+{
+  "mode": "candidate",
+  "diagnostics": [],
+  "files": [
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "errors": 1,
+      "warnings": 56,
+      "messages": [
+        {
+          "ruleId": "max-lines-per-function",
+          "severity": 1,
+          "message": "Function 'FamilyFrontendController' has too many lines (827). Maximum allowed is 300.",
+          "line": 97,
+          "column": 16,
+          "messageId": "exceed",
+          "endLine": 97,
+          "endColumn": 49
+        },
+        {
+          "ruleId": "complexity",
+          "severity": 1,
+          "message": "Function 'FamilyFrontendController' has a complexity of 21. Maximum allowed is 20.",
+          "line": 97,
+          "column": 16,
+          "messageId": "complex",
+          "endLine": 97,
+          "endColumn": 49
+        },
+        {
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+          "message": "'locale' is assigned a value but never used. Allowed unused vars must match /^_/u.",
+          "line": 101,
+          "column": 14,
+          "messageId": "unusedVar",
+          "endLine": 101,
+          "endColumn": 20
+        },
+        {
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+          "message": "'setLeftCollapsed' is assigned a value but never used. Allowed unused vars must match /^_/u.",
+          "line": 120,
+          "column": 5,
+          "messageId": "unusedVar",
+          "endLine": 120,
+          "endColumn": 21
+        },
+        {
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+          "message": "'startResizeLeft' is assigned a value but never used. Allowed unused vars must match /^_/u.",
+          "line": 122,
+          "column": 5,
+          "messageId": "unusedVar",
+          "endLine": 122,
+          "endColumn": 20
+        },
+        {
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+          "message": "'startResizeRight' is assigned a value but never used. Allowed unused vars must match /^_/u.",
+          "line": 123,
+          "column": 5,
+          "messageId": "unusedVar",
+          "endLine": 123,
+          "endColumn": 21
+        },
+        {
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+          "message": "'mobileSidebarOpen' is assigned a value but never used. Allowed unused vars must match /^_/u.",
+          "line": 154,
+          "column": 10,
+          "messageId": "unusedVar",
+          "endLine": 154,
+          "endColumn": 27
+        },
+        {
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+          "message": "'pickerOpen' is assigned a value but never used. Allowed unused vars must match /^_/u.",
+          "line": 155,
+          "column": 10,
+          "messageId": "unusedVar",
+          "endLine": 155,
+          "endColumn": 20
+        },
+        {
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+          "message": "'trackImportOpen' is assigned a value but never used. Allowed unused vars must match /^_/u.",
+          "line": 156,
+          "column": 10,
+          "messageId": "unusedVar",
+          "endLine": 156,
+          "endColumn": 25
+        },
+        {
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+          "message": "'dayPickerPlaceId' is assigned a value but never used. Allowed unused vars must match /^_/u.",
+          "line": 158,
+          "column": 10,
+          "messageId": "unusedVar",
+          "endLine": 158,
+          "endColumn": 26
+        },
+        {
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+          "message": "'expensePrefill' is assigned a value but never used. Allowed unused vars must match /^_/u.",
+          "line": 166,
+          "column": 10,
+          "messageId": "unusedVar",
+          "endLine": 166,
+          "endColumn": 24
+        },
+        {
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+          "message": "'transportCreateRequest' is assigned a value but never used. Allowed unused vars must match /^_/u.",
+          "line": 167,
+          "column": 10,
+          "messageId": "unusedVar",
+          "endLine": 167,
+          "endColumn": 32
+        },
+        {
+          "ruleId": "react-hooks/refs",
+          "severity": 1,
+          "message": "Error: Cannot access refs during render\n\nReact refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).\n\n/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx:173:3\n  171 |\n  172 |   const selectedExplorePoiRef = useRef(selectedExplorePoi);\n> 173 |   selectedExplorePoiRef.current = selectedExplorePoi;\n      |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Cannot update ref during render\n  174 |\n  175 |   const projectExploreCallout = useCallback((poi: Poi | null) => {\n  176 |     const map = glMapRef.current;",
+          "line": 173,
+          "column": 3,
+          "endLine": 173,
+          "endColumn": 32
+        },
+        {
+          "ruleId": "react-hooks/set-state-in-effect",
+          "severity": 1,
+          "message": "Error: Calling setState synchronously within an effect can trigger cascading renders\n\nEffects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:\n* Update external systems with the latest state from React.\n* Subscribe for updates from some external system, calling setState in a callback function when external state changes.\n\nCalling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).\n\n/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx:224:7\n  222 |   useEffect(() => {\n  223 |     if (activeTab !== 'plan') {\n> 224 |       setSelectedExplorePoi(null);\n      |       ^^^^^^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect\n  225 |       setPartialExplorePoi(null);\n  226 |     }\n  227 |   }, [activeTab]);",
+          "line": 224,
+          "column": 7,
+          "endLine": 224,
+          "endColumn": 28
+        },
+        {
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+          "message": "'reloadTracks' is assigned a value but never used. Allowed unused vars must match /^_/u.",
+          "line": 249,
+          "column": 9,
+          "messageId": "unusedVar",
+          "endLine": 249,
+          "endColumn": 21
+        },
+        {
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+          "message": "'publishedSliceEpoch' is assigned a value but never used. Allowed unused vars must match /^_/u.",
+          "line": 262,
+          "column": 10,
+          "messageId": "unusedVar",
+          "endLine": 262,
+          "endColumn": 29
+        },
+        {
+          "ruleId": "@typescript-eslint/no-misused-promises",
+          "severity": 1,
+          "message": "Expected non-Promise value in a boolean conditional.",
+          "line": 265,
+          "column": 9,
+          "messageId": "conditional",
+          "endLine": 265,
+          "endColumn": 36
+        },
+        {
+          "ruleId": "prefer-const",
+          "severity": 2,
+          "message": "'task' is never reassigned. Use 'const' instead.",
+          "line": 270,
+          "column": 5,
+          "messageId": "useConst",
+          "endLine": 270,
+          "endColumn": 9
+        },
+        {
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+          "message": "'settleDirect' is assigned a value but never used. Allowed unused vars must match /^_/u.",
+          "line": 324,
+          "column": 9,
+          "messageId": "unusedVar",
+          "endLine": 324,
+          "endColumn": 21
+        },
+        {
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+          "message": "'packingDirect' is assigned a value but never used. Allowed unused vars must match /^_/u.",
+          "line": 325,
+          "column": 9,
+          "messageId": "unusedVar",
+          "endLine": 325,
+          "endColumn": 22
+        },
+        {
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+          "message": "'todosDirect' is assigned a value but never used. Allowed unused vars must match /^_/u.",
+          "line": 326,
+          "column": 9,
+          "messageId": "unusedVar",
+          "endLine": 326,
+          "endColumn": 20
+        },
+        {
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+          "message": "'filesUpload' is assigned a value but never used. Allowed unused vars must match /^_/u.",
+          "line": 327,
+          "column": 9,
+          "messageId": "unusedVar",
+          "endLine": 327,
+          "endColumn": 20
+        },
+        {
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+          "message": "'filesMetadata' is assigned a value but never used. Allowed unused vars must match /^_/u.",
+          "line": 328,
+          "column": 9,
+          "messageId": "unusedVar",
+          "endLine": 328,
+          "endColumn": 22
+        },
+        {
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+          "message": "'filesTrash' is assigned a value but never used. Allowed unused vars must match /^_/u.",
+          "line": 329,
+          "column": 9,
+          "messageId": "unusedVar",
+          "endLine": 329,
+          "endColumn": 19
+        },
+        {
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+          "message": "'canUseReservations' is assigned a value but never used. Allowed unused vars must match /^_/u.",
+          "line": 332,
+          "column": 9,
+          "messageId": "unusedVar",
+          "endLine": 332,
+          "endColumn": 27
+        },
+        {
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+          "message": "'canUseCosts' is assigned a value but never used. Allowed unused vars must match /^_/u.",
+          "line": 333,
+          "column": 9,
+          "messageId": "unusedVar",
+          "endLine": 333,
+          "endColumn": 20
+        },
+        {
+          "ruleId": "react-hooks/set-state-in-effect",
+          "severity": 1,
+          "message": "Error: Calling setState synchronously within an effect can trigger cascading renders\n\nEffects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:\n* Update external systems with the latest state from React.\n* Subscribe for updates from some external system, calling setState in a callback function when external state changes.\n\nCalling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).\n\n/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx:353:7\n  351 |   useEffect(() => {\n  352 |     if (!tripId) {\n> 353 |       setIsLoading(false);\n      |       ^^^^^^^^^^^^ Avoid calling setState() directly within an effect\n  354 |       return;\n  355 |     }\n  356 |     let cancelled = false;",
+          "line": 353,
+          "column": 7,
+          "endLine": 353,
+          "endColumn": 19
+        },
+        {
+          "ruleId": "trek/no-swallowed-catch",
+          "severity": 1,
+          "message": "This .catch() swallows the error. Roll back and tell the user (toast), or handle the failure on purpose and say why in the handler; never .catch(() => {}).",
+          "line": 365,
+          "column": 19,
+          "messageId": "swallowed",
+          "endLine": 366,
+          "endColumn": 30
+        },
+        {
+          "ruleId": "@typescript-eslint/no-floating-promises",
+          "severity": 1,
+          "message": "Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator.",
+          "line": 383,
+          "column": 11,
+          "messageId": "floatingVoid",
+          "endLine": 383,
+          "endColumn": 34,
+          "suggestions": [
+            {
+              "messageId": "floatingFixVoid",
+              "fix": {
+                "range": [
+                  16901,
+                  16901
+                ],
+                "text": "void "
+              },
+              "desc": "Add void operator to ignore."
+            },
+            {
+              "messageId": "floatingFixAwait",
+              "fix": {
+                "range": [
+                  16901,
+                  16901
+                ],
+                "text": "await "
+              },
+              "desc": "Add await operator."
+            }
+          ]
+        },
+        {
+          "ruleId": "@typescript-eslint/no-floating-promises",
+          "severity": 1,
+          "message": "Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator.",
+          "line": 408,
+          "column": 11,
+          "messageId": "floatingVoid",
+          "endLine": 408,
+          "endColumn": 34,
+          "suggestions": [
+            {
+              "messageId": "floatingFixVoid",
+              "fix": {
+                "range": [
+                  17785,
+                  17785
+                ],
+                "text": "void "
+              },
+              "desc": "Add void operator to ignore."
+            },
+            {
+              "messageId": "floatingFixAwait",
+              "fix": {
+                "range": [
+                  17785,
+                  17785
+                ],
+                "text": "await "
+              },
+              "desc": "Add await operator."
+            }
+          ]
+        },
+        {
+          "ruleId": "react-hooks/set-state-in-effect",
+          "severity": 1,
+          "message": "Error: Calling setState synchronously within an effect can trigger cascading renders\n\nEffects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:\n* Update external systems with the latest state from React.\n* Subscribe for updates from some external system, calling setState in a callback function when external state changes.\n\nCalling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).\n\n/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx:434:7\n  432 |     let cancelled = false;\n  433 |     if (!selectedPlace?.name) {\n> 434 |       setPlaceFootprint(null);\n      |       ^^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect\n  435 |       workspacePois.updatePlaceFocus({ name: null, hasBoundary: false, feature: null });\n  436 |       return;\n  437 |     }",
+          "line": 434,
+          "column": 7,
+          "endLine": 434,
+          "endColumn": 24
+        },
+        {
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+          "message": "'excludeIds' is assigned a value but never used. Allowed unused vars must match /^_/u.",
+          "line": 454,
+          "column": 9,
+          "messageId": "unusedVar",
+          "endLine": 454,
+          "endColumn": 19
+        },
+        {
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+          "message": "'noteDayIndexLabel' is assigned a value but never used. Allowed unused vars must match /^_/u.",
+          "line": 479,
+          "column": 9,
+          "messageId": "unusedVar",
+          "endLine": 479,
+          "endColumn": 26
+        },
+        {
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+          "message": "'toastShare' is assigned a value but never used. Allowed unused vars must match /^_/u.",
+          "line": 490,
+          "column": 9,
+          "messageId": "unusedVar",
+          "endLine": 490,
+          "endColumn": 19
+        },
+        {
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+          "message": "'consumeExpensePrefill' is assigned a value but never used. Allowed unused vars must match /^_/u.",
+          "line": 491,
+          "column": 9,
+          "messageId": "unusedVar",
+          "endLine": 491,
+          "endColumn": 30
+        },
+        {
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+          "message": "'confirmDelete' is assigned a value but never used. Allowed unused vars must match /^_/u.",
+          "line": 540,
+          "column": 9,
+          "messageId": "unusedVar",
+          "endLine": 540,
+          "endColumn": 22
+        },
+        {
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+          "message": "'confirmDeleteTrack' is assigned a value but never used. Allowed unused vars must match /^_/u.",
+          "line": 546,
+          "column": 9,
+          "messageId": "unusedVar",
+          "endLine": 546,
+          "endColumn": 27
+        },
+        {
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+          "message": "'handlePickCatalog' is assigned a value but never used. Allowed unused vars must match /^_/u.",
+          "line": 550,
+          "column": 9,
+          "messageId": "unusedVar",
+          "endLine": 550,
+          "endColumn": 26
+        },
+        {
+          "ruleId": "react-hooks/exhaustive-deps",
+          "severity": 1,
+          "message": "React Hook useCallback has a missing dependency: 'toastDenied'. Either include it or remove the dependency array.",
+          "line": 570,
+          "column": 5,
+          "endLine": 570,
+          "endColumn": 96,
+          "suggestions": [
+            {
+              "desc": "Update the dependencies array to be: [tripId, canUseSchedule, toastDenied, scheduleMode, places, days, toast, itemsByDayId, gov, t, pushUndo]",
+              "fix": {
+                "range": [
+                  22828,
+                  22919
+                ],
+                "text": "[tripId, canUseSchedule, toastDenied, scheduleMode, places, days, toast, itemsByDayId, gov, t, pushUndo]"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+          "message": "'confirmRemoveItem' is assigned a value but never used. Allowed unused vars must match /^_/u.",
+          "line": 577,
+          "column": 9,
+          "messageId": "unusedVar",
+          "endLine": 577,
+          "endColumn": 26
+        },
+        {
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+          "message": "'saveNote' is assigned a value but never used. Allowed unused vars must match /^_/u.",
+          "line": 583,
+          "column": 9,
+          "messageId": "unusedVar",
+          "endLine": 583,
+          "endColumn": 17
+        },
+        {
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+          "message": "'confirmDeleteNote' is assigned a value but never used. Allowed unused vars must match /^_/u.",
+          "line": 585,
+          "column": 9,
+          "messageId": "unusedVar",
+          "endLine": 585,
+          "endColumn": 26
+        },
+        {
+          "ruleId": "react-hooks/exhaustive-deps",
+          "severity": 1,
+          "message": "React Hook useEffect has a missing dependency: 'tripId'. Either include it or remove the dependency array.",
+          "line": 599,
+          "column": 6,
+          "endLine": 599,
+          "endColumn": 37,
+          "suggestions": [
+            {
+              "desc": "Update the dependencies array to be: [activeTab, reloadReservations, tripId]",
+              "fix": {
+                "range": [
+                  24017,
+                  24048
+                ],
+                "text": "[activeTab, reloadReservations, tripId]"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "react-hooks/immutability",
+          "severity": 1,
+          "message": "Error: Cannot access variable before it is declared\n\n`openExplore` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.\n\n/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx:648:9\n  646 |           return scheduleMode;\n  647 |         },\n> 648 |         openExplore,\n      |         ^^^^^^^^^^^ `openExplore` accessed before it is declared\n  649 |         closeExplore,\n  650 |         consumeDeepLink,\n  651 |       },\n\n/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx:711:3\n  709 |   }, [tripId, reloadActiveItinerary, toast, t]);\n  710 |\n> 711 |   const openExplore = useCallback((link: ExploreDeepLink | null) => {\n      |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n> 712 |     setPendingExploreDeepLink(link);\n      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n> 713 |     setExploreOpen(true);\n      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n> 714 |   }, []);\n      | ^^^^^^^^^^ `openExplore` is declared here\n  715 |   const closeExplore = useCallback(() => {\n  716 |     setExploreOpen(false);\n  717 |     setPendingExploreDeepLink(null);",
+          "line": 648,
+          "column": 9,
+          "endLine": 648,
+          "endColumn": 20
+        },
+        {
+          "ruleId": "react-hooks/immutability",
+          "severity": 1,
+          "message": "Error: Cannot access variable before it is declared\n\n`closeExplore` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.\n\n/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx:649:9\n  647 |         },\n  648 |         openExplore,\n> 649 |         closeExplore,\n      |         ^^^^^^^^^^^^ `closeExplore` accessed before it is declared\n  650 |         consumeDeepLink,\n  651 |       },\n  652 |       partialLoad: { failed: partialLoadError, retry: retryPartialLoad },\n\n/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx:715:3\n  713 |     setExploreOpen(true);\n  714 |   }, []);\n> 715 |   const closeExplore = useCallback(() => {\n      |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n> 716 |     setExploreOpen(false);\n      | ^^^^^^^^^^^^^^^^^^^^^^^^^^\n> 717 |     setPendingExploreDeepLink(null);\n      | ^^^^^^^^^^^^^^^^^^^^^^^^^^\n> 718 |   }, []);\n      | ^^^^^^^^^^ `closeExplore` is declared here\n  719 |   const consumeDeepLink = useCallback(() => setPendingExploreDeepLink(null), []);\n  720 |   const retryPartialLoad = useCallback(() => setLoadNonce((n) => n + 1), []);\n  721 |",
+          "line": 649,
+          "column": 9,
+          "endLine": 649,
+          "endColumn": 21
+        },
+        {
+          "ruleId": "react-hooks/immutability",
+          "severity": 1,
+          "message": "Error: Cannot access variable before it is declared\n\n`consumeDeepLink` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.\n\n/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx:650:9\n  648 |         openExplore,\n  649 |         closeExplore,\n> 650 |         consumeDeepLink,\n      |         ^^^^^^^^^^^^^^^ `consumeDeepLink` accessed before it is declared\n  651 |       },\n  652 |       partialLoad: { failed: partialLoadError, retry: retryPartialLoad },\n  653 |     };\n\n/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx:719:3\n  717 |     setPendingExploreDeepLink(null);\n  718 |   }, []);\n> 719 |   const consumeDeepLink = useCallback(() => setPendingExploreDeepLink(null), []);\n      |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `consumeDeepLink` is declared here\n  720 |   const retryPartialLoad = useCallback(() => setLoadNonce((n) => n + 1), []);\n  721 |\n  722 |   if (isLoading) {",
+          "line": 650,
+          "column": 9,
+          "endLine": 650,
+          "endColumn": 24
+        },
+        {
+          "ruleId": "react-hooks/immutability",
+          "severity": 1,
+          "message": "Error: Cannot access variable before it is declared\n\n`retryPartialLoad` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.\n\n/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx:652:55\n  650 |         consumeDeepLink,\n  651 |       },\n> 652 |       partialLoad: { failed: partialLoadError, retry: retryPartialLoad },\n      |                                                       ^^^^^^^^^^^^^^^^ `retryPartialLoad` accessed before it is declared\n  653 |     };\n  654 |     useFamilyUiPermissions.setState({ controller });\n  655 |     return () => {\n\n/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx:720:3\n  718 |   }, []);\n  719 |   const consumeDeepLink = useCallback(() => setPendingExploreDeepLink(null), []);\n> 720 |   const retryPartialLoad = useCallback(() => setLoadNonce((n) => n + 1), []);\n      |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `retryPartialLoad` is declared here\n  721 |\n  722 |   if (isLoading) {\n  723 |     return <UpstreamTripLoadingSplash title={trip?.title} />;",
+          "line": 652,
+          "column": 55,
+          "endLine": 652,
+          "endColumn": 71
+        },
+        {
+          "ruleId": "react-hooks/exhaustive-deps",
+          "severity": 1,
+          "message": "React Hook useLayoutEffect has missing dependencies: 'closeExplore', 'consumeDeepLink', 'openExplore', and 'retryPartialLoad'. Either include them or remove the dependency array.",
+          "line": 659,
+          "column": 6,
+          "endLine": 679,
+          "endColumn": 4,
+          "suggestions": [
+            {
+              "desc": "Update the dependencies array to be: [trip, isLoading, days, places, scheduleItems, dayNotes, gov, selectedDayId, selectedPlaceId, reloadActiveItinerary, exploreOpen, pendingExploreDeepLink, countryIds, tripPlaceIds, personId, placesMode, reservationsMode, scheduleMode, partialLoadError, openExplore, closeExplore, consumeDeepLink, retryPartialLoad]",
+              "fix": {
+                "range": [
+                  25763,
+                  26095
+                ],
+                "text": "[trip, isLoading, days, places, scheduleItems, dayNotes, gov, selectedDayId, selectedPlaceId, reloadActiveItinerary, exploreOpen, pendingExploreDeepLink, countryIds, tripPlaceIds, personId, placesMode, reservationsMode, scheduleMode, partialLoadError, openExplore, closeExplore, consumeDeepLink, retryPartialLoad]"
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "react-hooks/preserve-manual-memoization",
+          "severity": 1,
+          "message": "Compilation Skipped: Existing memoization could not be preserved\n\nReact Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. This value was memoized in source but not in compilation output.\n\n/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx:711:35\n  709 |   }, [tripId, reloadActiveItinerary, toast, t]);\n  710 |\n> 711 |   const openExplore = useCallback((link: ExploreDeepLink | null) => {\n      |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n> 712 |     setPendingExploreDeepLink(link);\n      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n> 713 |     setExploreOpen(true);\n      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n> 714 |   }, []);\n      | ^^^^ Could not preserve existing memoization\n  715 |   const closeExplore = useCallback(() => {\n  716 |     setExploreOpen(false);\n  717 |     setPendingExploreDeepLink(null);",
+          "line": 711,
+          "column": 35,
+          "endLine": 714,
+          "endColumn": 4
+        },
+        {
+          "ruleId": "react-hooks/preserve-manual-memoization",
+          "severity": 1,
+          "message": "Compilation Skipped: Existing memoization could not be preserved\n\nReact Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. This value was memoized in source but not in compilation output.\n\n/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx:715:36\n  713 |     setExploreOpen(true);\n  714 |   }, []);\n> 715 |   const closeExplore = useCallback(() => {\n      |                                    ^^^^^^^\n> 716 |     setExploreOpen(false);\n      | ^^^^^^^^^^^^^^^^^^^^^^^^^^\n> 717 |     setPendingExploreDeepLink(null);\n      | ^^^^^^^^^^^^^^^^^^^^^^^^^^\n> 718 |   }, []);\n      | ^^^^ Could not preserve existing memoization\n  719 |   const consumeDeepLink = useCallback(() => setPendingExploreDeepLink(null), []);\n  720 |   const retryPartialLoad = useCallback(() => setLoadNonce((n) => n + 1), []);\n  721 |",
+          "line": 715,
+          "column": 36,
+          "endLine": 718,
+          "endColumn": 4
+        },
+        {
+          "ruleId": "react-hooks/preserve-manual-memoization",
+          "severity": 1,
+          "message": "Compilation Skipped: Existing memoization could not be preserved\n\nReact Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. This value was memoized in source but not in compilation output.\n\n/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx:719:39\n  717 |     setPendingExploreDeepLink(null);\n  718 |   }, []);\n> 719 |   const consumeDeepLink = useCallback(() => setPendingExploreDeepLink(null), []);\n      |                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Could not preserve existing memoization\n  720 |   const retryPartialLoad = useCallback(() => setLoadNonce((n) => n + 1), []);\n  721 |\n  722 |   if (isLoading) {",
+          "line": 719,
+          "column": 39,
+          "endLine": 719,
+          "endColumn": 76
+        },
+        {
+          "ruleId": "react-hooks/preserve-manual-memoization",
+          "severity": 1,
+          "message": "Compilation Skipped: Existing memoization could not be preserved\n\nReact Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. This value was memoized in source but not in compilation output.\n\n/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx:720:40\n  718 |   }, []);\n  719 |   const consumeDeepLink = useCallback(() => setPendingExploreDeepLink(null), []);\n> 720 |   const retryPartialLoad = useCallback(() => setLoadNonce((n) => n + 1), []);\n      |                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Could not preserve existing memoization\n  721 |\n  722 |   if (isLoading) {\n  723 |     return <UpstreamTripLoadingSplash title={trip?.title} />;",
+          "line": 720,
+          "column": 40,
+          "endLine": 720,
+          "endColumn": 72
+        },
+        {
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+          "message": "'railLeft' is assigned a value but never used. Allowed unused vars must match /^_/u.",
+          "line": 727,
+          "column": 9,
+          "messageId": "unusedVar",
+          "endLine": 727,
+          "endColumn": 17
+        },
+        {
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+          "message": "'railRight' is assigned a value but never used. Allowed unused vars must match /^_/u.",
+          "line": 728,
+          "column": 9,
+          "messageId": "unusedVar",
+          "endLine": 728,
+          "endColumn": 18
+        },
+        {
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+          "message": "'showMapboxHint' is assigned a value but never used. Allowed unused vars must match /^_/u.",
+          "line": 729,
+          "column": 9,
+          "messageId": "unusedVar",
+          "endLine": 729,
+          "endColumn": 23
+        },
+        {
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+          "message": "'planSidebar' is assigned a value but never used. Allowed unused vars must match /^_/u.",
+          "line": 734,
+          "column": 9,
+          "messageId": "unusedVar",
+          "endLine": 734,
+          "endColumn": 20
+        },
+        {
+          "ruleId": "@typescript-eslint/no-unused-vars",
+          "severity": 1,
+          "message": "'placesSidebar' is assigned a value but never used. Allowed unused vars must match /^_/u.",
+          "line": 778,
+          "column": 9,
+          "messageId": "unusedVar",
+          "endLine": 778,
+          "endColumn": 22
+        }
+      ],
+      "suppressedMessages": [
+        {
+          "ruleId": "@typescript-eslint/no-explicit-any",
+          "severity": 1,
+          "message": "Unexpected any. Specify a different type.",
+          "line": 112,
+          "column": 27,
+          "messageId": "unexpectedAny",
+          "endLine": 112,
+          "endColumn": 30,
+          "suggestions": [
+            {
+              "messageId": "suggestUnknown",
+              "fix": {
+                "range": [
+                  6022,
+                  6025
+                ],
+                "text": "unknown"
+              },
+              "desc": "Use `unknown` instead, this will force you to explicitly, and safely assert the type is correct."
+            },
+            {
+              "messageId": "suggestNever",
+              "fix": {
+                "range": [
+                  6022,
+                  6025
+                ],
+                "text": "never"
+              },
+              "desc": "Use `never` instead, this is useful when instantiating generic type parameters that you don't need to know the type of."
+            }
+          ],
+          "suppressions": [
+            {
+              "kind": "directive",
+              "justification": ""
+            }
+          ]
+        },
+        {
+          "ruleId": "react-hooks/exhaustive-deps",
+          "severity": 1,
+          "message": "React Hook useEffect has missing dependencies: 'navigate', 'reloadReservations', 't', and 'toast'. Either include them or remove the dependency array.",
+          "line": 417,
+          "column": 6,
+          "endLine": 417,
+          "endColumn": 25,
+          "suggestions": [
+            {
+              "desc": "Update the dependencies array to be: [tripId, loadNonce, reloadReservations, toast, t, navigate]",
+              "fix": {
+                "range": [
+                  17961,
+                  17980
+                ],
+                "text": "[tripId, loadNonce, reloadReservations, toast, t, navigate]"
+              }
+            }
+          ],
+          "suppressions": [
+            {
+              "kind": "directive",
+              "justification": "stable load key only"
+            }
+          ]
+        },
+        {
+          "ruleId": "react-hooks/exhaustive-deps",
+          "severity": 1,
+          "message": "React Hook useEffect has missing dependencies: 't' and 'toast'. Either include them or remove the dependency array.",
+          "line": 421,
+          "column": 6,
+          "endLine": 421,
+          "endColumn": 27,
+          "suggestions": [
+            {
+              "desc": "Update the dependencies array to be: [gov.mutateGateError, t, toast]",
+              "fix": {
+                "range": [
+                  18159,
+                  18180
+                ],
+                "text": "[gov.mutateGateError, t, toast]"
+              }
+            }
+          ],
+          "suppressions": [
+            {
+              "kind": "directive",
+              "justification": ""
+            }
+          ]
+        },
+        {
+          "ruleId": "react-hooks/exhaustive-deps",
+          "severity": 1,
+          "message": "React Hook useEffect has a missing dependency: 'workspacePois'. Either include it or remove the dependency array.",
+          "line": 452,
+          "column": 6,
+          "endLine": 452,
+          "endColumn": 46,
+          "suggestions": [
+            {
+              "desc": "Update the dependencies array to be: [selectedPlace.name, selectedPlace.id, workspacePois]",
+              "fix": {
+                "range": [
+                  19368,
+                  19408
+                ],
+                "text": "[selectedPlace.name, selectedPlace.id, workspacePois]"
+              }
+            }
+          ],
+          "suppressions": [
+            {
+              "kind": "directive",
+              "justification": ""
+            }
+          ]
+        }
+      ],
+      "wrapped": 987,
+      "formatted": true
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "errors": 0,
+      "warnings": 0,
+      "messages": [],
+      "suppressedMessages": [],
+      "wrapped": 783,
+      "formatted": true
+    },
+    {
+      "file": "client/src/integrations/family/controllerItineraryActions.test.ts",
+      "errors": 0,
+      "warnings": 0,
+      "messages": [],
+      "suppressedMessages": [],
+      "wrapped": 389,
+      "formatted": true
+    },
+    {
+      "file": "client/tests/helpers/controllerItineraryFixture.ts",
+      "errors": 0,
+      "warnings": 0,
+      "messages": [],
+      "suppressedMessages": [],
+      "wrapped": 150,
+      "formatted": true
+    }
+  ],
+  "measurements": [
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "settled",
+      "line": 85,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 7
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "FamilyFrontendController",
+      "line": 97,
+      "parameters": 1,
+      "complexity": 21,
+      "lines": 827
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 102,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 103,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 104,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 105,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 126,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 127,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 6
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 129,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 131,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 169,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 175,
+      "parameters": 1,
+      "complexity": 8,
+      "lines": 17
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 193,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 197,
+      "parameters": 0,
+      "complexity": 5,
+      "lines": 12
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 200,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 204,
+      "parameters": 0,
+      "complexity": 3,
+      "lines": 4
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 210,
+      "parameters": 0,
+      "complexity": 3,
+      "lines": 11
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 212,
+      "parameters": 1,
+      "complexity": 3,
+      "lines": 6
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 219,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 222,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 6
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 229,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 234,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 235,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 237,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 6
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 241,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 244,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 4
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 249,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 6
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 253,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 256,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 5
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 263,
+      "parameters": 0,
+      "complexity": 3,
+      "lines": 29
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 270,
+      "parameters": 0,
+      "complexity": 9,
+      "lines": 19
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 293,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 295,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 298,
+      "parameters": 0,
+      "complexity": 4,
+      "lines": 6
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 305,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 319,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 345,
+      "parameters": 2,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 348,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 351,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 65
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 366,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 367,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 379,
+      "parameters": 1,
+      "complexity": 16,
+      "lines": 26
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 401,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 405,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 6
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 411,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 3
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 414,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 419,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 3
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 427,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 431,
+      "parameters": 0,
+      "complexity": 3,
+      "lines": 20
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 438,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 9
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 447,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 455,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 5
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 460,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 462,
+      "parameters": 0,
+      "complexity": 3,
+      "lines": 9
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 473,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 476,
+      "parameters": 0,
+      "complexity": 3,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 479,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 480,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 483,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 487,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 490,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 491,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 553,
+      "parameters": 2,
+      "complexity": 1,
+      "lines": 17
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 587,
+      "parameters": 0,
+      "complexity": 5,
+      "lines": 13
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 593,
+      "parameters": 0,
+      "complexity": 5,
+      "lines": 5
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 601,
+      "parameters": 0,
+      "complexity": 3,
+      "lines": 9
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 622,
+      "parameters": 0,
+      "complexity": 3,
+      "lines": 38
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 633,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 643,
+      "parameters": 1,
+      "complexity": 3,
+      "lines": 5
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 655,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 4
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 681,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 29
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 685,
+      "parameters": 0,
+      "complexity": 6,
+      "lines": 17
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 702,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 3
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 705,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 711,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 715,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 719,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 732,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 744,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 5
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 750,
+      "parameters": 3,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 753,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 754,
+      "parameters": 2,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 759,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 8
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 769,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 775,
+      "parameters": 3,
+      "complexity": 2,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 785,
+      "parameters": 1,
+      "complexity": 3,
+      "lines": 4
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 794,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 803,
+      "parameters": 1,
+      "complexity": 14,
+      "lines": 147
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 806,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 825,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 5
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 830,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 5
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 848,
+      "parameters": 1,
+      "complexity": 4,
+      "lines": 9
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 858,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 6
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 860,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 869,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 870,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 878,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 879,
+      "parameters": 0,
+      "complexity": 3,
+      "lines": 17
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 944,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "name": "ArrowFunction",
+      "line": 972,
+      "parameters": 1,
+      "complexity": 3,
+      "lines": 5
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "retainRequestDelete",
+      "line": 80,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 12
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 84,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 7
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "retainOpenTrackImport",
+      "line": 93,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 12
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 97,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 7
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "retainRequestDeleteTrack",
+      "line": 106,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 12
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 110,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 7
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "retainOpenAddPlace",
+      "line": 119,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 12
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 123,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 7
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "retainRequestAssignToDay",
+      "line": 132,
+      "parameters": 2,
+      "complexity": 1,
+      "lines": 24
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 140,
+      "parameters": 1,
+      "complexity": 4,
+      "lines": 15
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "retainRequestRemoveItem",
+      "line": 157,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 12
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 161,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 7
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "retainConfirmDelete",
+      "line": 170,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 59
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 201,
+      "parameters": 0,
+      "complexity": 7,
+      "lines": 27
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 221,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "retainConfirmDeleteTrack",
+      "line": 230,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 21
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 237,
+      "parameters": 0,
+      "complexity": 3,
+      "lines": 13
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 243,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "retainHandlePickCatalog",
+      "line": 252,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 66
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 281,
+      "parameters": 1,
+      "complexity": 7,
+      "lines": 36
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "retainAssignPlaceToDay",
+      "line": 319,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 97
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 354,
+      "parameters": 2,
+      "complexity": 10,
+      "lines": 61
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 360,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 361,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 367,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 372,
+      "parameters": 2,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 403,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 404,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "retainConfirmRemoveItem",
+      "line": 417,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 72
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 444,
+      "parameters": 0,
+      "complexity": 6,
+      "lines": 44
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 446,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 466,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 15
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 479,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "retainMoveItem",
+      "line": 490,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 87
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 517,
+      "parameters": 3,
+      "complexity": 11,
+      "lines": 59
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 522,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 525,
+      "parameters": 1,
+      "complexity": 3,
+      "lines": 4
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 526,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 533,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 557,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 5
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 558,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 4
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 559,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 563,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 9
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 565,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 5
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 566,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 4
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 567,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "retainSaveDayTitle",
+      "line": 578,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 17
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 582,
+      "parameters": 2,
+      "complexity": 3,
+      "lines": 12
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "retainSaveNote",
+      "line": 596,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 71
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 625,
+      "parameters": 1,
+      "complexity": 16,
+      "lines": 41
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 655,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 5
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 656,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 658,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "retainConfirmDeleteNote",
+      "line": 668,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 42
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 683,
+      "parameters": 0,
+      "complexity": 5,
+      "lines": 26
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "retainToastDenied",
+      "line": 711,
+      "parameters": 4,
+      "complexity": 1,
+      "lines": 16
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 717,
+      "parameters": 2,
+      "complexity": 7,
+      "lines": 9
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "retainToastWrite",
+      "line": 728,
+      "parameters": 2,
+      "complexity": 1,
+      "lines": 8
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 729,
+      "parameters": 1,
+      "complexity": 4,
+      "lines": 6
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "retainedDayIndex",
+      "line": 737,
+      "parameters": 2,
+      "complexity": 3,
+      "lines": 6
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 739,
+      "parameters": 2,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 740,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "retainedDayPlaces",
+      "line": 744,
+      "parameters": 4,
+      "complexity": 7,
+      "lines": 18
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "retainedDayOrder",
+      "line": 763,
+      "parameters": 2,
+      "complexity": 3,
+      "lines": 12
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 767,
+      "parameters": 2,
+      "complexity": 3,
+      "lines": 6
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "retainedPlaceCentroids",
+      "line": 776,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 8
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 779,
+      "parameters": 1,
+      "complexity": 4,
+      "lines": 2
+    },
+    {
+      "file": "client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts",
+      "name": "ArrowFunction",
+      "line": 782,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/controllerItineraryActions.test.ts",
+      "name": "ArrowFunction",
+      "line": 4,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 11
+    },
+    {
+      "file": "client/src/integrations/family/controllerItineraryActions.test.ts",
+      "name": "ArrowFunction",
+      "line": 15,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 5
+    },
+    {
+      "file": "client/src/integrations/family/controllerItineraryActions.test.ts",
+      "name": "ArrowFunction",
+      "line": 20,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/integrations/family/controllerItineraryActions.test.ts",
+      "name": "ArrowFunction",
+      "line": 24,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 6
+    },
+    {
+      "file": "client/src/integrations/family/controllerItineraryActions.test.ts",
+      "name": "ArrowFunction",
+      "line": 30,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/integrations/family/controllerItineraryActions.test.ts",
+      "name": "ArrowFunction",
+      "line": 34,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 5
+    },
+    {
+      "file": "client/src/integrations/family/controllerItineraryActions.test.ts",
+      "name": "ArrowFunction",
+      "line": 39,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 16
+    },
+    {
+      "file": "client/src/integrations/family/controllerItineraryActions.test.ts",
+      "name": "ArrowFunction",
+      "line": 55,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/controllerItineraryActions.test.ts",
+      "name": "ArrowFunction",
+      "line": 58,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 65
+    },
+    {
+      "file": "client/src/integrations/family/controllerItineraryActions.test.ts",
+      "name": "ArrowFunction",
+      "line": 59,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 15
+    },
+    {
+      "file": "client/src/integrations/family/controllerItineraryActions.test.ts",
+      "name": "ArrowFunction",
+      "line": 74,
+      "parameters": 1,
+      "complexity": 4,
+      "lines": 14
+    },
+    {
+      "file": "client/src/integrations/family/controllerItineraryActions.test.ts",
+      "name": "ArrowFunction",
+      "line": 88,
+      "parameters": 1,
+      "complexity": 5,
+      "lines": 12
+    },
+    {
+      "file": "client/src/integrations/family/controllerItineraryActions.test.ts",
+      "name": "ArrowFunction",
+      "line": 102,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 6
+    },
+    {
+      "file": "client/src/integrations/family/controllerItineraryActions.test.ts",
+      "name": "ArrowFunction",
+      "line": 109,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 13
+    },
+    {
+      "file": "client/src/integrations/family/controllerItineraryActions.test.ts",
+      "name": "ArrowFunction",
+      "line": 124,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 72
+    },
+    {
+      "file": "client/src/integrations/family/controllerItineraryActions.test.ts",
+      "name": "ArrowFunction",
+      "line": 125,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 22
+    },
+    {
+      "file": "client/src/integrations/family/controllerItineraryActions.test.ts",
+      "name": "ArrowFunction",
+      "line": 141,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/controllerItineraryActions.test.ts",
+      "name": "ArrowFunction",
+      "line": 147,
+      "parameters": 1,
+      "complexity": 3,
+      "lines": 8
+    },
+    {
+      "file": "client/src/integrations/family/controllerItineraryActions.test.ts",
+      "name": "ArrowFunction",
+      "line": 157,
+      "parameters": 1,
+      "complexity": 9,
+      "lines": 29
+    },
+    {
+      "file": "client/src/integrations/family/controllerItineraryActions.test.ts",
+      "name": "ArrowFunction",
+      "line": 187,
+      "parameters": 1,
+      "complexity": 6,
+      "lines": 8
+    },
+    {
+      "file": "client/src/integrations/family/controllerItineraryActions.test.ts",
+      "name": "ArrowFunction",
+      "line": 197,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 98
+    },
+    {
+      "file": "client/src/integrations/family/controllerItineraryActions.test.ts",
+      "name": "ArrowFunction",
+      "line": 200,
+      "parameters": 1,
+      "complexity": 5,
+      "lines": 11
+    },
+    {
+      "file": "client/src/integrations/family/controllerItineraryActions.test.ts",
+      "name": "ArrowFunction",
+      "line": 212,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 16
+    },
+    {
+      "file": "client/src/integrations/family/controllerItineraryActions.test.ts",
+      "name": "ArrowFunction",
+      "line": 223,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/controllerItineraryActions.test.ts",
+      "name": "ArrowFunction",
+      "line": 226,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/controllerItineraryActions.test.ts",
+      "name": "ArrowFunction",
+      "line": 228,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 16
+    },
+    {
+      "file": "client/src/integrations/family/controllerItineraryActions.test.ts",
+      "name": "ArrowFunction",
+      "line": 244,
+      "parameters": 1,
+      "complexity": 8,
+      "lines": 27
+    },
+    {
+      "file": "client/src/integrations/family/controllerItineraryActions.test.ts",
+      "name": "ArrowFunction",
+      "line": 257,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/controllerItineraryActions.test.ts",
+      "name": "ArrowFunction",
+      "line": 273,
+      "parameters": 1,
+      "complexity": 13,
+      "lines": 20
+    },
+    {
+      "file": "client/src/integrations/family/controllerItineraryActions.test.ts",
+      "name": "ArrowFunction",
+      "line": 286,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/controllerItineraryActions.test.ts",
+      "name": "ArrowFunction",
+      "line": 288,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/controllerItineraryActions.test.ts",
+      "name": "ArrowFunction",
+      "line": 296,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 94
+    },
+    {
+      "file": "client/src/integrations/family/controllerItineraryActions.test.ts",
+      "name": "ArrowFunction",
+      "line": 297,
+      "parameters": 1,
+      "complexity": 4,
+      "lines": 7
+    },
+    {
+      "file": "client/src/integrations/family/controllerItineraryActions.test.ts",
+      "name": "ArrowFunction",
+      "line": 306,
+      "parameters": 1,
+      "complexity": 12,
+      "lines": 27
+    },
+    {
+      "file": "client/src/integrations/family/controllerItineraryActions.test.ts",
+      "name": "ArrowFunction",
+      "line": 334,
+      "parameters": 1,
+      "complexity": 7,
+      "lines": 17
+    },
+    {
+      "file": "client/src/integrations/family/controllerItineraryActions.test.ts",
+      "name": "ArrowFunction",
+      "line": 351,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 6
+    },
+    {
+      "file": "client/src/integrations/family/controllerItineraryActions.test.ts",
+      "name": "ArrowFunction",
+      "line": 357,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 25
+    },
+    {
+      "file": "client/src/integrations/family/controllerItineraryActions.test.ts",
+      "name": "ArrowFunction",
+      "line": 373,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/controllerItineraryActions.test.ts",
+      "name": "ArrowFunction",
+      "line": 382,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 7
+    },
+    {
+      "file": "client/tests/helpers/controllerItineraryFixture.ts",
+      "name": "ArrowFunction",
+      "line": 11,
+      "parameters": 2,
+      "complexity": 3,
+      "lines": 7
+    },
+    {
+      "file": "client/tests/helpers/controllerItineraryFixture.ts",
+      "name": "place",
+      "line": 18,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 18
+    },
+    {
+      "file": "client/tests/helpers/controllerItineraryFixture.ts",
+      "name": "item",
+      "line": 36,
+      "parameters": 2,
+      "complexity": 3,
+      "lines": 16
+    },
+    {
+      "file": "client/tests/helpers/controllerItineraryFixture.ts",
+      "name": "cell",
+      "line": 52,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 12
+    },
+    {
+      "file": "client/tests/helpers/controllerItineraryFixture.ts",
+      "name": "ArrowFunction",
+      "line": 54,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 3
+    },
+    {
+      "file": "client/tests/helpers/controllerItineraryFixture.ts",
+      "name": "itineraryFixture",
+      "line": 64,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 85
+    },
+    {
+      "file": "client/tests/helpers/controllerItineraryFixture.ts",
+      "name": "ArrowFunction",
+      "line": 98,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/tests/helpers/controllerItineraryFixture.ts",
+      "name": "ArrowFunction",
+      "line": 123,
+      "parameters": 2,
+      "complexity": 1,
+      "lines": 3
+    }
+  ],
+  "observation_only_legacy_unignored_in_memory": true,
+  "installed_rules_and_configuration_files_unchanged": true
+}

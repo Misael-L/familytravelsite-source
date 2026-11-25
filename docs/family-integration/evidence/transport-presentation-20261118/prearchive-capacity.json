@@ -1,0 +1,12 @@
+{
+  "capacity_estimate_passed": true,
+  "current_commit": "08eb09938b5e476370de2f8bc544b21bbed91ae5",
+  "exact_current_git_archive_bytes": 368855040,
+  "tracked_blob_bytes": 353972688,
+  "future_documentation_allowance_bytes": 33554432,
+  "operational_headroom_bytes": 536870912,
+  "required_estimate_bytes": 1293253072,
+  "available_bytes": 1855488000,
+  "temporary_tar_and_extracted_tree_coexist": true,
+  "estimate_is_not_strict_archive_acceptance": true
+}

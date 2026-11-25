@@ -1,0 +1,7 @@
+{
+  "tracked_blob_bytes": 349976900,
+  "previous_complete_check_archive_bytes": 350011695,
+  "available_bytes": 1650688000,
+  "available_exceeds_twice_previous_check_archive_plus_512MiB": true,
+  "read_only_capacity_check": true
+}

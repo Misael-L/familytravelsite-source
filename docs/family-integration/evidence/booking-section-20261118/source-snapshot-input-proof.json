@@ -1,0 +1,22 @@
+{
+  "passed": true,
+  "source": {
+    "root": "/private/tmp/trek-core-explore-props-20261118/final-archive-retry/extract",
+    "commit": "031c31717af95b3e07029e95ced8de4cd1fd9306",
+    "all_retained_Git_blob_bytes_and_modes_verified": 18281,
+    "all_files": 18282,
+    "publisher_metadata_extra_paths": [
+      "RELEASE_MANIFEST.json"
+    ],
+    "omission_policy_unchanged": true
+  },
+  "target": {
+    "root": "/private/tmp/trek-core-explore-props-20261118/final-archive/extract",
+    "commit": "d55cb38d8e0007bb5da2ca8b53a6ec9ee94bdf71",
+    "all_retained_Git_blob_bytes_and_modes_verified": 18279,
+    "all_files": 18279,
+    "publisher_metadata_extra_paths": [],
+    "omission_policy_unchanged": true
+  },
+  "no_database_or_media_backup_directory": true
+}

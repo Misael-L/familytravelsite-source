@@ -1,0 +1,16 @@
+# U04-E — remaining packing capabilities and milestone acceptance
+
+Completed locally12 November2026: [U04-E review and handoff](packing-capabilities-handoff.md). The capability audit reproduced an output ownership/label gap; next is [U04-F1 export repair](packing-export-ownership-repair-packet.md). Historical audit requirements below are retained.
+
+Start from the accepted D2c3b handoff and current qualified source. Item/category/bag writers and their named local recovery paths have accumulated scoped evidence; this packet closes the remaining capability inventory before selecting more implementation. It is not a new broad enable flag or a request to repeat previous passing packets.
+
+## Bounded work
+
+1. Read the original U04 native controls packet, current native desktop/phone packing hooks, `plannerPackingPort`, dedicated bag port, category/group composers, template/import/share/clone/contributor consumers, retained-command queue handlers, native API contracts and corresponding canonical schema/RPC sources. Use actual current paths and immutable TREK5.1.2 source. Record each advertised action, direct/propose/deny behavior, persistent owner/lifecycle, endpoint, recovery requirement, and supporting accepted evidence. Distinguish native defaults, already qualified operations, genuine missing connectors and intentionally deferred optional services.
+2. Reconcile current gates with that inventory. Verify that each unsupported native operation refuses before its first write and cannot borrow item/category/bag authority. Do not implement bulk/clone/import/share through a loop of single-row writes or enable an empty-success stub. Preserve the real no-Family behavior. Reuse prior evidence where unchanged; run only meaningful missing contract probes and ordinary source guards. Do not call inherited test totals a new full-suite run.
+3. Produce one concise capability/milestone report and the smallest coherent next implementation packet only for a demonstrated requirement. If every remaining operation is intentionally deferred, report that explicitly and prepare an integration-preview/release-readiness plan; do not manufacture another repair. Missing persistence requires exact SQL/API, permissions, idempotency and recovery design before changes. Do not assume a new table is needed from a hidden UI control alone.
+4. Keep native layouts/styles, existing trip/media identities, ordinary stored variants, original revisions and exact owner-bound queue/archive bytes. Canonical schema remains in FamilyTravelApp; its mixed index is not staged. All accepted local targets and earlier evidence stay fixed. New fixtures, if genuinely necessary, need their own guarded roots and preservation proof.
+
+## Completion boundary
+
+Deliver the concrete action inventory, evidence-labelled status and one chosen next milestone with prerequisites, permitted files, tests and finish criteria. Update the active handoff once; do not reopen accepted bag recovery without a reproduced defect. This packet itself authorizes local inspection, contract tests and documentation only. No new schema, broad/default activation, dependency/image changes, push/main merge, hosted operations, preview/production deployment, billing, transformations, backup/media or ignored ETL work.

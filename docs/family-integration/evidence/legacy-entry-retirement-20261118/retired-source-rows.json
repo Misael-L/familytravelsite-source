@@ -1,0 +1,52 @@
+{
+  "removed_paths": [
+    "client/src/integrations/family/legacy/main.tsx",
+    "client/src/integrations/family/legacy/App.tsx",
+    "client/src/integrations/family/legacy/pages/TripPlannerPage.tsx",
+    "client/src/integrations/family/legacy/pages/FamilyTripWorkspaceShell.tsx"
+  ],
+  "previous_rows": [
+    {
+      "path": "client/src/integrations/family/legacy/main.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "74fe3e42d956e328a42283075b5c87ceb685468b",
+        "bytes": 2389
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/main.tsx"
+    },
+    {
+      "path": "client/src/integrations/family/legacy/App.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "17986baed6187c1d7fde6eaf6e13d7b8c36f4980",
+        "bytes": 17154
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/App.tsx"
+    },
+    {
+      "path": "client/src/integrations/family/legacy/pages/TripPlannerPage.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "f1663d541c4de602c074b99a579f0653dd88a9fc",
+        "bytes": 58469
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/pages/TripPlannerPage.tsx"
+    },
+    {
+      "path": "client/src/integrations/family/legacy/pages/FamilyTripWorkspaceShell.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "98c348eda49aecb57e44c34eb902e3d0149253b3",
+        "bytes": 76141
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/pages/FamilyTripWorkspaceShell.tsx"
+    }
+  ],
+  "new_qualified_commit": "7cc398ec65581bb9383a43841ea962a0ad43dd72",
+  "reason": "Actual four-file deletion after bounded source/type/test/configuration closure; no guard relaxation or disappearing source row without deletion."
+}

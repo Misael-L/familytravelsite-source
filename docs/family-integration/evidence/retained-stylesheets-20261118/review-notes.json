@@ -1,0 +1,35 @@
+{
+  "passed": true,
+  "dependency_boundary": "boundary-decision.json",
+  "actual_source_parser": "Installed PostCSS/value-parser plus literal HTML stylesheet parser; actual and synthetic cases use stylesheetLoaders.mjs.",
+  "service_worker": "restyle only clones existing stylesheet URLs after current hashed-asset recovery; no candidate file enumeration.",
+  "printing": "collectStyles copies already-loaded DOM styles/links into the print iframe; no old file import.",
+  "appearance": "Updates classes/data attributes and inline variables, not stylesheet file paths.",
+  "lazy_retry": "Both native/copied lazyWithRetry retry an initially failed chunk URL. Initial literal imports and all roots/globs are audited; no arbitrary copied stylesheet enumerator.",
+  "other_injected_styles": "Leaflet/Journey marker helpers inject code-defined CSS strings, not these files; PDF external font URLs are unrelated.",
+  "tailwind": "Existing content globs include application HTML/JS/JSX/TS/TSX; deleting the old page can change orphan utility generation even though no runtime importer exists. Compare complete compiled output separately.",
+  "native_styles": "Native global/dashboard/collections CSS and all order/cascade configuration remain byte-exact. Native witnesses in prototype-proof.json.",
+  "no_backend_API_permission_identity_session_queue_recovery_image_admission_change": true,
+  "inspected_files": [
+    {
+      "path": "client/src/utils/serviceWorkerShell.ts",
+      "sha256": "a864a02641954788b92b083cb8aeefed64f3904efd0fbd90d732344f88e5d834"
+    },
+    {
+      "path": "client/src/components/Studio/printSheets.ts",
+      "sha256": "3b21e64e77cba6a5a12d0824a6164310bf375289bc4827145e4ae85a9d989a07"
+    },
+    {
+      "path": "client/src/theme/applyAppearance.ts",
+      "sha256": "cb886b60822ec256064aa175c4ec2ca7f72b44e06b0466d6d47d3e0a70272ea7"
+    },
+    {
+      "path": "client/tailwind.config.js",
+      "sha256": "2f9625b811aad0b6e5e8e9413b05091a73189b3e65faab33e2387ed22c77018c"
+    },
+    {
+      "path": "client/postcss.config.js",
+      "sha256": "e1148cd7dcb115860be4a5126aace4c181422218e8028a5b647f2c075bd58bf7"
+    }
+  ]
+}

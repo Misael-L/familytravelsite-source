@@ -1,0 +1,9 @@
+{
+  "available_bytes": 2236416000,
+  "incoming_tracked_bytes": 353836434,
+  "conservative_two_prototypes_or_tar_and_extract_plus32MiB_and1GiB": 1814969124,
+  "capacity_estimate_passed": true,
+  "prototype_sources_to_use_fresh_COW_probe": true,
+  "archive_has_coexisting_temporary_tar_and_extraction": true,
+  "estimate_not_acceptance": true
+}

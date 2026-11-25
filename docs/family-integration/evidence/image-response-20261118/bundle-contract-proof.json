@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "only_changed_index_functions": [
+    "response validator",
+    "stream reader caller"
+  ],
+  "all_other_index_AST_nodes_equal_after_only_chunk_names_and_lexical_binding_alpha_renaming": true,
+  "each_changed_function_matches_independently_minified_reviewed_source": true,
+  "minifier": "Installed Rolldown/Oxc minifySync over ES2022 type-erased source; script mode keeps the two reference functions, with unchanged default compression",
+  "unchanged_private_dependency_bindings": {
+    "fail": "global:3657",
+    "validator": "global:3735",
+    "webp": "global:3687",
+    "finishReader": "global:3731"
+  },
+  "outside_reviewed_functions_bindings": 21328,
+  "all_global_names_properties_operators_flags_and_other_literals_exact": true,
+  "original_validator_source_sha256": "b9c948d6bd8f1670b8a7a0911dbc307af12e70a3772b3d597ef8db04673e7438",
+  "candidate_validator_source_sha256": "c4922d13407c8ea3e580b33e2e20c7ccc092225e0c517b0e7dfafb9bbe0e9049",
+  "original_reader_source_sha256": "b2738a3476d844774f81288d0b531dc0d95a9a334aae5d46492ee0365a56f7c3",
+  "candidate_reader_source_sha256": "2299f3c741d136d79cc96f3cc8dc70abd08826b15159c138c0bdcd458deb2003",
+  "outside_functions_canonical_AST_sha256": "9c88fda582a95b287a8b3fe3ad68d709045564d147d0574f170c52b267516b8c",
+  "not_a_whole_chunk_or_arbitrary_diff_waiver": true
+}

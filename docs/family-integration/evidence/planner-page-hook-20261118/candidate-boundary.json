@@ -1,0 +1,756 @@
+{
+  "passed": true,
+  "originalWarnings": [
+    {
+      "ruleId": "max-lines-per-function",
+      "severity": 1,
+      "message": "Function 'useTripPlannerPageOf' has too many lines (122). Maximum allowed is 120.",
+      "line": 34,
+      "column": 8,
+      "messageId": "exceed",
+      "endLine": 34,
+      "endColumn": 37
+    },
+    {
+      "ruleId": "complexity",
+      "severity": 1,
+      "message": "Function 'useTripPlannerPageOf' has a complexity of 23. Maximum allowed is 20.",
+      "line": 34,
+      "column": 8,
+      "messageId": "complex",
+      "endLine": 34,
+      "endColumn": 37
+    }
+  ],
+  "existing_root_complexity_unchanged": true,
+  "diagnostics": [],
+  "measurements": [
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.ts",
+      "name": "clearPlaceForm",
+      "line": 26,
+      "parameters": 5,
+      "complexity": 2,
+      "lines": 14
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.ts",
+      "name": "useTripPlannerPage",
+      "line": 42,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.ts",
+      "name": "useTripPlannerPageOf",
+      "line": 51,
+      "parameters": 1,
+      "complexity": 23,
+      "lines": 117
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.ts",
+      "name": "ArrowFunction",
+      "line": 76,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.ts",
+      "name": "ArrowFunction",
+      "line": 82,
+      "parameters": 0,
+      "complexity": 14,
+      "lines": 14
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.ts",
+      "name": "ArrowFunction",
+      "line": 90,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.ts",
+      "name": "ArrowFunction",
+      "line": 94,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.ts",
+      "name": "ArrowFunction",
+      "line": 126,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 3
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.ts",
+      "name": "ArrowFunction",
+      "line": 134,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.ts",
+      "name": "ArrowFunction",
+      "line": 139,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 5
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.ts",
+      "name": "ArrowFunction",
+      "line": 147,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.ts",
+      "name": "ArrowFunction",
+      "line": 152,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.ts",
+      "name": "ArrowFunction",
+      "line": 154,
+      "parameters": 2,
+      "complexity": 5,
+      "lines": 4
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 15,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 20
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 42,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 43,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 45,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 46,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 50,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 51,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 53,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 54,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 58,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 59,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 61,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 62,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 69,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 70,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 73,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 74,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 76,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 6
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 77,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 82,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 6
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 83,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "model",
+      "line": 108,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 83
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 119,
+      "parameters": 2,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 121,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 122,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 123,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 124,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 125,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 153,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 154,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 166,
+      "parameters": 4,
+      "complexity": 1,
+      "lines": 5
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 171,
+      "parameters": 3,
+      "complexity": 1,
+      "lines": 6
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 193,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 5
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 198,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 6
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 205,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 237
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 221,
+      "parameters": 1,
+      "complexity": 18,
+      "lines": 42
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 258,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 260,
+      "parameters": 2,
+      "complexity": 2,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 264,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 13
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 268,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 278,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 15
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 281,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 294,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 27
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 296,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 297,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 322,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 25
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 330,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 348,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 23
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 352,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 353,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 358,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 361,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 365,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 368,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 372,
+      "parameters": 1,
+      "complexity": 3,
+      "lines": 24
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 376,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 377,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 378,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 379,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 380,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 385,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 386,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 397,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 29
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 411,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 413,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 414,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 415,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 420,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 427,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 13
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 429,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 432,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 435,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 437,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "name": "ArrowFunction",
+      "line": 441,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 9
+    }
+  ],
+  "files": [
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.ts",
+      "errors": 0,
+      "warnings": 1,
+      "messages": [
+        {
+          "ruleId": "complexity",
+          "severity": 1,
+          "message": "Function 'useTripPlannerPageOf' has a complexity of 23. Maximum allowed is 20.",
+          "line": 51,
+          "column": 8,
+          "messageId": "complex",
+          "endLine": 51,
+          "endColumn": 37
+        }
+      ],
+      "suppressedMessages": [],
+      "wrapped": 203,
+      "formatted": false
+    },
+    {
+      "file": "client/src/pages/tripPlanner/useTripPlannerPage.test.tsx",
+      "errors": 0,
+      "warnings": 0,
+      "messages": [],
+      "suppressedMessages": [],
+      "wrapped": 450,
+      "formatted": true
+    }
+  ]
+}

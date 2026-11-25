@@ -1,0 +1,146 @@
+{
+  "date": "2026-11-21",
+  "website_source_commit": "0fe4cd90ba51cd52535f8713f4bf631d8b1babfe",
+  "backend_commit": "b79933be3af1ddcf4b0aa1a06bc8a7ca161a38c5",
+  "isolated_upgrade": {
+    "ledger_before": 88,
+    "migrations_applied": 67,
+    "ledger_after": 155,
+    "archived_projections": 200,
+    "archived_rows_preserved": 296764,
+    "old_source_refs": [
+      "247b76ea94942e511a663f3f840c81821c556fc5",
+      "cede145a2e1963c59b667498e99e5056eaf65266"
+    ],
+    "legacy_table_write_refusals": 6,
+    "legacy_packing_rpc_refusals": 3,
+    "legacy_sqlstate": "42501",
+    "backup_input": "verified 20 November X8 archival database dump"
+  },
+  "separate_connection_checks": {
+    "isolated_ledger": 155,
+    "db_connections_independent_per_call": true,
+    "synthetic_only": true,
+    "both_domains_in_same_trip": true,
+    "domains": {
+      "task": {
+        "unknown_receipt_before_write": true,
+        "committed_receipt_from_new_connection": true,
+        "exact_retry_returns_same_result": true,
+        "changed_intent_refused_sqlstate": "PT409",
+        "trash_hidden_from_active_read": true,
+        "restore_reused_id_and_preserved_values": true,
+        "restore_retry_idempotent": true,
+        "final_entity_count": 1
+      },
+      "packing": {
+        "unknown_receipt_before_write": true,
+        "committed_receipt_from_new_connection": true,
+        "exact_retry_returns_same_result": true,
+        "changed_intent_refused_sqlstate": "PT409",
+        "trash_hidden_from_active_read": true,
+        "restore_reused_id_and_preserved_values": true,
+        "restore_retry_idempotent": true,
+        "final_entity_count": 1
+      }
+    }
+  },
+  "client": {
+    "passed": 707,
+    "files": 22,
+    "fixture_builds": [
+      {
+        "source_commit": "0fe4cd90ba51cd52535f8713f4bf631d8b1babfe",
+        "configuration": "isolated-task-v1",
+        "artifact_scan": {
+          "correct": 0,
+          "wrong": 1,
+          "missing": 1
+        },
+        "files": 3780
+      },
+      {
+        "source_commit": "0fe4cd90ba51cd52535f8713f4bf631d8b1babfe",
+        "configuration": "isolated-planner-packing-v1",
+        "artifact_scan": {
+          "correct": 0,
+          "wrong": 1,
+          "missing": 1
+        },
+        "files": 3780
+      }
+    ],
+    "profile_admission": [
+      {
+        "profile": "ordinary unselected",
+        "task": false,
+        "base_packing": false
+      },
+      {
+        "profile": "isolated-task-v1",
+        "task": true,
+        "base_packing": false
+      },
+      {
+        "profile": "isolated-planner-packing-v1",
+        "task": false,
+        "base_packing": true
+      },
+      {
+        "profile": "concatenated existing values",
+        "task": false,
+        "base_packing": false
+      },
+      {
+        "profile": "unrecognized proposed value",
+        "task": false,
+        "base_packing": false
+      }
+    ],
+    "matrix_used_real_sdk_with_stubbed_final_fetch": true,
+    "raw_legacy_queue_paths_parked_and_exportable": 4,
+    "legacy_queue_paths_automatically_replayed": 0,
+    "fixture_suites": [
+      "src/integrations/family/coreHttpsPlannerPackingBoundary.test.ts",
+      "src/integrations/family/coreHttpsPlannerPackingOwnership.test.ts",
+      "src/integrations/family/coreHttpsTaskBoundary.test.ts",
+      "src/integrations/family/coreHttpsTaskOwnership.test.ts",
+      "src/integrations/family/coreHttpsWriterProfile.test.ts",
+      "src/integrations/family/crossTabQueueSession.test.tsx",
+      "src/integrations/family/familyOriginalWorkExport.test.ts",
+      "src/integrations/family/nativePackingControls.test.tsx",
+      "src/integrations/family/nativePackingGroups.test.tsx",
+      "src/integrations/family/packingCommandSession.test.ts",
+      "src/integrations/family/packingGroupSession.test.ts",
+      "src/integrations/family/packingRetainedReceipt.test.ts",
+      "src/integrations/family/packingTerminalTransport.test.ts",
+      "src/integrations/family/plannerPackingRecovery.test.tsx",
+      "src/integrations/family/plannerTaskRecovery.test.tsx",
+      "src/integrations/family/queueCutoverRehearsal.test.ts",
+      "src/integrations/family/taskTransport.test.ts",
+      "src/integrations/family/taskWriters.test.tsx",
+      "src/integrations/family/writerCutoverRehearsal.test.ts",
+      "tests/unit/family/coreHttpsPlannerPackingConfig.test.ts",
+      "tests/unit/family/coreHttpsTaskConfig.test.ts",
+      "tests/unit/family/coreHttpsWriterHold.test.ts"
+    ],
+    "supplemental_untracked_fixture_sha256": {
+      "writerCutoverRehearsal.test.ts": "fceb19dfe5c7f41cdcab2d2f6a42c915472e62678635ebdc8f87a3521b1ab66c",
+      "queueCutoverRehearsal.test.ts": "0dcbf5471276c7126faaafca2f02261fa461cacc3d619ddaf1fda78b3db0bd72",
+      "check_cutover.py": "acdadfb28f0c23e1b7a30fbb5891b6c375a86539959b6b9698f21b1e79809078"
+    }
+  },
+  "disposal": {
+    "isolated_container_removed": true,
+    "isolated_volume_removed": true,
+    "raw_private_restore_artifacts_removed": true,
+    "backup_input_read_only": true
+  },
+  "limits": {
+    "combined_writer_qualified": false,
+    "actual_hosted_worker_source_verified": false,
+    "different_release_handover_qualified": false,
+    "hosted_database_used": false,
+    "deployment": false
+  }
+}

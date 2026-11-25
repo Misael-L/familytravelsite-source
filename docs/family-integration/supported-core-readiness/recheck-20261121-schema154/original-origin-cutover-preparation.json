@@ -1,0 +1,100 @@
+{
+  "website_fallback_package": {
+    "mode": "fallback",
+    "profile": "primary-core-fallback-v1",
+    "version": "family-2026.11.21.1-rc.2",
+    "target": "familytravelsite",
+    "source_commit": "6ef85890f9f4c5a22b800be7f8f337b17d6af3a3",
+    "files": 3785,
+    "asset_tree_sha256": "79d345943d9ee09be8e0a8da936e36750839f84ae8a3ea14ae287371123937af",
+    "entry": {
+      "path": "/assets/index-oQMHjvuy.js",
+      "bytes": 1218633,
+      "sha256": "ce6a8da64fa66bc3bd3cb08e1f8290745c68e7dcfa814fa7d909358c0bd395b4"
+    },
+    "service_worker_sha256": "df82311bf8ce889d67556e9336f3f4718a77a107982b41217a6985c06005b555",
+    "artifact_scan": "passed",
+    "wrangler_dry_run": "passed"
+  },
+  "writer_packages": "Remain pinned to the verified Cloudflare candidate evidence",
+  "recovery_browser": {
+    "verified": true,
+    "public_sites_loaded_in_browser": false,
+    "browser": "local Chromium",
+    "emitted_html_sha256": "9aee5c08cef5d5154a43c2ab699dbd3e6af6d349c5493279b271b6da936a2185",
+    "observed_recovery_chunk_count": 4,
+    "recovery_entry_module_count": 13,
+    "fixture_results": {
+      "production": {
+        "actual_prior_worker_sha256": "e3795251074eb4864c413103704716be5e03caac9b7e583b17e34eb0ac04f8e3",
+        "old_worker_intercepted_document": true,
+        "updated_generated_worker_reached_static_recovery_document": true,
+        "exact_https_hostname_replayed": true,
+        "nonqualified_origin_refused": true,
+        "fresh_consent_gate": true,
+        "matched_same_origin_only": true,
+        "archive_queue_rows": 1,
+        "archive_imports": 1,
+        "exact_binary_bytes": 7,
+        "wrong_owner_and_future_database_refusals": 0,
+        "source_database_keys_values_and_versions_unchanged": true,
+        "recovery_dynamic_api_requests": 0,
+        "mobile_viewport": false
+      },
+      "preview": {
+        "actual_prior_worker_sha256": "9a28090f042420c7aa8ef37ade3c120ecc48879c43f9fa113317a47fe0e7efa7",
+        "old_worker_intercepted_document": true,
+        "updated_generated_worker_reached_static_recovery_document": true,
+        "exact_https_hostname_replayed": true,
+        "nonqualified_origin_refused": true,
+        "fresh_consent_gate": true,
+        "matched_same_origin_only": true,
+        "archive_queue_rows": 1,
+        "archive_imports": 1,
+        "exact_binary_bytes": 7,
+        "wrong_owner_and_future_database_refusals": 2,
+        "source_database_keys_values_and_versions_unchanged": true,
+        "recovery_dynamic_api_requests": 0,
+        "mobile_viewport": true
+      }
+    },
+    "external_requests_forwarded": 0,
+    "scope": "Exact public HTTPS hostnames resolved to loopback Chromium fixtures with a pinned test certificate and inert cached app shells. Browser profiles and data are synthetic."
+  },
+  "focused_tests_passed": 220,
+  "client_typecheck_passed": true,
+  "source_archive_scan_passed": true,
+  "cloudflare_fallback_both_workers_dry_run": true,
+  "writer_control_omits_recovery_entry_and_export": true,
+  "migration_plan": {
+    "source_commit": "c14ba0a8c0b2c505584a80150743b77bca65b812",
+    "versions": 67,
+    "first": "20261104175741",
+    "last": "20261121184611",
+    "sha256_of_ordered_version_file_and_content_hash": "d584ea9dd76a3556b46c64fce41edbbd80c845c2080c4dc9add67b8545042de1"
+  },
+  "hosted_read_only": {
+    "postgres": "17.12",
+    "applied_migration_count": 88,
+    "last_applied": "20261010222112",
+    "storage_metadata_rows": 77038
+  },
+  "existing_independent_backup": {
+    "snapshot_created_at": "2026-11-20T22:52:27.936722+00:00",
+    "completed_at": "2026-11-20T22:54:28.000290+00:00",
+    "verified_objects": 77038,
+    "recorded_media_bytes": 30091756926,
+    "database_dump_verified_manifest_and_snapshot_worklist_match_on_both_copies": true,
+    "new_backup_captured": false,
+    "cutover_freshness_verified": false
+  },
+  "approval_packet_prepared": true,
+  "window_authorized": false,
+  "hosted_execution_ready": false,
+  "remaining_live_checks": [
+    "publish and verify the recovery page on the original origins for affected profiles",
+    "verify the managed write pause and the drain of privileged and direct paths",
+    "capture and verify a fresh X8 generation while paused",
+    "accept the signed-in controlled preview and production release"
+  ]
+}

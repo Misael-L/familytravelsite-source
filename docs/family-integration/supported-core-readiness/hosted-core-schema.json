@@ -1,0 +1,138 @@
+{
+  "project_ref": "REDACTED_PRODUCTION_PROJECT",
+  "retrieved_at": "2026-11-12T20:26:05.748Z",
+  "query_scope": "read-only pg_catalog schema, signatures, effective execute grants and RLS; no business rows or RPC execution",
+  "core_tables": [
+    {
+      "rls": true,
+      "name": "journey_entries"
+    },
+    {
+      "rls": true,
+      "name": "journeys"
+    },
+    {
+      "rls": true,
+      "name": "list_items"
+    },
+    {
+      "rls": true,
+      "name": "lists"
+    },
+    {
+      "rls": true,
+      "name": "media_assets"
+    },
+    {
+      "rls": true,
+      "name": "packing_bags"
+    },
+    {
+      "rls": true,
+      "name": "packing_items"
+    },
+    {
+      "rls": true,
+      "name": "schedule_items"
+    },
+    {
+      "rls": true,
+      "name": "todo_items"
+    },
+    {
+      "rls": true,
+      "name": "trip_days"
+    },
+    {
+      "rls": true,
+      "name": "trip_expenses"
+    },
+    {
+      "rls": true,
+      "name": "trip_file_links"
+    },
+    {
+      "rls": true,
+      "name": "trip_files"
+    },
+    {
+      "rls": true,
+      "name": "trip_reservations"
+    },
+    {
+      "rls": true,
+      "name": "trips"
+    }
+  ],
+  "core_functions": [
+    {
+      "name": "catalog_media_variants_for_assets",
+      "result_type": "TABLE(media_asset_id uuid, public_url text, thumb_url text, hero_url text, recipe_version text)",
+      "anon_execute": false,
+      "argument_names": [
+        "p_media_ids",
+        "p_recipe",
+        "media_asset_id",
+        "public_url",
+        "thumb_url",
+        "hero_url",
+        "recipe_version"
+      ],
+      "definition_md5": "78a9cc0c872db40853e305edea75b421",
+      "identity_arguments": "p_media_ids uuid[], p_recipe text",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_my_auth_bootstrap",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "argument_names": null,
+      "definition_md5": "2e2079098bb35139077f6c7f1403d46c",
+      "identity_arguments": "",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_my_effective_features",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "argument_names": [
+        "p_family_id"
+      ],
+      "definition_md5": "f75924d3b79d239d08b47a5d0902aafd",
+      "identity_arguments": "p_family_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_my_effective_map_settings",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "argument_names": [
+        "p_family_id"
+      ],
+      "definition_md5": "44d31f355f048ba6cb898e702c95100c",
+      "identity_arguments": "p_family_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "get_my_effective_preferences",
+      "result_type": "jsonb",
+      "anon_execute": false,
+      "argument_names": [
+        "p_family_id"
+      ],
+      "definition_md5": "a170ea4cf1d47cf4426c6913a6694c37",
+      "identity_arguments": "p_family_id uuid",
+      "authenticated_execute": true
+    }
+  ],
+  "server_version": "17.6",
+  "migration_ledger_present": true,
+  "_sourcePublication": {
+    "redactedFields": [
+      "/project_ref"
+    ],
+    "reason": "Operational project and database host identity withheld from public source. Unredacted original retained in private Git history.",
+    "originalPrivateCommit": "2d25cc818b9844e77b693b4cde2393388184b12f",
+    "originalFileSha256": "1f96f1c233287b46519fcef6b39fc9a1a4114479bb015884872d75032c7b3e44"
+  }
+}

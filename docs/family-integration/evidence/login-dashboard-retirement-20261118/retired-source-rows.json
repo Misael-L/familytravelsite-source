@@ -1,0 +1,30 @@
+{
+  "removed_paths": [
+    "client/src/integrations/family/legacy/pages/LoginPage.tsx",
+    "client/src/integrations/family/legacy/pages/DashboardPage.tsx"
+  ],
+  "previous_rows": [
+    {
+      "path": "client/src/integrations/family/legacy/pages/LoginPage.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "21c7dcbb8947d21b213225c63a3ccfd5785f9e44",
+        "bytes": 58771
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/pages/LoginPage.tsx"
+    },
+    {
+      "path": "client/src/integrations/family/legacy/pages/DashboardPage.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "432308d94f9a8c0511e712f4451cd337df06d6bd",
+        "bytes": 52580
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/pages/DashboardPage.tsx"
+    }
+  ],
+  "new_qualified_commit": "cecbb8eb596339149a6b4e5c1687985c1ac68ccd",
+  "reason": "Actual two-page Login/Dashboard deletion after bounded source/type/test/configuration closure; no guard relaxation or disappearing source row without deletion."
+}

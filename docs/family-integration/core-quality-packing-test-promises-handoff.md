@@ -1,0 +1,32 @@
+# Q36 — packing asynchronous test contracts
+
+Completed locally 16 November 2026. This closes Q35's bag-editor Promise callback lead and eight additional phone-test failures reproduced in the same regression cohort. This packet changes tests, a single lowered warning allowance and provenance/documentation; it makes no website runtime or database change.
+
+## Diagnosis and changes
+
+Fresh typed lint found ten floating-Promise calls in `client/src/components/Packing/useBagCardEditor.test.ts`. Installed-project TypeScript proves that the existing saveName/saveLimit/toggleMember actions and their `act` calls return Promises. All ten calls are now awaited, and only the six enclosing existing test bodies become async. Unlike Q35's synchronous utility returns, these are not discarded into void block bodies. Exact original action calls, types, arguments, timing, assertions, imports and every other hook-test byte are preserved.
+
+The before run passed49 of57 existing cases and failed8, all in `client/tests/unit/mobile/trip/MBagsSheet.test.tsx`. Six failures were exact callback expectations missing the existing third optional origin argument (`undefined` outside the qualified Family editor). The other two checked for the creation form to close before its asynchronous completion; the button was present before submission and the form was still saving, not unavailable behind a capability gate. The original component is unchanged.
+
+The pre-edit scope amendment admits only this second test file. Eight existing phone event completions are now awaited through the actual test helper `act`; six callback assertions still check the exact bag ID and payload, now also the absent optional origin. All real event calls, inputs, mocks, other assertions and permission/control behavior are retained. No mocked availability, forced disabled control, weakened payload assertion, feature flag or removed case.
+
+## Validation
+
+- All57 original cases now pass across three files:9 hook cases,25 phone-sheet cases and23 unchanged Family-native bag cases. The same case names are retained; no new test or pending case. The eight incoming phone failures all clear. Existing Family cases cover desktop/phone slow-save acknowledgement, Enter/blur coalescing, lost replies retaining operation identity, stale scope/account/Trip/permission/refusal, recoverable empty Trash/restore and ineligible carriers. They use local mocked RPC responses, not hosted database or new live browser acceptance.
+- Scoped ESLint goes from ten floating-Promise warnings to0 findings/0 errors. TypeScript before/after proofs and deterministic source reconstruction check every permitted edit. The hook's additions are only10 awaits and6 async modifiers; the phone changes are exactly the frozen8 event waits,8 test async modifiers,6 precise argument assertions and helper import.
+- Actual project formatter acceptance remains unchanged: the hook test is formatted; the phone file retains its existing grandfathered state/membership. Formatter configuration and baseline are exact. No whole-file legacy formatting.
+- Client typecheck, clean committed local `npm run build:web`, four actual source guards and correct-source/wrong-source/missing-source artifact controls pass. Tests, typed lint and typecheck complete before workspace building; the final warning gate runs afterward with128 declaration outputs and client inputs hash-fixed.
+- Only test `@typescript-eslint/no-floating-promises` allowance tightens28→18, matching its final actual count18. Every other budget/rule/suppression/ignore is unchanged. Actual global test warnings fall3031→3021 and total test allowance2876→2866. No allowance expansion or automatic bulk update.
+- G2 remains blocked: actual final totals errors0, source3554/3455, tests3021/2866, suppressed84/83 (now/baseline), with the exact same32 size failures. This is bounded progress, not release acceptance or a claim that the production bag controls were broken.
+
+Incoming clean integration/publication HEAD: `bb2e7856c91993872c06e1f3c646ae69341497f0`. Test/budget implementation: `e48cc5b1368a69c830542a28eb5670470556fd0b`. Qualified local build source: `185321dbd2fc6c2ca76d5af71aea6c8207fbba5a`. Seven website paths are reviewed: two tests, one tightened budget, two provenance files and two documents. The later documentation commit does not relabel the compiled build.
+
+## Preservation and exact continuation
+
+All12 native runtime/layout files retain11 upstream-byte-exact files and the fixed Sidebar type-only identity. Runtime hooks/components, previous routing/search fixes, source/history/backend carryover, original command/payload/revision/retry IDs, actor/Trip/source/session boundaries, permissions, Undo and stored variants remain exact. All370 canonical schema/test sources,151 migrations, C's mixed index,194 prior seals/12522 members,11 auxiliary manifests and three other checkouts are preserved.
+
+**Next bounded G2 candidate: remaining active test Promise callbacks**, beginning with `client/src/components/Journey/useJourneyCarouselSync.test.ts` and the remaining native planner wiring tests. Refresh scoped lint and original hashes first; the carousel timer utilities are a lead to inspect, not authority to discard genuine async work. Batch comparable verified cases. Q28–Q36 and these ten bag-editor callbacks/eight phone contract failures are closed; do not replay them or invent runtime failures from lint. Keep policies narrow; any matching ratchet adjustment may only lower the affected allowance after actual measured repairs.
+
+Keep the [release prerequisites](core-release-prerequisites.md) and [deferred cleanup checkpoint](pre-production-retained-source-cleanup-packet.md). No dormant ZoomTracker activation/deletion, unsupported capability activation, DB/browser fixture, hosted SQL/settings/billing, production/preview deployment, main update, remote push, backup/media/ignored ETL or transformation change. Current incremental protection and independent DB-plus-files restoration, hosted compatibility/engine facts and target-specific preview/source acceptance remain open gates. The unchanged isolated planner/base-packing profile is only for the local build; publication is local check-only/unbound.
+
+Private original sources, typed contracts, phone scope amendment, before/after57-case proof, actual formatter and diagnostics: `/private/tmp/trek-core-quality-packing-test-promises-source-20261116`. Canonical evidence records the final local documentation commit and sealed hashes.

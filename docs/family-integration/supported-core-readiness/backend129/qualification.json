@@ -1,0 +1,193 @@
+{
+  "qualified_function_and_grant_contracts_exact": 115,
+  "qualified_table_contracts_exact": 16,
+  "seven_prior_effective_grant_differences_remaining": 0,
+  "both_platform_controls_pass": true,
+  "non_acl_app_objects_and_function_bodies_unchanged_except_two_proved_restore_groupings": true,
+  "logical_clone_equivalent_CHECK_groupings": 2,
+  "reviewed_client_function_execution_revokes": [
+    {
+      "key": "family_auth.tg_emit_access_request_submitted()",
+      "removed_client_execute_fields": [
+        "anon_execute",
+        "authenticated_execute"
+      ]
+    },
+    {
+      "key": "family_auth.tg_emit_change_request_notification()",
+      "removed_client_execute_fields": [
+        "anon_execute",
+        "authenticated_execute"
+      ]
+    },
+    {
+      "key": "family_auth.tg_emit_proposal_notification()",
+      "removed_client_execute_fields": [
+        "anon_execute",
+        "authenticated_execute"
+      ]
+    },
+    {
+      "key": "family_auth.tg_people_user_id_guard()",
+      "removed_client_execute_fields": [
+        "anon_execute",
+        "authenticated_execute"
+      ]
+    },
+    {
+      "key": "public.catalog_media_urls(p_entity_kind text, p_entity_ids uuid[], p_limit_per integer)",
+      "removed_client_execute_fields": [
+        "anon_execute"
+      ]
+    },
+    {
+      "key": "public.experience_media_refresh_cover()",
+      "removed_client_execute_fields": [
+        "anon_execute",
+        "authenticated_execute"
+      ]
+    },
+    {
+      "key": "public.food_media_refresh_cover()",
+      "removed_client_execute_fields": [
+        "anon_execute",
+        "authenticated_execute"
+      ]
+    },
+    {
+      "key": "public.handle_new_user()",
+      "removed_client_execute_fields": [
+        "authenticated_execute"
+      ]
+    },
+    {
+      "key": "public.hotel_media_refresh_cover()",
+      "removed_client_execute_fields": [
+        "anon_execute",
+        "authenticated_execute"
+      ]
+    },
+    {
+      "key": "public.person_vacay_overlay_branches_guard()",
+      "removed_client_execute_fields": [
+        "authenticated_execute"
+      ]
+    },
+    {
+      "key": "public.person_vacay_overlay_people_guard()",
+      "removed_client_execute_fields": [
+        "authenticated_execute"
+      ]
+    },
+    {
+      "key": "public.place_media_refresh_cover()",
+      "removed_client_execute_fields": [
+        "anon_execute",
+        "authenticated_execute"
+      ]
+    },
+    {
+      "key": "public.proposal_audience_people_same_family()",
+      "removed_client_execute_fields": [
+        "anon_execute",
+        "authenticated_execute"
+      ]
+    },
+    {
+      "key": "public.refresh_experience_cover(p_experience_id uuid)",
+      "removed_client_execute_fields": [
+        "anon_execute",
+        "authenticated_execute"
+      ]
+    },
+    {
+      "key": "public.refresh_food_cover(p_food_id uuid)",
+      "removed_client_execute_fields": [
+        "anon_execute",
+        "authenticated_execute"
+      ]
+    },
+    {
+      "key": "public.refresh_hotel_cover(p_hotel_id uuid)",
+      "removed_client_execute_fields": [
+        "anon_execute",
+        "authenticated_execute"
+      ]
+    },
+    {
+      "key": "public.refresh_place_cover(p_place_id uuid)",
+      "removed_client_execute_fields": [
+        "anon_execute",
+        "authenticated_execute"
+      ]
+    },
+    {
+      "key": "public.refresh_trip_change_request_status(p_request_id uuid)",
+      "removed_client_execute_fields": [
+        "authenticated_execute"
+      ]
+    },
+    {
+      "key": "public.resolve_my_person_id(p_family_id uuid)",
+      "removed_client_execute_fields": [
+        "anon_execute"
+      ]
+    },
+    {
+      "key": "public.tg_copy_packing_bag_trip_id()",
+      "removed_client_execute_fields": [
+        "anon_execute",
+        "authenticated_execute"
+      ]
+    },
+    {
+      "key": "public.tg_copy_packing_item_trip_id()",
+      "removed_client_execute_fields": [
+        "anon_execute",
+        "authenticated_execute"
+      ]
+    },
+    {
+      "key": "public.tg_copy_trip_file_trip_id()",
+      "removed_client_execute_fields": [
+        "anon_execute",
+        "authenticated_execute"
+      ]
+    },
+    {
+      "key": "public.tg_set_updated_at()",
+      "removed_client_execute_fields": [
+        "anon_execute",
+        "authenticated_execute"
+      ]
+    },
+    {
+      "key": "public.tg_touch_list_updated_at()",
+      "removed_client_execute_fields": [
+        "anon_execute",
+        "authenticated_execute"
+      ]
+    },
+    {
+      "key": "public.tg_trip_file_link_target_on_trip()",
+      "removed_client_execute_fields": [
+        "anon_execute",
+        "authenticated_execute"
+      ]
+    },
+    {
+      "key": "public.trip_reservations_enforce_day_integrity()",
+      "removed_client_execute_fields": [
+        "anon_execute",
+        "authenticated_execute"
+      ]
+    }
+  ],
+  "unsafe_client_table_admin_grants_remaining": 0,
+  "global_function_and_managed_defaults_unchanged": true,
+  "local_postgres_role_nosuperuser": true,
+  "schema_version": 129,
+  "local_backend_permission_acceptance": true,
+  "hosted_deployment_or_engine_acceptance": false,
+  "executor_requirement": "Must be authorized to manage postgres-owned ACLs and public/family_auth defaults for both postgres and supabase_admin; local standalone DDL capability substitution is explicit, not proof of hosted executor authority"
+}

@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "removed_classes": [
+    "bg-[#111827]",
+    "bg-[#f3f4f6]",
+    "bg-[#f9fafb]",
+    "bg-[rgba(255,255,255,0.02)]",
+    "bg-[rgba(255,255,255,0.03)]",
+    "bg-[rgba(255,255,255,0.08)]",
+    "bg-[rgba(59,130,246,0.06)]",
+    "text-[#111827]",
+    "text-[#374151]",
+    "text-[#6b7280]",
+    "text-[#d1d5db]"
+  ],
+  "all_from_deleted_source": true,
+  "remaining_application_literal_references": [],
+  "compiled_JS_literal_references": [],
+  "literal_semantics_scope": "Complete current application source and compiled scripts; no hosted/browser or arbitrary future plugin claim."
+}

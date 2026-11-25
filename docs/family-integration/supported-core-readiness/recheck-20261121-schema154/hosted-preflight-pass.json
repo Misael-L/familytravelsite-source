@@ -1,0 +1,52 @@
+{
+  "hosted_postgres_version": "17.12",
+  "migration_ledger_versions_before": 88,
+  "migration_ledger_versions_after": 88,
+  "migration_tip": "20261010222112",
+  "migrations_applied": 0,
+  "restricted_schema_before_switch": {
+    "tables": 0,
+    "functions": 1,
+    "active_export_jobs": 0,
+    "queued_http_requests": 0,
+    "export_schedule_active": false,
+    "export_claim_and_expiry_execute_grants": 0
+  },
+  "restricted_data_api": {
+    "approved_mfa_probe": true,
+    "ordinary_session_denied": true,
+    "implicit_and_public_rest_reads_denied": true,
+    "implicit_and_public_rest_write_routes_denied": true,
+    "graphql_did_not_serve_application_data": true
+  },
+  "restored_data_api": {
+    "ordinary_rest_restored": true,
+    "test_profile_removed_from_api": true,
+    "original_graphql_disabled_response_restored": true
+  },
+  "same_api_settings_and_response_before_and_after": {
+    "rest_status": 200,
+    "graphql_status": 200,
+    "graphql_extension_disabled_response": true,
+    "exposed_schemas": [
+      "graphql_public",
+      "public"
+    ]
+  },
+  "restored_sql_catalog": {
+    "temporary_schemas": 0,
+    "temporary_accounts": 0,
+    "temporary_profile_rows": 0,
+    "original_export_schedule_active": true,
+    "original_export_execute_grants": 2,
+    "role_overrides": 0
+  },
+  "active_worker_versions": {
+    "familytravelsite": "a5814c29-fe0c-446c-bd89-146e549a4be4",
+    "familytravelsite-integration-preview": "c3813597-c665-4aba-a409-c519b8107c00"
+  },
+  "worker_versions_match_preflight_baseline": true,
+  "cloudflare_preview_sign_in_verified": true,
+  "upstream_trek_5_1_4_commit": "2bcfc1bfcbbff0affd097c0f789c835396389572",
+  "verified_trek_commit_ancestor_of_integration": true
+}

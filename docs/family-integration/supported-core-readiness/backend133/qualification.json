@@ -1,0 +1,164 @@
+{
+  "packet": "U05-B2b3b1",
+  "status": "Coherent read foundation locally qualified; broader B2b3b coordinated native/cache/shared cutover remains in progress",
+  "schema_version": 133,
+  "migration_sha256": "b52d662f2f94098343e8d7396d26bda8ad30271b5faed883deda14989a773c4b",
+  "runtime_parent_commit": "cad8d7f0a772ecffd491d809ea0bd328633e390a",
+  "source_adoption_still": "5.1.2",
+  "SQL_distinct_methods": 131,
+  "new_read_methods": 30,
+  "retained_foundation_command_outcome_methods": 101,
+  "candidate_and_independent_clean_replay_all131_pass": true,
+  "client_regression_tests": 435,
+  "backend_SDK_tests": 22,
+  "actual_signed_SDK_dispatcher_tests": 11,
+  "isolation_guard_refusals": 23,
+  "source_adversarial_tests": 94,
+  "client_typecheck_exit": 0,
+  "backend_typecheck_exit": 0,
+  "scoped_lint_exit": 0,
+  "quality": [
+    {
+      "name": "carryover",
+      "exit": 0
+    },
+    {
+      "name": "source-guard-tests",
+      "exit": 0
+    },
+    {
+      "name": "pages",
+      "exit": 0
+    },
+    {
+      "name": "layers",
+      "exit": 0
+    },
+    {
+      "name": "offline",
+      "exit": 0
+    },
+    {
+      "name": "pairs",
+      "exit": 0
+    },
+    {
+      "name": "format",
+      "exit": 0
+    },
+    {
+      "name": "i18n",
+      "exit": 0
+    },
+    {
+      "name": "rtl",
+      "exit": 0
+    },
+    {
+      "name": "qualified-source",
+      "exit": 1,
+      "preexisting_release_gate": true
+    },
+    {
+      "name": "native-pin",
+      "exit": 1,
+      "preexisting_release_gate": true
+    },
+    {
+      "name": "history-pin",
+      "exit": 1,
+      "preexisting_release_gate": true
+    }
+  ],
+  "build": {
+    "exit": 0,
+    "environment": "synthetic loopback URL/public anon only",
+    "uncompressed_files_scanned": 3473,
+    "unique_JWTs": 1,
+    "only_public_synthetic_anon": true,
+    "deployed": false,
+    "service_role_secret_key_absent": true,
+    "note": "Legacy transform helper remains for older callers; this stay packet introduces no image requests or transformations."
+  },
+  "row_preservation": {
+    "baseline": "qualified source132 dump captured before current synthetic fixtures",
+    "source_projections": 241,
+    "source_rows_preserved": 324420,
+    "source_rows_missing_or_changed": 0,
+    "missing_projections": [],
+    "new_synthetic_rows": 34125,
+    "method": "SHA256 multiset with multiplicity for every complete COPY row; includes all original132 migration ledger arrays and both added NULL booking fields. Raw values/digests remain private."
+  },
+  "security_audit": {
+    "passed": true,
+    "new_functions": [
+      {
+        "anon": false,
+        "auth": false,
+        "name": "family_auth.booking_stay_snapshot",
+        "path": [
+          "search_path=\"\""
+        ],
+        "public": false,
+        "definer": true,
+        "service": false,
+        "volatility": "s"
+      },
+      {
+        "anon": false,
+        "auth": true,
+        "name": "public.get_family_trip_booking_view_v2",
+        "path": [
+          "search_path=\"\""
+        ],
+        "public": false,
+        "definer": true,
+        "service": false,
+        "volatility": "v"
+      },
+      {
+        "anon": false,
+        "auth": false,
+        "name": "family_auth.require_booking_stay_read",
+        "path": [
+          "search_path=\"\""
+        ],
+        "public": false,
+        "definer": true,
+        "service": false,
+        "volatility": "v"
+      }
+    ],
+    "all_prior_functions_definition_ACL_owner_exact": 584,
+    "candidate_clean_replay_new_functions_exact": 3,
+    "new_tables_or_direct_grants": 0,
+    "new_read_API_has_no_DML": true,
+    "actual_MVCC_and_post_snapshot_revocation_tests": "read_19 through read_22",
+    "hosted_advisor_or_settings": false
+  },
+  "source_preservation": {
+    "canonical_mixed_index_exact": true,
+    "historical132_sources_and_all_prior_tests_exact": 305,
+    "new_migration": 133,
+    "prior_tracked_files_checked": 16965,
+    "unrelated_website_files_exact": true,
+    "native_layouts_exact514": 12,
+    "old512_clean_tracked_files": 16885,
+    "prior_evidence_seals": 87,
+    "prior_evidence_members": 6305,
+    "prior_carryover_manifest_records_exact": true,
+    "review_copies_exact": 3,
+    "source_adoption_unchanged512": true,
+    "original_backup_media_ETL_not_accessed": true
+  },
+  "one_MVCC_content_snapshot": true,
+  "fresh_pre_post_read_authority": true,
+  "raw_fact_and_identity_preservation": true,
+  "unsupported_native_states_return_explicit_blockers": true,
+  "native_controls_v4_cache_shared_timing_activation": false,
+  "hosted_preview_production_main_push_publication": false,
+  "GoTrue_browser_device_Storage_independent_recovery_proven_here": false,
+  "local_only": true,
+  "next": "/Users/Misael/Desktop/FamilyTravelApp/docs/backend-modernization/u05b2b3b2-coordinated-stay-cache-packet.md",
+  "commit_binding": "Sealed commit.json binds this report and every reviewed website path to the actual local commit."
+}

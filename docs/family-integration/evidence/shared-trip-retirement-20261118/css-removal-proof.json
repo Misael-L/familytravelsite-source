@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "only_removed_rules": 11,
+  "ordered_remaining_CSS_bytes_exact": true,
+  "removed_rules": [
+    ".bg-\\[\\#111827\\]{--tw-bg-opacity:1;background-color:rgb(17 24 39/var(--tw-bg-opacity,1))}",
+    ".bg-\\[\\#f3f4f6\\]{--tw-bg-opacity:1;background-color:rgb(243 244 246/var(--tw-bg-opacity,1))}",
+    ".bg-\\[\\#f9fafb\\]{--tw-bg-opacity:1;background-color:rgb(249 250 251/var(--tw-bg-opacity,1))}",
+    ".bg-\\[rgba\\(255\\,255\\,255\\,0\\.02\\)\\]{background-color:#ffffff05}",
+    ".bg-\\[rgba\\(255\\,255\\,255\\,0\\.03\\)\\]{background-color:#ffffff08}",
+    ".bg-\\[rgba\\(255\\,255\\,255\\,0\\.08\\)\\]{background-color:#ffffff14}",
+    ".bg-\\[rgba\\(59\\,130\\,246\\,0\\.06\\)\\]{background-color:#3b82f60f}",
+    ".text-\\[\\#111827\\]{--tw-text-opacity:1;color:rgb(17 24 39/var(--tw-text-opacity,1))}",
+    ".text-\\[\\#374151\\]{--tw-text-opacity:1;color:rgb(55 65 81/var(--tw-text-opacity,1))}",
+    ".text-\\[\\#6b7280\\]{--tw-text-opacity:1;color:rgb(107 114 128/var(--tw-text-opacity,1))}",
+    ".text-\\[\\#d1d5db\\]{--tw-text-opacity:1;color:rgb(209 213 219/var(--tw-text-opacity,1))}"
+  ]
+}

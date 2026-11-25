@@ -1,0 +1,797 @@
+import { chronoOrder } from '@trek/shared'
+import { nightVisits, rideSeatAfter, sameDayRide, type CarrierBooking, type SeatItem } from '@trek/shared/roadtrip'
+// `orderedEndpoints` is the geometry order's single source of truth, in the module
+// that documents the multi-leg model. Sorting endpoints a second time here is how
+// the two drift.
+import { orderedEndpoints, parseReservationMetadata, readStoredTransportLegs } from './flightLegs'
+import { haversineKm, MAX_DAY_TRIP_KM } from './geo'
+import { zonedInstant } from './zonedTime'
+
+export const TRANSPORT_TYPES = new Set(['flight', 'train', 'bus', 'car', 'taxi', 'bicycle', 'cruise', 'ferry', 'cable_car', 'transit', 'transport_other'])
+
+export interface MergedItem {
+  type: 'place' | 'note' | 'transport'
+  sortKey: number
+  data: any
+}
+
+/** Reads a booking's time on one day, as getDisplayTimeForDay does. */
+type DisplayTimeOf = (r: MergedItem['data'], dayId: number) => string | null
+
+export function parseTimeToMinutes(time?: string | null): number | null {
+  if (!time) return null
+  if (time.includes('T')) {
+    const [h, m] = time.split('T')[1].split(':').map(Number)
+    return h * 60 + m
+  }
+  const parts = time.split(':').map(Number)
+  if (parts.length >= 2 && !Number.isNaN(parts[0]) && !Number.isNaN(parts[1])) return parts[0] * 60 + parts[1]
+  return null
+}
+
+export function getSpanPhase(
+  r: { day_id?: number | null; end_day_id?: number | null },
+  dayId: number
+): 'single' | 'start' | 'middle' | 'end' {
+  const startDayId = r.day_id
+  const endDayId = r.end_day_id ?? startDayId
+  if (!startDayId || startDayId === endDayId) return 'single'
+  if (dayId === startDayId) return 'start'
+  if (dayId === endDayId) return 'end'
+  return 'middle'
+}
+
+/**
+ * Booking types that carry no information on the days between their start and end and
+ * therefore drop out of the day timeline there. A parked car just stands in the garage:
+ * you only need to know when you hand it over and when you collect it, so the days in
+ * between show nothing at all, not even a badge in the day header (#1937).
+ *
+ * A car rental is deliberately NOT in this set: its middle days are not dropped but
+ * moved into the day header, which is what people expect from a vehicle they are
+ * driving around. Kept as a set so another such type can join without editing every
+ * render site again.
+ */
+const MIDDLE_DAY_HIDDEN_TYPES = new Set(['parking'])
+
+export function hidesOnMiddleDay(
+  r: { type?: string | null; day_id?: number | null; end_day_id?: number | null },
+  dayId: number
+): boolean {
+  return !!r.type && MIDDLE_DAY_HIDDEN_TYPES.has(r.type) && getSpanPhase(r, dayId) === 'middle'
+}
+
+/**
+ * Bookings you ride and then leave behind: the vehicle carries you out of the day's
+ * geography and keeps going without you. Their endpoints are therefore not the ends of
+ * a drive — you did not drive to tonight's hotel from the airport you took off from, and
+ * you did not drive to the airport you landed at from this morning's hotel (#2133).
+ *
+ * A hire car, a parked car or a hired bike is the exact opposite and must stay out of
+ * this set: you collect the vehicle and keep driving it, so a multi-day rental's pickup
+ * point IS where a drive to the hotel starts, and its drop-off point IS where a drive
+ * from the hotel ends (both pinned by the car-rental span rules above).
+ *
+ * `taxi`, `transit` and `transport_other` are left out on purpose: they are same-day
+ * hops, so both their endpoints land on the day anyway and the distinction never fires.
+ * Keeping them out means this set cannot change any behaviour they have today.
+ */
+const CARRIER_TRANSPORT_TYPES = new Set(['flight', 'train', 'ferry', 'cruise', 'bus'])
+
+export function isCarrierTransport(r: { type?: string | null }): boolean {
+  return !!r.type && CARRIER_TRANSPORT_TYPES.has(r.type)
+}
+
+/**
+ * The route waypoints a transport contributes on a given day, respecting multi-day spans.
+ * A car rental (or any reservation whose span covers several days) is only routed to on its
+ * pickup day (the departure endpoint) and from on its drop-off day (the arrival endpoint) — on
+ * the days in between you simply hold the vehicle, so it adds no waypoints and must not pull the
+ * route to those points. Single-day transports contribute both endpoints.
+ */
+export function getTransportRouteEndpoints(
+  r: any,
+  dayId: number
+): { from: { lat: number; lng: number } | null; to: { lat: number; lng: number } | null } {
+  // A leg of a multi-leg booking spans its OWN pair of airports, endpoints[i] and
+  // endpoints[i+1] — not the booking's outermost two. Handing back the booking's
+  // from/to for every leg put a stop between two legs on a road route from the
+  // arrival airport back to the departure one (#2071).
+  //
+  // Only when the endpoints line up one-per-stop with the legs. An endpoint that
+  // failed to geocode never reaches the row, and a short list would silently map
+  // every earlier leg to the wrong pair — so an ambiguous booking keeps the role
+  // lookup it has always used.
+  const ordered = orderedEndpoints(r)
+  const legIdx: number | null =
+    r.__leg && ordered.length === r.__leg.total + 1 ? (r.__leg.index as number) : null
+  const point = (e: { lat?: number | null; lng?: number | null } | undefined): { lat: number; lng: number } | null =>
+    e && e.lat != null && e.lng != null ? { lat: e.lat, lng: e.lng } : null
+  const ep = (role: 'from' | 'to'): { lat: number; lng: number } | null => {
+    if (legIdx != null) return point(ordered[role === 'from' ? legIdx : legIdx + 1])
+    return point((r.endpoints || []).find((x: { role?: string }) => x.role === role))
+  }
+  switch (getSpanPhase(r, dayId)) {
+    case 'start':
+      return { from: ep('from'), to: null }
+    case 'end':
+      return { from: null, to: ep('to') }
+    case 'middle':
+      return { from: null, to: null }
+    default:
+      return { from: ep('from'), to: ep('to') }
+  }
+}
+
+/**
+ * Whether this booking is a carrier that contributes a located route endpoint on the
+ * given day — the signal that the day's geography changes by riding something rather
+ * than driving, which the hotel-bookend rules need on days without recorded
+ * check-in/check-out times (#2157). The span rules above make an overnight carrier
+ * count only on the days it actually touches. A carrier saved without coordinates
+ * deliberately does not count: it contributes nothing to the drawn route, so treating
+ * it as proof of travel would flip hotel legs on data the map cannot see.
+ */
+export function hasCarrierEndpointOnDay(r: any, dayId: number): boolean {
+  if (!isCarrierTransport(r)) return false
+  const { from, to } = getTransportRouteEndpoints(r, dayId)
+  return from != null || to != null
+}
+
+export function getDisplayTimeForDay(
+  r: { day_id?: number | null; end_day_id?: number | null; reservation_time?: string | null; reservation_end_time?: string | null },
+  dayId: number
+): string | null {
+  const phase = getSpanPhase(r, dayId)
+  if (phase === 'end') return r.reservation_end_time || null
+  if (phase === 'middle') return null
+  return r.reservation_time || null
+}
+
+/** Per-leg detail of a multi-leg flight or train, or null for single-leg / other. */
+function parseMultiLegs(r: any): any[] | null {
+  if (r?.type !== 'flight' && r?.type !== 'train') return null
+  const legs = readStoredTransportLegs(parseReservationMetadata(r).legs)
+  return legs.length > 1 ? legs : null
+}
+
+/**
+ * Expand a multi-leg flight/train into one synthetic reservation per leg that
+ * touches `dayId`, each with its own day span + departure/arrival time so it
+ * slots into the timeline independently. A single-leg booking (or any other
+ * reservation) is returned untouched, so existing behaviour is unchanged.
+ */
+export function expandFlightLegsForDay(
+  r: any,
+  dayId: number,
+  getDayOrder: (id: number) => number,
+  days: Array<{ id: number; date?: string | null }>
+): any[] {
+  const legs = parseMultiLegs(r)
+  if (!legs) return [r]
+  const dateOf = (id: number | null): string | null => (id == null ? null : (days.find(d => d.id === id)?.date ?? null))
+  const thisOrder = getDayOrder(dayId)
+  const out: any[] = []
+  legs.forEach((leg, i) => {
+    const dep = leg.dep_day_id ?? r.day_id ?? null
+    const arr = leg.arr_day_id ?? dep
+    if (dep == null) return
+    const depOrder = getDayOrder(dep)
+    const arrOrder = getDayOrder(arr ?? dep)
+    if (!(thisOrder >= depOrder && thisOrder <= arrOrder)) return
+    const depDate = dateOf(dep)
+    const arrDate = dateOf(arr ?? dep)
+    out.push({
+      ...r,
+      day_id: dep,
+      end_day_id: arr ?? dep,
+      reservation_time: leg.dep_time ? (depDate ? `${depDate}T${leg.dep_time}` : leg.dep_time) : null,
+      reservation_end_time: leg.arr_time ? (arrDate ? `${arrDate}T${leg.arr_time}` : leg.arr_time) : null,
+      // Each leg carries its OWN saved position (not the booking's) so items can be
+      // dropped between legs and persist; absent → falls back to time ordering.
+      day_positions: leg.day_positions || undefined,
+      day_plan_position: undefined,
+      __leg: {
+        index: i, total: legs.length,
+        from: leg.from ?? null, to: leg.to ?? null,
+        airline: leg.airline ?? null, flight_number: leg.flight_number ?? null,
+        // Train legs carry their own per-leg detail; added only for trains so a
+        // flight's __leg object stays byte-identical to before.
+        ...(r.type === 'train' ? { train_number: leg.train_number ?? null, platform: leg.platform ?? null, seat: leg.seat ?? null } : {}),
+      },
+    })
+  })
+  return out
+}
+
+/** The day each stop of the trip sits on, by its assignment id, for {@link pinnedAway}. */
+export function stopDayIds(assignments: Record<string, readonly { id: number }[] | undefined>): Map<number, number> {
+  const out = new Map<number, number>()
+  for (const [dayId, list] of Object.entries(assignments)) {
+    for (const a of list || []) out.set(a.id, Number(dayId))
+  }
+  return out
+}
+
+/**
+ * Whether a booking pinned to a stop is shown at that stop and not on its own day.
+ * Such a booking has two days to go by, its own date and the stop's, and they part
+ * when the stop is moved to another day or the trip's dates shift while bookings keep
+ * theirs. The stop wins then, so the booking is listed once instead of on two days,
+ * and its date stays as it is (#2604). A stop on one of the booking's own days changes
+ * nothing: a rental picked up at a stop still runs across the rest of its days.
+ */
+export function pinnedAway(
+  r: { assignment_id?: number | null; day_id?: number | null; end_day_id?: number | null },
+  stopDays: ReadonlyMap<number, number> | undefined,
+  dayOrder: (dayId: number) => number | null | undefined
+): boolean {
+  if (!r.assignment_id || !stopDays || r.day_id == null) return false
+  const stopDay = stopDays.get(r.assignment_id)
+  if (stopDay == null) return false
+  const at = dayOrder(stopDay)
+  const first = dayOrder(r.day_id)
+  const last = dayOrder(r.end_day_id ?? r.day_id)
+  if (at == null || first == null || last == null) return false
+  return at < Math.min(first, last) || at > Math.max(first, last)
+}
+
+/** {@link pinnedAway} over the whole trip: its stops from `assignments`, its days in plan order. */
+export function pinnedAwayIn(
+  assignments: Record<string, readonly { id: number }[] | undefined>,
+  days: Array<{ id: number; day_number?: number }>
+): (r: { assignment_id?: number | null; day_id?: number | null; end_day_id?: number | null }) => boolean {
+  const stopDays = stopDayIds(assignments)
+  const order = (id: number): number | null => {
+    const d = days.find(x => x.id === id)
+    return d ? (d.day_number ?? days.indexOf(d)) : null
+  }
+  return r => pinnedAway(r, stopDays, order)
+}
+
+/**
+ * Filter reservations that are active transports for the given day, excluding assignment-linked ones.
+ * With `stopDays` a booking pinned to a stop on another day is left to that stop as well.
+ */
+export function getTransportForDay(opts: {
+  reservations: any[]
+  dayId: number
+  dayAssignmentIds: number[]
+  days: Array<{ id: number; day_number?: number; date?: string | null }>
+  stopDays?: ReadonlyMap<number, number>
+}): any[] {
+  const { reservations, dayId, dayAssignmentIds, days, stopDays } = opts
+
+  const getDayOrder = (id: number): number => {
+    const d = days.find(x => x.id === id)
+    return d ? ((d as any).day_number ?? days.indexOf(d)) : 0
+  }
+  const thisDayOrder = getDayOrder(dayId)
+
+  return reservations.filter(r => {
+    if (r.type === 'hotel') return false
+    if (r.assignment_id && dayAssignmentIds.includes(r.assignment_id)) return false
+    if (pinnedAway(r, stopDays, getDayOrder)) return false
+
+    const startDayId = r.day_id
+    const endDayId = r.end_day_id ?? startDayId
+
+    if (startDayId == null) return false
+
+    if (endDayId !== startDayId) {
+      const startOrder = getDayOrder(startDayId)
+      const endOrder = getDayOrder(endDayId)
+      return thisDayOrder >= startOrder && thisDayOrder <= endOrder
+    }
+    return startDayId === dayId
+  }).flatMap(r => expandFlightLegsForDay(r, dayId, getDayOrder, days))
+}
+
+/**
+ * Every booking pinned to one day assignment. A stop can carry several (the parking
+ * pass and the tickets for the same zoo), and the exclusion above keeps all of them
+ * out of the timeline, so the place row is the only surface that can show them, and
+ * a `find()` there dropped the rest without trace (#2201).
+ *
+ * Earliest first, untimed last, id as the tiebreaker: the store's array order is
+ * newest-first for locally created bookings and load order otherwise, which would
+ * shuffle the same two bookings between a reload and a live update.
+ */
+export function getAssignmentReservations<T extends {
+  id: number
+  assignment_id?: number | null
+  reservation_time?: string | null
+}>(reservations: T[], assignmentId: number | null | undefined): T[] {
+  if (!assignmentId) return []
+  return reservations
+    .filter(r => r.assignment_id === assignmentId)
+    .sort((a, b) => {
+      const at = a.reservation_time || ''
+      const bt = b.reservation_time || ''
+      if (at !== bt) {
+        if (!at) return 1
+        if (!bt) return -1
+        return at < bt ? -1 : 1
+      }
+      return a.id - b.id
+    })
+}
+
+/**
+ * The bookings that belong to a place: the ones pinned to the open stop, and the
+ * stay booked for it when the place is a hotel (#2363). Without the second, a
+ * hotel opened from its pill in the day head showed the place but no route to its
+ * booking. Pinned ones keep their order and come first.
+ */
+export function getPlaceBookings<T extends {
+  id: number
+  assignment_id?: number | null
+  reservation_time?: string | null
+  accommodation_place_id?: number | null
+}>(reservations: T[], assignmentId: number | null | undefined, placeId: number | null | undefined): T[] {
+  const pinned = getAssignmentReservations(reservations, assignmentId)
+  if (placeId == null) return pinned
+  const pinnedIds = new Set(pinned.map(r => r.id))
+  const stays = reservations.filter(r => r.accommodation_place_id === placeId && !pinnedIds.has(r.id))
+  return [...pinned, ...stays]
+}
+
+/**
+ * Order items chronologically: anything with a time (a place's place_time, a
+ * transport/leg display time, a timed note) sorts by that time. An item WITHOUT a
+ * time inherits the time of the timed item before it, so untimed items stay where
+ * they were manually placed. Stable on the incoming order for ties.
+ *
+ * The rule itself is `chronoOrder` in @trek/shared, the same one the server uses when
+ * a start time is saved. The server feeds it the day's stops only, though. An untimed
+ * place behind a timed note or booking inherits that item's time here and the previous
+ * stop's time there, so on such a day the stored order and this one can differ.
+ */
+function applyChronoOrder(
+  items: MergedItem[],
+  dayId: number,
+  getDisplayTime: (r: any, dayId: number) => string | null
+): MergedItem[] {
+  return chronoOrder(items, chronoKeyOf(items, dayId, getDisplayTime))
+}
+
+/**
+ * The minutes the day orders an item by: its own clock, or for a booking in a known
+ * zone and a stop near one of its endpoints the clock slot it takes among the day's
+ * zoned items (#2929, see zonedClockSlots). The checks that ask whether a move keeps the
+ * day in order read the same key, or a day whose flights and stops were put in the order
+ * they happen would read as out of order on every move.
+ */
+export function chronoKeyOf(
+  items: readonly MergedItem[],
+  dayId: number,
+  getDisplayTime: DisplayTimeOf
+): (it: MergedItem) => number | null {
+  const clockOf = (it: MergedItem): number | null => {
+    if (it.type === 'place') return parseTimeToMinutes(it.data?.place?.place_time)
+    if (it.type === 'note') return parseTimeToMinutes(it.data?.time)
+    return parseTimeToMinutes(getDisplayTime(it.data, dayId))
+  }
+  const zoned = zonedClockSlots([...items], dayId, getDisplayTime, clockOf)
+  return it => (zoned.has(it) ? (zoned.get(it) as number) : clockOf(it))
+}
+
+/**
+ * The zone a booking's time on this day is read in: the departure's on the day it
+ * leaves, the arrival's on the day it lands. A leg of a multi-leg booking reads its
+ * own pair of endpoints, and only when they line up one per stop with the legs (see
+ * getTransportRouteEndpoints); the booking-wide zones belong to its outermost two.
+ */
+function transportTimeZone(r: MergedItem['data'], dayId: number): string | null {
+  const side = getSpanPhase(r, dayId) === 'end' ? 'to' : 'from'
+  if (r?.__leg) {
+    const ordered = orderedEndpoints(r)
+    if (ordered.length !== r.__leg.total + 1) return null
+    return ordered[r.__leg.index + (side === 'to' ? 1 : 0)]?.timezone || null
+  }
+  const meta = parseReservationMetadata(r)
+  const fromMeta = side === 'from' ? meta.departure_timezone : meta.arrival_timezone
+  if (typeof fromMeta === 'string' && fromMeta) return fromMeta
+  return (r?.endpoints || []).find((e: { role?: string; timezone?: string | null }) => e.role === side)?.timezone || null
+}
+
+/**
+ * The clock slots of the day's items whose time names an instant: a booking's dated time
+ * in a known zone, and a stop near one of those bookings' endpoints. Each local time reads
+ * in its own zone, so across zones the clock can run backwards: a flight leaving Auckland
+ * at 20:20 lands in Los Angeles at 12:25 the same date, and the 17:00 flight on from there
+ * sorted ahead of it (#2929). Such items keep the clock slots they hold between them and
+ * take them in the order they happen.
+ *
+ * A stop has to join them, or swapping the flights' slots moves every stop timed between
+ * the two clocks to the wrong side of the flight it belongs after: a 19:45 dinner in
+ * Seattle was drawn above the flight to Seattle. A stop carries no zone of its own, so it
+ * reads the zone of the nearest endpoint within a day's reach, which tells the 19:45
+ * dinner in Seattle from a 19:45 dinner in Auckland before the flight out. Notes, stops
+ * without coordinates or far from every endpoint, and bookings without a zone stay where
+ * their clock puts them. With fewer than two such items the map is empty and the day
+ * orders by the clock as before. Where every zone is the same, the order by instant is
+ * the order by clock and nothing moves.
+ */
+function zonedClockSlots(
+  items: MergedItem[],
+  dayId: number,
+  getDisplayTime: DisplayTimeOf,
+  clockOf: (it: MergedItem) => number | null
+): Map<MergedItem, number> {
+  const bookings = items.flatMap((it, index) => {
+    if (it.type !== 'transport') return []
+    const clock = clockOf(it)
+    const time = getDisplayTime(it.data, dayId)
+    const instant = zonedInstant(time, transportTimeZone(it.data, dayId))
+    return clock === null || instant === null ? [] : [{ it, index, clock, instant, date: (time as string).slice(0, 10) }]
+  })
+  const zoned = [...bookings, ...stopsInZone(items, bookings, clockOf)]
+  const slots = new Map<MergedItem, number>()
+  if (zoned.length < 2) return slots
+  const clocks = zoned.map(z => z.clock).sort((a, b) => a - b)
+  zoned
+    .sort((a, b) => a.instant - b.instant || a.clock - b.clock || a.index - b.index)
+    .forEach((z, i) => slots.set(z.it, clocks[i]))
+  return slots
+}
+
+/** Whether the list draws `order` as it stands. */
+function drawnAsIs(order: readonly MergedItem[], dayId: number, getDisplayTime: DisplayTimeOf): boolean {
+  return applyChronoOrder([...order], dayId, getDisplayTime).every((it, i) => it === order[i])
+}
+
+/**
+ * A day order with the row at `index` kept where it is, and the other timed bookings it
+ * puts out of time order moved next to it: the ones due earlier right ahead of it, the
+ * later ones right behind it, each group in the order it had. Stops and notes never move.
+ * Null when the row has no time, when no booking is out of order, or when the result is
+ * still not the order the list draws, which is when a timed stop or note stands against it.
+ *
+ * A booking nobody can drag otherwise blocks every slot on its far side: with a 06:30
+ * flight listed below the day's untimed stops, a 13:00 transit dropped between two of
+ * them went back behind the flight on every drop (#2983).
+ */
+export function yieldTimedBookings(
+  order: readonly MergedItem[],
+  index: number,
+  dayId: number,
+  getDisplayTime: DisplayTimeOf = getDisplayTimeForDay
+): MergedItem[] | null {
+  const moved = order[index]
+  if (!moved || moved.type === 'place') return null
+  const keyOf = chronoKeyOf(order, dayId, getDisplayTime)
+  const own = keyOf(moved)
+  if (own === null) return null
+  const ahead: MergedItem[] = []
+  const behind: MergedItem[] = []
+  order.forEach((it, i) => {
+    if (it === moved || it.type !== 'transport') return
+    const key = keyOf(it)
+    if (key === null) return
+    if (i > index && key < own) ahead.push(it)
+    else if (i < index && key > own) behind.push(it)
+  })
+  if (!ahead.length && !behind.length) return null
+  const yielding = new Set([...ahead, ...behind])
+  const kept = order.filter(it => !yielding.has(it))
+  const at = kept.indexOf(moved)
+  const result = [...kept.slice(0, at), ...ahead, moved, ...behind, ...kept.slice(at + 1)]
+  return drawnAsIs(result, dayId, getDisplayTime) ? result : null
+}
+
+/**
+ * The timed stops of the day that sit within a day's reach of an endpoint of the zoned
+ * bookings, with the instant their clock names in that endpoint's zone. The date is the
+ * one the bookings' times carry on this day; bookings that disagree on it leave every
+ * stop on its clock.
+ */
+function stopsInZone(
+  items: MergedItem[],
+  bookings: readonly { it: MergedItem; date: string }[],
+  clockOf: (it: MergedItem) => number | null
+): { it: MergedItem; index: number; clock: number; instant: number }[] {
+  const dates = new Set(bookings.map(b => b.date))
+  if (dates.size !== 1) return []
+  const [date] = dates
+  const anchors = bookings.flatMap(b => orderedEndpoints(b.it.data))
+    .filter(e => Number.isFinite(e.lat) && Number.isFinite(e.lng) && !!e.timezone)
+  if (anchors.length === 0) return []
+  return items.flatMap((it, index) => {
+    if (it.type !== 'place') return []
+    const clock = clockOf(it)
+    const place = it.data?.place
+    if (clock === null || !Number.isFinite(place?.lat) || !Number.isFinite(place?.lng)) return []
+    let zone: string | null = null
+    let nearest = MAX_DAY_TRIP_KM
+    for (const e of anchors) {
+      const km = haversineKm({ lat: place.lat, lng: place.lng }, { lat: e.lat, lng: e.lng })
+      if (km <= nearest) { nearest = km; zone = e.timezone as string }
+    }
+    const hh = String(Math.floor(clock / 60)).padStart(2, '0')
+    const mm = String(clock % 60).padStart(2, '0')
+    const instant = zone ? zonedInstant(`${date}T${hh}:${mm}`, zone) : null
+    return instant === null ? [] : [{ it, index, clock, instant }]
+  })
+}
+
+/**
+ * A day order with a dragged booking or note at `index`, moved to the nearest slot the
+ * list draws it in. A row with a time is drawn by it, and the untimed rows behind it
+ * take that time too. Dropped against its time, a train went back to its time on the
+ * next render and took every untimed stop behind the drop with it, and the next drag
+ * stored that order (#2631). So it stays where it was dropped when only other bookings
+ * stand against its time, and they make room (`yieldTimedBookings`); against a timed
+ * stop or note it lands as close to the drop as its time allows and nothing else moves.
+ * A row without a time, or one the list draws where it was dropped, is returned as it came.
+ */
+export function seatTimedDrop(
+  order: readonly MergedItem[],
+  index: number,
+  dayId: number,
+  getDisplayTime: DisplayTimeOf = getDisplayTimeForDay
+): MergedItem[] {
+  const moved = order[index]
+  if (!moved || moved.type === 'place') return [...order]
+  const minutes = moved.type === 'note'
+    ? parseTimeToMinutes(moved.data?.time)
+    : parseTimeToMinutes(getDisplayTime(moved.data, dayId))
+  if (minutes === null) return [...order]
+  if (drawnAsIs(order, dayId, getDisplayTime)) return [...order]
+  const yielded = yieldTimedBookings(order, index, dayId, getDisplayTime)
+  if (yielded) return yielded
+  const rest = order.filter((_, i) => i !== index)
+  const seatAt = (at: number): MergedItem[] | null => {
+    const candidate = [...rest.slice(0, at), moved, ...rest.slice(at)]
+    return drawnAsIs(candidate, dayId, getDisplayTime) ? candidate : null
+  }
+  for (let dist = 1; dist <= rest.length; dist++) {
+    for (const at of [index - dist, index + dist]) {
+      if (at < 0 || at > rest.length) continue
+      const seated = seatAt(at)
+      if (seated) return seated
+    }
+  }
+  return [...order]
+}
+
+/** A row of the day list as the seat of a ride reads it; a note is none (see rideSeatKey). */
+function seatItemsOf(row: MergedItem): SeatItem[] {
+  if (row.type === 'place') {
+    const place = row.data?.place
+    const located = Number.isFinite(place?.lat) && Number.isFinite(place?.lng)
+    return [{
+      key: row.sortKey,
+      minutes: parseTimeToMinutes(place?.place_time),
+      point: located ? { lat: place.lat, lng: place.lng } : null,
+    }]
+  }
+  if (row.type === 'transport') {
+    return [{ key: row.sortKey, minutes: parseTimeToMinutes(row.data?.reservation_time), point: null }]
+  }
+  return []
+}
+
+/**
+ * Where a booking without a saved slot goes among the day's rows by where it goes: the
+ * key of the row it goes behind, -Infinity to open the day, or null to leave it to the
+ * clock. Only a ride that leaves and lands on this day, with both terminals located,
+ * has a say (`sameDayRide`); the rule itself is `rideSeatAfter` in @trek/shared, which
+ * the road trip seats its terminals with, so the list and the drive keep one order.
+ *
+ * A place counts with its time and its coordinates, another booking with its time, a
+ * note not at all: the clock rule this refines never read a note's time either.
+ */
+export function rideSeatKey(r: CarrierBooking, rows: readonly MergedItem[]): number | null {
+  const ride = sameDayRide(r)
+  return ride ? rideSeatAfter(rows.flatMap(seatItemsOf), ride) : null
+}
+
+/** A booked stay, as far as the road trip times a stop by it. */
+interface StayStart {
+  place_id?: number | null
+  start_day_id?: number | null
+  check_in?: string | null
+}
+
+/**
+ * The stay a stop at `placeId` begins on day `dayId`, the one whose check-in the road trip
+ * times that stop by. Only the day the stay starts: a check-out says when the room has to
+ * be handed back, not when the drive sets off.
+ */
+export function stayStartingOn<T extends StayStart>(stays: readonly T[], placeId: number | null | undefined, dayId: number): T | undefined {
+  return stays.find(stay => stay.place_id === placeId && stay.start_day_id === dayId)
+}
+
+/** A stored row of a day, as far as `storedRideSlot` reads it. */
+interface StoredStop {
+  order_index: number
+  place_id?: number | null
+  accommodation_id?: number | null
+  place?: { lat?: number | null; lng?: number | null; place_time?: string | null } | null
+}
+
+/** Where the row stands, or null for a row without coordinates, which is no stop of the drive. */
+function pointOf(row: StoredStop): { lat: number; lng: number } | null {
+  const lat = row.place?.lat
+  const lng = row.place?.lng
+  return typeof lat === 'number' && typeof lng === 'number' && Number.isFinite(lat) && Number.isFinite(lng) ? { lat, lng } : null
+}
+
+/**
+ * The order indexes of the day's rows the road trip reads as a night, timed by the check-in
+ * of the stay that begins there (`stayStartingOn`): one per hotel, picked the way
+ * `oneNightPerStay` picks it over the rows the drive stops at (#2636). Another visit of
+ * the same hotel that day is a stop like any other.
+ */
+export function nightRowsOf(day: readonly StoredStop[], stays: readonly StayStart[], dayId: number): Set<number> {
+  const rows = day.filter(row => pointOf(row) !== null).sort((a, b) => a.order_index - b.order_index)
+  const nights = nightVisits(rows.map(row => ({
+    placeId: row.place_id ?? 0,
+    night: row.place_id != null && stayStartingOn(stays, row.place_id, dayId) !== undefined,
+    bookedNightId: row.accommodation_id ?? null,
+  })))
+  return new Set(rows.filter((_, i) => nights.has(i)).map(row => row.order_index))
+}
+
+/**
+ * The slot to store for a ride that lands on the day it left (`sameDayRide`) and has none
+ * yet: worked out over the day's rows the way the road trip seats its terminals among
+ * them (`seatCarrierStops`), so the slot the list is drawn by and the drive agree. Null for
+ * any other booking, which keeps the clock's slot.
+ *
+ * Read over every stored row the drive stops at, the ones the list hides included: the
+ * hotel a booking put on the day, a petrol station kept out of the list. The slot is a
+ * number among their order indexes all the same, and worked out over the rows the list
+ * shows it could land behind a hidden stop on the far shore, which the drive then went to
+ * overland before the crossing (#2461). Each row counts with its start, else the check-in
+ * of the stay that begins there that day on the row that is its night (`nightRowsOf`), and
+ * with its coordinates; a row without them is no stop of the drive. Where the rule keeps
+ * the clock's seat, the clock is read over the same rows: behind the last one timed at or
+ * before the departure, else at the end of the day.
+ */
+export function storedRideSlot(
+  r: CarrierBooking,
+  day: readonly StoredStop[],
+  stays: readonly StayStart[],
+  dayId: number,
+): number | null {
+  const ride = sameDayRide(r)
+  if (!ride || !day.length) return null
+  const nights = nightRowsOf(day, stays, dayId)
+  const items: SeatItem[] = day.flatMap(row => {
+    const point = pointOf(row)
+    if (!point) return []
+    const start = row.place?.place_time ?? (nights.has(row.order_index) ? stayStartingOn(stays, row.place_id, dayId)?.check_in : null)
+    return [{ key: row.order_index, minutes: parseTimeToMinutes(start), point }]
+  })
+  const keys = day.map(row => row.order_index)
+  const seat = rideSeatAfter(items, ride)
+  if (seat === -Infinity) return Math.min(...keys) - 0.5
+  if (seat !== null) return seat + 0.5
+  const departs = ride.minutes ?? 0
+  const before = items.filter(item => item.minutes !== null && item.minutes <= departs).map(item => item.key)
+  return (before.length ? Math.max(...before) : Math.max(...keys)) + 0.5
+}
+
+/** Merge places, notes, and transports into a single ordered day timeline. */
+export function getMergedItems(opts: {
+  dayAssignments: any[]
+  dayNotes: any[]
+  dayTransports: any[]
+  dayId: number
+  getDisplayTime?: (r: any, dayId: number) => string | null
+}): MergedItem[] {
+  const { dayAssignments: da, dayNotes: dn, dayTransports: transport, dayId } = opts
+  const getDisplayTime = opts.getDisplayTime ?? getDisplayTimeForDay
+
+  const baseItems: MergedItem[] = [
+    ...da.map(a => ({ type: 'place' as const, sortKey: a.order_index, data: a })),
+    ...dn.map(n => ({ type: 'note' as const, sortKey: n.sort_order ?? 0, data: n })),
+  ].sort((a, b) => a.sortKey - b.sortKey)
+
+  const timedTransports = transport.map(r => ({
+    type: 'transport' as const,
+    data: r,
+    minutes: parseTimeToMinutes(getDisplayTime(r, dayId)) ?? 0,
+  })).sort((a, b) => a.minutes - b.minutes)
+
+  if (timedTransports.length === 0) return applyChronoOrder(baseItems, dayId, getDisplayTime)
+  if (baseItems.length === 0) {
+    return applyChronoOrder(timedTransports.map((item, i) => ({ type: item.type, sortKey: i, data: item.data })), dayId, getDisplayTime)
+  }
+
+  // Insert transports among base items based on per-day position or time
+  const result = [...baseItems]
+  for (let ti = 0; ti < timedTransports.length; ti++) {
+    const timed = timedTransports[ti]
+    const minutes = timed.minutes
+
+    // Per-day position takes precedence (set by user reorder), then the booking's
+    // own slot. The map's waypoint builder has always read day_plan_position and
+    // this never did, so a booking carrying only that value sat between the places
+    // on the map and at the bottom of the day everywhere else (#2071).
+    const perDayPos = timed.data.day_positions?.[dayId]
+      ?? timed.data.day_positions?.[String(dayId)]
+      ?? timed.data.day_plan_position
+    if (perDayPos != null) {
+      result.push({ type: timed.type, sortKey: perDayPos, data: timed.data })
+      continue
+    }
+
+    // Time-based fallback: insert after the last item whose time <= this transport's time
+    let insertAfterKey = -Infinity
+    for (const item of result) {
+      if (item.type === 'place') {
+        const pm = parseTimeToMinutes(item.data?.place?.place_time)
+        if (pm !== null && pm <= minutes) insertAfterKey = item.sortKey
+      } else if (item.type === 'transport') {
+        const tm = parseTimeToMinutes(item.data?.reservation_time)
+        if (tm !== null && tm <= minutes) insertAfterKey = item.sortKey
+      }
+    }
+    // A ride that lands today may sit elsewhere between the same clocks, where it adds
+    // the least road. Without that, a ferry between two untimed stops closed the day and
+    // the drive went to the far shore overland before the crossing (#2461).
+    const seat = rideSeatKey(timed.data, result)
+    if (seat !== null) insertAfterKey = seat
+
+    const lastKey = result.length > 0 ? Math.max(...result.map(i => i.sortKey)) : 0
+    const firstKey = result.length > 0 ? Math.min(...result.map(i => i.sortKey)) : 0
+    const sortKey = seat === -Infinity
+      ? firstKey - 0.5 - ti * 0.01
+      : insertAfterKey === -Infinity
+        ? lastKey + 0.5 + ti * 0.01
+        : insertAfterKey + 0.01 + ti * 0.001
+
+    result.push({ type: timed.type, sortKey, data: timed.data })
+  }
+
+  return applyChronoOrder(result.sort((a, b) => a.sortKey - b.sortKey), dayId, getDisplayTime)
+}
+
+/** A stored day row, as far as `timedSlot` reads it. */
+interface StoredVisit {
+  order_index: number
+  accommodation_id?: number | null
+  place?: { place_time?: string | null } | null
+}
+
+/**
+ * Where a stop joining a day is stored when it carries a start of its own, as an index
+ * into the day's stored rows sorted by order_index. Null when it has none: that stop
+ * goes where it was dropped, as it always has.
+ *
+ * The list draws a day by time (`applyChronoOrder`) and the road trip drives it in the
+ * order it is stored. Put at the end of the day, or wherever it was dropped, a stop with
+ * a start sat in one place on the list and in another on the road, and behind a later
+ * start the road trip reached it late. So it is stored right behind the row it will be
+ * drawn after. Among stops without a time it keeps the spot it was dropped on; where the
+ * drop and the start disagree, the start wins.
+ *
+ * Read over every stored row, the ones the list hides included, because those are what
+ * the index counts. A booked night is timed by its check-in, the way the server's time
+ * sort reads it, so a stop pinned before the check-in lands ahead of the hotel and one
+ * pinned after it behind. A night without one counts as a stop without a time, so a
+ * night that leads its day keeps leading it.
+ */
+export function timedSlot(
+  day: readonly StoredVisit[],
+  nights: readonly { id: number; check_in?: string | null }[],
+  start: string | null | undefined,
+  dropAt?: number | null,
+): number | null {
+  const minutes = parseTimeToMinutes(start)
+  if (minutes === null) return null
+  const stored = [...day].sort((a, b) => a.order_index - b.order_index)
+  const at = dropAt == null ? stored.length : Math.min(Math.max(dropAt, 0), stored.length)
+  const joining: StoredVisit = { order_index: -1 }
+  const startOf = (row: StoredVisit): number | null => {
+    if (row === joining) return minutes
+    const checkIn = row.accommodation_id == null ? null : nights.find(n => n.id === row.accommodation_id)?.check_in
+    return parseTimeToMinutes(row.place?.place_time ?? checkIn)
+  }
+  const drawn = chronoOrder([...stored.slice(0, at), joining, ...stored.slice(at)], startOf)
+  const before = drawn[drawn.indexOf(joining) - 1]
+  return before ? stored.indexOf(before) + 1 : 0
+}

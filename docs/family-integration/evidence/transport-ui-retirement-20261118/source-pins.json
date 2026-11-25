@@ -1,0 +1,41 @@
+{
+  "incoming": "a7d27e34891b5522fd72dfe2021e3abad934f199",
+  "implementation": "225666ecdd06e3875511066ab403fe2217a8ee25",
+  "build_source": "f18be8d3fd32b32371a02d30eb1d2e43d8eaeaf0",
+  "prior_runtime_build": "c8200913924aac7c3efd6ea92854b59f08ba818e",
+  "removed_original_sha256": {
+    "client/src/integrations/family/legacy/components/Planner/TransportModal.tsx": "0f722d6b4c6618e033b988ec16eded87d3bac4807e5bcb241ed3acab54bca4a6",
+    "client/src/integrations/family/legacy/components/Planner/TransitSearchPanel.tsx": "5a298d406b25e80ae2049a1337d7c86238dd6309077d71f13d6bbc499340c47b"
+  },
+  "retained_Family_transport_panel_and_test": {
+    "path": "client/src/integrations/family/legacy/components/Planner/TransportsPanelFamily.tsx",
+    "sha256": "911fdd2bc5cc87a74fd8166b19cd2351ce105b8c75fa29d45edfdda9de7314ff",
+    "test": "client/src/integrations/family/legacy/components/Planner/TransportsPanelFamily.test.tsx",
+    "test_sha256": "2db0dd6f71bb9d6c7d3736e6666c3d05101931a7b183120cfae254e327d12504",
+    "raw_consumers": [
+      {
+        "from": "client/src/integrations/family/legacy/components/Planner/TransportsPanelFamily.test.tsx",
+        "target": "client/src/integrations/family/legacy/components/Planner/TransportsPanelFamily.tsx",
+        "kind": "ImportDeclaration",
+        "line": 19,
+        "type_only": false
+      },
+      {
+        "from": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+        "target": "client/src/integrations/family/legacy/components/Planner/TransportsPanelFamily.tsx",
+        "kind": "ImportDeclaration",
+        "line": 23,
+        "type_only": false
+      }
+    ],
+    "ordinary_entry_member": false
+  },
+  "retained_Family_booking_panel_and_test": {
+    "client/src/integrations/family/legacy/components/Planner/BookingsPanelFamily.tsx": "27682ec331a59d18545df0be9da3618e51e77f29404228bc96a93d2755835673",
+    "client/src/integrations/family/legacy/components/Planner/BookingsPanelFamily.test.tsx": "1e290019c1813c462744faa653467e92a2e62f83220a0def8e5f871f5e2b5b92"
+  },
+  "current_compiler_declarations": 128,
+  "no_old_generated_declaration_identity_assumption": true,
+  "test_runtime": "v24.22.2",
+  "no_hosted_operation": true
+}

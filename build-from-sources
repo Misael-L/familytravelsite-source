@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Reproduce the member web client from this corresponding-source tree.
+set -euo pipefail
+
+REPO_ROOT="$(cd "$(dirname "$0")" && pwd)"
+cd "$REPO_ROOT"
+
+echo "==> Installing workspaces (family-shared, family-backend, shared, client)"
+npm ci
+
+echo "==> Building the member web client"
+npm run build:web
+
+echo "==> Done — client/dist is ready"

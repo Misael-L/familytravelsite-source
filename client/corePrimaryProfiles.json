@@ -1,0 +1,10 @@
+{
+  "field": "VITE_FAMILY_CORE_WRITER_PROFILE",
+  "originSha256": "49541fb74cbba4a2bfa2313e79c3163d8f68682a46f458b554633c3ac7d3f40d",
+  "production": "primary-core-production-v1",
+  "preview": "primary-core-preview-v1",
+  "fallback": "primary-core-fallback-v1",
+  "mexicoPreview": "primary-core-mexico-preview-read-v1",
+  "productionSiteSha256": "44bc2eef320d6e287380bdb5adbfb9d46f831c42a9ae3bee9a4ce77a1d3e3794",
+  "previewSiteSha256": "200a2d02dd62a995dc800c8afb4bfcb5dd885401ac815b7322121674fd09de31"
+}

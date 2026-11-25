@@ -1,0 +1,35 @@
+{
+  "passed": true,
+  "actual_existing_ESLint_configuration": true,
+  "before": {
+    "errors": 0,
+    "fatal": 0,
+    "warnings": 1,
+    "messages": [
+      {
+        "ruleId": null,
+        "severity": 1,
+        "message": "File ignored because of a matching ignore pattern. Use \"--no-ignore\" to disable file ignore settings or use \"--no-warn-ignored\" to suppress this warning.",
+        "fatal": false
+      }
+    ],
+    "suppressed": []
+  },
+  "after": {
+    "errors": 0,
+    "fatal": 0,
+    "warnings": 1,
+    "messages": [
+      {
+        "ruleId": null,
+        "severity": 1,
+        "message": "File ignored because of a matching ignore pattern. Use \"--no-ignore\" to disable file ignore settings or use \"--no-warn-ignored\" to suppress this warning.",
+        "fatal": false
+      }
+    ],
+    "suppressed": []
+  },
+  "only_diagnostic_line_coordinates_ignored_after_source_line_relocation": true,
+  "no_new_error_warning_suppression_or_inline_configuration": true,
+  "full_client_lint_not_reexecuted": true
+}

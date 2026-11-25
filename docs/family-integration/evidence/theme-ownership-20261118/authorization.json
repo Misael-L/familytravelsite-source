@@ -1,0 +1,7 @@
+{
+  "approved_scope": "Only the exact patch previously presented: MPackingItemRow allowance0to13 and MPackingListTab32to19; aggregate3388 unchanged.",
+  "request_context": "Immediately following the explicit approval question for this patch, the user replied: Great! Continue with the next, if there are no problems/issues to fix.",
+  "supersedes_prior_baseline_edit_prohibition_for_this_exact_correction_only": true,
+  "no_rule_suppression_test_or_UI_change_authorized": true,
+  "patch_sha256": "c0285e81dbe287e9cd7f922dc5699685f0c792f3da191b43315b98a0a26c90a2"
+}

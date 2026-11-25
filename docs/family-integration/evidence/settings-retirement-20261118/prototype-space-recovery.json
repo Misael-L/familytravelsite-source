@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "only_verified_disposable_source_prototype_removed": "/private/tmp/trek-core-settings-retirement-20261118/candidate-checkout",
+  "pinned_original_source": "6e5cc5d0f7856da484fe4c95653f58e38d36b56e",
+  "explicit_candidate_deletions": [
+    "client/src/integrations/family/legacy/components/Settings/AccountTab.tsx",
+    "client/src/integrations/family/legacy/components/Settings/IntegrationsTab.tsx",
+    "client/src/integrations/family/legacy/pages/SettingsPage.tsx"
+  ],
+  "all_other_tracked_bytes_verified": 17927,
+  "dependency_links_unlinked_without_following": true,
+  "test_logs_evidence_compiled_artifacts_source_checkouts_backups_ETL_media_preserved": true,
+  "free_bytes_before": 3833856000,
+  "free_bytes_after": 4218880000
+}

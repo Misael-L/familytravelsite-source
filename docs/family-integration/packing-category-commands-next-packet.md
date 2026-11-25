@@ -1,0 +1,29 @@
+# U04-C2b — observed packing category commands and receipts
+
+Use accepted C2a [contract](packing-category-foundation-contract.md), [handoff](packing-category-foundation-handoff.md), exact schema/function/evidence pins and the C2 category architecture contract. Work on the same isolated candidate branch; the new qualified database target is `family-modernization-20261111-c2a`, database `postgres`, API55431/DB55432, PostgreSQL17.11. The original55331/55332 stack intentionally remains120. Do not apply new schema there, repair its audit labels, reset either project or use a linked target.
+
+## Prerequisites and scope
+
+Run `supabase/tests/packing_category_guard.py` through the canonical guarded runner, verify all121 prior migration hashes,19 foundation functions, schema/permissions fingerprints, prior seals and unchanged source. Read the new Person-history guard and both assignment mirror directions. Use a CLI-created new migration under canonical `supabase/migrations` plus new scoped tests/guard receipts and these documents. The canonical repository is a mixed tree; never stage it wholesale. No application runtime or native control change belongs to this server packet.
+
+Implement only the proposed category execute/receipt command family. Preserve the existing item/group APIs, operation namespace/digests, exact old receipt bodies and strict packing v1 reader. Do not enable a legacy global group gate or any rename/assignee UI. Bags, sharing/private assignments, category merge/create/delete/reorder, templates/imports, notifications and delivery/outbox remain separate.
+
+## Exact command and locking requirements
+
+Follow C2's proposed `execute_family_trip_packing_category_v1` and receipt interfaces. Freeze source/user/Person/Family/Trip/layer/lifecycle, category identity, original revision/name/timestamps/assignment provenance, expected opaque packing collection, action, exact values and one operation UUID. Reject extra fields, invalid/bounded values, wrong-domain operation IDs, stale originals and changed intent. A target-name collision is409, never merge. Common or own-personal category rename requires current direct packing authority; sharing one item never confers authority over a foreign category. Assignment changes are common-only and do not grant access.
+
+PostgreSQL takes row locks before row triggers. Acquire the existing Trip-recovery advisory lock, Trip `FOR NO KEY UPDATE`, packing-state `FOR UPDATE`, and only then category/assignment/affected item rows in stable order. Recheck permission, assurance, membership, lifecycle and scope after waiting. Do not rely on the trigger's advisory lock to repair an already inverted row-lock order. Compare the complete original before mutation.
+
+Apply rename as one category operation through the proven bridge. Preserve immutable Trash and restore identity. Replace assignments by exact set difference; preserve unchanged provenance, permit removal of now-ineligible historical assignments and validate only actual additions against eligible same-Trip/Family travelers. New links record the authenticated actor and time; historical NULL provenance remains NULL. Detect no-op before touching metadata so it produces only the idempotency receipt, no collection/audit/root churn. Effective operations advance the existing collection via reviewed triggers and return final server facts.
+
+Reuse the private packing operation ledger; add the planned nullable category FK/constraints and category action discriminator while leaving existing rows/digests unchanged. A reused item/group/category operation with different domain or intent conflicts. Update every result/receipt visibility dispatcher and wrong-domain refusal deliberately. Private receipts preserve complete original/before/after provenance; shared coarse audit events disclose no private labels/IDs. Receipt lookup preserves unknown/redacted semantics and is not fresh publication or automatic replay authority. No client-side loops or per-row API sequence may stand in for a category transaction.
+
+## Proof and completion
+
+Rehearse only on the new marked stack. Preserve121 earlier sources/rows/receipts/files and demonstrate late failure rollback. Add real Auth/TOTP/PostgREST coverage for owner/editor/guest references, denied/propose-only/AAL1/revoked authority, foreign/hidden/private scope, target collision, exact Unicode/raw labels, unchanged ineligible assignments, no-op, operation reuse, lost-reply receipt, stale menu, wrong receipt domain, root Trash/lifecycle changes, 8MiB/safe-integer bounds and lock-wait permission revocation. Race category rename/assignment against existing item/group/root operations and prove complete before/after publication without deadlock. Keep original packing/group cases plus the34 C2a cases passing with a new strict122 guard; historical guards must refuse the newer chain.
+
+Run function lint/advisors against baseline with no growth. If application code remains exact, inherit its existing proof explicitly; if actual SDK/handler code must change, split that into C2c and qualify it separately. Save exact source/SQL/function/grant/RLS/trigger hashes, process receipts, test identities, preservation proofs, immutable evidence and a scoped local metadata commit before declaring this packet complete.
+
+Next after accepted commands: C2c owned SDK/cohort/retained queue and native per-action controls, including displayed groups that contain multiple category IDs. Never silently select a category from an ambiguous display label. No production/preview deployment, hosted SQL/settings/billing, dependency upgrade, image transformation/backfill, backup rewrite or ignored ETL work is authorized by this packet.
+
+Completed locally under [C2b handoff](packing-category-commands-handoff.md). Continue with [C2c SDK/queue/native controls](packing-category-controls-next-packet.md), retaining all activation gates.

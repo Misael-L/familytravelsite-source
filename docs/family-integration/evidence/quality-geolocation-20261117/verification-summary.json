@@ -1,0 +1,56 @@
+{
+  "passed": true,
+  "packet": "Q92",
+  "incoming": "3cf08fc781dda5929cef3faabc62c6e1ffb75d60",
+  "implementation": "738b9ae47fda198d8ebd55d1d09470a5a5374143",
+  "build_source": "db3dc7ba7c553d653fec69a63b994008361679d6",
+  "date": "2026-11-17",
+  "runtime_files_changed": 1,
+  "hook_counted_lines": [
+    129,
+    116
+  ],
+  "helpers": {
+    "readCompassHeading": {
+      "lines": 12,
+      "complexity": 5,
+      "parameters": 1
+    },
+    "watchErrorCode": {
+      "lines": 6,
+      "complexity": 4,
+      "parameters": 1
+    }
+  },
+  "tests_each_source_variant": 426,
+  "unchanged_existing_tests": 393,
+  "private_cases": 33,
+  "trace_observations_each": 301,
+  "behavior_trace_comparison_passed": true,
+  "line_statement_function_coverage_percent": 100,
+  "branch_coverage": [
+    83,
+    84
+  ],
+  "coverage_thresholds_unchanged": 85,
+  "whole_module_AST_inlining_proof": true,
+  "full_typecheck_passed": true,
+  "fixture_build_passed": true,
+  "source_guards_passed": 4,
+  "artifact_binding_controls_passed": 3,
+  "source_complexity_actual_limit": [
+    218,
+    218
+  ],
+  "source_length_actual_limit": [
+    133,
+    130
+  ],
+  "size_findings_unchanged": 32,
+  "all_policies_and_baselines_unchanged": true,
+  "global_quality_gate_pass": false,
+  "inherited_stale_watch_bug_reproduced_both_variants": true,
+  "stale_watch_characterization_tests_each": 1,
+  "new_live_device_or_backend_or_hosted_acceptance": false,
+  "next": "Q93 geolocation watch-generation retirement repair before further static quality work"
+}

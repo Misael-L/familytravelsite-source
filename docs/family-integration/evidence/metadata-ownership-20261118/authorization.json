@@ -1,0 +1,13 @@
+{
+  "user_instruction": "What do you mean? Should we do it? If so, then continue.",
+  "recommendation_accepted": "Yes; exact prepared two-file ownership correction, no increased allowances or UI changes.",
+  "date": "2026-11-18 America/New_York",
+  "supersedes": "Earlier automatic-review baseline restriction only for this exact RTL/i18n ownership patch; no blanket baseline change approval.",
+  "approved_patch_sha256": "5b81557c899cdbbe5709504998f88315f1ae2dea50edb11def1bf02d43b19ed8",
+  "approved_paths": [
+    "client/scripts/rtl-baseline.json",
+    "client/scripts/i18n-keys.mjs"
+  ],
+  "prechange_all_incoming_tracked_files_exact": 18731,
+  "all_original_policy_and_domain_hashes_match_prepared_proposal": true
+}

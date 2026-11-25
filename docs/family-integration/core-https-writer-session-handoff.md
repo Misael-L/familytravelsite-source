@@ -1,0 +1,31 @@
+# Q23 HTTPS writer qualification — held by a demonstrated task-session prerequisite
+
+16 November 2026. Current application, native presentation, source admission, public configuration, backend carryover and 144 canonical migrations remain unchanged. The proposed client profile was prepared and tested, then withdrawn from the website checkout after the real backend preflight failed. Its 11 source files and exact hash manifest are retained privately as **prepared, not adopted**. No new flag or writable source is accepted in the running application. [Current release checklist](core-release-prerequisites.md); [required next repair](core-release-task-session-repair-packet.md); [Q23 contract to resume afterward](core-release-https-writer-source-packet.md).
+
+## What the real isolated test proved
+
+A uniquely owned cold copy of the accepted cleanly stopped schema 144 fixture uses real local GoTrue password/TOTP and PostgREST/RLS. No stored/SDK/HTTP success substitution, custom JWT signing, hosted request or schema modification is used. The first test confirms two actual AAL2 task read APIs return 200 before logout and still return 200 with the same token after Auth removes its session row.
+
+The expanded test creates one new synthetic task through the actual task command API while its session is active. After real Auth logout, task list, operation receipt and the exact original command replay all return 200. The replay returns the same acknowledgement. A separately issued AAL2 token is then tested with its own synthetic Auth session row's not_after in the past: the same three calls still return 200. The expected current-session denials are absent in all six observations. This concerns a still-validly-signed JWT whose server session was retired or expired, not a JWT past its cryptographic exp. We have not tested or claimed this against the hosted database.
+
+One original task and one operation receipt remain after every replay. Idempotency is preserved; the defect is missing current-session authorization before private reads and historical receipt replay. Task APIs rely on require_trip_location_access, whose membership/assurance/person checks do not consult live Auth session rows. The next packet must add task-scoped current-session checks and appropriate command locking, without rewriting old migrations or tying retained original commands to their retired session ID.
+
+These six HTTP200 outcomes are **failed desired denials**, not successful writer acceptance. Fresh actual-App/browser/build acceptance is not attempted after this prerequisite fails. No certificate, Storage, physical-device, hosted API or independent-restoration success is inferred.
+
+## Prepared client work and why it is not active
+
+The private proposal defines a separate isolated-task-v1 profile bound to the existing exact synthetic HTTPS origin hash. It preserves default/primary/loopback admission, existing actor/owner tuple and original-command semantics; adds narrowly checked public configuration/receipt binding, native/backend-fetch task-only fences and direct Collection refusal. It does not qualify other command families by enabling ownership. All old advanced flags stay empty.
+
+Before those edits, three desired tests through the real ownership installer fail and ten refusal controls pass. The prepared proposal later passes 6637 unit cases in 258 files, including all earlier 6582 case names, plus compatibility/typecheck and scoped lint: zero errors with the same two existing warnings. Those results belong to the **withdrawn client proposal**. They do not override the failed real session checks and are not reported as qualification of the final website source. The proposal's first typecheck also identified a missing collection_id in a new fixture, corrected before its passing run; no backend/type contract was weakened.
+
+All proposed runtime/config changes were restored from the frozen exact originals, and only a new holding-regression test is adopted. Its eight explicit refusal/old-loopback controls keep the proposed HTTPS flag and forged locator from installing ownership, keep advanced/cold-reading gates closed and preserve public-receipt refusal of the unqualified field. The final focused cohort passes 148 cases in five files; these are holding/profile/ownership/Collection/configuration checks, not HTTPS writer journeys. The final compiler/scoped lint/source guards and preservation receipts govern final acceptance. Existing source/runtime and the last Q21 build keep their original identities; no new build is claimed.
+
+## Preservation and continuation
+
+The new isolated copy preserves all 362464 original source rows/256 COPY projections,144 migration statement arrays and 676 routine/catalog/security definitions. Exactly one new synthetic task/receipt and synthetic Auth session lifecycle changes are intentional test state; no original user/catalog/media row is edited. All6322 stopped source files/eight private source inputs,216 prior container states/119 volumes,355 canonical inputs/144 migrations/mixed index,165 prior seals11352 members and unrelated checkouts remain exact. All three newly owned roles are stopped, their own test state retained; final219 containers/120 volumes. No protected historical target was restarted or removed.
+
+No production/preview/main/push, hosted SQL/settings/billing/engine, dependency/schema, original backup/media/ignored ETL or transformation change. The local source archive remains check-only and unbound. Existing33 size findings and broader warning debt remain open. Pre-production unused-source cleanup remains deferred; no unused helper is activated or removed.
+
+**Next: Q23a task-session repair on a new isolated local upgrade**, followed by resuming HTTPS client qualification with the original protocol intact. Hosted deployment remains a later release decision. The task scope/operation hash must not acquire the original session ID: an authorized fresh sign-in must still recover the exact retained original.
+
+Reviewed holding-test source commit: `f98c62d7ab15de16be0c4adf810903c1a24e5158`. Final evidence and metadata commit are recorded in the canonical continuation; this is not a qualified writer build.

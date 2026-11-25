@@ -1,0 +1,85 @@
+{
+  "passed": false,
+  "repair_verified": true,
+  "scope": "Nine-command CI quality inventory and five type-only Family helper repairs; six quality gates still fail.",
+  "packet": "Q122",
+  "date": "2026-11-18",
+  "incoming": "d7bd79fa7c7e7d76a3e4d4ba887d7af3200c76f5",
+  "implementation": "76984b74d9d34207bd1be57088a14e3f1fbbda91",
+  "build_source": "f99266c7205668c58ecd934627ba110512f7dadf",
+  "application_paths": [
+    "client/src/integrations/family/publicVariantCache.ts",
+    "client/src/integrations/family/privateFileMemory.ts",
+    "client/src/integrations/family/packingBagDependency.ts",
+    "client/src/integrations/family/packingDependencyPair.ts",
+    "client/src/integrations/family/creationTerminalSettlement.ts"
+  ],
+  "only_five_callable_type_annotations_change_application_source": true,
+  "all_five_transpiled_JS_bytes_exact": true,
+  "all_other_runtime_and_all_test_source_bytes_exact": true,
+  "strict_diagnostics_before_after": [
+    701,
+    637
+  ],
+  "strict_errors_resolved": 64,
+  "strict_gate_pass": false,
+  "baseline_strict_allowance_unchanged": 467,
+  "remaining_strict_excess": 173,
+  "remaining_strict_grown_files": 60,
+  "remaining_strict_stale_entries": 2,
+  "nine_additional_commands_measured": true,
+  "additional_passed_commands": [
+    "pages",
+    "layers",
+    "skips"
+  ],
+  "additional_failed_commands": [
+    "strict",
+    "rtl",
+    "offline",
+    "dup",
+    "pairs",
+    "i18n-keys"
+  ],
+  "other_eight_failure_outputs_exact_before_after": true,
+  "regression_passed": 2316,
+  "focused_passed_before_after": [
+    209,
+    209
+  ],
+  "disjoint_passed_cases": 2525,
+  "unchanged_preexisting_skipped_cases": 38,
+  "new_test_failures_or_skips": 0,
+  "all_3792_outputs_except_sourceCommit_byte_exact": true,
+  "ordinary_build_typecheck_source_artifact_size_format_warning_checks_pass": true,
+  "current_declarations_fixed": 128,
+  "source_guards_passed": 4,
+  "artifact_binding_controls_passed": 3,
+  "size_findings": 0,
+  "format_unlisted_failures": 0,
+  "format_allowance_entries_unchanged": 2134,
+  "source_warnings_actual_limit": [
+    3418,
+    3418
+  ],
+  "test_warnings_actual_limit": [
+    2859,
+    2859
+  ],
+  "suppressed_warnings_actual_limit": [
+    83,
+    83
+  ],
+  "complexity_actual_limit": [
+    218,
+    218
+  ],
+  "length_actual_limit": [
+    130,
+    130
+  ],
+  "all_rules_baselines_thresholds_exclusions_and_suppressions_exact": true,
+  "no_new_feature_provider_profile_writer_or_hosted_admission": true,
+  "global_release_gate_pass": false,
+  "next": "One bounded strict response-body contract repair, then metadata lineage and duplication-ownership review before broad refactoring."
+}

@@ -1,0 +1,800 @@
+{
+  "date": "2026-11-21",
+  "website_commit": "7e221c3f757051fde70d84263443ea9495d2f77b",
+  "backend_commit": "3e7087e0a5f9e51cad169cd0e074babacc6cbb84",
+  "source_backup": "20 November independent encrypted X8 copy",
+  "postgresql_build_simulated": "17.6.1.141",
+  "run_on_isolated_candidate_only": true,
+  "external_network": false,
+  "hosted_writes": false,
+  "deployments": false,
+  "sql_executor_note": "Standalone local capability substitution. Temporarily elevate only the candidate postgres role inside each audited migration transaction, then restore NOSUPERUSER before commit.",
+  "guard_foreign_target_negatives": 34,
+  "rollback": {
+    "ddl_probe_restored": true,
+    "ledger_rolled_back": true,
+    "superuser_rolled_back": true,
+    "sqlstate": "22012"
+  },
+  "ledger": {
+    "baseline_versions_exact": 88,
+    "new_versions_exact": 66,
+    "target_versions": 154,
+    "historical_statements_preserved": true,
+    "pinned_new_sql_file_sha256_matches": true,
+    "rehearsal_ledger_representation": "Complete immutable SQL file in one statements array element per new version"
+  },
+  "replay": [
+    {
+      "version": "20261104175741",
+      "name": "journey_entry_recovery",
+      "sha256": "acbd46debbe99c0dd0a01993e7bc0cc5b621f51ce34655e9c5a6e9ca9fa05d23",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.09
+    },
+    {
+      "version": "20261104192908",
+      "name": "journey_aggregate_recovery",
+      "sha256": "85e46ea93a017ea57687be9a2d14c049b61a43ed622167f1348e2049f27ac838",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.09
+    },
+    {
+      "version": "20261104200550",
+      "name": "trip_aggregate_recovery",
+      "sha256": "fc3d5dc05d31295c184d8eec83265195b72a7c1d5bc196365aa8718ba84f96ea",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.09
+    },
+    {
+      "version": "20261104230709",
+      "name": "trip_plan_locations",
+      "sha256": "dc7cf49c5ba2da80a494fc2184b8c03866d8852956d10aa5d0c16ff01867aecb",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.09
+    },
+    {
+      "version": "20261104233950",
+      "name": "trip_visit_location_bridge",
+      "sha256": "707f84a94f5d004cddb98f9ea783177e787aa167c165888172b287d93a114304",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.09
+    },
+    {
+      "version": "20261105001102",
+      "name": "trip_untimed_visit_commands",
+      "sha256": "b246e71775c989ab658835ac098807866f4119896fabffd89e504cc63962a902",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.09
+    },
+    {
+      "version": "20261105004710",
+      "name": "typed_plan_change_proposals",
+      "sha256": "646ba3bf683ea87847573469ea598ad8589a87693831f5e74a08382814541986",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.09
+    },
+    {
+      "version": "20261105012509",
+      "name": "legacy_visit_time_classification",
+      "sha256": "c435969732372587635a717dbf655aaf98a349830badcdad5fda25d06a50e7a5",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.09
+    },
+    {
+      "version": "20261105015237",
+      "name": "named_zone_visit_timing",
+      "sha256": "0038599f796671abc0ae570478d52f1313e031ffd02d4dc935a1f383daa3aa5c",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.09
+    },
+    {
+      "version": "20261105030029",
+      "name": "visit_timing_proposals",
+      "sha256": "1c3187897578fa4d38de3e975e819894dd1bf8c43518dad0faf2869eddbeb4f5",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.06
+    },
+    {
+      "version": "20261105040722",
+      "name": "visit_partial_time_semantics",
+      "sha256": "c58228688898c6435ef2b681bfb62e788acc562a40562a5409dd33fc8d0c6ddf",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.06
+    },
+    {
+      "version": "20261105054629",
+      "name": "atomic_trip_plan_entries",
+      "sha256": "062f2dbe30b9c30dc4c5f3e82870155f70b61d9bfa8d900815790c674bc69c4f",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.06
+    },
+    {
+      "version": "20261105194324",
+      "name": "trip_planner_state_snapshot",
+      "sha256": "c00b06d08e330dbd317850c1e64ed51de529421cf17248162e2ff21a982359cb",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.12
+    },
+    {
+      "version": "20261105201625",
+      "name": "trip_destination_location_bridge",
+      "sha256": "a394d3e35f92cf8956e811c8def45ac975b7ba0fc10166ec9c0c626b48c01208",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.07
+    },
+    {
+      "version": "20261105205015",
+      "name": "trip_location_form_commands",
+      "sha256": "baea21ee3ed3a3eabf6034dd5c0b8b2a324aa617e9d496c3f3b47ead5f40fd64",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.06
+    },
+    {
+      "version": "20261105212614",
+      "name": "trip_visit_form_commands",
+      "sha256": "1baf6e679df11a4df35d5ea87cec8227973b5851ea509a6f69462dc33f9d5a3d",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.09
+    },
+    {
+      "version": "20261106005109",
+      "name": "trip_private_planner_snapshot",
+      "sha256": "c1140eefe306fe7a534ae149c556da97e7ad557b0559c56fa6a15c70dfe58a21",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.06
+    },
+    {
+      "version": "20261106023651",
+      "name": "native_planner_creation",
+      "sha256": "b63f8bf2b09df1b8ec63db0b5f86099b2160babd585b60209bacfe700bb23245",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.06
+    },
+    {
+      "version": "20261106030729",
+      "name": "native_visit_arrangements",
+      "sha256": "1aa5c19f67f166cf5552477ed881d7bd8f0f1ee2f0f24c6a72ede09668fa28f1",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.09
+    },
+    {
+      "version": "20261106035504",
+      "name": "observed_trip_calendar",
+      "sha256": "7f3ca3600e520d1fd51ff7d05cc118ca30627f6ab27d7e1e8729dc378a03d40b",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.06
+    },
+    {
+      "version": "20261106043206",
+      "name": "recoverable_trip_day_order",
+      "sha256": "106a3989253c703a3eabe11401e80af57752eb74f7c2bc1271ad255b8417a940",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.06
+    },
+    {
+      "version": "20261106185358",
+      "name": "recoverable_trip_day_insertion",
+      "sha256": "e5ae80930f3200d1117f7fb834037ee8ff6291657ef0a1f6824dae06d2f6e4fb",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.09
+    },
+    {
+      "version": "20261106193124",
+      "name": "recoverable_unreferenced_trip_days",
+      "sha256": "64f464cd43424e72959bffa94ccabec765adda41bb04fda7cd5fac9715f36900",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.1
+    },
+    {
+      "version": "20261106201143",
+      "name": "recoverable_trip_day_contents",
+      "sha256": "aa67982294a0a10dfada2b6248a302c6fab9aef2627bd421072e821b9662a809",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.11
+    },
+    {
+      "version": "20261106213759",
+      "name": "recoverable_trip_day_file_links",
+      "sha256": "9b27ddfe2e69884e89b19335f05abbf681caeb0daadc488791d2bf4df9e5299c",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.09
+    },
+    {
+      "version": "20261106222223",
+      "name": "booking_calendar_date_facts",
+      "sha256": "e708f913213390745c343538caa75b5ccdfda65f6bb984a436d06b5ca568c37d",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.09
+    },
+    {
+      "version": "20261106230656",
+      "name": "recoverable_day_booking_bindings",
+      "sha256": "65d6989b17918b42f6e1231d2daa392f02796c1f5cb00b4ec2752b1688325a21",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.09
+    },
+    {
+      "version": "20261106234140",
+      "name": "observed_booking_detail_commands",
+      "sha256": "502978ab32b7a8abc65cff94eadc0f78c6d8601e1937c6a069a9b46aa761449d",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.1
+    },
+    {
+      "version": "20261107021228",
+      "name": "observed_plan_governance",
+      "sha256": "37d41e2545ef28780ff0c1a9ccccf17da36e8658b98e6bd5e615d427190d3586",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.06
+    },
+    {
+      "version": "20261109000220",
+      "name": "observed_trip_task_commands",
+      "sha256": "bece3c0d42e5ac8115a0b0331805faf4dd753781d036eb0d3fed8efac2816ca2",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.09
+    },
+    {
+      "version": "20261109032335",
+      "name": "observed_trip_packing_commands",
+      "sha256": "630426299804d09beef98dc6d2f9132b363f7310fb33cc82298c1490d4469e48",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.14
+    },
+    {
+      "version": "20261111201637",
+      "name": "observed_trip_packing_groups",
+      "sha256": "99dcc3aa50af153ff245d70283e5b1ac0f6e7af97325cb3eb08bb485e79e09a6",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.05
+    },
+    {
+      "version": "20261111234537",
+      "name": "normalized_trip_packing_categories",
+      "sha256": "b361c5ad6d313fd8d42a424a4f106a671cc5a4d7afa1bcb45437fd1fd807873b",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.09
+    },
+    {
+      "version": "20261112005447",
+      "name": "observed_trip_packing_categories",
+      "sha256": "ca5381fc403eed90809c9ae9c92a94785d58b2cd09e36602af466a27d1e2f031",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.06
+    },
+    {
+      "version": "20261112050004",
+      "name": "normalized_packing_category_lifecycle",
+      "sha256": "bd373fd75d5a88c66a3ead421ca9b779e80247b1de4354109d6e4f2fa5d74e3f",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.09
+    },
+    {
+      "version": "20261112055647",
+      "name": "category_bound_packing_items",
+      "sha256": "67c3f6ceb03844e41908cd9e72f3759a9643c929ab3bbfe625b5c10a13eed63d",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.09
+    },
+    {
+      "version": "20261112084121",
+      "name": "packing_category_aggregate_commands",
+      "sha256": "b495d1368a4702c75c49c9b542f8320f2795054feb5a29e0ae86a0b16f24ac5a",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.15
+    },
+    {
+      "version": "20261112112956",
+      "name": "observed_trip_packing_bags",
+      "sha256": "b5af8384e481f56f85c9268bd783600b60cfd973bf3b28a6e29f86f34d69eb03",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.09
+    },
+    {
+      "version": "20261112132958",
+      "name": "terminal_trip_packing_restore_cancellation",
+      "sha256": "a3aa625587de1747fce3024a12de8c4d11892e6ca213ebef498bcd2b2ec1fee7",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.09
+    },
+    {
+      "version": "20261112162520",
+      "name": "terminal_trip_packing_bag_commands",
+      "sha256": "80dae4bc5dc064ea991dc11079b9d6c63d7981e06d71f7cf9053bc4159da4794",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.06
+    },
+    {
+      "version": "20261112235203",
+      "name": "reconcile_family_api_privileges",
+      "sha256": "8ce160ea954fa213efc0b1d8c701754f6c4a7ab2c5b376240edf80e9872965c9",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.07
+    },
+    {
+      "version": "20261113032434",
+      "name": "trip_stay_read_foundation",
+      "sha256": "9309739d31efc5039c44b6293af3d11d0a07875cd0a946769adfb41b3ff275b0",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.09
+    },
+    {
+      "version": "20261113220230",
+      "name": "observed_trip_stay_commands",
+      "sha256": "3a9b9e8df6bb9f5773571c1a94f1fad8864eaa64376c1348f3cdc348b558ec8d",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.1
+    },
+    {
+      "version": "20261113225457",
+      "name": "original_stay_command_outcomes",
+      "sha256": "595829734fa870e398098a378193f030f61fcf4a06e6e8629ea7bb94910c754c",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.09
+    },
+    {
+      "version": "20261113234914",
+      "name": "coherent_booking_stay_read",
+      "sha256": "b52d662f2f94098343e8d7396d26bda8ad30271b5faed883deda14989a773c4b",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.07
+    },
+    {
+      "version": "20261114051232",
+      "name": "atomic_stay_booking_bundle",
+      "sha256": "3b62e5649adbe4e98748981b16da41d84bafbb96ef294d5d2524e34c06d703d8",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.06
+    },
+    {
+      "version": "20261114070706",
+      "name": "native_stay_arrival_recovery",
+      "sha256": "5a73d28a72ddf9deb2f63193b40df33ecb32d8fb82273f07cd69a06ab154aec2",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.09
+    },
+    {
+      "version": "20261114110052",
+      "name": "native_stay_calendar_consistency",
+      "sha256": "89de2623faccc3131fc8f37dcf9c609dce06e57365723c663846e9bc727599bd",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.07
+    },
+    {
+      "version": "20261114230948",
+      "name": "recoverable_family_collections",
+      "sha256": "9e04a75d7281b7373c903f2318a8195d88daaa8bd95fb862784d34dbe59dbcd6",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.14
+    },
+    {
+      "version": "20261115000913",
+      "name": "collection_manual_item_kind",
+      "sha256": "21c779e867def673c37bb4f59576fdafb4f7fa84462c1b2be100993effb94e24",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.07
+    },
+    {
+      "version": "20261115000914",
+      "name": "normalized_collection_location_content",
+      "sha256": "5978524ed42018939a003a626a50c6b1669009412326cb13181235c380f5ee63",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.14
+    },
+    {
+      "version": "20261115010522",
+      "name": "bounded_family_collection_content_reads",
+      "sha256": "1ac03fbd77153a5884fb9582fd1d603d6c0071bbc13c8e233606e68a7521dc4e",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.06
+    },
+    {
+      "version": "20261115015406",
+      "name": "observed_family_collection_item_authoring",
+      "sha256": "3c1840be4316e2055e5b285bbbc9fb46cd215956b54b1906e04c15c90f086b40",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.09
+    },
+    {
+      "version": "20261115021715",
+      "name": "bounded_family_collection_library_reads",
+      "sha256": "2ddffed56199b6d3f0282148e028228a70c3d52917e9ac971db1266323636c0d",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.07
+    },
+    {
+      "version": "20261115052800",
+      "name": "cancel_unprepared_family_collection_requests",
+      "sha256": "33694cecc554e5e3bef7109fb86ee1cb78f783cab8a65aae2fde63451ced0715",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.09
+    },
+    {
+      "version": "20261115122753",
+      "name": "correct_completed_travel_statistics_grain",
+      "sha256": "7ea17ad47517b07be5134c78c34972561db094cfeefd2644e5bd094eb3f3538d",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.07
+    },
+    {
+      "version": "20261116053245",
+      "name": "task_current_session_boundary",
+      "sha256": "fdd74b3ca624cfd3ea93c6b97dd4e6c44080b8d6658edd444ca1483dcee3e470",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.06
+    },
+    {
+      "version": "20261116074325",
+      "name": "core_current_session_boundary",
+      "sha256": "66d07206247fa49c460e9d04fcd37654213a3ff3555839ec84a967ea9e7add1b",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.09
+    },
+    {
+      "version": "20261116092657",
+      "name": "native_plan_receipt_reader",
+      "sha256": "7e39a0896970aa304316c5bb8de00fc8fb03f48eb32280722b674df52cbf260f",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.07
+    },
+    {
+      "version": "20261116105805",
+      "name": "native_plan_semantic_conflicts",
+      "sha256": "8e70bb75ac5cf7bd93f013362b5632a7ea7a53dd80b1e5926e2aacdcf04dbc0b",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.06
+    },
+    {
+      "version": "20261116114653",
+      "name": "native_plan_terminal_cancellation",
+      "sha256": "2a850cfb4c2a6a23c4bf2429196a027b1f4d83a2b58eca8d4d280d2d139064e6",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.09
+    },
+    {
+      "version": "20261116142011",
+      "name": "planner_editor_receipt_readers",
+      "sha256": "bfe6a9cad9c621b75dbc8161f7aafc0b7eabb9e74a6eec6530e3e543106a5f9e",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.06
+    },
+    {
+      "version": "20261116161133",
+      "name": "planner_arrangement_receipts",
+      "sha256": "2d2f00a2f0f25c7d25dc3738703b08e204dead0ed56e19267a374119d7b863d9",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.06
+    },
+    {
+      "version": "20261119233622",
+      "name": "profile_display_preferences",
+      "sha256": "56ce66ecd6356f537aaee5f3600382945ff9151ae8a6da46580b0ee54d3339d0",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.07
+    },
+    {
+      "version": "20261120043029",
+      "name": "family_holiday_calendar_authenticated_grants",
+      "sha256": "1b5677646395e6f5f13b3b0c9ae24de8542162000f1d97195ebbd259ff33f751",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.07
+    },
+    {
+      "version": "20261120044024",
+      "name": "family_vacay_calendar_entry_grants",
+      "sha256": "c3f0887a2a06a6598480566fa243452df106969c9fddfdb7bcb8cf4a6a806105",
+      "exit_code": 0,
+      "sqlstates": [],
+      "seconds": 0.07
+    }
+  ],
+  "original_rows": {
+    "original_projections": 200,
+    "original_rows": 296764,
+    "changed_or_missing_projections": [],
+    "added_rows_on_original_projections": [
+      {
+        "projection": "family_auth.rls_aal_coverage",
+        "original_rows": 153,
+        "missing_rows": 0,
+        "additional_rows": 3
+      },
+      {
+        "projection": "supabase_migrations.schema_migrations",
+        "original_rows": 88,
+        "missing_rows": 0,
+        "additional_rows": 66
+      }
+    ],
+    "original_rows_retained_exactly": 296764
+  },
+  "legacy_writer_proof": {
+    "older_main_source": "247b76ea94942e511a663f3f840c81821c556fc5",
+    "older_preview_source": "cede145a2e1963c59b667498e99e5056eaf65266",
+    "live_worker_source_binding_verified": false,
+    "legacy_task_packing_table_write_grants_present_on_baseline": true,
+    "legacy_task_packing_insert_update_delete_refusals": 6,
+    "legacy_packing_initialization_template_rpc_refusals": 3,
+    "sqlstate": "42501",
+    "by_role": "authenticated",
+    "successful_legacy_mutations": 0,
+    "production_or_preview_used_for_testing": false,
+    "catalog": {
+      "enum": [
+        "country",
+        "place",
+        "experience",
+        "hotel",
+        "airport",
+        "airline",
+        "guide",
+        "food",
+        "manual"
+      ],
+      "location_foreign_keys": 8,
+      "collection_helpers_authenticated_can_execute": [
+        "collection_authoring_entry",
+        "collection_entry",
+        "collection_library_entry",
+        "collection_read_entry",
+        "collection_request_entry"
+      ],
+      "critical_rpc_presence": 8,
+      "not_valid_constraints": [
+        "realtime.messages.messages_payload_exclusive"
+      ]
+    }
+  },
+  "contracts": [
+    {
+      "label": "collection_authoring_schema_contract.sql",
+      "exit_code": 0,
+      "sqlstates": [],
+      "source_file": "collection_authoring_schema_contract.sql",
+      "source_sha256": "2b54bbdc9077ea7029093b4bb839caa7576b14148f442f5b5821490f5c238c56",
+      "local_adjustment": null
+    },
+    {
+      "label": "collection_library_schema_contract.sql",
+      "exit_code": 0,
+      "sqlstates": [],
+      "source_file": "collection_library_schema_contract.sql",
+      "source_sha256": "49dd939d7c6d0e009c17d62a430f8165dc137fd86c44cf9cb43d77b72e4aabdf",
+      "local_adjustment": null
+    },
+    {
+      "label": "collection_location_schema_contract.sql",
+      "exit_code": 3,
+      "sqlstates": [
+        "P0001"
+      ],
+      "source_file": "collection_location_schema_contract.sql",
+      "source_sha256": "308744543330cb6abab8faa107665795b0509f14e59307212046c4705d46752f",
+      "local_adjustment": null
+    },
+    {
+      "label": "collection_read_schema_contract.sql",
+      "exit_code": 0,
+      "sqlstates": [],
+      "source_file": "collection_read_schema_contract.sql",
+      "source_sha256": "be0eb201642a1f00549be310fb799a32e5fe87cce1065618d55e17c256b7956d",
+      "local_adjustment": null
+    },
+    {
+      "label": "collection_recovery_schema_contract.sql",
+      "exit_code": 3,
+      "sqlstates": [
+        "P0001"
+      ],
+      "source_file": "collection_recovery_schema_contract.sql",
+      "source_sha256": "e692930e17a5bebd6bb21ec46ef0fbd78ae1b91d649a20a3899832b9b7e6cdf4",
+      "local_adjustment": null
+    },
+    {
+      "label": "profile_display_preferences.sql",
+      "exit_code": 0,
+      "sqlstates": [],
+      "source_file": "profile_display_preferences.sql",
+      "source_sha256": "47517385a0e7d4262f363b611c0ffd7b13908b6a8429bd0fd9c9275cd7527079",
+      "local_adjustment": null
+    },
+    {
+      "label": "family_holiday_calendar_grants.sql",
+      "exit_code": 3,
+      "sqlstates": [
+        "P0001"
+      ],
+      "source_file": "family_holiday_calendar_grants.sql",
+      "source_sha256": "c76ba80d2bdacd85d5bf181b1a4aec8b8f2e7fb33f8aedf234e0501f5a039125",
+      "local_adjustment": null
+    },
+    {
+      "label": "family_vacay_calendar_entry_grants.sql",
+      "exit_code": 3,
+      "sqlstates": [
+        "P0001"
+      ],
+      "source_file": "family_vacay_calendar_entry_grants.sql",
+      "source_sha256": "350f2ed6fa0b2a200d16d40a14e1c6976622ad370ae767dc4e6a0eaf364f8b6f",
+      "local_adjustment": null
+    },
+    {
+      "label": "source_acl_correction_contract.sql",
+      "exit_code": 0,
+      "sqlstates": [],
+      "source_file": "source_acl_correction_contract.sql",
+      "source_sha256": "56265aeb2350a2802624bcab6974a28cf20206f2ee167184663d52b99edda44e",
+      "local_adjustment": "ledger count 129 to 154"
+    },
+    {
+      "label": "family_holiday_calendar_grants-behavior-only",
+      "exit_code": 0,
+      "sqlstates": [],
+      "source_file": "family_holiday_calendar_grants.sql",
+      "source_sha256": "c76ba80d2bdacd85d5bf181b1a4aec8b8f2e7fb33f8aedf234e0501f5a039125",
+      "local_adjustment": "Separate diagnostic runs original synthetic behavior body after the exact grant check"
+    },
+    {
+      "label": "family_vacay_calendar_entry_grants-behavior-only",
+      "exit_code": 0,
+      "sqlstates": [],
+      "source_file": "family_vacay_calendar_entry_grants.sql",
+      "source_sha256": "350f2ed6fa0b2a200d16d40a14e1c6976622ad370ae767dc4e6a0eaf364f8b6f",
+      "local_adjustment": "Separate diagnostic runs original synthetic behavior body after the exact grant check"
+    },
+    {
+      "label": "timed-visit-engine-guard",
+      "exit_code": 3,
+      "sqlstates": [
+        "55000"
+      ],
+      "expected_sqlstate": "55000",
+      "passed_as_expected": true
+    }
+  ],
+  "rollback_only_followup_checks": {
+    "tests": [
+      {
+        "name": "family_holiday_calendar_grants.sql-temporary-acl-repair",
+        "exit_code": 0,
+        "sqlstates": []
+      },
+      {
+        "name": "family_vacay_calendar_entry_grants.sql-temporary-acl-repair",
+        "exit_code": 0,
+        "sqlstates": []
+      },
+      {
+        "name": "collection_location_schema_contract.sql-current-expected-contract",
+        "exit_code": 3,
+        "sqlstates": [
+          "P0001"
+        ]
+      },
+      {
+        "name": "collection_recovery_schema_contract.sql-current-expected-contract",
+        "exit_code": 3,
+        "sqlstates": [
+          "P0001"
+        ]
+      },
+      {
+        "name": "task-packing-new-command-rollback-smoke",
+        "exit_code": 0,
+        "sqlstates": []
+      }
+    ],
+    "temporary_acl_repair": [
+      "REVOKE SELECT, INSERT, UPDATE, DELETE ON public.family_holiday_calendars, public.family_calendar_entries FROM PUBLIC, anon;",
+      "REVOKE UPDATE ON public.family_calendar_entries FROM authenticated;"
+    ],
+    "temporary_acl_repair_persisted": false,
+    "synthetic_command_fixture_persisted": false,
+    "collection_expectations": {
+      "kind_count": 9,
+      "catalog_fks_on_delete": "RESTRICT",
+      "explicit_authenticated_entry_helpers": [
+        "collection_entry",
+        "collection_authoring_entry",
+        "collection_library_entry",
+        "collection_read_entry",
+        "collection_request_entry"
+      ]
+    }
+  },
+  "rollback_only_collections_index_test": {
+    "missing_foreign_key": {
+      "columns": [
+        "actor_user_id",
+        "operation_id"
+      ],
+      "relation": "family_auth.collection_authoring_context",
+      "constraint": "collection_authoring_context_actor_user_id_operation_id_fkey"
+    },
+    "tested_index": "CREATE INDEX collection_authoring_context_command_fk_idx ON family_auth.collection_authoring_context (actor_user_id, operation_id);",
+    "tests": [
+      {
+        "file": "collection_location_schema_contract.sql",
+        "exit_code": 0,
+        "sqlstates": []
+      },
+      {
+        "file": "collection_recovery_schema_contract.sql",
+        "exit_code": 0,
+        "sqlstates": []
+      }
+    ],
+    "persisted": false
+  },
+  "release_holds": [
+    "Old task and packing writes require a coordinated website cutover",
+    "Vacay legacy grants and the Collections FK index need a recorded additive repair and revalidation",
+    "Timed write guard still rejects the hosted engine build"
+  ]
+}

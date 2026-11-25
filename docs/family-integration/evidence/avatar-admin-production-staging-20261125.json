@@ -1,0 +1,64 @@
+{
+  "date": "2026-11-25",
+  "staged_production_writer": {
+    "version_id": "9296b138-b5b1-4c12-81fe-8a7bb0e13cb9",
+    "version_url": "https://9296b138-familytravelsite.lmisael0721.workers.dev",
+    "source": "f2a0b450065d8f9d99d0e0fc9e29b1ef7368c912",
+    "release": "family-2026.11.25.1-rc.1",
+    "profile": "primary-core-production-v1",
+    "asset_tree_sha256": "e1f2c68fca5f63356760324f9f4dc05e600318ad72b308b96d49ad939578d2bf",
+    "worker": "familytravelsite",
+    "origin": "https://familytravelsite.lmisael0721.workers.dev",
+    "entry": {
+      "path": "/assets/index-Db-qVC31.js",
+      "bytes": 1264619,
+      "sha256": "267ea3acfdbd7757fc7ea8ce1af527778ca653b6584d6125293d79bc84aa04c5"
+    },
+    "service_worker_sha256": "1c19497fbf03fc8421bbafb8ec02d57e504a9fdbcc2c9508a70fd8f2dfc0a72c",
+    "active_version": "88152fc4-4a1b-4ee2-9345-732b71aecb85",
+    "recovery_version": "65d2df60-8520-498c-9fac-d13d8a44fe5e",
+    "read_only_preview_version": "14147a66-db08-49e0-96ee-0a7f458a8291",
+    "pinned_public_route_shells_verified": true,
+    "artifact_files": 3466
+  },
+  "production_candidate_active": false,
+  "hosted_migration_ledger": {
+    "count": 182,
+    "sha256": "c3406696b9544fa12340b4d4af6317572c9462508c3ab29faf91d892552f1dbd"
+  },
+  "isolated_authorization_rehearsal": {
+    "rollout_admin_check": 3,
+    "fixture_rows_removed": true,
+    "family_readers_deny_guest": 10,
+    "family_readers_allow_reviewer": 10,
+    "member_can_read_private_avatar": true,
+    "family_readers_deny_unrelated_reviewer": 10,
+    "unrelated_reviewer_denied_private_avatar": true,
+    "hosted_reader_definitions_and_grants_matching": 11,
+    "hosted_family_bucket_private": true
+  },
+  "local_validation": {
+    "focused_website_tests": 237,
+    "backend_tests": 542,
+    "typecheck": true,
+    "scoped_lint": true,
+    "build": true,
+    "artifact_scan": true,
+    "wrangler_dry_run": true
+  },
+  "matching_public_source": {
+    "tag_ref": "refs/tags/source-20261125-f2a0b45",
+    "tag_oid": "a8c52c54fe2f2774d17f472c49ce190cb4d15c3e",
+    "commit": "f78a80dc0d285c51473eab2e8aaa0e7f780d487f",
+    "tree": "1007246950a4bdd69fa7800207d1600d176595f0",
+    "archived_source": "f2a0b450065d8f9d99d0e0fc9e29b1ef7368c912",
+    "manifest_sha256": "63906f9bbfb36a2b9a882219bbc2b985a92fe4c5dad5f15c7fe17a86cb829580",
+    "retained_source_files": 18703,
+    "source_files_match_private_commit": true,
+    "manifest_scan_passed": true,
+    "public_tag_published": false,
+    "worker_version_id": "9296b138-b5b1-4c12-81fe-8a7bb0e13cb9"
+  },
+  "prepared_source_git_directory": "/private/tmp/family-avatar-admin.VktK2W/public-source.git",
+  "public_mirror_main_before": "e3eefc3c7f149b7f7e49917863163b0103056dc2"
+}

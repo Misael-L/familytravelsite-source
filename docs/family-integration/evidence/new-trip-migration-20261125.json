@@ -1,0 +1,48 @@
+{
+  "checked_at_utc": "2026-11-25 22:10:39.030405",
+  "version": "20261123221046",
+  "migration_sha256": "e820147064e429d2350e5a0b54adb8c5ec899c2ff4c0719964c064badb79f677",
+  "original_ledger_sha256": "1bde929f93bd3aab5b2d9f5354185a4d435be8ee2d0cb7b78b5c262b2d9599e2",
+  "ledger": {
+    "after_approved_checkpoint": 1,
+    "latest": "20261123221046",
+    "new_trip_applied": true,
+    "version_sha256": "c3406696b9544fa12340b4d4af6317572c9462508c3ab29faf91d892552f1dbd",
+    "versions": 182
+  },
+  "unchanged_routines": 19,
+  "legacy_proposal_signature_and_grants_preserved": true,
+  "new_rpc_authenticated_only": true,
+  "receipt_rls_enabled": true,
+  "private_table_and_helper": true,
+  "backup_receipt": "new-trip-x8-backup-verification-20261125.json",
+  "new_migrations_applied": 1,
+  "new_command_during_pause": {
+    "status": 503,
+    "code": "PT503"
+  },
+  "new_command_anonymous_after_restore": {
+    "status": 401,
+    "code": "42501"
+  },
+  "original_rest_probe_restored": true,
+  "temporary_rest_guard_removed": true,
+  "temporary_storage_policies_remaining": 0,
+  "export_schedule_and_execute_grants_restored": true,
+  "cloudflare_live": {
+    "familytravelsite": {
+      "version_id": "7196c6c6-a836-4197-bb91-9f22f5e8ecd8",
+      "source": "021be98460c2c3af7c15c1b9fce2f22cea0c0f1e",
+      "percentage": 100,
+      "public_entry_and_service_worker_verified": true
+    },
+    "familytravelsite-integration-preview": {
+      "version_id": "14147a66-db08-49e0-96ee-0a7f458a8291",
+      "source": "cf0de6d65f222bedeb9ee272fe13357cb7fb59f7",
+      "percentage": 100,
+      "public_entry_and_service_worker_verified": true
+    }
+  },
+  "new_writer_activated": false,
+  "signed_in_writer_preview_acceptance_complete": false
+}

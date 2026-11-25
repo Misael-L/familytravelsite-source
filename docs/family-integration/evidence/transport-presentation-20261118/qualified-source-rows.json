@@ -1,0 +1,94 @@
+{
+  "changed_or_added_paths": [
+    "client/src/integrations/family/legacy/components/Planner/TransportsPanelFamily.tsx",
+    "client/src/integrations/family/legacy/components/Planner/FamilyTransportCards.tsx",
+    "client/src/integrations/family/legacy/components/Planner/familyTransportTypeMeta.ts",
+    "client/src/integrations/family/legacy/components/Planner/TransportsPanelFamily.presentation.test.tsx"
+  ],
+  "previous_rows": [
+    {
+      "path": "client/src/integrations/family/legacy/components/Planner/TransportsPanelFamily.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "910ec7950dc8b99c5d1113870964abc7ad5d8958",
+        "bytes": 26820
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/components/Planner/TransportsPanelFamily.tsx"
+    },
+    {
+      "path": "client/src/integrations/family/legacy/components/Planner/FamilyTransportCards.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "d13f1f8fd2d7629b8d46bf732f2da94f9623865a",
+        "bytes": 11182
+      },
+      "purpose": "Retained Family transport presentation extraction; exact original bodies, field classes, lookup value and shared reference preserved."
+    },
+    {
+      "path": "client/src/integrations/family/legacy/components/Planner/familyTransportTypeMeta.ts",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "fd5b3b607c6b12f0903f693270b9d4cb9c4fdc53",
+        "bytes": 1365
+      },
+      "purpose": "Retained Family transport presentation extraction; exact original bodies, field classes, lookup value and shared reference preserved."
+    },
+    {
+      "path": "client/src/integrations/family/legacy/components/Planner/TransportsPanelFamily.presentation.test.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "b0633367650b81470cbb01031ef0e191b37c4b6b",
+        "bytes": 8345
+      },
+      "purpose": "Seven transport parent preference/filter regression cases; unchanged before/after extraction."
+    }
+  ],
+  "current_rows": [
+    {
+      "path": "client/src/integrations/family/legacy/components/Planner/TransportsPanelFamily.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "89eb17a8cc37633e0a36e4c6e63cb8b4b1fe07a6",
+        "bytes": 26809
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/components/Planner/TransportsPanelFamily.tsx"
+    },
+    {
+      "path": "client/src/integrations/family/legacy/components/Planner/FamilyTransportCards.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "d13f1f8fd2d7629b8d46bf732f2da94f9623865a",
+        "bytes": 11182
+      },
+      "purpose": "Retained Family transport presentation extraction; exact original bodies, field classes, lookup value and shared reference preserved."
+    },
+    {
+      "path": "client/src/integrations/family/legacy/components/Planner/familyTransportTypeMeta.ts",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "fd5b3b607c6b12f0903f693270b9d4cb9c4fdc53",
+        "bytes": 1365
+      },
+      "purpose": "Retained Family transport presentation extraction; exact original bodies, field classes, lookup value and shared reference preserved."
+    },
+    {
+      "path": "client/src/integrations/family/legacy/components/Planner/TransportsPanelFamily.presentation.test.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "b0633367650b81470cbb01031ef0e191b37c4b6b",
+        "bytes": 8345
+      },
+      "purpose": "Seven transport parent preference/filter regression cases; unchanged before/after extraction."
+    }
+  ],
+  "qualified_commit": "b713d62a0a9032871006a6927d8537bdc23368e7",
+  "rules_unchanged": true
+}

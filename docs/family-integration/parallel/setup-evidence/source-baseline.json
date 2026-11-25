@@ -1,0 +1,18 @@
+{
+  "base_commit": "0e265c1e92cd20048d775a161f8cf7d3c4462264",
+  "target_source_sha256": {
+    "client/src/components/SystemNotices/SystemNoticeModal.escape.test.tsx": "c98a4a96e42d1eb00207f5b0af4f19fd9dc70df1d1ecc48751d5c8136341b316",
+    "client/src/components/Planner/dayRoute.coordinates.test.ts": "2ef03b6e66add08e0ec16402ce470f8e4754c849797cc9bd76914592adf7831e",
+    "client/src/integrations/family/coherentTripCapture.test.ts": "0094e42f954fbf295e812f9e4bfdbce68720afa99d965b0f54945518edaae978"
+  },
+  "expected_scored_diagnostics": {
+    "src/components/SystemNotices/SystemNoticeModal.escape.test.tsx": 1,
+    "src/components/Planner/dayRoute.coordinates.test.ts": 1,
+    "src/integrations/family/coherentTripCapture.test.ts": 1
+  },
+  "expected_full_scored_strict_total": 636,
+  "global_strict_pass": false,
+  "prior_measurement": "Q126 real strict checker; all scored per-file counts preserved.",
+  "worker_copy_required_to_match_base_before_edits": true,
+  "setup_is_not_a_new_feature_or_release_qualification": true
+}

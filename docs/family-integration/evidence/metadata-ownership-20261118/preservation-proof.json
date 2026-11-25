@@ -1,0 +1,22 @@
+{
+  "passed": true,
+  "website_scoped_paths": 39,
+  "outside_scope_incoming_tracked_bytes_exact": 18725,
+  "only_two_specifically_approved_metadata_paths_change_tool_policy": true,
+  "all_runtime_layout_test_and_build_source_bytes_exact": true,
+  "all_other_quality_baselines_scanner_logic_thresholds_exclusions_suppressions_exact": true,
+  "allowance_totals_permission_domains_and_implicit_limits_unchanged": true,
+  "specific_user_approval_recorded_and_applied_correction_reverse_check_pass": true,
+  "canonical_index_exact": true,
+  "canonical_sources_exact": 370,
+  "migrations_exact": 151,
+  "prior_manifests_exact": 284,
+  "prior_members_exact": 16825,
+  "auxiliary_manifests_exact": 11,
+  "other_checkouts_exact": 3,
+  "original_canonical_readme_exact": true,
+  "fixed_declaration_files_exact": 128,
+  "retained_runtime_output_files_exact": 3793,
+  "new_build_or_runtime_relabelling": false,
+  "storage_sharing_or_backup_media_ETL_operation": false
+}

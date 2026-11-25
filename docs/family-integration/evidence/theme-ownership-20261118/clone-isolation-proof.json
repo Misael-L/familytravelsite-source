@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "native_APFS_COW_clonefile": true,
+  "separate_inodes_single_links": true,
+  "clone_write_preserves_original": true,
+  "fresh_Q121_probe": true
+}

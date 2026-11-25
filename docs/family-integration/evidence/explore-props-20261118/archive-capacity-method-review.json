@@ -1,0 +1,10 @@
+{
+  "reviewed_publisher": "scripts/publish-corresponding-source.sh:178-181",
+  "temporary_tar_and_extraction_coexist": true,
+  "initial_extract_only_estimate_was_incomplete": true,
+  "corrected_before_archive_execution": true,
+  "initial_estimate_retained": "capacity-preflight-initial.json",
+  "publisher_checks_and_flags_unchanged": true,
+  "revised_budget": "2 times previous complete extracted archive plus32MiB overhead plus1GiB headroom",
+  "not_archive_acceptance": true
+}

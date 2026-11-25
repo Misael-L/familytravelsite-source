@@ -1,0 +1,1162 @@
+{
+  "scope": "literal .rpc/call in nonlegacy Family runtime plus Collection transport; dynamic/transitive calls may be absent; not minimum preview API count",
+  "reference_count": 128,
+  "references": {
+    "catalog_media_variants_for_assets": [
+      {
+        "path": "client/src/integrations/family/coherentPlannerBundle.ts",
+        "line": 76
+      },
+      {
+        "path": "family-backend/src/data/supabase/catalogExploreMedia.ts",
+        "line": 141
+      }
+    ],
+    "get_family_collection_page_v1": [
+      {
+        "path": "client/src/integrations/family/collectionTransport.ts",
+        "line": 299
+      }
+    ],
+    "get_family_collection_editor_v1": [
+      {
+        "path": "client/src/integrations/family/collectionTransport.ts",
+        "line": 379
+      }
+    ],
+    "get_family_collection_membership_v1": [
+      {
+        "path": "client/src/integrations/family/collectionTransport.ts",
+        "line": 401
+      }
+    ],
+    "get_family_collection_authoring_context_v1": [
+      {
+        "path": "client/src/integrations/family/collectionTransport.ts",
+        "line": 481
+      }
+    ],
+    "prepare_family_collection_content_v1": [
+      {
+        "path": "client/src/integrations/family/collectionTransport.ts",
+        "line": 525
+      }
+    ],
+    "execute_family_collection_content_v1": [
+      {
+        "path": "client/src/integrations/family/collectionTransport.ts",
+        "line": 557
+      }
+    ],
+    "get_family_collection_content_operation_v1": [
+      {
+        "path": "client/src/integrations/family/collectionTransport.ts",
+        "line": 576
+      }
+    ],
+    "cancel_family_collection_content_v1": [
+      {
+        "path": "client/src/integrations/family/collectionTransport.ts",
+        "line": 593
+      }
+    ],
+    "get_family_collection_operation_v1": [
+      {
+        "path": "client/src/integrations/family/collectionTransport.ts",
+        "line": 700
+      }
+    ],
+    "list_family_collection_versions_v1": [
+      {
+        "path": "client/src/integrations/family/collectionTransport.ts",
+        "line": 755
+      }
+    ],
+    "get_family_native_stay_context_v1": [
+      {
+        "path": "client/src/integrations/family/nativeStayTransport.ts",
+        "line": 125
+      }
+    ],
+    "execute_family_native_stay_v1": [
+      {
+        "path": "client/src/integrations/family/nativeStayTransport.ts",
+        "line": 142
+      }
+    ],
+    "list_family_trashed_stays_v1": [
+      {
+        "path": "client/src/integrations/family/nativeStayTransport.ts",
+        "line": 176
+      }
+    ],
+    "get_family_trip_packing_bag_command_cancellation_v1": [
+      {
+        "path": "client/src/integrations/family/packingBagTerminalTransport.ts",
+        "line": 83
+      }
+    ],
+    "cancel_family_trip_packing_bag_command_v1": [
+      {
+        "path": "client/src/integrations/family/packingBagTerminalTransport.ts",
+        "line": 84
+      }
+    ],
+    "get_family_trip_packing_bags_v1": [
+      {
+        "path": "client/src/integrations/family/packingBagTransport.ts",
+        "line": 135
+      }
+    ],
+    "get_family_trip_packing_bag_v1": [
+      {
+        "path": "client/src/integrations/family/packingBagTransport.ts",
+        "line": 145
+      }
+    ],
+    "list_family_trip_packing_bag_trash_v1": [
+      {
+        "path": "client/src/integrations/family/packingBagTransport.ts",
+        "line": 157
+      }
+    ],
+    "execute_family_trip_packing_bag_v1": [
+      {
+        "path": "client/src/integrations/family/packingBagTransport.ts",
+        "line": 180
+      }
+    ],
+    "get_family_trip_packing_bag_receipt_v1": [
+      {
+        "path": "client/src/integrations/family/packingBagTransport.ts",
+        "line": 198
+      }
+    ],
+    "list_family_trip_packing_category_batches_v3": [
+      {
+        "path": "client/src/integrations/family/packingCategoryAggregateTransport.ts",
+        "line": 179
+      }
+    ],
+    "get_family_trip_packing_category_lane_v3": [
+      {
+        "path": "client/src/integrations/family/packingCategoryAggregateTransport.ts",
+        "line": 234
+      }
+    ],
+    "get_family_trip_packing_category_aggregate_v3": [
+      {
+        "path": "client/src/integrations/family/packingCategoryAggregateTransport.ts",
+        "line": 246
+      }
+    ],
+    "execute_family_trip_packing_category_aggregate_v3": [
+      {
+        "path": "client/src/integrations/family/packingCategoryAggregateTransport.ts",
+        "line": 261
+      }
+    ],
+    "get_family_trip_packing_category_aggregate_receipt_v3": [
+      {
+        "path": "client/src/integrations/family/packingCategoryAggregateTransport.ts",
+        "line": 278
+      }
+    ],
+    "get_family_trip_packing_with_categories_v1": [
+      {
+        "path": "client/src/integrations/family/packingCategoryTransport.ts",
+        "line": 107
+      }
+    ],
+    "execute_family_trip_packing_category_v1": [
+      {
+        "path": "client/src/integrations/family/packingCategoryTransport.ts",
+        "line": 115
+      }
+    ],
+    "get_family_trip_packing_category_receipt_v1": [
+      {
+        "path": "client/src/integrations/family/packingCategoryTransport.ts",
+        "line": 130
+      }
+    ],
+    "list_family_trip_packing_category_trash_v2": [
+      {
+        "path": "client/src/integrations/family/packingCategoryV2Transport.ts",
+        "line": 210
+      }
+    ],
+    "get_family_trip_packing_with_categories_v2": [
+      {
+        "path": "client/src/integrations/family/packingCategoryV2Transport.ts",
+        "line": 264
+      }
+    ],
+    "lookup_family_trip_packing_category_v2": [
+      {
+        "path": "client/src/integrations/family/packingCategoryV2Transport.ts",
+        "line": 279
+      }
+    ],
+    "execute_family_trip_packing_category_lifecycle_v2": [
+      {
+        "path": "client/src/integrations/family/packingCategoryV2Transport.ts",
+        "line": 310
+      }
+    ],
+    "execute_family_trip_packing_category_item_v2": [
+      {
+        "path": "client/src/integrations/family/packingCategoryV2Transport.ts",
+        "line": 311
+      }
+    ],
+    "execute_family_trip_packing_group_v1": [
+      {
+        "path": "client/src/integrations/family/packingGroupTransport.ts",
+        "line": 114
+      }
+    ],
+    "get_family_trip_packing_group_receipt_v1": [
+      {
+        "path": "client/src/integrations/family/packingGroupTransport.ts",
+        "line": 129
+      }
+    ],
+    "get_family_trip_packing_restore_cancellation_v1": [
+      {
+        "path": "client/src/integrations/family/packingTerminalTransport.ts",
+        "line": 83
+      }
+    ],
+    "cancel_family_trip_packing_restore_v1": [
+      {
+        "path": "client/src/integrations/family/packingTerminalTransport.ts",
+        "line": 85
+      }
+    ],
+    "get_family_trip_packing_v1": [
+      {
+        "path": "client/src/integrations/family/packingTransport.ts",
+        "line": 127
+      }
+    ],
+    "list_family_trip_packing_trash_v1": [
+      {
+        "path": "client/src/integrations/family/packingTransport.ts",
+        "line": 136
+      }
+    ],
+    "get_family_trip_packing_receipt_v1": [
+      {
+        "path": "client/src/integrations/family/packingTransport.ts",
+        "line": 153
+      }
+    ],
+    "get_family_stay_bundle_context_v1": [
+      {
+        "path": "client/src/integrations/family/stayBundleTransport.ts",
+        "line": 72
+      }
+    ],
+    "create_family_stay_bundle_v1": [
+      {
+        "path": "client/src/integrations/family/stayBundleTransport.ts",
+        "line": 91
+      }
+    ],
+    "get_family_trip_stay_view_v1": [
+      {
+        "path": "client/src/integrations/family/stayTransport.ts",
+        "line": 114
+      }
+    ],
+    "get_family_stay_editor_v1": [
+      {
+        "path": "client/src/integrations/family/stayTransport.ts",
+        "line": 135
+      }
+    ],
+    "get_family_stay_command_context_v1": [
+      {
+        "path": "client/src/integrations/family/stayTransport.ts",
+        "line": 155
+      }
+    ],
+    "get_family_stay_history_v1": [
+      {
+        "path": "client/src/integrations/family/stayTransport.ts",
+        "line": 189
+      }
+    ],
+    "save_family_stay_v1": [
+      {
+        "path": "client/src/integrations/family/stayTransport.ts",
+        "line": 226
+      }
+    ],
+    "set_family_stay_booking_link_v1": [
+      {
+        "path": "client/src/integrations/family/stayTransport.ts",
+        "line": 228
+      }
+    ],
+    "get_family_trip_tasks_v1": [
+      {
+        "path": "client/src/integrations/family/taskTransport.ts",
+        "line": 157
+      }
+    ],
+    "list_family_trip_task_trash_v1": [
+      {
+        "path": "client/src/integrations/family/taskTransport.ts",
+        "line": 178
+      }
+    ],
+    "execute_family_trip_task_v1": [
+      {
+        "path": "client/src/integrations/family/taskTransport.ts",
+        "line": 196
+      }
+    ],
+    "get_family_trip_task_receipt_v1": [
+      {
+        "path": "client/src/integrations/family/taskTransport.ts",
+        "line": 215
+      }
+    ],
+    "get_my_auth_bootstrap": [
+      {
+        "path": "family-backend/src/data/supabase/auth.ts",
+        "line": 39
+      }
+    ],
+    "sync_my_linked_person_email": [
+      {
+        "path": "family-backend/src/data/supabase/auth.ts",
+        "line": 132
+      },
+      {
+        "path": "family-backend/src/data/supabase/familySettings.ts",
+        "line": 134
+      }
+    ],
+    "get_family_trip_booking_view_v2": [
+      {
+        "path": "family-backend/src/data/supabase/bookingStayReadRpc.ts",
+        "line": 10
+      }
+    ],
+    "can_mutate_trip": [
+      {
+        "path": "family-backend/src/data/supabase/capabilities.ts",
+        "line": 38
+      }
+    ],
+    "can_draft_trip_changes": [
+      {
+        "path": "family-backend/src/data/supabase/capabilities.ts",
+        "line": 46
+      }
+    ],
+    "catalog_media_variants": [
+      {
+        "path": "family-backend/src/data/supabase/catalogExploreMedia.ts",
+        "line": 171
+      }
+    ],
+    "catalog_media_urls": [
+      {
+        "path": "family-backend/src/data/supabase/catalogExploreMedia.ts",
+        "line": 232
+      }
+    ],
+    "toggle_person_catalog_save": [
+      {
+        "path": "family-backend/src/data/supabase/catalogSaves.ts",
+        "line": 50
+      }
+    ],
+    "list_my_catalog_saves_in_countries": [
+      {
+        "path": "family-backend/src/data/supabase/catalogSaves.ts",
+        "line": 111
+      }
+    ],
+    "list_family_export_jobs": [
+      {
+        "path": "family-backend/src/data/supabase/familyExport.ts",
+        "line": 83
+      }
+    ],
+    "request_family_export": [
+      {
+        "path": "family-backend/src/data/supabase/familyExport.ts",
+        "line": 96
+      }
+    ],
+    "get_my_effective_features": [
+      {
+        "path": "family-backend/src/data/supabase/familyFeatures.ts",
+        "line": 134
+      }
+    ],
+    "list_family_feature_controls": [
+      {
+        "path": "family-backend/src/data/supabase/familyFeatures.ts",
+        "line": 143
+      }
+    ],
+    "update_family_feature_overrides": [
+      {
+        "path": "family-backend/src/data/supabase/familyFeatures.ts",
+        "line": 162
+      }
+    ],
+    "update_feature_rollout": [
+      {
+        "path": "family-backend/src/data/supabase/familyFeatures.ts",
+        "line": 181
+      }
+    ],
+    "list_feature_rollout_events": [
+      {
+        "path": "family-backend/src/data/supabase/familyFeatures.ts",
+        "line": 194
+      }
+    ],
+    "get_family_identity_assurance": [
+      {
+        "path": "family-backend/src/data/supabase/familyIdentity.ts",
+        "line": 61
+      }
+    ],
+    "get_family_file_policy": [
+      {
+        "path": "family-backend/src/data/supabase/familyIdentity.ts",
+        "line": 100
+      }
+    ],
+    "link_family_member_person": [
+      {
+        "path": "family-backend/src/data/supabase/familyIdentity.ts",
+        "line": 124
+      }
+    ],
+    "get_family_map_settings": [
+      {
+        "path": "family-backend/src/data/supabase/familyMaps.ts",
+        "line": 252
+      }
+    ],
+    "update_family_map_settings": [
+      {
+        "path": "family-backend/src/data/supabase/familyMaps.ts",
+        "line": 262
+      }
+    ],
+    "get_my_effective_map_settings": [
+      {
+        "path": "family-backend/src/data/supabase/familyMaps.ts",
+        "line": 272
+      }
+    ],
+    "update_my_map_preference": [
+      {
+        "path": "family-backend/src/data/supabase/familyMaps.ts",
+        "line": 282
+      }
+    ],
+    "get_family_notification_defaults": [
+      {
+        "path": "family-backend/src/data/supabase/familyNotifications.ts",
+        "line": 158
+      }
+    ],
+    "update_family_notification_defaults": [
+      {
+        "path": "family-backend/src/data/supabase/familyNotifications.ts",
+        "line": 179
+      }
+    ],
+    "get_my_notification_preferences": [
+      {
+        "path": "family-backend/src/data/supabase/familyNotifications.ts",
+        "line": 187
+      }
+    ],
+    "update_my_notification_preferences": [
+      {
+        "path": "family-backend/src/data/supabase/familyNotifications.ts",
+        "line": 206
+      }
+    ],
+    "list_my_notifications": [
+      {
+        "path": "family-backend/src/data/supabase/familyNotifications.ts",
+        "line": 216
+      }
+    ],
+    "count_my_unread_notifications": [
+      {
+        "path": "family-backend/src/data/supabase/familyNotifications.ts",
+        "line": 238
+      }
+    ],
+    "mark_notifications_read": [
+      {
+        "path": "family-backend/src/data/supabase/familyNotifications.ts",
+        "line": 245
+      }
+    ],
+    "mark_notifications_unread": [
+      {
+        "path": "family-backend/src/data/supabase/familyNotifications.ts",
+        "line": 250
+      }
+    ],
+    "mark_all_notifications_read": [
+      {
+        "path": "family-backend/src/data/supabase/familyNotifications.ts",
+        "line": 256
+      }
+    ],
+    "dismiss_notifications": [
+      {
+        "path": "family-backend/src/data/supabase/familyNotifications.ts",
+        "line": 261
+      }
+    ],
+    "dismiss_all_notifications": [
+      {
+        "path": "family-backend/src/data/supabase/familyNotifications.ts",
+        "line": 267
+      }
+    ],
+    "list_family_packing_templates": [
+      {
+        "path": "family-backend/src/data/supabase/familyPackingTemplates.ts",
+        "line": 77
+      }
+    ],
+    "upsert_family_packing_template": [
+      {
+        "path": "family-backend/src/data/supabase/familyPackingTemplates.ts",
+        "line": 100
+      }
+    ],
+    "delete_family_packing_template": [
+      {
+        "path": "family-backend/src/data/supabase/familyPackingTemplates.ts",
+        "line": 119
+      },
+      {
+        "path": "family-backend/src/data/supabase/packing.ts",
+        "line": 433
+      }
+    ],
+    "list_family_permission_policies": [
+      {
+        "path": "family-backend/src/data/supabase/familyPermissions.ts",
+        "line": 162
+      }
+    ],
+    "update_family_permission_policies": [
+      {
+        "path": "family-backend/src/data/supabase/familyPermissions.ts",
+        "line": 186
+      }
+    ],
+    "reset_family_permission_policies": [
+      {
+        "path": "family-backend/src/data/supabase/familyPermissions.ts",
+        "line": 210
+      }
+    ],
+    "list_trip_action_outcomes": [
+      {
+        "path": "family-backend/src/data/supabase/familyPermissions.ts",
+        "line": 227
+      }
+    ],
+    "list_family_audit_events": [
+      {
+        "path": "family-backend/src/data/supabase/familyPermissions.ts",
+        "line": 252
+      }
+    ],
+    "can_trip_action_direct": [
+      {
+        "path": "family-backend/src/data/supabase/familyPermissions.ts",
+        "line": 309
+      }
+    ],
+    "list_family_place_categories": [
+      {
+        "path": "family-backend/src/data/supabase/familyPlaceCategories.ts",
+        "line": 59
+      }
+    ],
+    "upsert_family_place_category": [
+      {
+        "path": "family-backend/src/data/supabase/familyPlaceCategories.ts",
+        "line": 81
+      }
+    ],
+    "delete_family_place_category": [
+      {
+        "path": "family-backend/src/data/supabase/familyPlaceCategories.ts",
+        "line": 97
+      }
+    ],
+    "get_family_preference_defaults": [
+      {
+        "path": "family-backend/src/data/supabase/familyPreferences.ts",
+        "line": 123
+      }
+    ],
+    "update_family_preference_defaults": [
+      {
+        "path": "family-backend/src/data/supabase/familyPreferences.ts",
+        "line": 143
+      }
+    ],
+    "get_my_effective_preferences": [
+      {
+        "path": "family-backend/src/data/supabase/familyPreferences.ts",
+        "line": 163
+      }
+    ],
+    "update_my_family_preferences": [
+      {
+        "path": "family-backend/src/data/supabase/familyPreferences.ts",
+        "line": 194
+      }
+    ],
+    "ensure_packing_defaults": [
+      {
+        "path": "family-backend/src/data/supabase/packing.ts",
+        "line": 385
+      }
+    ],
+    "apply_packing_template": [
+      {
+        "path": "family-backend/src/data/supabase/packing.ts",
+        "line": 412
+      }
+    ],
+    "save_packing_template_from_trip": [
+      {
+        "path": "family-backend/src/data/supabase/packing.ts",
+        "line": 419
+      }
+    ],
+    "ensure_trip_change_draft": [
+      {
+        "path": "family-backend/src/data/supabase/tripChangeRequests.ts",
+        "line": 438
+      }
+    ],
+    "upsert_trip_change_draft_op": [
+      {
+        "path": "family-backend/src/data/supabase/tripChangeRequests.ts",
+        "line": 448
+      }
+    ],
+    "delete_trip_change_draft_op": [
+      {
+        "path": "family-backend/src/data/supabase/tripChangeRequests.ts",
+        "line": 468
+      }
+    ],
+    "submit_trip_change_request": [
+      {
+        "path": "family-backend/src/data/supabase/tripChangeRequests.ts",
+        "line": 479
+      }
+    ],
+    "withdraw_trip_change_request": [
+      {
+        "path": "family-backend/src/data/supabase/tripChangeRequests.ts",
+        "line": 495
+      }
+    ],
+    "resolve_trip_change_op": [
+      {
+        "path": "family-backend/src/data/supabase/tripChangeRequests.ts",
+        "line": 507
+      }
+    ],
+    "resolve_trip_change_request": [
+      {
+        "path": "family-backend/src/data/supabase/tripChangeRequests.ts",
+        "line": 521
+      }
+    ],
+    "sync_trip_days": [
+      {
+        "path": "family-backend/src/data/supabase/tripDays.ts",
+        "line": 23
+      }
+    ],
+    "settle_trip_expense_flows": [
+      {
+        "path": "family-backend/src/data/supabase/tripExpenseSettlements.ts",
+        "line": 149
+      }
+    ],
+    "patch_trip_file_metadata": [
+      {
+        "path": "family-backend/src/data/supabase/tripFiles.ts",
+        "line": 264
+      }
+    ],
+    "trash_trip_file": [
+      {
+        "path": "family-backend/src/data/supabase/tripFiles.ts",
+        "line": 276
+      }
+    ],
+    "restore_trip_file": [
+      {
+        "path": "family-backend/src/data/supabase/tripFiles.ts",
+        "line": 284
+      }
+    ],
+    "purge_trip_file": [
+      {
+        "path": "family-backend/src/data/supabase/tripFiles.ts",
+        "line": 294
+      }
+    ],
+    "link_trip_file": [
+      {
+        "path": "family-backend/src/data/supabase/tripFiles.ts",
+        "line": 317
+      }
+    ],
+    "unlink_trip_file": [
+      {
+        "path": "family-backend/src/data/supabase/tripFiles.ts",
+        "line": 330
+      }
+    ],
+    "create_trip_proposal": [
+      {
+        "path": "family-backend/src/data/supabase/tripProposals.ts",
+        "line": 252
+      }
+    ],
+    "duplicate_trip": [
+      {
+        "path": "family-backend/src/data/supabase/tripProposals.ts",
+        "line": 259
+      }
+    ],
+    "update_trip_proposal": [
+      {
+        "path": "family-backend/src/data/supabase/tripProposals.ts",
+        "line": 269
+      }
+    ],
+    "proposal_eligible_voters": [
+      {
+        "path": "family-backend/src/data/supabase/tripProposals.ts",
+        "line": 510
+      }
+    ],
+    "cast_proposal_vote": [
+      {
+        "path": "family-backend/src/data/supabase/tripProposals.ts",
+        "line": 558
+      }
+    ],
+    "decide_trip_proposal": [
+      {
+        "path": "family-backend/src/data/supabase/tripProposals.ts",
+        "line": 568
+      }
+    ],
+    "escalate_trip_proposal": [
+      {
+        "path": "family-backend/src/data/supabase/tripProposals.ts",
+        "line": 578
+      }
+    ]
+  },
+  "accepted_local_public_function_names": [
+    "add_family_journey_member",
+    "add_list_item",
+    "apply_packing_template",
+    "apply_trip_change_op_v1",
+    "archive_family_journey",
+    "archive_family_list",
+    "arrange_family_native_visits_v1",
+    "attach_family_journey_entry_media",
+    "authorize_family_export_download",
+    "bridge_family_trip_destinations_v1",
+    "build_family_export_v1",
+    "can_admin_family_journey",
+    "can_admin_family_list",
+    "can_admin_family_list_cover_object",
+    "can_create_family_journey",
+    "can_decide_calendar_access",
+    "can_decide_proposal",
+    "can_draft_trip_changes",
+    "can_edit_catalog",
+    "can_edit_family_journey_entries",
+    "can_edit_family_journey_object",
+    "can_edit_family_list_items",
+    "can_escalate_proposal",
+    "can_family_action_direct",
+    "can_mutate_trip",
+    "can_mutate_trip_file_object",
+    "can_overlay_vacay_branch",
+    "can_paint_person_calendar",
+    "can_review_access",
+    "can_trip_action_direct",
+    "can_trip_file_object_action",
+    "can_view_family_journey",
+    "can_view_family_journey_object",
+    "can_view_family_list",
+    "can_view_family_list_cover_object",
+    "can_view_person_calendar",
+    "can_write_person_avatar_object",
+    "cancel_family_collection_content_v1",
+    "cancel_family_collection_operation_v1",
+    "cancel_family_collection_preparation_v2",
+    "cancel_family_native_stay_v1",
+    "cancel_family_stay_bundle_v1",
+    "cancel_family_stay_command_v1",
+    "cancel_family_trip_packing_bag_command_v1",
+    "cancel_family_trip_packing_restore_v1",
+    "cast_proposal_vote",
+    "catalog_media_urls",
+    "catalog_media_variants",
+    "catalog_media_variants_for_assets",
+    "claim_family_export_jobs",
+    "claim_notification_push_deliveries",
+    "claim_storage_cleanup_jobs",
+    "classify_family_trip_visit_untimed_v1",
+    "complete_family_export_job",
+    "complete_notification_push_delivery",
+    "complete_storage_cleanup_job",
+    "count_my_unread_notifications",
+    "create_family_journey",
+    "create_family_list",
+    "create_family_native_plan_v1",
+    "create_family_stay_bundle_v1",
+    "create_family_trip_plan_entry_v1",
+    "create_trip_proposal",
+    "decide_calendar_access",
+    "decide_trip_proposal",
+    "default_family_id",
+    "delete_family_journey",
+    "delete_family_journey_entry",
+    "delete_family_journey_media",
+    "delete_family_packing_template",
+    "delete_family_place_category",
+    "delete_trip_change_draft_op",
+    "deny_access_request",
+    "detach_family_journey_entry_media",
+    "dismiss_all_notifications",
+    "dismiss_notifications",
+    "duplicate_trip",
+    "enqueue_due_storage_cleanup",
+    "ensure_packing_defaults",
+    "ensure_trip_change_draft",
+    "escalate_trip_proposal",
+    "execute_family_collection_content_v1",
+    "execute_family_collection_item_lifecycle_v1",
+    "execute_family_collection_lifecycle_v1",
+    "execute_family_native_stay_v1",
+    "execute_family_plan_governance_v1",
+    "execute_family_trip_packing_bag_v1",
+    "execute_family_trip_packing_category_aggregate_v3",
+    "execute_family_trip_packing_category_item_v2",
+    "execute_family_trip_packing_category_lifecycle_v2",
+    "execute_family_trip_packing_category_v1",
+    "execute_family_trip_packing_group_v1",
+    "execute_family_trip_packing_v1",
+    "execute_family_trip_task_v1",
+    "experience_media_refresh_cover",
+    "expire_family_export_jobs",
+    "fail_family_export_job",
+    "fail_notification_push_delivery",
+    "fail_storage_cleanup_job",
+    "family_action_outcome",
+    "finalize_access_approval",
+    "food_media_refresh_cover",
+    "get_family_booking_calendar_v1",
+    "get_family_booking_details_v1",
+    "get_family_collection_authoring_context_v1",
+    "get_family_collection_content_operation_v1",
+    "get_family_collection_context_v1",
+    "get_family_collection_editor_v1",
+    "get_family_collection_item_context_v1",
+    "get_family_collection_library_v1",
+    "get_family_collection_membership_v1",
+    "get_family_collection_operation_v1",
+    "get_family_collection_page_v1",
+    "get_family_collection_preparation_outcome_v2",
+    "get_family_file_policy",
+    "get_family_identity_assurance",
+    "get_family_journey",
+    "get_family_map_settings",
+    "get_family_native_stay_context_v1",
+    "get_family_native_stay_outcome_v1",
+    "get_family_native_stay_view_v1",
+    "get_family_notification_defaults",
+    "get_family_plan_governance_v1",
+    "get_family_preference_defaults",
+    "get_family_stay_bundle_context_v1",
+    "get_family_stay_bundle_outcome_v1",
+    "get_family_stay_command_context_v1",
+    "get_family_stay_command_outcome_v1",
+    "get_family_stay_editor_v1",
+    "get_family_stay_history_v1",
+    "get_family_trip_booking_view_v1",
+    "get_family_trip_booking_view_v2",
+    "get_family_trip_calendar_v1",
+    "get_family_trip_location_form_v1",
+    "get_family_trip_location_v1",
+    "get_family_trip_packing_bag_command_cancellation_v1",
+    "get_family_trip_packing_bag_receipt_v1",
+    "get_family_trip_packing_bag_v1",
+    "get_family_trip_packing_bags_v1",
+    "get_family_trip_packing_category_aggregate_receipt_v3",
+    "get_family_trip_packing_category_aggregate_v3",
+    "get_family_trip_packing_category_item_receipt_v2",
+    "get_family_trip_packing_category_lane_v3",
+    "get_family_trip_packing_category_lifecycle_receipt_v2",
+    "get_family_trip_packing_category_receipt_v1",
+    "get_family_trip_packing_group_receipt_v1",
+    "get_family_trip_packing_receipt_v1",
+    "get_family_trip_packing_restore_cancellation_v1",
+    "get_family_trip_packing_v1",
+    "get_family_trip_packing_with_categories_v1",
+    "get_family_trip_packing_with_categories_v2",
+    "get_family_trip_planner_state_v1",
+    "get_family_trip_planner_view_v1",
+    "get_family_trip_stay_view_v1",
+    "get_family_trip_task_receipt_v1",
+    "get_family_trip_tasks_v1",
+    "get_family_trip_visit_classification_v1",
+    "get_family_trip_visit_form_v1",
+    "get_family_trip_visit_timing_revision_v1",
+    "get_family_trip_visit_v1",
+    "get_my_auth_bootstrap",
+    "get_my_effective_features",
+    "get_my_effective_map_settings",
+    "get_my_effective_preferences",
+    "get_my_notification_preferences",
+    "get_private_upload_object_stat",
+    "handle_new_user",
+    "has_active_membership",
+    "hotel_media_refresh_cover",
+    "is_active_member_any",
+    "is_active_member_of",
+    "is_branch_officer",
+    "is_family_head",
+    "is_super_admin",
+    "link_family_journey_trip",
+    "link_family_member_person",
+    "link_trip_file",
+    "list_family_action_outcomes",
+    "list_family_audit_events",
+    "list_family_collection_item_trash_v1",
+    "list_family_collection_trash_v1",
+    "list_family_collection_versions_v1",
+    "list_family_export_jobs",
+    "list_family_feature_controls",
+    "list_family_journey_available_trips",
+    "list_family_journey_entry_trash",
+    "list_family_journey_entry_versions",
+    "list_family_journey_trash",
+    "list_family_journeys",
+    "list_family_packing_templates",
+    "list_family_permission_policies",
+    "list_family_place_categories",
+    "list_family_trashed_stays_v1",
+    "list_family_trip_locations_v1",
+    "list_family_trip_packing_bag_trash_v1",
+    "list_family_trip_packing_category_batches_v3",
+    "list_family_trip_packing_category_trash_v2",
+    "list_family_trip_packing_trash_v1",
+    "list_family_trip_task_trash_v1",
+    "list_family_trip_trash",
+    "list_family_trip_visits_v1",
+    "list_feature_rollout_events",
+    "list_my_catalog_saves_in_countries",
+    "list_my_notifications",
+    "list_overlayable_branch_ids",
+    "list_trip_action_outcomes",
+    "list_viewable_person_ids",
+    "lookup_family_trip_packing_category_v2",
+    "mark_all_notifications_read",
+    "mark_notifications_read",
+    "mark_notifications_unread",
+    "media_assets_record_variant_orphans",
+    "media_variant_visible_to_caller",
+    "media_variants_enforce",
+    "mutate_family_trip_location_v1",
+    "mutate_family_trip_visit_v1",
+    "patch_trip_file_metadata",
+    "peek_family_export_artifact",
+    "person_primary_branch_id",
+    "person_vacay_overlay_branches_guard",
+    "person_vacay_overlay_people_guard",
+    "place_media_refresh_cover",
+    "prepare_family_collection_content_v1",
+    "proposal_audience_branch_ids",
+    "proposal_audience_people_same_family",
+    "proposal_eligible_voters",
+    "publish_media_variant",
+    "purge_trip_file",
+    "refresh_experience_cover",
+    "refresh_food_cover",
+    "refresh_hotel_cover",
+    "refresh_place_cover",
+    "refresh_trip_change_request_status",
+    "register_family_list_cover",
+    "register_journey_image",
+    "register_person_avatar",
+    "register_push_device",
+    "register_trip_file",
+    "remove_family_journey_member",
+    "remove_list_item",
+    "reorder_family_journey_entries",
+    "reorder_family_journey_entry_media",
+    "reorder_family_journey_media",
+    "reorder_list_items",
+    "request_calendar_access",
+    "request_family_export",
+    "reset_family_permission_policies",
+    "resolve_my_person_id",
+    "resolve_trip_change_op",
+    "resolve_trip_change_request",
+    "restore_family_journey",
+    "restore_family_journey_entry",
+    "restore_family_journey_entry_version",
+    "restore_family_stay_v1",
+    "restore_family_trip",
+    "restore_trip_file",
+    "revalidate_storage_cleanup_job",
+    "review_family_plan_change_v2",
+    "revise_family_trip_calendar_v1",
+    "revoke_calendar_access",
+    "revoke_push_device",
+    "revoke_push_device_token",
+    "rls_auto_enable",
+    "save_family_booking_details_v1",
+    "save_family_stay_v1",
+    "save_family_trip_location_form_v1",
+    "save_family_trip_visit_form_v1",
+    "save_packing_template_from_trip",
+    "session_meets_caller_assurance",
+    "session_meets_private_assurance",
+    "session_meets_trip_assurance",
+    "set_family_booking_calendar_v1",
+    "set_family_journey_cover",
+    "set_family_journey_member_preferences",
+    "set_family_stay_booking_link_v1",
+    "set_family_trip_visit_timing_v1",
+    "set_list_item_status",
+    "settle_trip_expense_flows",
+    "stage_family_plan_change_v2",
+    "storage_object_family_id",
+    "submit_access_request",
+    "submit_family_plan_change_draft_v2",
+    "submit_trip_change_request",
+    "sync_my_linked_person_email",
+    "sync_trip_days",
+    "tg_copy_packing_bag_trip_id",
+    "tg_copy_packing_item_trip_id",
+    "tg_copy_trip_file_trip_id",
+    "tg_set_updated_at",
+    "tg_touch_list_updated_at",
+    "tg_trip_file_link_target_on_trip",
+    "toggle_person_catalog_save",
+    "trash_family_journey",
+    "trash_family_stay_v1",
+    "trash_family_trip",
+    "trash_trip_file",
+    "trip_action_outcome",
+    "trip_auth_person_id",
+    "trip_change_payload_schema_version",
+    "trip_has_place",
+    "trip_reservations_enforce_day_integrity",
+    "unarchive_family_list",
+    "unlink_family_journey_trip",
+    "unlink_trip_file",
+    "update_family_feature_overrides",
+    "update_family_journey",
+    "update_family_journey_member_role",
+    "update_family_list",
+    "update_family_map_settings",
+    "update_family_membership",
+    "update_family_notification_defaults",
+    "update_family_permission_policies",
+    "update_family_preference_defaults",
+    "update_feature_rollout",
+    "update_my_family_preferences",
+    "update_my_map_preference",
+    "update_my_notification_preferences",
+    "update_trip_proposal",
+    "upsert_family_journey_entry",
+    "upsert_family_packing_template",
+    "upsert_family_place_category",
+    "upsert_trip_change_draft_op",
+    "upsert_trip_place_clock_zones",
+    "viewer_person_id_for_family",
+    "viewer_person_id_for_trip",
+    "withdraw_trip_change_request"
+  ],
+  "unmatched_literal_names": [],
+  "collection_endpoints_all_present_in_local143": true,
+  "hosted_API_presence_verified": false,
+  "collection_transport_endpoints": [
+    "cancel_family_collection_content_v1",
+    "cancel_family_collection_operation_v1",
+    "cancel_family_collection_preparation_v2",
+    "execute_family_collection_content_v1",
+    "execute_family_collection_item_lifecycle_v1",
+    "execute_family_collection_lifecycle_v1",
+    "get_family_collection_authoring_context_v1",
+    "get_family_collection_content_operation_v1",
+    "get_family_collection_context_v1",
+    "get_family_collection_editor_v1",
+    "get_family_collection_item_context_v1",
+    "get_family_collection_membership_v1",
+    "get_family_collection_operation_v1",
+    "get_family_collection_page_v1",
+    "get_family_collection_preparation_outcome_v2",
+    "list_family_collection_item_trash_v1",
+    "list_family_collection_trash_v1",
+    "list_family_collection_versions_v1",
+    "prepare_family_collection_content_v1"
+  ],
+  "collection_cohort_endpoints": [
+    "cancel_family_collection_content_v1",
+    "cancel_family_collection_operation_v1",
+    "cancel_family_collection_preparation_v2",
+    "execute_family_collection_content_v1",
+    "execute_family_collection_item_lifecycle_v1",
+    "execute_family_collection_lifecycle_v1",
+    "get_family_collection_authoring_context_v1",
+    "get_family_collection_content_operation_v1",
+    "get_family_collection_context_v1",
+    "get_family_collection_editor_v1",
+    "get_family_collection_item_context_v1",
+    "get_family_collection_library_v1",
+    "get_family_collection_membership_v1",
+    "get_family_collection_operation_v1",
+    "get_family_collection_page_v1",
+    "get_family_collection_preparation_outcome_v2",
+    "list_family_collection_item_trash_v1",
+    "list_family_collection_trash_v1",
+    "list_family_collection_versions_v1",
+    "prepare_family_collection_content_v1"
+  ],
+  "collection_cohort_endpoint_count": 20,
+  "local_presence_means": "Name presence only; signatures/ACLs/semantics belong to the retained accepted local evidence. No hosted catalog or business RPC was called."
+}

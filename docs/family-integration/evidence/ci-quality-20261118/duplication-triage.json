@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "scope": "Path-prefix categorization of actual duplication detector output; not a runtime/type/test reachability or deletion proof.",
+  "duplicate_line_total": 17619,
+  "affected_files": 285,
+  "baseline_line_allowance": 0,
+  "unique_reported_clone_pairs": 323,
+  "pair_categories": {
+    "cross-copy-boundary": 201,
+    "both-retained-copy": 77,
+    "both-outside-retained-copy": 45
+  },
+  "retained_copy_files": 143,
+  "outside_retained_copy_files": 142,
+  "path_prefix_is_not_evidence_of_unused_source": true,
+  "no_whole_directory_retirement_or_guard_exclusion_authorized": true
+}

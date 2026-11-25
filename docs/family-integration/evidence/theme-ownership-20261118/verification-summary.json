@@ -1,0 +1,63 @@
+{
+  "passed": true,
+  "scope": "Approved theme ownership correction and unchanged executed consumer cohort; not full CI/browser/hosted release acceptance.",
+  "packet": "Q121",
+  "date": "2026-11-18",
+  "incoming": "1cd06cc2b8ddb508e78a5379c2bd59074dec688b",
+  "implementation": "bb223a2eb9fa0eabf07fc5901dfc66c091105d75",
+  "build_source": "706c5e3197f24b27cd7e91dcb141ed17ebf0b96a",
+  "approved_baseline_path": "client/scripts/theme-baseline.json",
+  "exact_approved_patch_applied": true,
+  "allowance_total_before_after": [
+    3388,
+    3388
+  ],
+  "suppression_total_unchanged": 147,
+  "runtime_and_test_source_unchanged": true,
+  "candidate_passed": 2316,
+  "candidate_total_cases": 2354,
+  "failed_before_after": [
+    1,
+    0
+  ],
+  "existing_skipped": 38,
+  "only_changed_outcome": "THEME-013 failed-to-passed",
+  "no_test_assertion_fixture_mock_timeout_coverage_or_skip_change": true,
+  "theme_CLI_pass_both_supported_cwds": true,
+  "all_3792_outputs_except_sourceCommit_configuration_byte_exact": true,
+  "build_and_typecheck_pass": true,
+  "current_declarations_fixed": 128,
+  "source_guards_passed": 4,
+  "artifact_binding_controls_passed": 3,
+  "size_gate_pass": true,
+  "size_findings": 0,
+  "format_gate_pass": true,
+  "format_allowance_entries_unchanged": 2134,
+  "unlisted_format_failures": 0,
+  "warning_gate_pass": true,
+  "source_warnings_actual_limit": [
+    3418,
+    3418
+  ],
+  "test_warnings_actual_limit": [
+    2859,
+    2859
+  ],
+  "suppressed_warnings_actual_limit": [
+    83,
+    83
+  ],
+  "source_complexity_actual_limit": [
+    218,
+    218
+  ],
+  "source_length_actual_limit": [
+    130,
+    130
+  ],
+  "all_other_rules_baselines_exclusions_suppressions_unchanged": true,
+  "all_CI_quality_commands_freshly_accepted": false,
+  "global_release_gate_pass": false,
+  "new_live_database_browser_or_writer_acceptance": false,
+  "next": "Fresh CI quality contract inventory and supported-core release-readiness review before hosted schema/source/browser release steps."
+}

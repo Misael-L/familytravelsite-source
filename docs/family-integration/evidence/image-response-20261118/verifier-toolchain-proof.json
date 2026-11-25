@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "installed_vite_version": "8.3.6",
+  "installed_rolldown_version": "1.3.1",
+  "build_target": "es2022",
+  "minifier_used_for_reference": "Installed Rolldown experimental minifySync/Oxc, default compression; script mode preserves reference functions",
+  "initial_comparator_prototype_refused_wrong_esbuild_const_and_quote_output": true,
+  "no_relaxation_of_AST_variable_flags_literals_properties_or_dependencies": true,
+  "all_other_index_AST_unchanged_and_two_functions_match_actual_minifier": true,
+  "configuration_sha256": "bfe9c801404b359d063ad2d09746054b7e7a3cf3069cec9a829c42c19ba02ed6"
+}

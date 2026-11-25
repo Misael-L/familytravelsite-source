@@ -1,0 +1,11 @@
+
+ RUN  v4.1.12 /Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client
+
+ ✓ tests/unit/scripts/pairs-lint.test.ts (15 tests) 64ms
+
+ Test Files  1 passed (1)
+      Tests  15 passed (15)
+   Start at  14:12:19
+   Duration  2.20s (transform 717ms, setup 1.15s, import 181ms, tests 64ms, environment 681ms)
+
+JSON report written to /private/tmp/trek-core-packing-registration-20261118/pairs-unit-tests.json

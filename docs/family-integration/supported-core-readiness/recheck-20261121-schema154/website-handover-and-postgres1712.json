@@ -1,0 +1,97 @@
+{
+  "date": "2026-11-21",
+  "backend_commit": "b79933be3af1ddcf4b0aa1a06bc8a7ca161a38c5",
+  "hosted_read_only": {
+    "current_database_image": "17.6.1.141",
+    "dashboard_upgrade_available": true,
+    "dashboard_offered_image": "17.12.0.000",
+    "page": "Project Settings / General / Service versions",
+    "database_bytes": 335154323,
+    "logical_replication_slots": 0,
+    "ltree_gist_indexes": 0,
+    "float_gist_indexes": 0,
+    "relevant_installed_extension_versions": {
+      "pg_cron": "1.6.4",
+      "pgcrypto": "1.3"
+    },
+    "upgrade_started": false
+  },
+  "isolated_candidate": {
+    "server_version": "17.12",
+    "supabase_image": "17.12.0.000",
+    "all_three_literal_checks_pass": true,
+    "ledger_versions": 155,
+    "source": "official Supabase Postgres ARM64 image",
+    "docker_image_id": "sha256:7f9767b254b1c1fbb6621fa2224d1a7dc11b9d149c554ea749643bb1d921559f",
+    "verified_x8_original_rows_preserved": 296764,
+    "archive_projections": 200,
+    "pending_migrations_applied_locally": 67,
+    "legacy_sql_write_refusals": 9,
+    "phone_selected_day_untimed_after_reload": true,
+    "local_gotrue_and_postgrest_services": true,
+    "both_disposable_database_stacks_removed": true
+  },
+  "site_handover": {
+    "old": "956ee5dc97b22752717f0d7c118c5451f92c8363",
+    "new": "224738356909f49855765d98a391950bcc0818b6",
+    "oldWorkerSha256": "873bc6ebbdb579738e64114b86d817fecfc6fbb4ac476d16a474160ec1767463",
+    "newWorkerSha256": "9142c0f8bba2fee60a2b6d5f8f39b3f3110ba4a07d49fde4a498d1e322adc758",
+    "retainedOriginalBeforeReconciliation": true,
+    "parkedLegacyFormatExact": true,
+    "detachedLegacyKeptAndExcluded": true,
+    "successfulOriginalReceiptReads": 1,
+    "oldTaskWriteRequestsSent": 1,
+    "legacyRequestsSent": 0,
+    "versionNoticeAndNativeReloadUsed": true,
+    "javascriptAndTransportErrors": 0,
+    "checkpoints": [
+      "The earlier task-only artifact loaded under its real generated service worker.",
+      "The old tab offered reload, and the replacement worker served the new artifact with the exact queued operation intact.",
+      "The replacement resolved the old task from its real commit receipt without issuing a second write.",
+      "The raw legacy-format row in the active database was parked and exported unchanged. The separate old database remained untouched and outside that account export."
+    ],
+    "phone_selected_day_untimed_on_17_12": true,
+    "phone_selected_day_saved_after_reload": true,
+    "independent_task_receipt_and_target_rows": 1,
+    "independent_planner_receipt_untimed_visit_and_location_rows": 1,
+    "independent_legacy_draft_database_writes": 0,
+    "outside_origins_forwarded": 0,
+    "previous_artifact": {
+      "source_commit": "956ee5dc97b22752717f0d7c118c5451f92c8363",
+      "configuration": "isolated-task-v1",
+      "artifact_scan": {
+        "correct": 0,
+        "wrong": 1,
+        "missing": 1
+      },
+      "files": 3780
+    },
+    "next_artifact": {
+      "source_commit": "224738356909f49855765d98a391950bcc0818b6",
+      "configuration": "isolated-task-planner-packing-v1",
+      "artifact_scan": {
+        "correct": 0,
+        "wrong": 1,
+        "missing": 1
+      },
+      "files": 3780
+    },
+    "previous_fixture_version": "5.1.4-handover-old",
+    "next_fixture_version": "5.1.4-handover-new",
+    "scoped_task_origin": "native producer in task-only artifact",
+    "legacy_draft_origin": "synthetic rows matching the older native packing producer",
+    "detached_database_ui_export_qualified": false
+  },
+  "focused_tests": {
+    "passed": 352,
+    "files": 16
+  },
+  "remaining": {
+    "actual_hosted_workers_bound_to_source": false,
+    "fresh_release_window_backup_confirmed": false,
+    "hosted_engine_upgrade_performed": false,
+    "hosted_target_smoke_tests_performed": false,
+    "authoritative_plan_for_detached_legacy_queue_confirmed": false,
+    "deployment": false
+  }
+}

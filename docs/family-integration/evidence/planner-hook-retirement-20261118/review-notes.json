@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "scope": "Only client/src/integrations/family/legacy/pages/tripPlanner/useTripPlanner.ts",
+  "no_outside_runtime_type_ImportTypeNode_JSDoc_mock_require_or_tool_loader": true,
+  "glob_review": "The complete application inventory has only locale and video literal globs: 28 native locale modules and 98 video files; neither pattern can include the candidate.",
+  "nonliteral_import_review": "The current and copied lazyWithRetry helpers retry a URL extracted from a failed initial route-chunk load; they do not construct or enumerate retained source-hook paths. All initial literal imports and exported module edges were reviewed separately. Both retry helpers remain unchanged.",
+  "native_name_matches": "Native planner tests, feature-pair, format, strict, offline and size metadata reference src/pages/tripPlanner/useTripPlanner, a distinct retained active source. Their files and policies remain unchanged.",
+  "remaining_comment_references": [
+    "client/src/integrations/family/legacy/utils/connectionsVisibility.ts",
+    "client/src/integrations/family/legacy/pages/tripPlanner/tripPlannerModel.ts"
+  ],
+  "comments_are_not_module_loaders": true,
+  "all_helpers_stores_APIs_models_assets_and_existing_tests_retained": true,
+  "no_new_test_or_export_created_to_manufacture_a_consumer": true,
+  "source_history_licenses_and_earlier_archives_retained": true,
+  "no_new_feature_or_backend_admission": true
+}

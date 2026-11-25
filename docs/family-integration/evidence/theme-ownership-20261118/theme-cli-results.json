@@ -1,0 +1,12 @@
+[
+  {
+    "cwd": "client",
+    "exit": 0,
+    "command": "node scripts/theme-lint.mjs"
+  },
+  {
+    "cwd": "scripts",
+    "exit": 0,
+    "command": "node theme-lint.mjs"
+  }
+]

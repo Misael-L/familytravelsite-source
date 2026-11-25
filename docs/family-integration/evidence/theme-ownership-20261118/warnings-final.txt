@@ -1,0 +1,5 @@
+
+> @trek/client@5.1.4 lint:warnings
+> node scripts/eslint-ratchet.mjs
+
+eslint: 0 error(s); warnings src 3418/3418, tests 2859/2859, suppressed 83/83 (now/baseline)

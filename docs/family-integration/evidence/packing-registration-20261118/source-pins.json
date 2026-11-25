@@ -1,0 +1,12 @@
+{
+  "incoming": "14ff5f7f8c5eabdbf153fb6776bdb046f5574008",
+  "implementation": "a8b698f4eb075be727bb5b8bbefa85df799b57c1",
+  "trek": "2bcfc1bfcbbff0affd097c0f789c835396389572",
+  "runtime": "v24.22.2",
+  "retained_runtime_build": "a7033ef64e9ff42fe59e3413d1584645dbbd2310",
+  "new_build_performed": false,
+  "public_slots_not_relabelled": true,
+  "shared_backend_private_checkpoint": "8cc0fe3fdf85d2f577bf331b94967d977e0ac394",
+  "original_manifest_and_sources_recoverable_from_incoming_Git": true,
+  "proposed_patch_requires_unchanged_input_hashes_and_specific_approval": true
+}

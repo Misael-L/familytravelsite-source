@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "initial_attempt_failed_before_any_quality_command": true,
+  "reason": "Historical Q101 formatted-source hash pins must reflect the exact approved Q122 type-only source changes, not falsely treat qualified source evolution as drift.",
+  "only_changed_input_pins": [
+    {
+      "path": "client/src/integrations/family/creationTerminalSettlement.ts",
+      "historical_formatted_sha256": "71d53bd19e4ead1eea3bcea96606bbd87e4ed08cf6a44d7fdff5575409bf7528",
+      "current_qualified_sha256": "caaf2264c433c2bc9ebae07c78f161f7de1d56f21fd23dcb5fbd64083a61dd44"
+    }
+  ],
+  "same_11_source_plus_128_declaration_inputs": true,
+  "no_test_rule_scanner_baseline_or_exclusion_change": true
+}

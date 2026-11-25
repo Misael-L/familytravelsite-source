@@ -1,0 +1,33 @@
+{
+  "retrieved_at": "2026-11-15T10:06:44.267838+00:00",
+  "method": "read-only Wrangler deployments list; newest timestamp selected",
+  "deployments": [
+    {
+      "worker": "familytravelsite",
+      "deployment_id": "5026f14c-4323-4405-aa8e-a20c30ad7cb3",
+      "created_on": "2026-10-31T17:15:45.67075Z",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "version_id": "a5814c29-fe0c-446c-bd89-146e549a4be4",
+          "percentage": 100
+        }
+      ],
+      "source_asset_correspondence_proved": false
+    },
+    {
+      "worker": "familytravelsite-integration-preview",
+      "deployment_id": "a1b933d8-6b3f-4fc3-a02b-293d24a447f3",
+      "created_on": "2026-11-01T02:37:32.551671Z",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "version_id": "c3813597-c665-4aba-a409-c519b8107c00",
+          "percentage": 100
+        }
+      ],
+      "source_asset_correspondence_proved": false
+    }
+  ],
+  "writes_or_deployments": false
+}

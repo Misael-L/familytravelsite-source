@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "scope": "Read-only lineage and proposed architecture; not an applied fix or passing offline gate.",
+  "source_commit": "547c927cd5b22da8af25033d2f1a4177c2e9c09c",
+  "old_owner": "client/src/components/Collections/useCollectionSharing.ts",
+  "current_owner": "client/src/components/Collections/collectionSharingState.ts",
+  "same_availableUsers_endpoint_family": true,
+  "source_change_also_intentionally_adds_original_view_epoch_and_action_locks_not_just_file_extraction": true,
+  "currently_owner_open_collection_and_current_session_checks_retained": true,
+  "recommendation": "Move only the online available-users read behind an appropriate repo/store interface, retain original-view/session/collection checks in the hook, and then propose removal of its stale predecessor baseline entry. Avoid granting a new direct-API view exemption.",
+  "existing_collection_store_handles_authorized_writes": true,
+  "no_offline_cache_for_invitable_person_roster_proposed": true,
+  "no_schema_or_new_endpoint_needed_for_this_boundary": true,
+  "exact_transaction_and_UI_tests_must_precede_any_implementation": true,
+  "no_patch_applied": true
+}

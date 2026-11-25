@@ -1,0 +1,100 @@
+{
+  "date": "2026-11-23",
+  "database": {
+    "approved_ledger_matches": true,
+    "server_version": "17.12",
+    "hosted_ledger": {
+      "latest": "20261122222205",
+      "versions": 181,
+      "version_sha256": "1bde929f93bd3aab5b2d9f5354185a4d435be8ee2d0cb7b78b5c262b2d9599e2",
+      "new_trip_applied": false,
+      "after_approved_checkpoint": 0
+    },
+    "new_trip_receipt_table_exists": false,
+    "new_trip_command_exists": false,
+    "local_ledger_versions": 155,
+    "identical_routines": 20,
+    "missing_routines": [],
+    "changed_routines": []
+  },
+  "migration_prerequisites": {
+    "legacy_owners": [
+      {
+        "owner": "postgres",
+        "owner_role_reachable": true
+      }
+    ],
+    "schema_reload_watchers": [
+      {
+        "evtname": "pgrst_ddl_watch",
+        "handler": "pgrst_ddl_watch",
+        "evtevent": "ddl_command_end",
+        "evtenabled": "O",
+        "handler_schema": "extensions"
+      },
+      {
+        "evtname": "pgrst_drop_watch",
+        "handler": "pgrst_drop_watch",
+        "evtevent": "sql_drop",
+        "evtenabled": "O",
+        "handler_schema": "extensions"
+      }
+    ],
+    "private_author_helper_exists": false,
+    "postgres_can_create_in_public": true,
+    "postgres_can_create_in_family_auth": true
+  },
+  "cloudflare_live": {
+    "familytravelsite": {
+      "worker_id": "7196c6c6-a836-4197-bb91-9f22f5e8ecd8",
+      "expected_worker_id": true,
+      "expected_source": true,
+      "source": "021be98460c2c3af7c15c1b9fce2f22cea0c0f1e",
+      "version": "family-2026.11.21.3-rc.1",
+      "profile": "primary-core-production-v1",
+      "entry": {
+        "path": "/assets/index-B6lrn0f9.js",
+        "bytes": 1222121,
+        "sha256": "74a45b42550b976c6d577eaccf4480b61a851621528ef8bd4d4a9a88de4424d5"
+      },
+      "service_worker_sha256": "3133f4f93e5ba1363aef21debe9f2de96e1bc011245c6a225d29e712bd82c83f",
+      "active_deployment_stable": true,
+      "combined_candidate_active": false,
+      "prior_pinned_assets_match": true,
+      "earlier_fallback_version": "0c89f832-d6c7-4e52-b014-89dbfb754b69",
+      "metadata_readable": true
+    },
+    "familytravelsite-integration-preview": {
+      "worker_id": "14147a66-db08-49e0-96ee-0a7f458a8291",
+      "expected_worker_id": true,
+      "expected_source": true,
+      "source": "cf0de6d65f222bedeb9ee272fe13357cb7fb59f7",
+      "version": "family-2026.11.23.3-rc.1",
+      "profile": "primary-core-mexico-preview-read-v1",
+      "entry": {
+        "path": "/assets/index-DrBtC42C.js",
+        "bytes": 1263587,
+        "sha256": "98853e016de45ae142753b0d123327e2520fbea3153c9a0e34e713a82623bf5f"
+      },
+      "service_worker_sha256": "74651c8ef1dda68c34f466f7a19d85510b235d9de24553d6f91b29db2d81e523",
+      "active_deployment_stable": true,
+      "combined_candidate_active": false,
+      "prior_pinned_assets_match": true,
+      "earlier_fallback_version": "34fd2611-527b-447c-b047-60efbafab6e3",
+      "metadata_readable": true
+    }
+  },
+  "candidate_rehearsal": "combined-writer-release-20261123.json",
+  "candidate_source": "b390c07bad08d6710145e28a9ab70c15eb047352",
+  "candidate_versions": {
+    "production": "family-2026.11.23.6-rc.1",
+    "writer_preview": "family-2026.11.23.7-rc.1",
+    "fallback": "family-2026.11.23.8-rc.1"
+  },
+  "local_candidate_asset_trees_match_rehearsal": true,
+  "migration": {
+    "version": "20261123221046",
+    "sha256": "e820147064e429d2350e5a0b54adb8c5ec899c2ff4c0719964c064badb79f677"
+  },
+  "release_changes_made": false
+}

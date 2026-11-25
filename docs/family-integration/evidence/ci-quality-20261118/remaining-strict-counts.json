@@ -1,0 +1,321 @@
+{
+  "strict_total": 637,
+  "baseline_total": 467,
+  "grown_files": [
+    {
+      "path": "src/components/Packing/usePackingGroupActions.ts",
+      "diagnostics": 1,
+      "baseline": 0
+    },
+    {
+      "path": "src/components/Planner/dayRoute.coordinates.test.ts",
+      "diagnostics": 1,
+      "baseline": 0
+    },
+    {
+      "path": "src/components/SystemNotices/SystemNoticeModal.escape.test.tsx",
+      "diagnostics": 1,
+      "baseline": 0
+    },
+    {
+      "path": "src/components/Trips/TripFormModal.tsx",
+      "diagnostics": 4,
+      "baseline": 3
+    },
+    {
+      "path": "src/components/Trips/useTripLinks.ts",
+      "diagnostics": 2,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/applicationHandler.ts",
+      "diagnostics": 9,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/assistantConversationSession.test.tsx",
+      "diagnostics": 2,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/backgroundSession.test.ts",
+      "diagnostics": 3,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/bootstrap.planner.test.ts",
+      "diagnostics": 1,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/coherentTripCapture.test.ts",
+      "diagnostics": 1,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/collectionCommands.test.tsx",
+      "diagnostics": 2,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/collectionReadSession.test.ts",
+      "diagnostics": 3,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/completeTripCategoryV3.test.ts",
+      "diagnostics": 1,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/crossTabQueueSession.test.tsx",
+      "diagnostics": 1,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/directWriteSession.test.ts",
+      "diagnostics": 1,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/exportSession.test.tsx",
+      "diagnostics": 1,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/filePreview.test.tsx",
+      "diagnostics": 3,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/listHandler.ts",
+      "diagnostics": 6,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/locationForms.test.tsx",
+      "diagnostics": 2,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/nativeStayCohort.live.test.tsx",
+      "diagnostics": 2,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/nativeStayCreation.ts",
+      "diagnostics": 1,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/nativeStayLifecycle.live.test.tsx",
+      "diagnostics": 13,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/nativeStayLifecycle.ts",
+      "diagnostics": 1,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/nativeStayWriter.live.test.tsx",
+      "diagnostics": 1,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/nativeStayWriter.test.tsx",
+      "diagnostics": 3,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/offlineTripSession.ts",
+      "diagnostics": 1,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/packingCategoryV2Contract.test.ts",
+      "diagnostics": 1,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/packingExportOwner.test.tsx",
+      "diagnostics": 1,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/packingNativeBags.ts",
+      "diagnostics": 2,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/packingNativeRecovery.live.test.ts",
+      "diagnostics": 1,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/packingTerminalSettlement.ts",
+      "diagnostics": 28,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/packingTransport.test.ts",
+      "diagnostics": 6,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/plannerCohort.test.tsx",
+      "diagnostics": 3,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/plannerCohortAssignments.ts",
+      "diagnostics": 2,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/plannerCohortBookings.ts",
+      "diagnostics": 1,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/plannerCohortCreation.ts",
+      "diagnostics": 1,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/plannerPackingRecovery.test.tsx",
+      "diagnostics": 4,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/publicVariantCache.ts",
+      "diagnostics": 1,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/publicVariantImages.test.ts",
+      "diagnostics": 2,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/publicVariantProjection.test.ts",
+      "diagnostics": 1,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/queueRecoverySession.test.ts",
+      "diagnostics": 1,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/releaseObserver.test.ts",
+      "diagnostics": 3,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/startupReadSession.test.ts",
+      "diagnostics": 1,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/taskWriters.test.tsx",
+      "diagnostics": 2,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/tripAccessContracts.test.tsx",
+      "diagnostics": 2,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/tripResourceMutations.ts",
+      "diagnostics": 6,
+      "baseline": 0
+    },
+    {
+      "path": "src/integrations/family/visitForms.test.tsx",
+      "diagnostics": 4,
+      "baseline": 0
+    },
+    {
+      "path": "src/pages/atlas/useAtlasCountryActions.ts",
+      "diagnostics": 2,
+      "baseline": 0
+    },
+    {
+      "path": "src/repo/dayRepo.ts",
+      "diagnostics": 3,
+      "baseline": 0
+    },
+    {
+      "path": "src/sync/mutationQueue.ts",
+      "diagnostics": 1,
+      "baseline": 0
+    },
+    {
+      "path": "tests/helpers/collectionCommandFixture.ts",
+      "diagnostics": 1,
+      "baseline": 0
+    },
+    {
+      "path": "tests/helpers/familyPlannerCohort/core.ts",
+      "diagnostics": 4,
+      "baseline": 0
+    },
+    {
+      "path": "tests/unit/family/coreHttpsPlannerPackingConfig.test.ts",
+      "diagnostics": 1,
+      "baseline": 0
+    },
+    {
+      "path": "tests/unit/family/coreHttpsTaskConfig.test.ts",
+      "diagnostics": 1,
+      "baseline": 0
+    },
+    {
+      "path": "tests/unit/family/publicClientConfig.test.ts",
+      "diagnostics": 13,
+      "baseline": 0
+    },
+    {
+      "path": "tests/unit/i18n/i18nKeysScript.test.ts",
+      "diagnostics": 5,
+      "baseline": 3
+    },
+    {
+      "path": "tests/unit/scripts/family-scanner-ownership.test.ts",
+      "diagnostics": 2,
+      "baseline": 0
+    },
+    {
+      "path": "tests/unit/utils/shellGuard.test.ts",
+      "diagnostics": 2,
+      "baseline": 0
+    },
+    {
+      "path": "../family-backend/src/data/supabase/personAvatars.ts",
+      "diagnostics": 3,
+      "baseline": 0
+    },
+    {
+      "path": "../family-backend/src/data/supabase/privateUploads.ts",
+      "diagnostics": 1,
+      "baseline": 0
+    }
+  ],
+  "excess_over_per_file_allowance": 173,
+  "stale_baseline_entries": [
+    {
+      "path": "src/components/Files/useFileManager.ts",
+      "baseline": 5,
+      "current": 4
+    },
+    {
+      "path": "src/repo/tripRepo.ts",
+      "baseline": 2,
+      "current": 0
+    }
+  ],
+  "strict_pass": false,
+  "full_raw_diagnostics_retained_privately": "strict-after.log"
+}

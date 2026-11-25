@@ -1,0 +1,74 @@
+[
+  {
+    "name": "pages",
+    "command": "npm run lint:pages",
+    "exit": 0,
+    "seconds": 0.26,
+    "failure_lines": 0,
+    "last_summary": "Page pattern OK \u2014 no state/effect logic in page containers.",
+    "policy_and_128_declaration_inputs_exact": true
+  },
+  {
+    "name": "rtl",
+    "command": "npm run lint:rtl",
+    "exit": 1,
+    "seconds": 4.53,
+    "failure_lines": 2,
+    "last_summary": "npm error command sh -c node scripts/rtl-lint.mjs",
+    "policy_and_128_declaration_inputs_exact": true
+  },
+  {
+    "name": "layers",
+    "command": "npm run lint:layers",
+    "exit": 0,
+    "seconds": 2.38,
+    "failure_lines": 0,
+    "last_summary": "layers: 72 import(s) against the layering in 58 file(s), baseline allows 72",
+    "policy_and_128_declaration_inputs_exact": true
+  },
+  {
+    "name": "offline",
+    "command": "npm run lint:offline",
+    "exit": 1,
+    "seconds": 2.31,
+    "failure_lines": 2,
+    "last_summary": "npm error command sh -c node scripts/offline-lint.mjs",
+    "policy_and_128_declaration_inputs_exact": true
+  },
+  {
+    "name": "dup",
+    "command": "npm run lint:dup",
+    "exit": 1,
+    "seconds": 56.66,
+    "failure_lines": 285,
+    "last_summary": "npm error command sh -c node scripts/dup-lint.mjs",
+    "policy_and_128_declaration_inputs_exact": true
+  },
+  {
+    "name": "pairs",
+    "command": "npm run lint:pairs",
+    "exit": 1,
+    "seconds": 1.12,
+    "failure_lines": 1,
+    "last_summary": "npm error command sh -c node scripts/pairs-lint.mjs",
+    "policy_and_128_declaration_inputs_exact": true
+  },
+  {
+    "name": "skips",
+    "command": "npm run lint:skips",
+    "exit": 0,
+    "seconds": 2.83,
+    "failure_lines": 0,
+    "last_summary": "skips: 35 skipped or todo test(s), baseline allows 35; 0 file(s) with .only",
+    "policy_and_128_declaration_inputs_exact": true
+  },
+  {
+    "name": "i18n-keys",
+    "command": "npm run lint:i18n-keys",
+    "exit": 1,
+    "seconds": 2.31,
+    "failure_lines": 2,
+    "last_summary": "npm error command sh -c node scripts/i18n-keys.mjs",
+    "policy_and_128_declaration_inputs_exact": true
+  }
+]

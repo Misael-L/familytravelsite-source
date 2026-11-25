@@ -1,0 +1,22 @@
+# Q114 — Copied transport form/search retired
+
+Completed 18 November 2026. Incoming `a7d27e34891b5522fd72dfe2021e3abad934f199`; implementation `225666ecdd06e3875511066ab403fe2217a8ee25`; committed fixture build `f18be8d3fd32b32371a02d30eb1d2e43d8eaeaf0`. [Source/export/type/consumer/compiler and output evidence](evidence/transport-ui-retirement-20261118/README.md).
+
+Only the unused copied TransportModal and TransitSearchPanel closed island is removed. Its sole mixed value/PickedPlace type import is internal. Tested/type-consumed TransportsPanelFamily, tested BookingsPanelFamily, FamilyTransportEditor, native transport/search/journey/phone flows and all API/identity/command/queue/recovery/session/permission/media helpers stay intact.
+
+1,277 unchanged cases pass; 1,276 raw titles match and one source-defined random UUID test label is explicitly reviewed. Actual compiler roots5,077/sources10,259 and five effective type/export surfaces match. All 3,792 generated outputs except sourceCommit configuration are byte-exact. Build/compiler/four guards/three artifact-source controls and actual format/warning gates pass unchanged. Size10→8; eight retained failures and independent release gates remain open.
+
+## Exact next packet — Q115 preserve the tested catalog detail view while separating its props contract
+
+The next small source-preserving boundary is:
+
+- client/src/integrations/family/legacy/components/Explore/ExploreEntityDetailPanel.tsx (1,003 wrapped lines)
+- a new adjacent ExploreEntityDetailPanel.types.ts, if the complete props-type extraction is validated
+
+This is a required/tested module, not a retirement candidate: its ExploreEntityDetailPanel.test.tsx directly imports it and TripWorkspaceExplorePanel consumes it. Keep both consumers/tests and every existing export. Review every runtime/type/tool consumer first. Extract the complete existing ExploreEntityDetailPanelProps declaration and only its required type imports into a dedicated type module; preserve the original named type export by a type-only re-export, and import the type for the component. Do not narrow/widen members, replace types with any/unknown, change defaults or component props, alter JSX/hooks/order/layout/media/provider/permissions, delete tests, pack lines or remove blank lines to satisfy size. Keep direct/draft/nudge/deny semantics and existing callbacks.
+
+Prove the exact effective public type/properties before/after, actual compiler program/augmentation behavior and unchanged emitted runtime. Preserve ready stored catalog variants/ordering/prefetch/placeholders and explicit View original with no automatic transformation. Compare unchanged catalog detail/variant/reader/Explore/permission/session tests through real retained/native consumers; inspect dynamic/cache/alternative roots, source/tool/alias imports and declaration contracts. A reachable functional defect gets priority with red/green proof; do not invent unrelated work. Update only exact changed/addition provenance rows and qualification pins after bounded proof.
+
+Keep 6,091 current graph nodes/edges/source bytes unless a precise new type-only closure is explicitly explained; native runtime/layout files remain protected. Build committed qualified source; compare all generated outputs (raw identity is preferred evidence, never assumed). Run fresh actual compiler/native/source/artifact/format/warning/size gates with current fixed declarations and unchanged rules/baselines/exclusions/suppressions. Retain the other seven size findings if this one closes. No blanket copied-folder/dependency removal, provider/profile/writer admission or new frontend design.
+
+Use /private/tmp/trek-core-transport-ui-retirement-20261118/next-baseline-private.json after verified push. Preserve canonical151 migrations/370 sources/index/README, sealed evidence/complete source archives, original Q112 logical comparison builds and storage-sharing receipts, Q111 failure/retry history, unverified copies, other checkouts, backups/ETL/media. Check capacity before heavy work and archive; estimates are not validation. Do not blindly reuse storage helpers or delete retained artifacts. Retire only newly proved disposable prototypes. Finish bounded preservation, strict check-only archive, normal private push and verified remote hash with precise continuation pointers. Shared backend remains8cc0fe3f. Website only; no main/preview/production/Supabase/schema/settings/billing/transformation/public mirror/backup/ETL/iOS change.

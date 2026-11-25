@@ -1,0 +1,33 @@
+{
+  "packet": "U05-B2b1",
+  "status": "Local stay/read foundation qualified; native/command/timing activation unavailable",
+  "schema_version": 130,
+  "migration_sha256": "9309739d31efc5039c44b6293af3d11d0a07875cd0a946769adfb41b3ff275b0",
+  "sql_signed_http": {
+    "tests": 33,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "sql_calls": 361,
+    "http_calls": 24,
+    "auth_fixture": "synthetic rows/claims; real PostgREST signature/RLS only"
+  },
+  "guard_cases": 23,
+  "row_preservation": {
+    "baseline": "recovered original empty-stay source129 replay derivative",
+    "source_projections": 237,
+    "source_rows_preserved": 324417,
+    "source_rows_missing_or_changed": 0,
+    "missing_projections": [],
+    "new_synthetic_rows": 12006,
+    "method": "SHA256 multiset with multiplicity for every complete COPY row; includes all original129 migration ledger arrays and both added NULL booking fields. Raw values/digests remain private."
+  },
+  "security_index_audit_passed": true,
+  "replay_exit": 0,
+  "new_writer_commands": false,
+  "frontend_runtime_changed": false,
+  "hosted_preview_production_main_push_publication": false,
+  "source_adoption_still": "5.1.2",
+  "independent_full_backup_restore_proven": false,
+  "interruption": "Lost temporary receipts were freshly regenerated from retained source and exact isolated containers; older fresh-restore logs are not counted as new restore evidence."
+}

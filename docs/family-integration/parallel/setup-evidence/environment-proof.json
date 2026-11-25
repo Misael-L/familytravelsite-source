@@ -1,0 +1,34 @@
+{
+  "passed": true,
+  "fresh_COW_independence_probe": true,
+  "separate_inodes_no_hardlinked_or_shared_writable_dependency_roots": true,
+  "all_dependency_paths_bytes_modes_owners_mtime_flags_verified_twice": true,
+  "ACL_STAT_XATTR_metadata_copy_used": true,
+  "workspace_package_symlinks_resolve_in_worker": true,
+  "root_and_client_environment_files_not_copied": true,
+  "copied_roots": [
+    "node_modules",
+    "client/node_modules",
+    "shared/node_modules",
+    "family-shared/node_modules",
+    "family-backend/node_modules",
+    "shared/dist",
+    "family-shared/dist"
+  ],
+  "fresh_worker_caches_not_copied_from_coordinator": [
+    "node_modules/.cache",
+    "node_modules/.vite",
+    "node_modules/.vite-temp",
+    "client/node_modules/.vite",
+    "client/node_modules/.vite-temp",
+    "family-backend/node_modules/.vite",
+    "family-backend/node_modules/.vite-temp"
+  ],
+  "entries": 74705,
+  "regular_files": 66448,
+  "logical_file_bytes": 1402674134,
+  "source_tree_manifest_sha256": "03671feec76281db8074878d10ceba0181e2f2c2ad2a5f2dde6e863dbf22c8b2",
+  "free_bytes_before": 3407278080,
+  "free_bytes_after": 3552661504,
+  "working_sources_existing_artifacts_backups_media_ETL_unchanged": true
+}

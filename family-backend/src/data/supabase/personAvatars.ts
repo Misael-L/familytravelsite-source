@@ -171,18 +171,33 @@ export async function signAvatarUrls(
   const out: Record<string, string> = {}
   const storage = getSupabaseBrowserClient().storage
   for (const [bucket, items] of byBucket) {
-    const { data, error } = await operationContext.perform(async () =>
-      storage.from(bucket).createSignedUrls(
-        items.map((i) => i.path),
-        SIGNED_URL_EXPIRES_SEC
-      )
-    )
-    if (error || !data) continue
-    const rows = data as SignedUrlRow[]
-    for (let i = 0; i < items.length; i++) {
-      const signed = rows[i]
-      const url = signed?.signedUrl?.trim()
-      if (url && !signed.error) out[items[i].personId] = url
+    const sign = async (entries: typeof items): Promise<SignedUrlRow[] | null> => {
+      try {
+        const { data, error } = await operationContext.perform(async () =>
+          storage.from(bucket).createSignedUrls(entries.map((i) => i.path), SIGNED_URL_EXPIRES_SEC)
+        )
+        return error ? null : data
+      } catch {
+        operationContext.assertCurrent()
+        return null
+      }
+    }
+    const collect = (entries: typeof items, rows: SignedUrlRow[]) => {
+      for (let i = 0; i < entries.length; i++) {
+        const signed = rows[i]
+        const url = signed?.signedUrl?.trim()
+        if (url && !signed.error) out[entries[i].personId] = url
+      }
+    }
+    const rows = await sign(items)
+    if (rows) collect(items, rows)
+    else if (items.length > 1) {
+      // A stale reference can reject the entire batch at the host request fence.
+      // Isolate each read once; every request still passes the same fence/RLS.
+      for (const item of items) {
+        const row = await sign([item])
+        if (row) collect([item], row)
+      }
     }
   }
   return out

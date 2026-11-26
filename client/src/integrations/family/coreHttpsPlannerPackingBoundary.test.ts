@@ -1,4 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
+import * as avatarClient from '@family/backend/supabase/client';
+import { signAvatarUrls } from '@family/backend/supabase/personAvatars';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { assertCoreHttpsPlannerPackingRequest, coreHttpsPlannerPackingFetch } from './coreHttpsPlannerPackingBoundary';
 import { coreHttpsPlannerPackingProfileEnabled } from './coreHttpsPlannerPackingProfile';
@@ -274,6 +276,33 @@ describe('hosted Admin panels and profile photos', () => {
     expect(next).toHaveBeenCalledWith(source + avatarSign, expect.objectContaining({
       method: 'POST',
       body: JSON.stringify({ expiresIn: 3600, paths: [avatar] }),
+    }));
+  });
+
+  it('keeps a valid traveler photo when a legacy avatar makes the combined request fail', async () => {
+    vi.spyOn(primaryProfile, 'primaryCoreMode').mockReturnValue('write');
+    const next = vi.fn<typeof fetch>().mockResolvedValue(Response.json([
+      { path: avatar, signedURL: `/object/sign/family/${avatar}?token=fixture`, error: null },
+    ]));
+    vi.stubGlobal('fetch', coreHttpsPlannerPackingFetch(next));
+    const client = createClient(source, ['sb_', 'publishable_', 'fixture_supported_core'].join(''), {
+      auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
+    });
+    vi.spyOn(avatarClient, 'getSupabaseBrowserClient').mockReturnValue(client);
+    const refs = [
+      { personId: 'legacy', familyId: family, displayName: 'Other traveler', color: null,
+        avatarMediaId: 'legacy-media', bucket: 'family', storagePath: `${family}/avatars/legacy.jpg` },
+      { personId: person, familyId: family, displayName: 'Trip creator', color: null,
+        avatarMediaId: 'current-media', bucket: 'family', storagePath: avatar },
+    ];
+
+    const urls = await signAvatarUrls(refs, ['legacy', person]);
+
+    expect(urls[person]).toContain(`/object/sign/family/${avatar}?token=fixture`);
+    expect(urls.legacy).toBeUndefined();
+    expect(next).toHaveBeenCalledOnce();
+    expect(next).toHaveBeenCalledWith(source + avatarSign, expect.objectContaining({
+      method: 'POST', body: JSON.stringify({ expiresIn: 3600, paths: [avatar] }),
     }));
   });
 

@@ -868,11 +868,11 @@
     {
       "path": "family-backend/src/data/supabase/personAvatars.ts",
       "baseSha256": "bd9840da74ab448098d5347b24fa7c2a41167efcfdcb7ab1611ed7c71e9f96ce",
-      "sha256": "51e27fbec942b4640d1abfe66d3503fa9f621139acc78c7cfa5f9c89fd791ec6",
+      "sha256": "76f8095cbbc651562eddb2daaa56a5548425f0eff300326a3208df7dccde260e",
       "patch": "docs/family-backend-patches/strict-uploads/personAvatars.patch",
-      "patchSha256": "9665ac215f77bf06005d077c8797447abd0ac89e3ae529a0a6bbe9557838ee02",
-      "packet": "P04ab and strict uploads",
-      "reason": "Preserve the initiating operation context across SDK boundaries and retain uploaded sources after uncertain finalization; test the revised preservation contract. Narrow live avatar metadata and retain branch-local paths and filenames during upload and finalization."
+      "patchSha256": "b4710cde79d00c7ea42a445f2182135adb24fed661d20b0e7354d0a44e134f7b",
+      "packet": "P04ab and strict uploads; avatar read isolation",
+      "reason": "Preserve the initiating operation context across SDK boundaries and retain uploaded sources after uncertain finalization; test the revised preservation contract. Narrow live avatar metadata and retain branch-local paths and filenames during upload and finalization. Isolate a refused batch into individual signed reads so a legacy avatar reference cannot suppress a valid traveler photo; keep original actor checks and existing Storage authorization."
     },
     {
       "path": "family-backend/src/data/supabase/copyFamilyListPlacesToTrip.ts",
@@ -895,11 +895,11 @@
     {
       "path": "family-backend/src/data/supabase/personAvatars.test.ts",
       "baseSha256": "285bca4d23cff849d626c6c1aa0529f52a4370827a4b00cbeb3487078d960d00",
-      "sha256": "56afa52a4417ce7e2bc48667745c4851b3bf71e1cdaf3b2efb36a0c5b0888b70",
+      "sha256": "0a8812bf79b758acf9c4cd6471f5d8c18879e50f12a556b2af14792f25b32645",
       "patch": "docs/family-backend-patches/p04ab/personAvatars.test.patch",
-      "patchSha256": "23d05a58f0cd32117233ba88b10b2683abdf57aacb51b4ca208c424b67307066",
-      "packet": "P04ab",
-      "reason": "Preserve the initiating operation context across SDK boundaries and retain uploaded sources after uncertain finalization; test the revised preservation contract."
+      "patchSha256": "e0e6961460d53ba69fade91f35f28fad3da2efaea7b0680d796db74e6ec3fb8d",
+      "packet": "P04ab; avatar read isolation",
+      "reason": "Preserve the initiating operation context across SDK boundaries and retain uploaded sources after uncertain finalization; test the revised preservation contract. Isolate a refused batch into individual signed reads so a legacy avatar reference cannot suppress a valid traveler photo; keep original actor checks and existing Storage authorization."
     },
     {
       "path": "family-backend/src/data/supabase/nagerHolidays.ts",

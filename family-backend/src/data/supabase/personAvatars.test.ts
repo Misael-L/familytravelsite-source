@@ -10,9 +10,11 @@ import {
   familyAvatarObjectExists,
   personAvatarMessageKey,
   resolveCurrentPersonAvatarUrl,
+  signAvatarUrls,
   uploadPersonAvatar,
 } from './personAvatars'
 import { finalizePrivateUpload } from './privateUploads'
+import { withFamilyOperationContext } from './operationContext'
 
 vi.mock('./client', () => ({
   getSupabaseBrowserClient: vi.fn(),
@@ -293,3 +295,60 @@ describe('resolveCurrentPersonAvatarUrl', () => {
   })
 })
 
+
+
+describe('signAvatarUrls failure isolation', () => {
+  const sign = vi.fn()
+  const ref = (id: string, path: string) => ({
+    personId: id, familyId, displayName: id, color: null,
+    avatarMediaId: id, bucket: FAMILY_AVATAR_BUCKET, storagePath: path,
+  })
+  const legacy = ref('legacy', `${familyId}/avatars/legacy.jpg`)
+  const valid = ref(personId, existingPath)
+  beforeEach(() => {
+    sign.mockReset()
+    vi.mocked(getSupabaseBrowserClient).mockReturnValue({
+      storage: { from: vi.fn(() => ({ createSignedUrls: sign })) },
+    } as never)
+  })
+
+  it.each(['returned', 'thrown'])('isolates a %s batch refusal and retains the permitted photo', async mode => {
+    sign.mockImplementation(async (paths: string[]) => {
+      if (paths.length > 1 || paths[0] === legacy.storagePath) {
+        if (mode === 'thrown') throw new Error('Unsupported avatar request')
+        return { data: null, error: new Error('Unsupported avatar request') }
+      }
+      return { data: [{ path: existingPath, signedUrl: displayUrl, error: null }], error: null }
+    })
+    expect(await signAvatarUrls([legacy, valid], ['legacy', personId])).toEqual({ [personId]: displayUrl })
+    expect(sign.mock.calls.map(([paths]) => paths)).toEqual([
+      [legacy.storagePath, existingPath], [legacy.storagePath], [existingPath],
+    ])
+    expect(sign.mock.calls.every(([, expiry]) => expiry === SIGNED_URL_EXPIRES_SEC)).toBe(true)
+  })
+
+  it('keeps per-object errors isolated without repeating a successful batch', async () => {
+    sign.mockResolvedValue({ data: [
+      { path: legacy.storagePath, signedUrl: null, error: 'Object not found' },
+      { path: existingPath, signedUrl: displayUrl, error: null },
+    ], error: null })
+    expect(await signAvatarUrls([legacy, valid], ['legacy', personId])).toEqual({ [personId]: displayUrl })
+    expect(sign).toHaveBeenCalledOnce()
+  })
+
+  it('does not retry an unavailable single photo', async () => {
+    sign.mockResolvedValue({ data: null, error: new Error('Unavailable') })
+    expect(await signAvatarUrls([legacy], ['legacy'])).toEqual({})
+    expect(sign).toHaveBeenCalledOnce()
+  })
+
+  it('does not isolate or publish after the original account changes', async () => {
+    let active = true
+    const owner = { assertCurrent() { if (!active) throw new Error('Original account changed') } }
+    sign.mockImplementation(async () => { active = false; return { data: null, error: new Error('Unavailable') } })
+    await expect(withFamilyOperationContext(owner,
+      () => signAvatarUrls([legacy, valid], ['legacy', personId])))
+      .rejects.toThrow('Original account changed')
+    expect(sign).toHaveBeenCalledOnce()
+  })
+})

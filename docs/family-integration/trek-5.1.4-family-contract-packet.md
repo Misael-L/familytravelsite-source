@@ -1,0 +1,37 @@
+# U05-B — reconcile Family contracts on the full 5.1.4 candidate
+
+**Current status:** [B2 editor repairs](trek-5.1.4-booking-editor-handoff.md) are locally qualified. Independent stay/timing facts remain a demonstrated blocker. Next is [B2b canonical foundation](trek-5.1.4-stay-timing-foundation-packet.md); no schema/feature or source-pin activation has occurred.
+
+Immediate next packet after [U05-A](trek-5.1.4-source-merge-handoff.md). Read the full U05 reconciliation specification and latest active handoff. Start from the latest complete `codex/trek-v5.1.4-family-reconcile` candidate in `/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4`, not the old5.1.2 worktree, bare upstream or mixed Desktop checkout. Preserve the complete merge and subsequent legitimate work. Do not repeat the merge or relabel856 unit tests as real-service acceptance.
+
+## Scope and prerequisites
+
+Inspect current staged/unstaged state; retain original source/hash/operation/saved-format/media identities. The canonical mixed index must never be staged, reset or committed. No hosted/database settings/billing, preview/main deployment, push, source publication, media download/transformation, backfill or ETL work. Do not run TREK MikroORM migrations against Supabase. Unqualified source/native/history guards must remain strict until the later explicit adoption procedure; do not manufacture a green baseline now.
+
+Use the pinned target `2bcfc1bfcbbff0affd097c0f789c835396389572` for every comparison. Preserve all twelve upstream-exact native layouts and the existing direct/propose/deny, AAL, original queue/file, retirement/recovery and stored-variant requirements. All new runtime paths require an explicit reason, regression and recorded source identity. Work in these coherent substeps; save their actual outcomes separately.
+
+## B1 — holiday provider and real handler contract
+
+Permitted starting paths: `family-backend/src/data/supabase/nagerHolidays.ts` and its test, the unchanged legacy re-export at `client/src/integrations/family/legacy/data/supabase/nagerHolidays.ts`, `client/src/integrations/family/vacayHandler.ts` and a focused handler test. Review the actual Family operation/request context and AbortSignal contract. Keep the re-export and handler pointed to the real backend module; do not fix only the unused Nest proxy.
+
+At B1 entry the adapter called date.nager.at/api/v3; the linked B1 handoff records its completed local v4 repair. Confirm the provider's current [v4 documentation](https://nagerholidays.com/api) and upstream `server/src/nest/vacay/vacay.holidays.ts`/vacay.service.ts. Countries use `/api/v4/Countries/Available`; holidays use `/api/v4/Holidays/{CC}/{year}`. Preserve the current Family output shape: `nationalHoliday` becomes `global`, `subdivisionCodes` becomes `counties`, English `name` provides the localName fallback where no localized fact exists. Validate country/year inputs before interpolation, complete row/date/region shapes and bounded response sizes. Carry caller cancellation through the timeout/body read; do not leave requests running after retirement. Preserve a legitimate empty list while rejecting malformed data, unsupported/unavailable responses and network/timeout errors. No failure-to-empty success or uncontrolled retries.
+
+Test valid countries, national/regional holidays, English fallback, invalid/oversized/wrong-country/wrong-year data, explicit empty, provider error, cancellation/timeout and old saved calendar identity. Exercise the real handler through the legacy re-export to the real mocked-fetch adapter. Confirm whole-day permission enforcement and saved calendar writes remain unchanged. No new holiday table or native server is required for this provider change. Any backend source change needs the existing individually recorded carryover patch/update procedure, not a prefix exception.
+
+## B2 — forms, canonical bookings and stay projections
+
+Starting paths: `client/src/integrations/family/useEditorInitialization.ts`, actual ReservationModal/TransportModal and their upstream tests, `usePlannerBookingForm.ts`, `observedBookingEditor.ts`, `nativeBookingDetails.ts`, `plannerBookings.ts`, `plannerBookingContract.ts`, canonical booking readers under family-backend, and the corresponding saved/read DTO modules actually reached by the current planner. Trace imports before expanding this list.
+
+Keep draft text/files stable during refreshed days/places/stays/costs and same-ID reads. Preserve deliberate new-form/record identity changes and original revision conflicts; do not bind a stale form to another Trip, actor, source or replacement command. Test current native consumers, interrupted outcomes, late responses, retained original files and replay identities. Do not enable currently unsupported creates/companion writes as a shortcut.
+
+Through the real Family command/read contracts, test notes-only and time-only changes, unchanged day identity, omission versus explicit null, a genuine midnight, untimed date, overnight/local-zone timing and an airport-free flight. Preserve current refusal for timing operations that lack a complete qualified writer; identify and implement the missing contract in a separately bounded change rather than silently overwriting timestamps or converting an unknown time to midnight.
+
+Upstream reservationSchema adds optional accommodation_check_in/accommodation_check_in_end/accommodation_check_out; native cards inherit these only when appropriate. Current plannerBookings.projectBooking does not supply a linked accommodation, and applicationHandler returns an empty accommodations collection. Canonical reservations also contain metadata.check_in_until, which must not be assumed to mean a different stay fact without inspecting its writer/read semantics. Trace actual canonical relationships and supported stay readers before mapping. Never join by a hotel's label, another Trip's identifier or approximate day/city.
+
+If existing facts support the link, map them consistently across live, saved and shared response schemas, with explicit version/expiry/old-snapshot behavior. If the fact or relationship is absent, produce the exact normalized schema/read-API proposal as a separate packet, including ownership, constraints, RLS, recovery, time zones and migration/restore tests. Do not add three columns merely because the native response has three optional fields. Prove desktop/phone hotel cards receive the right linked check-in window/check-out and that explicit booking overrides win, with no fabrication for missing values.
+
+## Completion and following work
+
+Run focused tests for each change, configured types, the existing unchanged quality/carryover gates and a final combined affected cohort on the actual committed source. Record exact assertion identities, pending cases, initial failures and final exits. No baseline expansion, broad formatting pass, hidden guard bypass or mocked-only claim of SDK/database success. Keep the U05-A source and earlier evidence sealed.
+
+Update the existing U05/F2 readiness records with each actual result. B is complete only when its contracts are proved or a demonstrated missing canonical fact is isolated as an explicit blocking packet. Then finish F4 source-publication hygiene and F5 typed catalog/availability (including bakery/grocery and geographic identity). Final U05-C/F3c real-service/native/browser and full affected suite acceptance, explicit source-pin adoption and a preview release remain separate. The current source merge does not authorize main or production.

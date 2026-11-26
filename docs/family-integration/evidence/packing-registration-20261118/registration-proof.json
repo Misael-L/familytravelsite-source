@@ -1,0 +1,42 @@
+{
+  "passed": true,
+  "path": "client/scripts/feature-pairs.json",
+  "target_row": "src/mobile/screens/trip/tabs/MPackingItemRow.tsx",
+  "shared_pair": "Packing list: packingListModel",
+  "existing_runtime_import": {
+    "specifier": "../../../../components/Packing/packingListModel",
+    "line": 25,
+    "typeOnly": false
+  },
+  "before_sha256": "d6c6a3acb9961d5af5052301143704e3322b57c71834b1f140bd7ed03407895c",
+  "after_sha256": "e038b5bd0c1ee8ba7275701dd9ed32c53d974252315e76f3df752f9a1c45c67b",
+  "only_one_existing_pair_mobile_membership_added": true,
+  "shared_feature_count_before_after": [
+    143,
+    143
+  ],
+  "phone_only_count_before_after": [
+    83,
+    83
+  ],
+  "no_phone_only_exception_or_new_pair_or_hook_added": true,
+  "actual_guard_before": [
+    "src/mobile/screens/trip/tabs/MPackingItemRow.tsx is a phone screen file that scripts/feature-pairs.json does not list"
+  ],
+  "actual_guard_after": [],
+  "real_source_fixture_positive_control_pass": true,
+  "remove_value_import_is_refused": true,
+  "type_only_import_is_refused": true,
+  "remove_registration_is_refused": true,
+  "all_runtime_sources_and_originals_untouched": true,
+  "fixture_source_hashes": {
+    "src/components/Packing/packingListModel.ts": "da93d456d52081b74c3cf902ce93cb6e8981207a4148557acabdc5f8f79f9c1a",
+    "src/components/Packing/packingPrintDocument.ts": "663fa1b0e963d1b40c26b78859d115dc341e8c00ce971d67637d6ac406b63247",
+    "src/components/Packing/usePackingExport.ts": "850514790395178050a96629a4c0c13820890f7f35d9fdda59a082ee5afff44e",
+    "src/components/Packing/usePackingListPanel.ts": "ba0b875062726d131243ad4e711e16c75415a1d231dcfc0ce8862c3d3b2359f9",
+    "src/mobile/screens/trip/tabs/MBagsSheet.tsx": "b8304b4d54a6ff9522fdb7d472e300908760a72ea37320ffa03997c7aa2fa10e",
+    "src/mobile/screens/trip/tabs/MPackItemSheet.tsx": "9cce0ccb131d46b5a2669e516dc8739b107727dec9b938d541c388713cffbf01",
+    "src/mobile/screens/trip/tabs/MPackingListTab.tsx": "11130ae7cbe484be8ba7d0b4f963ec7e3611619fbc2acd5ca81305ab70a6310c",
+    "src/mobile/screens/trip/tabs/MPackingItemRow.tsx": "15eb41a28bf3e241da9125a77eededf7c0eafb417fce7cdbee8f2cc8a197c0d9"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "incoming": [
+    {
+      "file": "client/src/integrations/family/legacy/styles/collectionsPage.css",
+      "line": 2,
+      "name": "import",
+      "spec": "./dashboard.css",
+      "target": "client/src/integrations/family/legacy/styles/dashboard.css"
+    },
+    {
+      "file": "client/src/integrations/family/legacy/styles/collectionsPage.css",
+      "line": 3,
+      "name": "import",
+      "spec": "./collections.css",
+      "target": "client/src/integrations/family/legacy/styles/collections.css"
+    }
+  ]
+}

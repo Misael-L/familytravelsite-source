@@ -1,0 +1,39 @@
+{
+  "verified_at_utc": "2026-11-25T22:37:34.994351+00:00",
+  "production_version": "88152fc4-4a1b-4ee2-9345-732b71aecb85",
+  "production_traffic_percent": 100,
+  "release": "family-2026.11.23.6-rc.1",
+  "website_source": "b390c07bad08d6710145e28a9ab70c15eb047352",
+  "previous_production_version": "7196c6c6-a836-4197-bb91-9f22f5e8ecd8",
+  "verified_recovery_version": "65d2df60-8520-498c-9fac-d13d8a44fe5e",
+  "preview_version": "14147a66-db08-49e0-96ee-0a7f458a8291",
+  "login_dashboard_and_trip_shell_match": true,
+  "app_entry_and_service_worker_match": true,
+  "fresh_browser_protected_dashboard_sign_in_verified": true,
+  "production_deployment_id": "c39cb242-7f16-4071-9bc5-023aa7aea5be",
+  "source_publication": {
+    "tag_ref": "refs/tags/source-20261125-b390c07",
+    "tag_oid": "c8e5549f2cd2b8d87952306813ce637dec28e80e",
+    "commit": "c3a9a9376f2798ad3081282591364acfc9a06830",
+    "tree": "caa44c7aacbfff4d7d804ea8a6a66b8498bc3247",
+    "archived_source": "b390c07bad08d6710145e28a9ab70c15eb047352",
+    "manifest_sha256": "816dcad76d3fa4367d0df8a684dc629690fb22423ec1c8d822bc3dccf3b34536",
+    "existing_public_source_tree_verified": "c12c0619bcb4a12dc8e09e5cdfa7e341586a4c1b",
+    "only_manifest_changed": true,
+    "manifest_scan_passed": true,
+    "public_tag_published": true,
+    "worker_version_id": "88152fc4-4a1b-4ee2-9345-732b71aecb85",
+    "anonymous_manifest_verified": true,
+    "public_source_url": "https://github.com/Misael-L/familytravelsite-source/tree/source-20261125-b390c07",
+    "main_commit": "e3eefc3c7f149b7f7e49917863163b0103056dc2"
+  },
+  "production_url": "https://familytravelsite.lmisael0721.workers.dev",
+  "hosted_ledger_after_activation": {
+    "after_approved_checkpoint": 1,
+    "latest": "20261123221046",
+    "new_trip_applied": true,
+    "version_sha256": "c3406696b9544fa12340b4d4af6317572c9462508c3ab29faf91d892552f1dbd",
+    "versions": 182
+  },
+  "hosted_new_trip_save_and_retry_verified_on_writer_preview": "new-trip-writer-preview-qa-20261125.json"
+}

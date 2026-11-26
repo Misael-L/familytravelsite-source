@@ -1,0 +1,39 @@
+{
+  "passed": true,
+  "setup_only_no_application_or_quality_policy_repair": true,
+  "plan_id": "FTS-PARALLEL-20261118-v1",
+  "application_base": "0e265c1e92cd20048d775a161f8cf7d3c4462264",
+  "tested_definition_commit": "4f3fbebd562d470f9e021d2bcf423146826bf8e8",
+  "test_results_measured_before_final_documentation_receipt_commit_not_relabelled": true,
+  "worker_test_baseline": {
+    "passed": 77,
+    "failed": 0,
+    "skipped": 0,
+    "per_file": {
+      "src/components/SystemNotices/SystemNoticeModal.escape.test.tsx": 8,
+      "src/components/Planner/dayRoute.coordinates.test.ts": 13,
+      "src/integrations/family/coherentTripCapture.test.ts": 56
+    }
+  },
+  "worker_strict_raw_exit": 1,
+  "worker_strict_scored_total": 636,
+  "global_quality_pass": false,
+  "all_210_preexisting_scored_file_counts_match_coordinator": true,
+  "assigned_diagnostics": {
+    "client/src/components/SystemNotices/SystemNoticeModal.escape.test.tsx": 1,
+    "client/src/components/Planner/dayRoute.coordinates.test.ts": 1,
+    "client/src/integrations/family/coherentTripCapture.test.ts": 1
+  },
+  "no_worker_implementation_performed": true,
+  "isolation_and_wrong_lane_unassigned_task_heavy_lock_controls_pass": true,
+  "four_source_guards_pass": true,
+  "coordinator_and_worker_remain_separate_branches": true,
+  "all_original_application_test_policy_and_existing_sealed_bytes_exact": true,
+  "canonical_370_sources_and_mixed_index_exact": true,
+  "prior_seals_preserved": 286,
+  "prior_sealed_members_preserved": 16886,
+  "other_dirty_checkouts_unchanged": 3,
+  "offline_baseline_approval_remains_pending_and_unapplied": true,
+  "new_runtime_build_schema_hosted_change_or_deployment": false,
+  "current_free_bytes": 1389965312
+}

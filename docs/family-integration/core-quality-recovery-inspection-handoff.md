@@ -1,0 +1,48 @@
+# Q82 — Packing recovery inspection validation extraction
+
+Completed locally 17 November 2026. The selected inspection method now meets the existing complexity limit. This packet changes no recovery behavior or feature admission.
+
+## Change and measurements
+
+Only `client/src/integrations/family/plannerPackingRecovery.ts` changes at runtime. The private synchronous type predicate `originalPackingRowMatches` contains the exact original queued-row structural-validation prefix: successful parse, schema version, retention policy, method, native trip, operation ID, intent URL, status and allowed keys. The original belongsToSession check remains after that prefix at its existing short-circuit position. Failed parses cannot expose result.data.
+
+- `inspect`: complexity **28 → 19**, length **108 → 99**, one parameter.
+- `originalPackingRowMatches`: complexity10, length18, three parameters.
+- Surrounding factory: complexity4 unchanged; length **161 → 152**, still above120 and explicitly open.
+
+Both selected functions meet unchanged20/120/5 limits. Scoped lint drops **2 → 1 warnings**, with0 errors. Only the inspect complexity finding closes; the outer length message becomes152. The file stays formatted/unlisted, wrapped size **458 → 468**, below1000. All seven policy/baseline files and all suppressions remain byte-exact.
+
+The parent factory is token-exact outside the one predicate call. The helper negates the exact original prefix, preserving repeated property reads and short-circuit order; its type predicate retains successful-parse narrowing without a cast. All other module statements, imports and exports are byte-exact. Terminal-first return, fence/owner/visibility checks, queue filtering, cardinality refusals, two-row dependency path, parse and session checks, native structuredClone boundaries and original saved-row/packet captures remain intact. Display fields, terminal/parent conditions including the existing loopback qualifier, check/retry/parent/export callbacks and all awaits remain exact. No new import/export/API/dependency/cast/default/async wrapper, permissive parser, queue/RPC/permission outcome or writer admission. Q28–Q81 and native UI remain preserved.
+
+## Validation and limits
+
+**492 unchanged tests in eight suites pass before and after**, with identical source bytes, names, assertions and occurrences: plannerPackingRecovery, packingBagSession, packingGroupSession, packingCategorySession, packingCategoryV2Session, packingCategoryAggregateSession, packingBagDependency and packingTerminalSettlement. No new product test or mock contract; no live suite run.
+
+**458 exact original/candidate factory comparisons pass:**197 scenarios and261 injected failures. The comparisons execute the actual factory, belongsToSession and extracted original capture check/fence/affects/changed arrows with actual Zod protocol modules, queue format/URL/allowed keys, canonical existing test fixtures and native structuredClone. Owner/storage/terminal/dependency/transports and the deferred runOriginalPacking boundary are controlled fixtures. The underlying runOriginalPacking implementation is byte-exact and additionally exercised by the existing mocked suites; the differential fixture does not independently prove real RPC/queue/DB or hosted permission behavior.
+
+Cases cover all ten item/group/category/v2/aggregate/bag/restore packet shapes; zero/one/two/extra/unrelated rows; terminal and dependency precedence; schema/method/retention/native/id/URL/status/key refusals; parse failures and source/layer/trip/user/person/family mismatch; pending/failed/conflict status; session/queue errors and owner/context/source/view retirement around awaits; hidden/undefined-native refusals; repeated row getters; restore/parent and bag qualifiers; uncloneable row data; and original cloned callback payloads after queue-row backing values change. Complete parse/property/fence/visibility/clone/callback/result/error traces match. Input bodies and property descriptors remain unchanged. Error names/messages/status/codes and injected error identity are compared, not extraction-dependent stack frames.
+
+The clean committed fixture-only build, installed compiler, four source guards and bound/wrong/missing-source artifact controls pass with128 fixed post-build declaration inputs. Actual full gate: **0 errors**, source **3435/3419**, tests **2859/2859**, suppressed **83/83**. Complexity **225 → 224 against218**, leaving6 excess; length **140/130**, leaving10 excess. The identical32 size failure lines remain. **G2 is still blocked.** No baseline allowance expansion. Observation-only inventory preserves ordinary lint rules, arguments, returned results and exit decisions. Existing prior gate closures remain intact.
+
+Incoming integration/publication `e0026cdaf0df7a5cf8349c5ccb0653ce06f8ecff`; implementation `58a2c1f62b470fcb0142e16f96bc18c03c68640c`; clean qualified build `6cd83baa1bc972f1629b0bc97369ca0029c0ef9d`. Website scope is exactly five paths: one runtime file, two provenance files and two documents. Later documentation does not relabel the build. Corresponding-source archive/publication remain local and check-only/unbound; no remote push or deployment.
+
+## Exact continuation
+
+Next bounded review: `client/src/integrations/family/plannerPackingRecovery.ts`, the exported `createPlannerPackingRecovery` factory's remaining **152-line** finding against120. Its complexity4 is within policy. The `inspect` method complexity19/length99 and `originalPackingRowMatches` complexity10/length18 are closed Q82 boundaries; do not reopen their validation semantics or prior accepted repairs.
+
+First inspect the two original deferred `check`/`retry` callbacks. They construct identical explicit context subsets when invoked, then call runOriginalPacking with saved, packet, false/true and visible. Investigate a private synchronous helper for constructing those existing callbacks. Use existing precise types; keep at most five parameters, and preserve explicit key order and a fresh original context object per callback invocation. Do not substitute the entire capture context object into runOriginalPacking: it has additional properties. Do not move property reads across observable boundaries, invoke recovery eagerly, reuse a context object across callback calls, add an async wrapper/cast/default, or change callback receivers, returned Promise identity, errors or cloned row/packet capture. Any additional closure or binding change needs evidence against the original factory and deferred runner arguments.
+
+The original capture is a private plain object, but prove that any proposed passing/destructuring strategy preserves the original captured local values, read count and timing. Keep every existing fence/check/visible admission, terminal-first return, two-row dependency precedence, retained-row parse/structural/session ordering, structuredClone, display projection, restore/parent conditions including loopback qualification, parent/terminal callbacks and export exact. Keep all underlying transport/RPC/lock/acknowledgement/retention and writer/queue behavior unchanged. This is a length refactor, not a new live recovery qualification.
+
+Run the same eight mocked recovery/group/category/category-v2/aggregate/bag-session/dependency/terminal suites unchanged before/after (current492 cases); exclude live suites. Inspect actual coverage. Compare complete original/candidate factory observations and deferred callback invocations with actual parsers, native clones and controlled owner/storage/terminal/dependency/transport/runner boundaries. Include repeated callback invocations, fresh context identity/key order, captured originals after row backing data changes, owner retirement/visibility around awaits, parse refusals, terminal/dependency precedence and failures. Retain the existing production test bytes/assertions; add tests only for a demonstrated meaningful missing contract.
+
+Measure the complete factory, inspect and new helper(s) with ordinary unchanged20/120/5/depth/format/file policies before applying. Factory must meet120 lines without creating helper failures or a new file-size finding. If that cannot be shown without observable changes, document the limit and select a different bounded target rather than weakening protection. Re-run build/compiler/source guards/artifact controls and one full warning/size gate with fixed post-build declaration inputs.
+
+Q28–Q82 accepted scopes are closed. Preserve all policies/baselines/suppressions, native layouts, canonical schema/index/seals and other checkouts. No schema/configuration/settings/billing, push/deploy, live DB/RPC/queue/browser/provider action, backup/media/ignored ETL/transformation or deferred cleanup. Independent matched recovery, incremental backups, hosted facts and preview/source binding remain separate release gates.
+
+
+Retain [release prerequisites](core-release-prerequisites.md) and [deferred cleanup](pre-production-retained-source-cleanup-packet.md). Incremental protection, independent matched database-plus-files recovery, current hosted contracts/engine facts and actual preview/source binding remain separate unproved release gates.
+
+All370 canonical schema/test sources,151 migrations, mixed canonical index,240 prior seals/15,094 members,11 auxiliary manifests, three other checkouts and12 protected native files remain exact (11 upstream-byte-exact plus the fixed Sidebar return-type derivation). Production/preview, hosted settings/billing, backups/media/ignored ETL and transformations unchanged.
+
+Private reproduction receipts: `/private/tmp/trek-core-quality-recovery-inspection-source-20261117`. Canonical evidence records final documentation commit and hashes.

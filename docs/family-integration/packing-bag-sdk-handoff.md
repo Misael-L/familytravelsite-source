@@ -1,0 +1,29 @@
+# U04-D2b — bag SDK, publication and retained recovery accepted locally
+
+12 November 2026. Application `609c3fb709b8c292e02ebab8ca1f5692c9516f4c` on `codex/trek-v5.1.2-family-reconcile`, checkout `/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.2`. Builds on D2a's guarded126 database without changing SQL, grants, images, dependencies or hosted settings. Native bag management remains gated; this is SDK and real local API acceptance, not native App/browser acceptance.
+
+## Delivered and exact boundaries
+
+Seventeen reviewed application paths add a dedicated five-RPC backend boundary, strict bag schemas, transport, command handler/session and independent coherent publication. Normal planner composition exposes `packingBags` and the dedicated `bag-commands` handler. Create, metadata update, differential carriers, empty-only recoverable Trash and restore use original UUIDs, complete observations, full collection revisions and explicit null/omission. Carriers never become item ACLs. Legacy stored names/colors remain readable; new edited values follow the accepted126 validation. Sorted historical carriers resolve through the three-field bag roster.
+
+Publication couples existing display packing with full bag observations, current scope/revision and roster. Optional category coupling additionally requires identical packing/scope/revision and consistent overlapping roster facts. It is immutable and rejects torn or retired reads, changed Trip/layer/source/account/Person/Family and reordered requests. Acknowledgements are historical proofs, never current snapshots. Bag restore revives no item. Saved v1/v2/v3 packages remain unchanged and cannot supply writable bag observations.
+
+Owned commands retain the exact original intent before sending. Loss of response or owner retirement preserves uncertainty. The dedicated typed receipt, including a valid redacted committed proof, can reconcile only that exact original. Unknown is not success. Ordinary startup and owned planner recovery dispatch bag receipts explicitly. The generic mutation queue now holds all versioned bag routes rather than replaying them as raw writes. This is one additional line in the already-qualified queue exception; all other native presentation remains unchanged.
+
+Whole SQL command/visible result and observation bounds are1MiB; publication/Trash bounds are8MiB. Browser validation rejects impossible successes whose known before/after/result history already exceeds the full receipt bound. It cannot inspect private server receipt metadata; the unchanged126 SQL enforces the actual complete stored receipt bound. Microsecond keyset pagination and safe counters round-trip.
+
+## Evidence
+
+- Final affected client run: **1,812 passed in42 files**. Includes the310 new bag contract/session/publication cases; repetitions are not counted as new cases.
+- Final frozen bag reproduction: **320 passed in4 files**, comprising those310 mocked cases and **10 real Auth/TOTP/PostgREST/SDK cases** on `http://127.0.0.1:55831`. Fresh synthetic Trips exercise all actions, genuine no-op/exact retry, null clears, duplicate labels, coherent normal composition, hidden peer-item details with accurate350g aggregate, nonempty refusal, changed-payload/domain collisions, stale observations, real lower-assurance refusal, committed response loss, postcommit disposal recovery and microsecond Trash pages.
+- Backend packing boundaries: **54 passed in9 files**, including7 new bag allowlist cases. Backend and client configured typechecks pass. New/changed Family modules have zero lint findings. The existing upstream queue file retains exactly its two original unused-variable findings; baseline comparison proves no new finding, and no suppression was added.
+- Four actual source/native/Git/carryover guards and **82 adversarial release/source tests** pass. Upstream remains TREK5.1.2,14,063 tracked paths,316 explicit exceptions; twelve protected layouts stay exact. The two new backend files increase recorded carryover additions from15 to17. Per-path qualification binds every changed application object to `609c3fb709b8c292e02ebab8ca1f5692c9516f4c`; unreviewed objects are unchanged.
+- Original126 rows reproduce their pre-packet aggregate hashes across **185 application/history tables**, excluding only the new synthetic Family's own rows reached through primary identities. Old120/122/123/124/125 guards and rows remain exact; all126 canonical migrations/guard/schema sources,66 earlier seals/4,892 sealed members/8,006 evidence files and the canonical mixed Git index are intact. New synthetic126 fixtures are intentional and retained.
+
+Immutable sanitized evidence: `FamilyTravelApp/docs/backend-modernization/evidence/u04d2b-packing-bag-sdk-2026-11-12`. Credentials, actual row data, private fixture sessions and development failures are excluded. No full-client suite rerun, native App/worker/browser test or new production build is claimed for this SDK packet. Existing old native/saved regression cases passed in the affected run; new native activation is still unqualified.
+
+## Next handoff and discovered dependency
+
+Proceed to [D2c1 explicit parent-bag recovery coordination](packing-bag-dependency-packet.md), then a separately qualified native desktop/phone cutover. The existing one-intent-per-Trip rule correctly refuses a second save while an item/batch original is retained. Consequently a refused child restore can block the intentional bag restore needed to resolve it. This restriction was reproduced and preserved, not bypassed. The SDK alone must not enable native bag management or imply that dependent restore is already usable.
+
+No push/main merge/deploy, hosted SQL/settings/billing, image transformation/backfill, backup rewrite or ignored ETL work. Production and integration preview remain unchanged. Independent database-plus-files/off-device restore and incremental backup remain separate outstanding operations.

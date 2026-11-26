@@ -1,0 +1,247 @@
+import { useRef, useEffect } from 'react'
+import { Plus } from 'lucide-react'
+import JourneyLayeredMap from './JourneyLayeredMap'
+import type { JourneyMapLayersView } from './useJourneyMapLayers'
+import type { MapPhoto } from './journeyPhotoLayer'
+import JourneyEntryCover from './JourneyEntryCover'
+import JourneyDayScrubber from './JourneyDayScrubber'
+import { dayColorOf } from './journeyCard'
+import { useJourneyCarouselSync } from './useJourneyCarouselSync'
+import type { JourneyEntry } from '../../store/journeyStore'
+import type { JourneyMapPlace, JourneyTrack } from '@trek/shared'
+
+interface MapEntry {
+  id: string
+  lat: number
+  lng: number
+  title?: string | null
+  mood?: string | null
+  entry_date: string
+}
+
+interface Props {
+  entries: JourneyEntry[] | any[]
+  mapEntries: MapEntry[]
+  trail?: { lat: number; lng: number }[]
+  tracks?: JourneyTrack[]
+  dark?: boolean
+  readOnly?: boolean
+  publicMap?: boolean
+  onEntryClick: (entry: any) => void
+  onAddEntry?: () => void
+  publicPhotoUrl?: (photoId: number) => string
+  carouselBottom?: string
+  /** CARTO key from the share payload, forwarded to the map (#2054). */
+  cartoApiKey?: string
+  /** Off when the journey has put that field away (journey settings). */
+  showMood?: boolean
+  showWeather?: boolean
+  /** Which entry to open on. Today's, when today is part of the journey (#2299). */
+  initialEntryId?: string | null
+  /** The map's layers (JRN-04); a picked place or stay leads to its entry's card. */
+  layers?: JourneyMapLayersView | null
+  entryTitleOf?: (entryId: number) => string | null
+  /** Starts an entry about a picked planned place nothing was written about. */
+  onWriteAboutPlace?: (place: JourneyMapPlace) => void
+  /** Geotagged photos on the map, a tap opening them. */
+  photos?: MapPhoto[]
+  onPhotoClick?: (photoIds: string[]) => void
+  /** Where the layer switches sit, below a bar laid over the top of the map. */
+  controlsTop?: number | string
+}
+
+export default function MobileMapTimeline({
+  entries,
+  mapEntries,
+  trail,
+  tracks,
+  dark,
+  readOnly,
+  onEntryClick,
+  onAddEntry,
+  publicPhotoUrl,
+  carouselBottom = 'calc(var(--bottom-nav-h, 84px) + 8px)',
+  cartoApiKey,
+  publicMap,
+  showMood = true,
+  showWeather = true,
+  initialEntryId,
+  layers,
+  entryTitleOf,
+  onWriteAboutPlace,
+  photos,
+  onPhotoClick,
+  controlsTop,
+}: Props) {
+  const {
+    mapRef, carouselRef, cardRefs, activeIndex, focusIndex, setActiveIndex, scrubberDays,
+    syncMapToCard: syncMapToCarousel, handleMarkerClick, handleCardTap, openEntryById, jumpToDay,
+  } = useJourneyCarouselSync({ entries, mapEntries, onOpenEntry: onEntryClick })
+  // The delayed initial focus reads both through refs so it always works off
+  // the current map entries, not the ones from the render that armed the timer.
+  const syncMapToCarouselRef = useRef(syncMapToCarousel)
+  syncMapToCarouselRef.current = syncMapToCarousel
+  const activeIndexRef = useRef(activeIndex)
+  activeIndexRef.current = activeIndex
+
+  // Initial map focus — delay to let Leaflet initialize and fitBounds. Also
+  // re-runs when the markers arrive later than the entries, otherwise the
+  // focus would fire against an empty map and never be retried.
+  const openedRef = useRef(false)
+  useEffect(() => {
+    if (entries.length === 0) return
+    const timer = setTimeout(() => {
+      if (!openedRef.current && initialEntryId) {
+        openedRef.current = true
+        const idx = entries.findIndex((e: any) => String(e.id) === initialEntryId)
+        if (idx > 0) {
+          setActiveIndex(idx)
+          cardRefs.current.get(idx)?.scrollIntoView({ inline: 'center', block: 'nearest' })
+          syncMapToCarouselRef.current(idx)
+          return
+        }
+      }
+      syncMapToCarouselRef.current(activeIndexRef.current)
+    }, 500)
+    return () => clearTimeout(timer)
+  }, [entries.length, mapEntries.length, initialEntryId])
+
+  const activeEntryId = entries[activeIndex]
+    ? String(entries[activeIndex].id)
+    : null
+
+  if (entries.length === 0) {
+    return (
+      <div
+        className="fixed inset-x-0 bottom-0 z-10"
+        style={{ top: 'var(--nav-h, 0px)' }}
+      >
+        <JourneyLayeredMap
+          ref={mapRef}
+          engine="leaflet"
+          layers={layers}
+          hideLayerControl
+          controlsTop={controlsTop}
+          onOpenEntry={handleMarkerClick}
+        onWriteAboutPlace={onWriteAboutPlace}
+          entryTitleOf={entryTitleOf}
+          entries={mapEntries}
+          checkins={[]}
+          trail={trail}
+          tracks={tracks}
+          photos={photos}
+          onPhotoClick={onPhotoClick}
+          height={9999}
+          dark={dark}
+          onMarkerClick={handleMarkerClick}
+          fullScreen
+          cartoApiKey={cartoApiKey}
+          publicMap={publicMap}
+        />
+        {!readOnly && onAddEntry && (
+          <div className="fixed end-4 z-30" style={{ bottom: 'calc(var(--bottom-nav-h, 84px) + 16px)' }}>
+            <button type="button"
+              onClick={onAddEntry}
+              className="w-12 h-12 rounded-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 shadow-lg flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
+            >
+              <Plus size={20} />
+            </button>
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  return (
+    <div
+      // Down to the very edge: Safari draws its toolbar over the page, and a map
+      // that stopped at the safe area left a bare strip under it (#3002).
+      className="fixed inset-x-0 bottom-0 z-10"
+      style={{ top: 'var(--nav-h, 0px)' }}
+    >
+      {/* Full-screen map */}
+      <JourneyLayeredMap
+        ref={mapRef}
+        engine="leaflet"
+        layers={layers}
+        hideLayerControl
+        controlsTop={controlsTop}
+        onOpenEntry={handleMarkerClick}
+        onWriteAboutPlace={onWriteAboutPlace}
+        entryTitleOf={entryTitleOf}
+        entries={mapEntries}
+        checkins={[]}
+        trail={trail}
+        tracks={tracks}
+        photos={photos}
+        onPhotoClick={onPhotoClick}
+        height={9999}
+        dark={dark}
+        activeMarkerId={activeEntryId}
+        onMarkerClick={handleMarkerClick}
+        onMarkerCardClick={openEntryById}
+        fullScreen
+        paddingBottom={250}
+        cartoApiKey={cartoApiKey}
+          publicMap={publicMap}
+      />
+
+      {/* Day bar + card carousel, as one block at the bottom of the map */}
+      <div
+        className="fixed inset-x-0 z-40"
+        style={{ touchAction: 'pan-x', bottom: carouselBottom }}
+      >
+        <JourneyDayScrubber
+          days={scrubberDays}
+          activeDate={entries[activeIndex]?.entry_date ?? null}
+          onPick={jumpToDay}
+        />
+        <div
+          ref={carouselRef}
+          className="flex items-end gap-[22px] overflow-x-auto px-6 pb-3 pt-[30px]"
+          style={{
+            scrollSnapType: 'x mandatory',
+            WebkitOverflowScrolling: 'touch',
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none',
+          }}
+        >
+          {entries.map((entry: any, i: number) => (
+            <div
+              key={entry.id}
+              data-idx={i}
+              ref={node => { if (node) cardRefs.current.set(i, node); else cardRefs.current.delete(i); }}
+              style={{ scrollSnapAlign: 'center' }}
+            >
+              <JourneyEntryCover
+                entry={entry}
+                dayColor={dayColorOf(scrubberDays, entry.entry_date)}
+                isActive={i === focusIndex}
+                onClick={() => handleCardTap(entry, i)}
+                showSuggestionAction={!readOnly}
+                showMood={showMood}
+                showWeather={showWeather}
+                photoUrlFor={publicPhotoUrl}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* FAB: add entry — bottom right, above the timeline carousel */}
+      {!readOnly && onAddEntry && (
+        <div
+          className="fixed end-4 z-30"
+          style={{ bottom: 'calc(var(--bottom-nav-h, 84px) + 226px)' }}
+        >
+          <button type="button"
+            onClick={onAddEntry}
+            className="w-12 h-12 rounded-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 shadow-lg flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
+          >
+            <Plus size={20} />
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}

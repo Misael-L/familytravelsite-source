@@ -1,0 +1,19 @@
+{
+  "removed_paths": [
+    "client/src/integrations/family/legacy/pages/tripPlanner/useTripPlanner.ts"
+  ],
+  "previous_rows": [
+    {
+      "path": "client/src/integrations/family/legacy/pages/tripPlanner/useTripPlanner.ts",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "84b942a847290945bf3559a96fd93a4b05d06860",
+        "bytes": 52675
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/pages/tripPlanner/useTripPlanner.ts"
+    }
+  ],
+  "new_qualified_commit": "5be89a1520088a7c4691f48e2ed499703b202924",
+  "reason": "Only the closed retained planner hook is deleted after complete source/type/test/configuration closure; no dependency-union deletion or guard relaxation."
+}

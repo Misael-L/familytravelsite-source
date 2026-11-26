@@ -1,0 +1,41 @@
+--- a/client/scripts/rtl-baseline.json
++++ b/client/scripts/rtl-baseline.json
+@@ -88,12 +88,13 @@
+   "pages/AtlasPage.tsx": 2,
+   "pages/JourneyDetailPage.tsx": 1,
+   "pages/JourneyPublicPage.tsx": 3,
+-  "pages/LoginPage.tsx": 23,
++  "pages/LoginPage.tsx": 7,
+   "pages/TripPlannerPage.tsx": 11,
+   "pages/VacayPage.tsx": 1,
+   "pages/admin/AdminNotificationsTab.tsx": 1,
+   "pages/admin/AdminSettingsTab.tsx": 1,
+   "pages/atlas/AtlasLayerToggle.tsx": 1,
++  "pages/login/starfield.ts": 16,
+   "pages/sharedTrip/SharedMap.tsx": 4,
+   "styles/collections.css": 1,
+   "styles/studio.css": 7,
+--- a/client/scripts/i18n-keys.mjs
++++ b/client/scripts/i18n-keys.mjs
+@@ -134,7 +134,6 @@
+   ...[
+     'components/Admin/AdminPluginsPanel.tsx',
+     'mobile/screens/admin/MAdminPluginsPanel.tsx',
+-    'integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx',
+   ].map((file) => ({
+     file,
+     template: 'admin.plugins.perm.${perm}',
+@@ -142,6 +141,13 @@
+       'PermLabel translates a permission only when PERM_KEYS (generated PLUGIN_PERMISSIONS) holds it and shows ' +
+       'the raw code otherwise; the plugin-facts gate keeps the permission keys in step with en',
+   })),
++  {
++    file: 'integrations/family/legacy/components/Admin/plugins/PluginBadges.tsx',
++    template: 'admin.plugins.perm.${perm}',
++    because:
++      'The retained PermLabel checks its unchanged fixed 58-entry PERM_KEYS list before translating; ' +
++      'unknown permissions stay raw. This relocates the existing retained site only; native generated domains stay unchanged.',
++  },
+   ...[
+     'components/Settings/PhotoProvidersSection.tsx',
+     'mobile/screens/settings/MPhotoProvidersSection.tsx',

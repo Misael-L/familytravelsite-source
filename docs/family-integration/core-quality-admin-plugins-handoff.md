@@ -1,0 +1,21 @@
+# Q98 — Retained admin plugin panel size closure
+
+Completed18November2026 on the private website integration branch. Incoming `c59c9d23a5fe7750872695cfe26d3eb1fb994876`; implementation `066f615055b3be74d6664a260358f9cd6a8f1a37`; clean fixture build `a0d896e186f3374d1c1122e6eb805cbd842c66e8`. [Evidence and replay](evidence/admin-plugins-20261118/README.md).
+
+## Result
+
+The full2669-line panel, real FamilyAdminPage → legacy/AdminPage entry, surface policy, API/store and direct consumers were reviewed. Plugins are explicitly hidden on the Family/Supabase profile; the earlier ordinary-entry inventory proves static import reachability, not admission. This restriction is preserved. No hash/query route admits the hidden tab: the retained admin state begins at users and its candidate tabs are filtered by the same policy.
+
+Existing models, badges, installed list/menu/filter/disclosure, registry/detail and trust/consent/dependency dialogs now occupy five bounded companions. Parent state, handlers and markup remain in the panel, with identical component boundaries/hooks/dependencies/defaults and async behavior.42 actual retained-panel/profile contracts pass before and after. All56 original declarations retain runtime AST after only export moves, erased type-only state aliases and className token permutations; initialization audit is explicit in the evidence. No runtime function or new provider/API/feature admission.
+
+Panel2669→999 wrapped lines; companions489/89/479/394/306. All22 inherited forced-legacy findings remain unchanged, with no new regression-file findings. The imported-legacy policy and every baseline/suppression stay exact. Existing copied complexity/parent-length warnings are not claimed fixed; no new helper or file inherits a larger allowance.
+
+Build/compiler/four source guards/three artifact binding controls pass with128 fixed declarations. Ordinary warnings remain errors0,src3418/3418,tests2859/2859,suppressed83/83; complexity218/218,length130/130. Size31→30 with every remaining failure line identical. No UI redesign, unused-source removal, schema/settings/billing/media/transformation, live backend/browser or hosted release work.
+
+## Exact next packet — Q99 retained size and Costs boundary review
+
+Reconfirm the thirty retained size findings against actual current supported-core/native and compatibility consumers. Start with the complete `client/src/integrations/family/legacy/components/Budget/CostsPanelFamily.tsx` boundary (3190 wrapped lines), its ordinary/native Costs selection, permissions, proposal/direct/deny paths, readers/writers, export/settlement/dialog behavior and tests. Compare the separate numeric-id CostsPanel carefully; do not replace string identities, currency arithmetic or Family permissions with the upstream transport assumptions.
+
+A retained label is not proof of unused code. Inventory actual profile/route/import witnesses before selecting an extraction. Preserve all existing findings until deliberately closed; no blanket deletion, exclusions, enlarged baseline or deferred cleanup. Fix demonstrated reachable defects first with red/green proof. Otherwise prototype a coherent typed boundary preserving full UI tree, hooks/dependencies, state/defaults, pure/async ordering, row identities, queue/recovery and retirement. All new helpers20/120/5/depth/format/size; explicitly compare copied inherited findings and qualify complete source plus actual consumers before applying. No live database/provider/browser fixture is required for this source review.
+
+G2 remains blocked by30 retained size failures. G1/G3–G6, fresh protection/incremental capture and independent matched database-plus-files restore remain separate gates. Keep the verified backup and ignored ETL untouched. Use `/private/tmp/trek-core-admin-plugins-source-20261118/next-baseline-private.json` after the verified normal private push. Preserve canonical151 migrations/370 sources/index/README, prior sealed evidence, all12 native files and unrelated checkouts. Shared backend checkpoint stays8cc0fe3f; website only, iOS deferred. No main/preview/production/Supabase/billing/public-mirror operation. [Checkpoint policy](private-github-checkpoints.md), [release prerequisites](core-release-prerequisites.md) and [deferred cleanup](pre-production-retained-source-cleanup-packet.md).

@@ -1,0 +1,62 @@
+{
+  "passed": true,
+  "packet": "Q104",
+  "incoming": "feb56bf699f40a43abdda763618bc772146e930a",
+  "implementation": "eb2fde5b272d7200c284722cb3d802e2fef47014",
+  "build_source": "7ddfc453061766432bde9f0efda18929660f6873",
+  "date": "2026-11-18",
+  "removed_paths": [
+    "client/src/integrations/family/legacy/pages/SharedTripPage.tsx"
+  ],
+  "new_or_modified_runtime_source_files": 0,
+  "candidate_passed": 402,
+  "same_expanded_cases_before_after": 402,
+  "raw_sources_reviewed": 14062,
+  "application_modules_reviewed": 7498,
+  "current_reachable_nodes_preserved": 6091,
+  "literal_glob_locale_modules": 28,
+  "literal_glob_video_assets": 98,
+  "no_outside_runtime_type_test_tool_importer": true,
+  "native_presentation_files_exact": 12,
+  "Family_public_trip_sharing_still_refused": true,
+  "all_3793_generated_files_accounted_for": true,
+  "406_generated_scripts_equal_after_only_chunk_reference_renames": true,
+  "SW_AST_equal_after_local_alpha_renaming_and_verified_manifest_substitution": true,
+  "SW_precache_entries_verified": 521,
+  "SW_unique_URLs": 515,
+  "existing_SW_duplicate_entries_preserved": 6,
+  "unchanged_CSS_files": 13,
+  "only_11_orphan_rules_removed_from_main_stylesheet_other_ordered_bytes_exact": true,
+  "all_generated_bytes_exact_claim": false,
+  "public_receipts_slots_and_non_binding_configuration_preserved": true,
+  "compressed_derivatives_verified": 628,
+  "fresh_typecheck_and_build_passed": true,
+  "fresh_declarations_fixed_at_current_compiler_generation": 128,
+  "source_guards_passed": 4,
+  "artifact_binding_controls_passed": 3,
+  "warning_gate_pass": true,
+  "source_warnings_actual_limit": [
+    3418,
+    3418
+  ],
+  "source_complexity_actual_limit": [
+    218,
+    218
+  ],
+  "source_length_actual_limit": [
+    130,
+    130
+  ],
+  "size_findings_before_after": [
+    24,
+    23
+  ],
+  "all_other_size_failure_lines_exact": true,
+  "format_gate_pass": true,
+  "unlisted_format_failures": 0,
+  "format_baseline_unchanged_entries": 2134,
+  "rules_baselines_exclusions_suppressions_unchanged": true,
+  "global_release_gate_pass": false,
+  "live_database_browser_or_writer_admission_acceptance": false,
+  "next": "Q105 bounded old AtlasPage/useAtlas island review; preserve current Atlas, geography/catalog identities, shared models and actual consumers"
+}

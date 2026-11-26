@@ -1,0 +1,149 @@
+{
+  "date": "2026-11-23",
+  "website_source": "b390c07bad08d6710145e28a9ab70c15eb047352",
+  "database_source": "60b6c222c080a3f1c29bd4f3a4da3f80cea5ebb4",
+  "pending_migration": {
+    "version": "20261123221046",
+    "sha256": "e820147064e429d2350e5a0b54adb8c5ec899c2ff4c0719964c064badb79f677"
+  },
+  "website_tests": {
+    "files": 27,
+    "tests": 689
+  },
+  "backend_connector_tests": {
+    "files": 66,
+    "tests": 542
+  },
+  "bound_profile_checks": {
+    "production": {
+      "checks": 91,
+      "hosted_requests": 0
+    },
+    "preview": {
+      "checks": 91,
+      "hosted_requests": 0
+    },
+    "fallback": {
+      "checks": 93,
+      "hosted_requests": 0
+    },
+    "mexicoPreview": {
+      "checks": 85,
+      "hosted_requests": 0
+    }
+  },
+  "isolated_database": {
+    "migration_tested_in_rollback_transaction": true,
+    "test_families_remaining": 0,
+    "trips_after_retry": 1,
+    "proposals_after_retry": 1,
+    "receipts_after_retry": 1,
+    "itinerary_days": 3,
+    "new_trip_returns_empty_saved_views": true,
+    "existing_route_tour_planner_task_and_packing_function_names_preserved": 11
+  },
+  "cloudflare_artifacts": {
+    "production": {
+      "source": "b390c07bad08d6710145e28a9ab70c15eb047352",
+      "version": "family-2026.11.23.6-rc.1",
+      "profile": "primary-core-production-v1",
+      "files": 3466,
+      "asset_tree_sha256": "ed09a15361a8dc5797a6c2a5d3f5bc26bef2ebe8d346f57eb4c3c2d45d4b1a00",
+      "entry": {
+        "path": "/assets/index-Co2-9174.js",
+        "bytes": 1263796,
+        "sha256": "e93a92b1c6e3926388e46a30d4ee5fe0ea376fd861cc9874d0c494bbaa77e724"
+      },
+      "service_worker_sha256": "ed0563c53f0a1b5dd46a8e5394053cccc81a8cae04ddf43278a0da0ece756ae9",
+      "artifact_scan": "passed",
+      "dry_run_targets": [
+        "familytravelsite"
+      ],
+      "worker_config": "wrangler.jsonc"
+    },
+    "writer_preview": {
+      "source": "b390c07bad08d6710145e28a9ab70c15eb047352",
+      "version": "family-2026.11.23.7-rc.1",
+      "profile": "primary-core-preview-v1",
+      "files": 3466,
+      "asset_tree_sha256": "dd9b218158f0bae77fe40280d2e8df51bd00a492f863868066984812209ee4e0",
+      "entry": {
+        "path": "/assets/index-B408oLAh.js",
+        "bytes": 1263787,
+        "sha256": "dfc1365c21776db7d7a0031359d3c06b4f4334fd9185759cbd0963a7e55adb47"
+      },
+      "service_worker_sha256": "a4ae8b3254d21904376726d017baf78409cea4dadc5357842fdb877517c44ed7",
+      "artifact_scan": "passed",
+      "dry_run_targets": [
+        "familytravelsite-integration-preview"
+      ],
+      "worker_config": "wrangler.jsonc"
+    },
+    "fallback": {
+      "source": "b390c07bad08d6710145e28a9ab70c15eb047352",
+      "version": "family-2026.11.23.8-rc.1",
+      "profile": "primary-core-fallback-v1",
+      "files": 3471,
+      "asset_tree_sha256": "dd6bc0210ebd709c9df81026c6a176a5fac98fbe2415aa4c916ad7dca9f9068a",
+      "entry": {
+        "path": "/assets/index-K-XqQSJG.js",
+        "bytes": 1260316,
+        "sha256": "9cc47e8eddbcd5dca98f81cc428509dc6154bf1610e2a52a3692ba6bedd229bd"
+      },
+      "service_worker_sha256": "e978d0777c18a38e45775f0a3fb4b6c909f716f8d0b0bcb983656723d26a0f1e",
+      "device_recovery_sha256": "17ff379e435108e8fe7f5b1ddfab2dfe7303e8301c22f608d77cd59ea7cbd36e",
+      "artifact_scan": "passed",
+      "dry_run_targets": [
+        "familytravelsite",
+        "familytravelsite-integration-preview"
+      ],
+      "worker_config": "wrangler.recovery.jsonc"
+    }
+  },
+  "loopback_worker_responses": [
+    {
+      "package": "production",
+      "worker": "familytravelsite",
+      "checks": [
+        "release identity",
+        "/dashboard",
+        "/trips/<fixture>",
+        "app entry and service worker hashes"
+      ]
+    },
+    {
+      "package": "writer_preview",
+      "worker": "familytravelsite-integration-preview",
+      "checks": [
+        "release identity",
+        "/dashboard",
+        "/trips/<fixture>",
+        "app entry and service worker hashes"
+      ]
+    },
+    {
+      "package": "fallback",
+      "worker": "familytravelsite",
+      "checks": [
+        "release identity",
+        "/dashboard",
+        "/trips/<fixture>",
+        "app entry and service worker hashes",
+        "direct standalone recovery"
+      ]
+    },
+    {
+      "package": "fallback",
+      "worker": "familytravelsite-integration-preview",
+      "checks": [
+        "release identity",
+        "/dashboard",
+        "/trips/<fixture>",
+        "app entry and service worker hashes",
+        "direct standalone recovery"
+      ]
+    }
+  ],
+  "hosted_migration_applied": false,
+  "cloudflare_versions_uploaded": false
+}

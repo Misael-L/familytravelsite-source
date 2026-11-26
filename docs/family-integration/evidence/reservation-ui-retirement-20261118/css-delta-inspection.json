@@ -1,0 +1,12 @@
+{
+  "removed_rule_count": 6,
+  "removed_rules": [
+    ".bg-\\[\\#16a34a\\]{--tw-bg-opacity:1;background-color:rgb(22 163 74/var(--tw-bg-opacity,1))}",
+    ".bg-\\[rgba\\(217\\,119\\,6\\,0\\.06\\)\\]{background-color:#d977060f}",
+    ".bg-\\[rgba\\(22\\,163\\,74\\,0\\.06\\)\\]{background-color:#16a34a0f}",
+    ".bg-\\[rgba\\(245\\,158\\,11\\,0\\.12\\)\\]{background-color:#f59e0b1f}",
+    ".bg-\\[rgba\\(59\\,130\\,246\\,0\\.12\\)\\]{background-color:#3b82f61f}",
+    ".text-\\[\\#2563eb\\]{--tw-text-opacity:1;color:rgb(37 99 235/var(--tw-text-opacity,1))}"
+  ],
+  "all_remaining_ordered_stylesheet_bytes_equal": true
+}

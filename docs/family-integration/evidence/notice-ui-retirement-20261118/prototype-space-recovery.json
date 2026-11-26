@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "only_verified_disposable_source_prototype_removed": "/private/tmp/trek-core-notice-ui-retirement-20261118/candidate-checkout",
+  "pinned_original_source": "f30ecf0162558f4417334d766b72ffaa46fe3e3a",
+  "explicit_candidate_deletions": [
+    "client/src/integrations/family/legacy/components/SystemNotices/SystemNoticeHost.tsx",
+    "client/src/integrations/family/legacy/components/SystemNotices/SystemNoticeModal.tsx"
+  ],
+  "all_other_tracked_bytes_verified": 18084,
+  "dependency_links_unlinked_without_following": true,
+  "test_logs_evidence_compiled_artifacts_source_checkouts_backups_ETL_media_preserved": true,
+  "free_bytes_before": 1400967168,
+  "free_bytes_after": 1801220096
+}

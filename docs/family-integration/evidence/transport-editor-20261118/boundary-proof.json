@@ -1,0 +1,21 @@
+{
+  "passed": true,
+  "current_nodes": 6091,
+  "current_roots_graph_edges_source_bytes_config_dynamic_globs_exact": true,
+  "raw_sources_before_after": [
+    14043,
+    14046
+  ],
+  "application_modules_before_after": [
+    7477,
+    7479
+  ],
+  "incoming_edges_before_after": [
+    3,
+    7
+  ],
+  "existing_booking_transport_and_day_timeline_consumers_preserved": true,
+  "only_new_test_parent_form_and_shared_helper_imports_added": true,
+  "no_module_augmentation_or_new_runtime_mount": true,
+  "synthetic_import_control_detects_parent": true
+}

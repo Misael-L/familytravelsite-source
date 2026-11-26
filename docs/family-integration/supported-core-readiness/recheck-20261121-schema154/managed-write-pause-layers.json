@@ -1,0 +1,42 @@
+{
+  "scope": "Disconnected X8 restore at schema 88 with disposable Auth, PostgREST and Storage services",
+  "tested_backend_commit": "c14ba0a8c0b2c505584a80150743b77bca65b812",
+  "sql_executor": "non-superuser postgres with observed Supautils policy delegation",
+  "archive_projections_verified": 200,
+  "archive_original_rows_preserved": 296764,
+  "storage_api_test_boundary": "Packaged read/write service with local compatibility index on the throwaway metadata copy. Only synthetic files were uploaded. Hosted versioned writes and multipart variants were outside the test scope.",
+  "scheduled_export_test_boundary": "Real Cron state transitions and service-role RPC calls. The scheduler never executed the original jobs. A synthetic previously claimed export completed a real file upload and completion RPC.",
+  "local_rest_stop_test_boundary": "Controlled stop and restart of one pinned local service. Hosted Data API settings and multi-instance propagation remain untested.",
+  "observations": {
+    "database_schema_baseline": 88,
+    "run_with_non_superuser_postgres": true,
+    "storage": {
+      "fresh_upload": 400,
+      "upsert": 400,
+      "delete_http": 200,
+      "prior_signed_upload_http": 200,
+      "service_upload_still_allowed": true,
+      "new_signed_url_issuance_http": 400,
+      "new_ordinary_writes_created_no_object_rows": true
+    },
+    "ordinary_old_bytes_preserved_while_paused": true,
+    "ordinary_storage_upload_works_after_reopen": true,
+    "cron_schedule_deactivated_restored_and_removed_for_fixture": true,
+    "scheduler_launch_disabled_for_restored_environment": true,
+    "new_export_service_rpc_refusals": 2,
+    "export_already_claimed_drained_before_rest_shutdown": true,
+    "export_artifact_bytes_observed": true,
+    "export_service_rpc_grants_restored": true,
+    "real_postgrest_stopped_and_restarted_in_isolation": true,
+    "rest_reads_and_writes_unavailable_during_stop": true,
+    "auth_storage_and_sql_stayed_reachable": true,
+    "direct_writer_committed_during_rest_stop": true,
+    "direct_writer_lock_check_refused_until_commit": "55P03",
+    "isolated_storage_api_used_compatibility_index": true,
+    "managed_cloud_toggle_or_replica_propagation_tested": false,
+    "hosted_mutation": false
+  },
+  "hosted_write_pause_qualified": false,
+  "hosted_schema_or_release_change": false,
+  "next": "Qualify scoped recovery for detached browser drafts before the HTTPS preview handover"
+}

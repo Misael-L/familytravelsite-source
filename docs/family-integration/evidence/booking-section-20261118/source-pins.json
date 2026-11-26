@@ -1,0 +1,15 @@
+{
+  "incoming": "031c31717af95b3e07029e95ced8de4cd1fd9306",
+  "implementation": "8828e63828cb125a48c730ca5509f2b610eefccc",
+  "build_source": "60f999a3913b237a7ccc7cb0268d935c144814fc",
+  "prior_runtime_build": "69e1951a0a42520552fd454c20b299051fffbdd5",
+  "original_panel_sha256": "27682ec331a59d18545df0be9da3618e51e77f29404228bc96a93d2755835673",
+  "qualified_panel_sha256": "4e2b810472664ee401ed6b7762c0cee4340766f6b310f1f953384a0ebf9ab569",
+  "extracted_section_sha256": "79f58b63d3f345890287f9f62b8c3c8e9cf79a606358a0925eb93eda2edae032",
+  "original_private_function_sha256": "0a2438870b161376f00d9269042f163fb72a7d5f17e87d4541e1185d407cd113",
+  "new_test_sha256": "9b8a3c41ae500dd8566ff36f99272120c2e861e494d6b0db9275f44cfbce99aa",
+  "fresh_current_declarations": 128,
+  "test_runtime": "v24.22.2",
+  "build_fixture_inputs_external_not_embedded": true,
+  "no_hosted_operation": true
+}

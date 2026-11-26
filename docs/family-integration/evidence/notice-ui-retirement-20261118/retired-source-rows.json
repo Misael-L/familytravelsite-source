@@ -1,0 +1,30 @@
+{
+  "removed_paths": [
+    "client/src/integrations/family/legacy/components/SystemNotices/SystemNoticeModal.tsx",
+    "client/src/integrations/family/legacy/components/SystemNotices/SystemNoticeHost.tsx"
+  ],
+  "previous_rows": [
+    {
+      "path": "client/src/integrations/family/legacy/components/SystemNotices/SystemNoticeModal.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "84b17ab89586017764b1ed58a32d4df33f312daa",
+        "bytes": 43499
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/components/SystemNotices/SystemNoticeModal.tsx"
+    },
+    {
+      "path": "client/src/integrations/family/legacy/components/SystemNotices/SystemNoticeHost.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "b2a904c14104766334021483876ec42b6d20e84f",
+        "bytes": 1866
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/components/SystemNotices/SystemNoticeHost.tsx"
+    }
+  ],
+  "new_qualified_commit": "0762a478191c4932aa19f0496e9071f5c55fbdd1",
+  "reason": "Actual two-file copied notice host/modal island deletion after bounded source/type/test/configuration closure; no guard relaxation or disappearing source row without deletion."
+}

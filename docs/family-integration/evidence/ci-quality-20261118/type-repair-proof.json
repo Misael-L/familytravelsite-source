@@ -1,0 +1,55 @@
+{
+  "passed": true,
+  "scope": "Five explicit callable throw-helper signatures; no runtime or policy change. Strict gate remains failing on other files.",
+  "focused_cases_before_after": [
+    209,
+    209
+  ],
+  "all_case_identities_outcomes_and_multiplicities_exact": true,
+  "no_skipped_added_removed_or_modified_tests": true,
+  "transpiled_JS_in_all_five_modules_byte_exact": true,
+  "only_source_changes": [
+    "client/src/integrations/family/creationTerminalSettlement.ts",
+    "client/src/integrations/family/packingBagDependency.ts",
+    "client/src/integrations/family/packingDependencyPair.ts",
+    "client/src/integrations/family/privateFileMemory.ts",
+    "client/src/integrations/family/publicVariantCache.ts"
+  ],
+  "strict_total_before_after": [
+    701,
+    637
+  ],
+  "strict_errors_resolved": 64,
+  "strict_changed_files": [
+    {
+      "path": "src/integrations/family/creationTerminalSettlement.ts",
+      "before": 7,
+      "after": 0
+    },
+    {
+      "path": "src/integrations/family/packingBagDependency.ts",
+      "before": 23,
+      "after": 0
+    },
+    {
+      "path": "src/integrations/family/packingDependencyPair.ts",
+      "before": 5,
+      "after": 0
+    },
+    {
+      "path": "src/integrations/family/privateFileMemory.ts",
+      "before": 9,
+      "after": 0
+    },
+    {
+      "path": "src/integrations/family/publicVariantCache.ts",
+      "before": 21,
+      "after": 1
+    }
+  ],
+  "new_strict_failures": 0,
+  "strict_gate_pass": false,
+  "baseline_allows_unchanged": 467,
+  "all_other_tracked_bytes_exact_before_qualification": 18583,
+  "all_policy_rules_baselines_exclusions_suppressions_exact": true
+}

@@ -1,0 +1,13 @@
+{
+  "incoming": "f2242baedec45c10ab372c8f1c1812a9d5523826",
+  "implementation": "1612c35f8cc09b54f2e82de51f2d6b100aa99e2a",
+  "trek": "2bcfc1bfcbbff0affd097c0f789c835396389572",
+  "runtime": "v24.22.2",
+  "retained_runtime_build": "a7033ef64e9ff42fe59e3413d1584645dbbd2310",
+  "new_build_performed": false,
+  "shared_backend_private_checkpoint": "8cc0fe3fdf85d2f577bf331b94967d977e0ac394",
+  "approved_patch_sha256": "5b81557c899cdbbe5709504998f88315f1ae2dea50edb11def1bf02d43b19ed8",
+  "formatter_adjustment_sha256": "4453da3bb8fd875af373b21b34141116dda17700cb7d6f95f90ee0543c82fc86",
+  "original_scanner_and_baseline_available_from_incoming_Git": true,
+  "retained_Q124_lineage_receipts_are_historical_proposal_proofs_not_new_guard_runs": true
+}

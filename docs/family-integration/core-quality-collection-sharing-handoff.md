@@ -1,0 +1,33 @@
+# Q96 — Collection-sharing lifetime repair and warning-gate closure
+
+Completed 18 November 2026 on the private website integration branch. Incoming `67f622d2fe52f117a8eca77775a5eb8852f3e52f`; implementation `547c927cd5b22da8af25033d2f1a4177c2e9c09c`; clean fixture build `6658353d35e53f2ffea79f695ebf6350ef4830b2`. [Evidence and replay](evidence/collection-sharing-20261118/README.md).
+
+## Repaired behavior
+
+The review demonstrates that an old invite can clear a new collection's selection, an old leave can invoke the current page's leave callback, and retired failures can show stale toasts. Busy state can carry across collections and an old completion can free its replacement's action slot. State-only guards also allow duplicate same-turn invites, row actions and phone leaves. The new lifetime and actual desktop/phone cases reproduce these failures before repair.
+
+Private transient state now belongs to the open collection, permission/device mode, account and existing private source/session context. Its mounted generation retires on close/unmount/replacement and StrictMode effect cleanup; an auth-store subscription also catches A→B→A before a React render. Existing private-session events trigger fresh state selection. Read-session identity is a UI lifetime fence, not a new authorization mechanism. Existing stores/APIs and Family handlers still own authorization.
+
+Each asynchronous operation captures its original lifetime before work and checks it before success/error toasts, selection resets, leave callbacks and busy cleanup. Synchronous locks preserve desktop per-kind versus phone shared row slots; invites and phone leaves reject same-turn duplicates. Desktop concurrent leave semantics are retained. New views start with their own private selection, invitees and busy flags; the chosen invite role remains a retained preference. Overtaken invitee reads keep cancellation checks. This does not cancel an already committed remote operation, add offline replay or establish server idempotency.
+
+Public options/results, role sorting/cycling, store selectors, action payload callbacks and busy-removal projection retain explicit AST checks. Existing desktop/phone markup and all 12 protected native files are unchanged. Family's sharing UI admission, seven store actions and eight handler routes remain unavailable; 15 new gate cases prove this without persistence. No schema, API, provider or writer activation.
+
+## Qualification
+
+All 78 final cases pass: 38 unchanged native tests and 40 new cases, including 15 Family gate cases. Original: 57 pass, 21 failures exclusively in new lifetime/consumer cases. Combined hook/companion coverage is 100% lines/functions, 99.42% statements and 96.29% branches under unchanged 85% thresholds. Actual desktop/phone consumers are used; persistence is controlled and no hosted/browser/device acceptance is inferred.
+
+Hook 125→118 counted lines. Helpers meet existing 20 complexity/120 length/5 parameter budgets. All modified/new source and tests have zero scoped warnings. The old synchronous close-reset effect is superseded by owned state, removing its warning too. The installed warning ratchet requires exactly one allowance to tighten: src/react-hooks/set-state-in-effect185→184. All other baselines, rules and suppressions stay exact; there is no growth or waiver.
+
+The full ordinary warning gate passes: errors0,src3418/3418,tests2859/2859,suppressed83/83. Complexity218/218 and function length130/130 are both closed. The same 32 size failures remain; G2 is still blocked. Clean committed-source fixture build, full installed compiler, 128 fixed declarations, four source guards and correct/wrong/missing-source artifact controls pass. Canonical 151 migrations/370 sources/index/README, prior sealed evidence and unrelated checkouts remain preserved. No production/preview/Supabase/settings/billing/media/backup/ETL change.
+
+## Exact next packet — Q97 ordinary-entry controller size review
+
+Return to the existing remaining-size inventory in core-release-prerequisites.md. The 32 failures include two ordinary-entry runtime witnesses and 30 retained findings; retained does not mean unreachable or safe to delete. Review the entire client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx boundary (1322 wrapped lines), its FamilyTripBoundary/FamilyControllerContext consumers, governance/permission/editor ports, direct hooks/projections, existing tests and actual source/profile admission. Reconfirm its static/lazy entry witness before selecting a transformation.
+
+Choose a coherent data/handler concern only after reading the full boundary and its consumers. Prototype the full affected boundary before application. Preserve route and account/session/source retirement, command/proposal/direct/deny semantics, original identities/retries/queue/recovery, day/date/time behavior, viewport/callback ordering, catalog geography and stored image variants. Do not revive the legacy frontend as a replacement for native TREK, alter the native 12-file presentation guard, enable unsupported writes/providers, change schemas/settings or perform deployment.
+
+Prefer an exact synchronous projection or other well-bounded extraction with source/AST and actual-consumer proof. Preserve getters, method receivers, callback ownership, hook order/dependencies and error behavior. New helpers must meet the unchanged budgets; do not compress lines, move a finding to another oversized file, enlarge baselines or exclude retained source. Any demonstrated functional defect takes precedence and needs red/green evidence. Do not assume the 30 retained findings can be removed; deferred unused-source cleanup remains a separate reviewed checkpoint.
+
+Qualify a complete candidate under the real installed format/size/warning policies before applying it. Preserve the newly closed warning groups, source/native/backend protections and all prior receipts. Then perform clean committed-source fixture build/compiler/source/artifact/full gates and normal private checkpointing. Keep G1/G3–G6, fresh protection/incremental backups and independent matched database-plus-file recovery separate and unproved where currently recorded. Heavy backup captures remain user-run Terminal work; preserve the verified snapshot.
+
+Use /private/tmp/trek-core-collection-sharing-source-20261118/next-baseline-private.json after the verified private push. Shared backend remains at its existing 8cc0fe3f checkpoint; website only, iOS work deferred. [Private checkpoint policy](private-github-checkpoints.md), [release prerequisites](core-release-prerequisites.md) and [deferred cleanup](pre-production-retained-source-cleanup-packet.md) remain in force.

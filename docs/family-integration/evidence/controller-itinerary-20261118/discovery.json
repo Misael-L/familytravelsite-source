@@ -1,0 +1,234 @@
+{
+  "requestDelete": {
+    "free": [
+      "canUsePlaces",
+      "toastDenied",
+      "placesMode",
+      "setPendingDeleteId"
+    ],
+    "start": 22664,
+    "end": 22812,
+    "arrow": "(placeId: string) => {\n    if (!canUsePlaces) {\n      toastDenied('draftable', placesMode);\n      return;\n    }\n    setPendingDeleteId(placeId);\n  }",
+    "lines": 7
+  },
+  "openTrackImport": {
+    "free": [
+      "canEditPublished",
+      "toastDenied",
+      "setTrackImportOpen"
+    ],
+    "start": 23760,
+    "end": 23886,
+    "arrow": "() => {\n    if (!canEditPublished) {\n      toastDenied('publishedOnly');\n      return;\n    }\n    setTrackImportOpen(true);\n  }",
+    "lines": 7
+  },
+  "requestDeleteTrack": {
+    "free": [
+      "canEditPublished",
+      "toastDenied",
+      "setPendingDeleteTrackId"
+    ],
+    "start": 23918,
+    "end": 24067,
+    "arrow": "(trackId: string) => {\n    if (!canEditPublished) {\n      toastDenied('publishedOnly');\n      return;\n    }\n    setPendingDeleteTrackId(trackId);\n  }",
+    "lines": 7
+  },
+  "openAddPlace": {
+    "free": [
+      "canUsePlaces",
+      "toastDenied",
+      "placesMode",
+      "setPickerOpen"
+    ],
+    "start": 24475,
+    "end": 24600,
+    "arrow": "() => {\n    if (!canUsePlaces) {\n      toastDenied('draftable', placesMode);\n      return;\n    }\n    setPickerOpen(true);\n  }",
+    "lines": 7
+  },
+  "requestAssignToDay": {
+    "free": [
+      "canUseSchedule",
+      "toastDenied",
+      "scheduleMode",
+      "days",
+      "toast",
+      "selectedDayId",
+      "assignPlaceToDay",
+      "setDayPickerPlaceId"
+    ],
+    "start": 27862,
+    "end": 28210,
+    "arrow": "(placeId: string) => {\n    if (!canUseSchedule) {\n      toastDenied('draftable', scheduleMode);\n      return;\n    }\n    if (days.length === 0) {\n      toast.error('This trip has no days yet');\n      return;\n    }\n    if (selectedDayId) {\n      void assignPlaceToDay(placeId, selectedDayId);\n      return;\n    }\n    setDayPickerPlaceId(placeId);\n  }",
+    "lines": 15
+  },
+  "requestRemoveItem": {
+    "free": [
+      "canUseSchedule",
+      "toastDenied",
+      "scheduleMode",
+      "setPendingRemoveItemId"
+    ],
+    "start": 28241,
+    "end": 28395,
+    "arrow": "(itemId: string) => {\n    if (!canUseSchedule) {\n      toastDenied('draftable', scheduleMode);\n      return;\n    }\n    setPendingRemoveItemId(itemId);\n  }",
+    "lines": 7
+  },
+  "confirmDelete": {
+    "free": [
+      "tripId",
+      "pendingDeleteId",
+      "placesMode",
+      "gov",
+      "toast",
+      "t",
+      "setPlaces",
+      "setScheduleItems",
+      "selectedPlaceId",
+      "setSelectedPlaceId",
+      "setFitKey",
+      "setPendingDeleteId"
+    ],
+    "start": 22839,
+    "end": 23731,
+    "arrow": "async () => {\n    if (!tripId || !pendingDeleteId) return;\n    const id = pendingDeleteId;\n    try {\n      if (placesMode === 'draft') {\n        const ok = await gov.addDraftOp({\n          module: 'trip_place',\n          op: 'remove',\n          payload: payloadTripPlaceRemove(id),\n          targetTable: targetTableForModule('trip_place'),\n          targetId: id,\n          sortOrder: gov.nextSortOrder,\n        });\n        if (ok) toast.success(t('trip.governance.stagedRemove'));\n        return;\n      }\n      await deleteTripPlace(tripId, id);\n      setPlaces((prev) => prev.filter((p) => p.id !== id));\n      setScheduleItems((prev) => prev.filter((s) => s.placeId !== id));\n      if (selectedPlaceId === id) setSelectedPlaceId(null);\n      setFitKey((k) => k + 1);\n    } catch {\n      toast.error('Could not remove this place');\n    } finally {\n      setPendingDeleteId(null);\n    }\n  }",
+    "lines": 27
+  },
+  "confirmDeleteTrack": {
+    "free": [
+      "pendingDeleteTrackId",
+      "setTracks",
+      "setFitKey",
+      "toast",
+      "t",
+      "setPendingDeleteTrackId"
+    ],
+    "start": 24099,
+    "end": 24449,
+    "arrow": "async () => {\n    if (!pendingDeleteTrackId) return;\n    const id = pendingDeleteTrackId;\n    try {\n      await deleteTripTrack(id);\n      setTracks((prev) => prev.filter((tr) => tr.id !== id));\n      setFitKey((k) => k + 1);\n    } catch {\n      toast.error(t('places.importFileError'));\n    } finally {\n      setPendingDeleteTrackId(null);\n    }\n  }",
+    "lines": 13
+  },
+  "handlePickCatalog": {
+    "free": [
+      "tripId",
+      "canUsePlaces",
+      "toastDenied",
+      "placesMode",
+      "gov",
+      "toast",
+      "t",
+      "setPickerOpen",
+      "setMobileSidebarOpen",
+      "reloadPlaces",
+      "setSelectedPlaceId"
+    ],
+    "start": 24631,
+    "end": 25644,
+    "arrow": "async (placeId: string) => {\n    if (!tripId) return;\n    if (!canUsePlaces) {\n      toastDenied('draftable', placesMode);\n      return;\n    }\n    try {\n      if (placesMode === 'draft') {\n        const ok = await gov.addDraftOp({\n          module: 'trip_place',\n          op: 'add',\n          payload: payloadTripPlaceAdd(placeId),\n          targetTable: targetTableForModule('trip_place'),\n          sortOrder: gov.nextSortOrder,\n        });\n        if (ok) {\n          toast.success(t('trip.governance.staged'));\n          setPickerOpen(false);\n          setMobileSidebarOpen(null);\n        }\n        return;\n      }\n      const inserted = await upsertTripPlace(tripId, placeId);\n      if (!inserted) {\n        toast.info('That place is already on this trip');\n        setPickerOpen(false);\n        return;\n      }\n      await reloadPlaces();\n      setSelectedPlaceId(placeId);\n      setPickerOpen(false);\n      setMobileSidebarOpen(null);\n    } catch {\n      toast.error('Could not add this place');\n    }\n  }",
+    "lines": 36
+  },
+  "assignPlaceToDay": {
+    "free": [
+      "tripId",
+      "canUseSchedule",
+      "toastDenied",
+      "scheduleMode",
+      "places",
+      "days",
+      "toast",
+      "itemsByDayId",
+      "setDayPickerPlaceId",
+      "gov",
+      "t",
+      "setScheduleItems",
+      "pushUndo",
+      "setSelectedDayId"
+    ],
+    "start": 25691,
+    "end": 27729,
+    "arrow": "async (placeId: string, dayId: string) => {\n      if (!tripId) return;\n      if (!canUseSchedule) {\n        toastDenied('draftable', scheduleMode);\n        return;\n      }\n      const place = places.find((p) => p.id === placeId);\n      const day = days.find((d) => d.id === dayId);\n      if (!place || !day) {\n        toast.error('Could not assign this place');\n        return;\n      }\n      const dayItems = itemsByDayId.get(dayId) ?? [];\n      if (dayItems.some((i) => i.placeId === placeId)) {\n        toast.info('That place is already on this day');\n        setDayPickerPlaceId(null);\n        return;\n      }\n      const sortOrder = dayItems.reduce((max, i) => Math.max(max, i.sortOrder), -1) + 1;\n      const startsAt = civilDayToUtcMidnightIso(day.civilDay);\n      try {\n        if (scheduleMode === 'draft') {\n          const ok = await gov.addDraftOp({\n            module: 'plan_item',\n            op: 'add',\n            payload: payloadPlanItem({\n              activity: place.name,\n              placeId,\n              startsAt,\n              sortOrder,\n            }),\n            tripDayId: day.id,\n            civilDate: day.civilDay,\n            targetTable: targetTableForModule('plan_item'),\n            sortOrder: gov.nextSortOrder,\n          });\n          if (ok) {\n            toast.success(t('trip.governance.staged'));\n            setDayPickerPlaceId(null);\n          }\n          return;\n        }\n        const created = await insertScheduleItem({\n          tripId,\n          activity: place.name,\n          placeId,\n          startsAt,\n          sortOrder,\n        });\n        setScheduleItems((prev) => [...prev, created]);\n        pushUndo(t('undo.assignPlace'), async () => {\n          await deleteScheduleItem(created.id);\n          setScheduleItems((prev) => prev.filter((s) => s.id !== created.id));\n        });\n        setSelectedDayId(dayId);\n        setDayPickerPlaceId(null);\n        toast.success('Place assigned to day');\n      } catch {\n        toast.error('Could not assign this place');\n      }\n    }",
+    "lines": 61
+  },
+  "confirmRemoveItem": {
+    "free": [
+      "pendingRemoveItemId",
+      "scheduleItems",
+      "setPendingRemoveItemId",
+      "scheduleMode",
+      "gov",
+      "toast",
+      "t",
+      "setScheduleItems",
+      "pushUndo",
+      "tripId"
+    ],
+    "start": 28426,
+    "end": 29833,
+    "arrow": "async () => {\n    if (!pendingRemoveItemId) return;\n    const item = scheduleItems.find((s) => s.id === pendingRemoveItemId);\n    if (!item) {\n      setPendingRemoveItemId(null);\n      return;\n    }\n    try {\n      if (scheduleMode === 'draft') {\n        const ok = await gov.addDraftOp({\n          module: 'plan_item',\n          op: 'remove',\n          payload: payloadRemoveMarker(),\n          targetTable: targetTableForModule('plan_item'),\n          targetId: item.id,\n          sortOrder: gov.nextSortOrder,\n        });\n        if (ok) toast.success(t('trip.governance.stagedRemove'));\n        return;\n      }\n      await deleteScheduleItem(item.id);\n      setScheduleItems((prev) => prev.filter((s) => s.id !== item.id));\n      pushUndo(t('undo.removeAssignment'), async () => {\n        if (!tripId) return;\n        const restored = await insertScheduleItem({\n          tripId,\n          activity: item.activity,\n          placeId: item.placeId,\n          address: item.address,\n          startsAt: item.startsAt,\n          sortOrder: item.sortOrder,\n          experienceId: item.experienceId,\n          foodId: item.foodId,\n          linkUrl: item.linkUrl,\n        });\n        setScheduleItems((prev) => [...prev, restored]);\n      });\n      toast.success('Removed from day');\n    } catch {\n      toast.error('Could not remove from day');\n    } finally {\n      setPendingRemoveItemId(null);\n    }\n  }",
+    "lines": 44
+  },
+  "moveItem": {
+    "free": [
+      "canUseSchedule",
+      "toastDenied",
+      "scheduleMode",
+      "timeline",
+      "scheduleItems",
+      "gov",
+      "toast",
+      "t",
+      "setScheduleItems",
+      "pushUndo"
+    ],
+    "start": 29855,
+    "end": 31950,
+    "arrow": "async (dayId: string, itemId: string, direction: -1 | 1) => {\n    if (!canUseSchedule) {\n      toastDenied('draftable', scheduleMode);\n      return;\n    }\n    const rows = timeline.find((day) => day.dayId === dayId)?.rows ?? [];\n    const updates = schedulePairMove(rows, itemId, direction);\n    if (!updates) return;\n    const previous = updates.map((update) => {\n      const current = scheduleItems.find((item) => item.id === update.id);\n      return { id: update.id, sortOrder: current?.sortOrder ?? update.sortOrder };\n    });\n    try {\n      if (scheduleMode === 'draft') {\n        let sort = gov.nextSortOrder;\n        for (const u of updates) {\n          const current = scheduleItems.find((item) => item.id === u.id);\n          if (!current || current.sortOrder === u.sortOrder) continue;\n          const ok = await gov.addDraftOp({\n            module: 'plan_item',\n            op: 'update',\n            payload: payloadPlanItem({\n              activity: current.activity,\n              placeId: current.placeId,\n              startsAt: current.startsAt,\n              sortOrder: u.sortOrder,\n              experienceId: current.experienceId,\n              foodId: current.foodId,\n            }),\n            targetTable: targetTableForModule('plan_item'),\n            targetId: u.id,\n            sortOrder: sort,\n          });\n          if (!ok) return;\n          sort += 1;\n        }\n        toast.success(t('trip.governance.stagedUpdate'));\n        return;\n      }\n      await updateScheduleSortOrders(updates);\n      setScheduleItems((prev) =>\n        prev.map((s) => {\n          const u = updates.find((x) => x.id === s.id);\n          return u ? { ...s, sortOrder: u.sortOrder } : s;\n        })\n      );\n      pushUndo(t('undo.reorder'), async () => {\n        await updateScheduleSortOrders(previous);\n        setScheduleItems((prev) =>\n          prev.map((s) => {\n            const u = previous.find((x) => x.id === s.id);\n            return u ? { ...s, sortOrder: u.sortOrder } : s;\n          })\n        );\n      });\n    } catch {\n      toast.error('Could not reorder');\n    }\n  }",
+    "lines": 59
+  },
+  "saveDayTitle": {
+    "free": [
+      "canEditPublished",
+      "toastDenied",
+      "setDays",
+      "toast"
+    ],
+    "start": 31976,
+    "end": 32320,
+    "arrow": "async (dayId: string, title: string | null) => {\n    if (!canEditPublished) {\n      toastDenied('publishedOnly');\n      return;\n    }\n    try {\n      await updateTripDayTitle(dayId, title);\n      setDays((prev) => prev.map((d) => (d.id === dayId ? { ...d, title } : d)));\n    } catch {\n      toast.error('Could not update day title');\n    }\n  }",
+    "lines": 12
+  },
+  "saveNote": {
+    "free": [
+      "tripId",
+      "noteDay",
+      "canUseSchedule",
+      "toastDenied",
+      "scheduleMode",
+      "gov",
+      "noteExisting",
+      "toast",
+      "t",
+      "setNoteDayId",
+      "setDayNotes"
+    ],
+    "start": 32342,
+    "end": 33683,
+    "arrow": "async (body: string) => {\n    if (!tripId || !noteDay) return;\n    if (!canUseSchedule) {\n      toastDenied('draftable', scheduleMode);\n      return;\n    }\n    try {\n      if (scheduleMode === 'draft') {\n        const ok = await gov.addDraftOp({\n          module: 'day_note',\n          op: noteExisting ? 'update' : 'add',\n          payload: payloadDayNote({ body, icon: noteExisting?.icon ?? null, sortOrder: noteExisting?.sortOrder ?? 0 }),\n          tripDayId: noteDay.id,\n          civilDate: noteDay.civilDay,\n          targetTable: targetTableForModule('day_note'),\n          targetId: noteExisting?.id ?? null,\n          sortOrder: gov.nextSortOrder,\n        });\n        if (ok) {\n          toast.success(t('trip.governance.staged'));\n          setNoteDayId(null);\n        }\n        return;\n      }\n      const saved = await upsertDayNote({\n        tripId,\n        civilDay: noteDay.civilDay,\n        body,\n        noteId: noteExisting?.id ?? null,\n      });\n      setDayNotes((prev) => {\n        const withoutId = prev.filter((n) => n.id !== saved.id);\n        if (noteExisting) return [...withoutId, saved];\n        return [...withoutId.filter((n) => n.civilDay !== saved.civilDay), saved];\n      });\n      setNoteDayId(null);\n      toast.success(t('common.saved'));\n    } catch {\n      toast.error('Could not save note');\n    }\n  }",
+    "lines": 41
+  },
+  "confirmDeleteNote": {
+    "free": [
+      "pendingDeleteNoteId",
+      "scheduleMode",
+      "gov",
+      "toast",
+      "t",
+      "setDayNotes",
+      "setNoteDayId",
+      "setPendingDeleteNoteId"
+    ],
+    "start": 33714,
+    "end": 34486,
+    "arrow": "async () => {\n    if (!pendingDeleteNoteId) return;\n    const id = pendingDeleteNoteId;\n    try {\n      if (scheduleMode === 'draft') {\n        const ok = await gov.addDraftOp({\n          module: 'day_note',\n          op: 'remove',\n          payload: payloadRemoveMarker(),\n          targetTable: targetTableForModule('day_note'),\n          targetId: id,\n          sortOrder: gov.nextSortOrder,\n        });\n        if (ok) toast.success(t('trip.governance.stagedRemove'));\n        return;\n      }\n      await deleteDayNote(id);\n      setDayNotes((prev) => prev.filter((n) => n.id !== id));\n      setNoteDayId(null);\n      toast.success('Note deleted');\n    } catch {\n      toast.error('Could not delete note');\n    } finally {\n      setPendingDeleteNoteId(null);\n    }\n  }",
+    "lines": 26
+  }
+}

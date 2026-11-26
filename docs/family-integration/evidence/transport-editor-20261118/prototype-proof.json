@@ -1,0 +1,25 @@
+{
+  "passed": true,
+  "changed_source": "client/src/integrations/family/legacy/components/Planner/FamilyTransportEditor.tsx",
+  "new_sources": [
+    "client/src/integrations/family/legacy/components/Planner/FamilyTransportManualForm.tsx",
+    "client/src/integrations/family/legacy/components/Planner/familyTransportWaypoints.ts"
+  ],
+  "new_test": "client/src/integrations/family/legacy/components/Planner/FamilyTransportEditor.behavior.test.tsx",
+  "original_sha256": "f1cdd38d8990f12262f9c141c52bf97a72ba53c43f983c2e288793232c59fc45",
+  "prototype_sha256": "4605973208d20383bb81830d1aaa34a6764f44c61d34c879e6ae809aed519201",
+  "new_source_sha256": {
+    "client/src/integrations/family/legacy/components/Planner/FamilyTransportManualForm.tsx": "57627064d88863457e7e278768a57223e189d691149d5b53e1502af08fbf9560",
+    "client/src/integrations/family/legacy/components/Planner/familyTransportWaypoints.ts": "fd5a9b28a1c1dadb4fb60e2b53c39a8ebe153b9c6bfd4a9695db35db641e8002"
+  },
+  "new_test_sha256": "ba3663fee72b9a469b26c0c0f2462c42ba790b2de756c373218700583199a592",
+  "complete_parent_body_public_props_and_business_helpers_exact": true,
+  "all_five_form_route_expense_component_bodies_exact": true,
+  "waypoint_types_factories_and_conversion_exact_except_exports": true,
+  "lookup_and_field_constants_exact": true,
+  "inverse_reconstruction_exact": true,
+  "no_original_test_changed": true,
+  "all_other_tracked_source_bytes_exact": 18391,
+  "fresh_COW_source_copy_independence_passed": true,
+  "all_four_changed_files_formatted_before_testing": true
+}

@@ -1,0 +1,33 @@
+{
+  "verified_at_utc": "2026-11-25T23:28:08.997663+00:00",
+  "production_version": "bbf6e56e-f39e-482b-b5b9-16ae74a1fc31",
+  "production_traffic_percent": 100,
+  "production_deployment_id": "702ebc0e-2bbc-4eb6-a4cf-d62c7e31e5e4",
+  "release": "family-2026.11.25.2",
+  "website_source": "9e563ef464fc95889f70b6d14f138ef9a4caef34",
+  "previous_production_version": "9296b138-b5b1-4c12-81fe-8a7bb0e13cb9",
+  "preview_version": "14147a66-db08-49e0-96ee-0a7f458a8291",
+  "recovery_version": "65d2df60-8520-498c-9fac-d13d8a44fe5e",
+  "signed_out_browser_check": true,
+  "public_route_shells_and_build_assets_verified": true,
+  "source_publication": {
+    "tag_ref": "refs/tags/source-20261125-9e563ef",
+    "tag_oid": "d10ba6d6707e5288964c8eb49d2d6a761315189e",
+    "commit": "c85e672612e9abdf91a8ea4730b085eb53a5991f",
+    "tree": "fad945bc0940c5bbafda3ebabb65624acbcc8c9d",
+    "archived_source": "9e563ef464fc95889f70b6d14f138ef9a4caef34",
+    "manifest_sha256": "e3192bb93707cbf3a5550b208a1ac82622bb4f7aa855a2bff04321288de76d43",
+    "retained_source_files": 18704,
+    "source_files_match_private_commit": true,
+    "manifest_scan_passed": true,
+    "public_tag_published": true,
+    "worker_version_id": "bbf6e56e-f39e-482b-b5b9-16ae74a1fc31",
+    "anonymous_manifest_verified": true,
+    "public_source_url": "https://github.com/Misael-L/familytravelsite-source/tree/source-20261125-9e563ef",
+    "main_commit": "e3eefc3c7f149b7f7e49917863163b0103056dc2"
+  },
+  "focused_client_tests_passed": 142,
+  "supabase_migrations_present": 182,
+  "planned_rollout_migrations_present": 94,
+  "supabase_mutations": 0
+}

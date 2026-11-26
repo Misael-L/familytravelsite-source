@@ -1,0 +1,51 @@
+{
+  "date": "2026-11-23",
+  "public_mirror": "https://github.com/Misael-L/familytravelsite-source",
+  "public_source_url": "https://github.com/Misael-L/familytravelsite-source/tree/source-20261123-b390c07",
+  "published_tag": {
+    "public_ref": "refs/tags/source-20261123-b390c07",
+    "public_commit": "a7ca594b495fdb41e97fb5f40205e3cd691eda26",
+    "tag_oid": "a96eef604cc1f045437f6c085e8a96afe3573fde",
+    "source": "b390c07bad08d6710145e28a9ab70c15eb047352",
+    "tree": "c12c0619bcb4a12dc8e09e5cdfa7e341586a4c1b",
+    "manifest_sha256": "ea11f7d3458c420e177bae894d1df3e90daa00371d2f54d050f15dc47a575d27",
+    "worker_bindings": [
+      {
+        "origin": "https://familytravelsite.lmisael0721.workers.dev",
+        "workerVersionId": "65d2df60-8520-498c-9fac-d13d8a44fe5e",
+        "release": "family-2026.11.23.8-rc.1"
+      },
+      {
+        "origin": "https://familytravelsite-integration-preview.lmisael0721.workers.dev",
+        "workerVersionId": "93268165-5679-47b4-b990-f7fc65d3e6ae",
+        "release": "family-2026.11.23.8-rc.1"
+      }
+    ],
+    "files": 18695,
+    "main_before": "e3eefc3c7f149b7f7e49917863163b0103056dc2",
+    "main_after": "e3eefc3c7f149b7f7e49917863163b0103056dc2",
+    "anonymous_tag_and_manifest_verified": true
+  },
+  "fallback_versions_verified_after_publication": [
+    {
+      "worker": "familytravelsite",
+      "origin": "https://familytravelsite.lmisael0721.workers.dev",
+      "workerVersionId": "65d2df60-8520-498c-9fac-d13d8a44fe5e",
+      "activeVersionId": "7196c6c6-a836-4197-bb91-9f22f5e8ecd8",
+      "release": "family-2026.11.23.8-rc.1"
+    },
+    {
+      "worker": "familytravelsite-integration-preview",
+      "origin": "https://familytravelsite-integration-preview.lmisael0721.workers.dev",
+      "workerVersionId": "93268165-5679-47b4-b990-f7fc65d3e6ae",
+      "activeVersionId": "14147a66-db08-49e0-96ee-0a7f458a8291",
+      "release": "family-2026.11.23.8-rc.1"
+    }
+  ],
+  "supabase_ledger_after_publication": {
+    "versions": 181,
+    "latest": "20261122222205",
+    "new_trip_applied": false,
+    "version_sha256": "1bde929f93bd3aab5b2d9f5354185a4d435be8ee2d0cb7b78b5c262b2d9599e2"
+  }
+}

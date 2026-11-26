@@ -1,0 +1,22 @@
+import {act,renderHook} from '@testing-library/react';
+import {expect,it,vi} from 'vitest';
+import {useGeolocation} from './useGeolocation';
+it('characterizes an inherited stale denial stopping the replacement watch',async()=>{
+ const held: PositionErrorCallback[]=[];
+ const clear=vi.fn();
+ vi.stubGlobal('isSecureContext',true);
+ Object.defineProperty(navigator,'geolocation',{configurable:true,value:{
+  watchPosition:(_ok:PositionCallback,fail:PositionErrorCallback)=>{held.push(fail);return held.length+9;},
+  clearWatch:clear,
+ }});
+ const{result,unmount}=renderHook(()=>useGeolocation());
+ await act(()=>result.current.cycleMode());
+ act(()=>result.current.setMode('off'));
+ act(()=>result.current.setMode('show'));
+ expect(held).toHaveLength(2);
+ expect(result.current.mode).toBe('show');
+ act(()=>held[0]({code:1,message:'old denial',PERMISSION_DENIED:1,POSITION_UNAVAILABLE:2,TIMEOUT:3} as GeolocationPositionError));
+ expect(result.current.mode).toBe('off');
+ expect(clear).toHaveBeenLastCalledWith(11);
+ unmount();vi.unstubAllGlobals();
+});

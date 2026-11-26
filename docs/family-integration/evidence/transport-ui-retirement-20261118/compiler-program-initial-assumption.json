@@ -1,0 +1,7 @@
+{
+  "initial_assertion_failed": true,
+  "incorrect_expectation": "The retired modules would be two members of the incoming ordinary compiler program.",
+  "actual": "Existing unchanged tsconfig excludes the copied legacy directory; these unused candidates are absent before and after. Reachable imported Family legacy modules remain included.",
+  "application_or_type_failure": false,
+  "no_tsconfig_or_type_change": true
+}

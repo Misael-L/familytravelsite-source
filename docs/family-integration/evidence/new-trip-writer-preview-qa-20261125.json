@@ -1,0 +1,41 @@
+{
+  "date": "2026-11-25",
+  "writer_preview": {
+    "version_id": "2ec409fe-9a48-4bdc-a624-fc3f1db64dc4",
+    "version_url": "https://2ec409fe-familytravelsite-integration-preview.lmisael0721.workers.dev",
+    "source": "b390c07bad08d6710145e28a9ab70c15eb047352",
+    "release": "family-2026.11.23.7-rc.1",
+    "profile": "primary-core-preview-v1",
+    "asset_tree_sha256": "dd9b218158f0bae77fe40280d2e8df51bd00a492f863868066984812209ee4e0"
+  },
+  "normal_traffic_percent_to_test_version": 0,
+  "version_override_removed": true,
+  "live_worker_versions": {
+    "familytravelsite": "7196c6c6-a836-4197-bb91-9f22f5e8ecd8",
+    "familytravelsite-integration-preview": "14147a66-db08-49e0-96ee-0a7f458a8291"
+  },
+  "desktop_chrome": true,
+  "browser_mfa_login": true,
+  "new_trip_requests": 2,
+  "first_successful_response_intentionally_dropped": true,
+  "retry_used_same_request_and_returned_same_trip_and_proposal": true,
+  "trip_visible_after_reload": true,
+  "only_test_family_household_added": true,
+  "hosted_row_counts": {
+    "audience_count": 1,
+    "matching_proposal": 1,
+    "matching_trip": 1,
+    "migrations": 182,
+    "proposal_count": 1,
+    "qa_disabled": true,
+    "qa_receipts": 1,
+    "qa_sessions": 0,
+    "receipt_matches": 1,
+    "saved_days": 7,
+    "traveler_count": 1,
+    "trip_count": 1,
+    "unrelated_members": 0
+  },
+  "temporary_qa_sessions_revoked": true,
+  "scope": "Existing private QA Family only. The single synthetic trip remains in that Family."
+}

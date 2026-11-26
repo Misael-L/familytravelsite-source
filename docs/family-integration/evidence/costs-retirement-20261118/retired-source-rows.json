@@ -1,0 +1,30 @@
+{
+  "removed_paths": [
+    "client/src/integrations/family/legacy/components/Budget/CostsPanelFamily.tsx",
+    "client/src/integrations/family/legacy/components/Budget/CostsPanel.tsx"
+  ],
+  "previous_rows": [
+    {
+      "path": "client/src/integrations/family/legacy/components/Budget/CostsPanelFamily.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "707a7f4c937d36cfdcb2f1cc2a86a7b0b00b5370",
+        "bytes": 116905
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/components/Budget/CostsPanelFamily.tsx"
+    },
+    {
+      "path": "client/src/integrations/family/legacy/components/Budget/CostsPanel.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "4c270a0f9ef81b47da1c4ea08ebe593fe9dccf73",
+        "bytes": 128795
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/components/Budget/CostsPanel.tsx"
+    }
+  ],
+  "new_qualified_commit": "7f64a69080dcc9f0a545f8f0a46a7d1352a9a47b",
+  "reason": "Actual two-module Costs UI deletion after bounded source/type/test/configuration closure; no guard relaxation or disappearing source row without deletion."
+}

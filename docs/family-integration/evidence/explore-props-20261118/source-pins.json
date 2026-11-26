@@ -1,0 +1,13 @@
+{
+  "incoming": "6f2a83b615b86cb588351d3b3c6cfb979ede04cc",
+  "implementation": "aa0d24314deb7b3425eaf48865df1ad4e6948b38",
+  "build_source": "69e1951a0a42520552fd454c20b299051fffbdd5",
+  "prior_runtime_build": "f18be8d3fd32b32371a02d30eb1d2e43d8eaeaf0",
+  "original_view_sha256": "b97146ac3ac1658cd298ee101519387b93e55211d51a20538b0597bda6069e66",
+  "qualified_view_sha256": "b5b7fbc8e314af518d3ca108d51083f3893d5ee740efdb2b7ed2ddb79507e2df",
+  "new_type_module_sha256": "dbcadeeeeb8e77d6e3f5f77450e7f0d7afff789016c2cc02e5e76d39c595988e",
+  "emitted_view_sha256": "5ee17f62cbc6bb8fdcac3ea8104031ac70895a87d4a152d51c529e5e04a3136c",
+  "fresh_current_declarations": 128,
+  "test_runtime": "v24.22.2",
+  "no_hosted_operation": true
+}

@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "acceptance": "Reviewed removal of 6 orphaned utility rules; no byte-identity claim for content-addressed files or generated metadata.",
+  "before_build": "1a0079d64634a5e46bb52982215a6fcc0dbbe428",
+  "after_build": "c8200913924aac7c3efd6ea92854b59f08ba818e",
+  "all_output_files_accounted_for": 3793,
+  "JavaScript_CSS_files": 421,
+  "application_JS_files_equal_after_only_chunk_reference_renames": 406,
+  "SW_code_semantically_equal_with_verified_cache_manifest": true,
+  "CSS_files": 14,
+  "unchanged_CSS_files": 13,
+  "main_stylesheet_only_6_orphan_rules_removed_ordered_other_bytes_exact": true,
+  "removed_whole_utility_tokens_absent_from_current_application_source_and_compiled_JS": true,
+  "entry_receipts_and_public_configuration_slots_and_non_binding_fields_preserved": true,
+  "manifest_and_HTML_only_chunk_path_renames": true,
+  "rules_scanner_baselines_and_native_source_unchanged": true,
+  "compressed_derivative_check_required": true,
+  "all_JavaScript_CSS_raw_bytes_exact": false
+}

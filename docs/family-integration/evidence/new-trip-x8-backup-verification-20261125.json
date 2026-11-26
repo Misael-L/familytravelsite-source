@@ -1,0 +1,33 @@
+{
+  "date": "2026-11-25",
+  "backup": {
+    "snapshot_created_at": "2026-11-25T21:06:06.894369+00:00",
+    "completed_at": "2026-11-25T21:09:30.819989+00:00",
+    "backup_path": "/Volumes/FamilyTravel Backup/pre-new-trip-cutover-20261125",
+    "captured_after_verified_pause": true,
+    "ledger_count": 181,
+    "ledger_digest": "1bde929f93bd3aab5b2d9f5354185a4d435be8ee2d0cb7b78b5c262b2d9599e2",
+    "database_dump_sha256": "89fde4280dd8c5cbeb981d23c3113fbaf96fc1ae7647004c90454d1e6c00f18d",
+    "object_manifest_sha256": "6e07975fc315c002b6378d874cd86458d8da67030ee4c5f6d5268049aca3bf8e",
+    "verified_objects_reported": 77040,
+    "new_journey_rows": 2,
+    "new_journey_media_bytes": 2331,
+    "two_preview_images_matched_pinned_asset_sha256": true
+  },
+  "independent_verification_exit": 0,
+  "previous_media_objects_reused": 77038,
+  "new_media_objects_captured": 2,
+  "recorded_during_verified_live_pause": true,
+  "pause_started_utc": "2026-11-25 20:58:50.003153",
+  "worker_versions_during_backup": {
+    "familytravelsite-integration-preview": "93268165-5679-47b4-b990-f7fc65d3e6ae",
+    "familytravelsite": "65d2df60-8520-498c-9fac-d13d8a44fe5e"
+  },
+  "data_api_pause_probe_status": 503,
+  "data_api_pause_probe_code": "PT503",
+  "ledger_after_backup": 181,
+  "migration_applied": false,
+  "live_guard_and_three_storage_policies_verified": true,
+  "backup_archive_contains_temporary_maintenance_schema_and_policies": true,
+  "restore_rehearsal_performed_for_this_generation": false
+}

@@ -1,0 +1,26 @@
+{
+  "passed": true,
+  "method": "APFS clonefile with CLONE_NOFOLLOW; copyfile ACL|STAT|XATTR metadata only; validate then atomic replace",
+  "source_build": "/private/tmp/trek-core-theme-ownership-20261118/final-archive/extract",
+  "source_tree_sha256_unchanged": "9750206283342dfb8e9e784cce7cd27ed3ccf962faf02f0f0dd852853d3d82ba",
+  "source_and_all_target_logical_trees_unchanged": true,
+  "target_builds": [
+    {
+      "root": "/private/tmp/trek-core-ci-quality-20261118/final-archive/extract",
+      "pinned_build_source": "e8006f384249ca9bc9b4fed7d99cd89045ab9000",
+      "all_files": 18640,
+      "before_tree_sha256": "db93e47133be49560691cf9b7cc747cb0b0a98d25420cd1148bc44a91d4dfbae",
+      "after_tree_sha256": "db93e47133be49560691cf9b7cc747cb0b0a98d25420cd1148bc44a91d4dfbae",
+      "all_paths_bytes_modes_owners_mtime_flags_xattrs_ACLs_exact": true,
+      "cloned_identical_files": 18578,
+      "logical_bytes_now_using_current_source_extents": 354399766,
+      "nonidentical_or_special_files_untouched": 62
+    }
+  ],
+  "free_bytes_before": 2473984000,
+  "free_bytes_after": 2912256000,
+  "working_sources_sealed_evidence_DB_backups_ETL_media_and_unverified_copies_untouched": true,
+  "source_snapshots_all_logical_files_bytes_and_recorded_metadata_exact": true,
+  "physical_inodes_and_ctime_may_change": true,
+  "no_file_removed_from_any_logical_build": true
+}

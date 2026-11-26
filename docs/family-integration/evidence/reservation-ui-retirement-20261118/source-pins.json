@@ -1,0 +1,30 @@
+{
+  "incoming": "eddb6dcc74de573dabfe30e73f7bc92b38af2078",
+  "implementation": "ce5c3bcad5eeb5aa0d64e2a4246f529186cd423b",
+  "build_source": "c8200913924aac7c3efd6ea92854b59f08ba818e",
+  "removed_original_sha256": {
+    "client/src/integrations/family/legacy/components/Planner/ReservationModal.tsx": "ef7a4ae6b49400f5f8b8ab651ca9ece19a0ff7e06b32ba2540658b8c07dc7741",
+    "client/src/integrations/family/legacy/components/Planner/ReservationsPanel.tsx": "5182b75ff5bf0a20427a67ebe30b10cfd3571d372d4b19516dea539f329a1560"
+  },
+  "prior_runtime_build": "1a0079d64634a5e46bb52982215a6fcc0dbbe428",
+  "retained_Family_bookings": {
+    "path": "client/src/integrations/family/legacy/components/Planner/BookingsPanelFamily.tsx",
+    "sha256": "27682ec331a59d18545df0be9da3618e51e77f29404228bc96a93d2755835673",
+    "test": "client/src/integrations/family/legacy/components/Planner/BookingsPanelFamily.test.tsx",
+    "test_sha256": "1e290019c1813c462744faa653467e92a2e62f83220a0def8e5f871f5e2b5b92",
+    "raw_consumers": [
+      {
+        "from": "client/src/integrations/family/legacy/components/Planner/BookingsPanelFamily.test.tsx",
+        "target": "client/src/integrations/family/legacy/components/Planner/BookingsPanelFamily.tsx",
+        "kind": "ImportDeclaration",
+        "line": 13,
+        "type_only": false
+      }
+    ],
+    "ordinary_entry_member": false
+  },
+  "fresh_current_compiler_declarations": 128,
+  "no_old_generated_declaration_identity_assumption": true,
+  "test_runtime": "v24.22.2",
+  "no_hosted_operation": true
+}

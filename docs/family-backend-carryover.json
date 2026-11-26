@@ -1,0 +1,1180 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "247b76ea94942e511a663f3f840c81821c556fc5",
+  "scope": "Existing Family backend carryover: original source digests remain pinned; approved per-file revisions are verified against their exact committed blobs.",
+  "files": [
+    {
+      "source": "client/src/components/Map/mapMarkerPlace.ts",
+      "path": "family-backend/src/components/Map/mapMarkerPlace.ts",
+      "sha256": "9f8ede16b4f1a226ab26ccb3167315bd725d904b6c03437a33bf321151064e0f"
+    },
+    {
+      "source": "client/src/components/Map/mapRegistry.ts",
+      "path": "family-backend/src/components/Map/mapRegistry.ts",
+      "sha256": "be563b4d7bafbfd2a6a8ba79ee7b973af76d156cd3ab485b9024419285ad3c7a"
+    },
+    {
+      "source": "client/src/data/bookingImport/eml.ts",
+      "path": "family-backend/src/data/bookingImport/eml.ts",
+      "sha256": "e852a53e11bef8a0c193277a9f1a2ae526f87656b765f9e713a7dd6e2bd20035"
+    },
+    {
+      "source": "client/src/data/bookingImport/extractBookingFiles.test.ts",
+      "path": "family-backend/src/data/bookingImport/extractBookingFiles.test.ts",
+      "sha256": "bb339a3e5aefb8c21af248345d02dfc366c6eae7defe7dc9e6e344df3e24f263"
+    },
+    {
+      "source": "client/src/data/bookingImport/extractBookingFiles.ts",
+      "path": "family-backend/src/data/bookingImport/extractBookingFiles.ts",
+      "sha256": "11c75d4e1b37afbc91c680b587e689a06df6c624679ceaccbb1740fc8c1a6965"
+    },
+    {
+      "source": "client/src/data/bookingImport/heuristics.ts",
+      "path": "family-backend/src/data/bookingImport/heuristics.ts",
+      "sha256": "febcbc0cd53eef51e4d15e911cfe94a0da87d0f3fa5679ec05576b63329a5e24"
+    },
+    {
+      "source": "client/src/data/bookingImport/htmlText.ts",
+      "path": "family-backend/src/data/bookingImport/htmlText.ts",
+      "sha256": "c58c25cc9bcdd20460ae995d980add70bc0b583c533ea38cd33ffc527620cdd8"
+    },
+    {
+      "source": "client/src/data/bookingImport/index.ts",
+      "path": "family-backend/src/data/bookingImport/index.ts",
+      "sha256": "c8445854d17d060ab6217842e7a13c34ab0e32b5ccbe1958ba81cd80dbd76dad"
+    },
+    {
+      "source": "client/src/data/bookingImport/jsonLd.ts",
+      "path": "family-backend/src/data/bookingImport/jsonLd.ts",
+      "sha256": "af7b6c9b517f1a55aaec75976d53eec8cc437e1cd3dc2ed6a681b034da332045"
+    },
+    {
+      "source": "client/src/data/bookingImport/mapToDraft.ts",
+      "path": "family-backend/src/data/bookingImport/mapToDraft.ts",
+      "sha256": "202c54b81bb2912db20941e6c430028af66116bc7cb6a0f3fcb85a4fb71c9644"
+    },
+    {
+      "source": "client/src/data/bookingImport/pdfText.ts",
+      "path": "family-backend/src/data/bookingImport/pdfText.ts",
+      "sha256": "32a7c265e760ce84c431289a9eab617efe8cc9b43fc158108c2d146193bc7862"
+    },
+    {
+      "source": "client/src/data/bookingImport/pkpass.ts",
+      "path": "family-backend/src/data/bookingImport/pkpass.ts",
+      "sha256": "a75fa47deeb5febe9218a3f2d6df0525bd9a1d5c037d75d915efcdf4cdc67d32"
+    },
+    {
+      "source": "client/src/data/bookingImport/types.ts",
+      "path": "family-backend/src/data/bookingImport/types.ts",
+      "sha256": "d3ca5c85a7c1a78a5af68aa8f560319aaca66b89aab1bebfc7eaa424325069e8"
+    },
+    {
+      "source": "client/src/data/supabase/airports.test.ts",
+      "path": "family-backend/src/data/supabase/airports.test.ts",
+      "sha256": "2aeb891593fba7ea7265a40d8ca4285d593309242f14c772c47a90981b1b34ed"
+    },
+    {
+      "source": "client/src/data/supabase/airports.ts",
+      "path": "family-backend/src/data/supabase/airports.ts",
+      "sha256": "8317433c991d6253daad313f02334d78d5dce4e29c7207c8a5a20c5fdc2e7555"
+    },
+    {
+      "source": "client/src/data/supabase/auth.assurance.test.ts",
+      "path": "family-backend/src/data/supabase/auth.assurance.test.ts",
+      "sha256": "d324203b0bd70a3ed69f70c4c2d3b6086b7fea40a3bef8c7930e86ce3115def3"
+    },
+    {
+      "source": "client/src/data/supabase/auth.changePassword.test.ts",
+      "path": "family-backend/src/data/supabase/auth.changePassword.test.ts",
+      "sha256": "b605983ea7ce666cf0a276a3010fbe9d114209b6b5aa45d12322d234e7491938"
+    },
+    {
+      "source": "client/src/data/supabase/auth.ts",
+      "path": "family-backend/src/data/supabase/auth.ts",
+      "sha256": "57170e2c8169d3bbb7b0399dcc54b034fedc6f743e6093338cc772422c4b3501"
+    },
+    {
+      "source": "client/src/data/supabase/calendarFeed.test.ts",
+      "path": "family-backend/src/data/supabase/calendarFeed.test.ts",
+      "sha256": "780ebaf3b0f1f215aa11ba676dc258a6001bfb0d8306cf8e80f0ec3aa81a0129"
+    },
+    {
+      "source": "client/src/data/supabase/calendarFeed.ts",
+      "path": "family-backend/src/data/supabase/calendarFeed.ts",
+      "sha256": "2b42a664a9dd928ab926f54a353afe3a6ca25c60d5bf57e15bc78a8e669be529"
+    },
+    {
+      "source": "client/src/data/supabase/capabilities.test.ts",
+      "path": "family-backend/src/data/supabase/capabilities.test.ts",
+      "sha256": "d85038d07d6cbea7c1ee816204bdef5e1579abe2733dc0156f0b41eeabe54c7f"
+    },
+    {
+      "source": "client/src/data/supabase/capabilities.ts",
+      "path": "family-backend/src/data/supabase/capabilities.ts",
+      "sha256": "af1f47c52dc182f9ef872ca110216d07e5853ac4664ef1319a293a2c34e8cdf3"
+    },
+    {
+      "source": "client/src/data/supabase/catalogCountries.ts",
+      "path": "family-backend/src/data/supabase/catalogCountries.ts",
+      "sha256": "6057d76a24be2d58a0474187f3bf1c54d22c8dc15adb5ad0f53071c9f5c3da91"
+    },
+    {
+      "source": "client/src/data/supabase/catalogExploreLists.test.ts",
+      "path": "family-backend/src/data/supabase/catalogExploreLists.test.ts",
+      "sha256": "46cb9b6d3628a9ad424e83096469190565d464c9e36630865960a8702a1fe3b1",
+      "approvedRevision": {
+        "commit": "925cbb0976faf9a128d5714a16d80d453d244369",
+        "sha256": "2e82bbef723f9394ea876cffa73ef2d6b1808118d31819a49a62a73bac0788ef",
+        "reason": "Approved stored catalog image variant port; ordinary thumb/hero objects and regression tests, preserving originals and canonical identities."
+      }
+    },
+    {
+      "source": "client/src/data/supabase/catalogExploreLists.ts",
+      "path": "family-backend/src/data/supabase/catalogExploreLists.ts",
+      "sha256": "28880b639f9e68765110a1fe70510a5e877659fca416e5c926ed89885994547c",
+      "approvedRevision": {
+        "commit": "925cbb0976faf9a128d5714a16d80d453d244369",
+        "sha256": "ff21256e7a8a71b66c04fc5c45e8274de7976d024ee9a68e99120348ba9f9ad1",
+        "reason": "Approved stored catalog image variant port; ordinary thumb/hero objects and regression tests, preserving originals and canonical identities."
+      }
+    },
+    {
+      "source": "client/src/data/supabase/catalogExploreMedia.test.ts",
+      "path": "family-backend/src/data/supabase/catalogExploreMedia.test.ts",
+      "sha256": "18687ffacf457d947ec0c9fe37f96c5fc76ca5ca134622a95f2fb556725cc196",
+      "approvedRevision": {
+        "commit": "925cbb0976faf9a128d5714a16d80d453d244369",
+        "sha256": "1f3ff804305b91d5106e1cb8c102702fc96b0f9687a577b5ad032f5afba2f016",
+        "reason": "Approved stored catalog image variant port; ordinary thumb/hero objects and regression tests, preserving originals and canonical identities."
+      }
+    },
+    {
+      "source": "client/src/data/supabase/catalogExploreMedia.ts",
+      "path": "family-backend/src/data/supabase/catalogExploreMedia.ts",
+      "sha256": "37d6116973f3e3d4a4fe7587c9c2a328b28efd3f8cb2594b1efb1eaec1f7279c",
+      "approvedRevision": {
+        "commit": "925cbb0976faf9a128d5714a16d80d453d244369",
+        "sha256": "d34c1efcaf0810f5ff5778fe4f733231c10343c8c9308dc2ec067849df0b88c9",
+        "reason": "Approved stored catalog image variant port; ordinary thumb/hero objects and regression tests, preserving originals and canonical identities."
+      }
+    },
+    {
+      "source": "client/src/data/supabase/catalogPlaces.ts",
+      "path": "family-backend/src/data/supabase/catalogPlaces.ts",
+      "sha256": "295b5eca4be1e64bf96d8ca90e4c6886c5604031da90cdad25ba2aaa5c015f54"
+    },
+    {
+      "source": "client/src/data/supabase/catalogSaves.test.ts",
+      "path": "family-backend/src/data/supabase/catalogSaves.test.ts",
+      "sha256": "23cc688b68099f8407681608354df5af0091c78e8f1cee25bb7449110ce1d130"
+    },
+    {
+      "source": "client/src/data/supabase/catalogSaves.ts",
+      "path": "family-backend/src/data/supabase/catalogSaves.ts",
+      "sha256": "63124a773bcc398fc0718914665542dd4de87c3d988e283e7798075e0a3c62a3"
+    },
+    {
+      "source": "client/src/data/supabase/client.ts",
+      "path": "family-backend/src/data/supabase/client.ts",
+      "sha256": "d7a0a721c665e6f249cbc208b3a5f2524209f523063a49c47ee954c9d4fcd5c2"
+    },
+    {
+      "source": "client/src/data/supabase/copyFamilyListPlacesToTrip.test.ts",
+      "path": "family-backend/src/data/supabase/copyFamilyListPlacesToTrip.test.ts",
+      "sha256": "1cd0585f6be415290bf1f7609906b26dae586153fc7d12918ceb560340b9bd75"
+    },
+    {
+      "source": "client/src/data/supabase/copyFamilyListPlacesToTrip.ts",
+      "path": "family-backend/src/data/supabase/copyFamilyListPlacesToTrip.ts",
+      "sha256": "8343757b3eebbd71c79e23e002e902235331a16dce70fe4faa1dd0573390af33"
+    },
+    {
+      "source": "client/src/data/supabase/dayNotes.ts",
+      "path": "family-backend/src/data/supabase/dayNotes.ts",
+      "sha256": "b97a54fb14cd0ebe3c77c4bd5c391994717112635a42691d747932fc274fa144"
+    },
+    {
+      "source": "client/src/data/supabase/env.test.ts",
+      "path": "family-backend/src/data/supabase/env.test.ts",
+      "sha256": "166f0e86306cf723cb471373fff82282fce045cbab7191374f6a719c722e058b"
+    },
+    {
+      "source": "client/src/data/supabase/env.ts",
+      "path": "family-backend/src/data/supabase/env.ts",
+      "sha256": "76e8988003731c76c06329d8509d808837704af7b2f2a878df7c6b6108f88fc3"
+    },
+    {
+      "source": "client/src/data/supabase/exploreAddToTrip.test.ts",
+      "path": "family-backend/src/data/supabase/exploreAddToTrip.test.ts",
+      "sha256": "d61bbb122c3138b365c5e88997577838cf0c9e461059ca0fae71ed545c9630db"
+    },
+    {
+      "source": "client/src/data/supabase/exploreAddToTrip.ts",
+      "path": "family-backend/src/data/supabase/exploreAddToTrip.ts",
+      "sha256": "6a75e77fbbcdcd4ad47fceb161f2a58586dbd22b28dfcde867dcda6cb82d14e1"
+    },
+    {
+      "source": "client/src/data/supabase/explorePurview.test.ts",
+      "path": "family-backend/src/data/supabase/explorePurview.test.ts",
+      "sha256": "e2c6848771e9922896d5fbc97fe21b565ec40a0d1f7fce0454f5719701793c67"
+    },
+    {
+      "source": "client/src/data/supabase/explorePurview.ts",
+      "path": "family-backend/src/data/supabase/explorePurview.ts",
+      "sha256": "03fbc13e032c15d749223a849fcc207fcb4d6317173c0d357da52f255085650a"
+    },
+    {
+      "source": "client/src/data/supabase/familyExport.test.ts",
+      "path": "family-backend/src/data/supabase/familyExport.test.ts",
+      "sha256": "98d27934a0ca5a0210f7a7b3b89452ab8cf2325f341312318def1949fd88c387"
+    },
+    {
+      "source": "client/src/data/supabase/familyExport.ts",
+      "path": "family-backend/src/data/supabase/familyExport.ts",
+      "sha256": "ee8bf9fb5fdd983150655988aef1678a2857311ffd44dfa8f70e81dd0eb16cee"
+    },
+    {
+      "source": "client/src/data/supabase/familyFeatures.test.ts",
+      "path": "family-backend/src/data/supabase/familyFeatures.test.ts",
+      "sha256": "1bef3498b189b03d95a520590e9956869e98814cb9e5c8fae91d961496125504"
+    },
+    {
+      "source": "client/src/data/supabase/familyFeatures.ts",
+      "path": "family-backend/src/data/supabase/familyFeatures.ts",
+      "sha256": "9e9f2efd2cbe51744da54d7ab9756d6fa1a12abdb45dc4357874f27a7fcee9fe"
+    },
+    {
+      "source": "client/src/data/supabase/familyIdentity.test.ts",
+      "path": "family-backend/src/data/supabase/familyIdentity.test.ts",
+      "sha256": "ae759ccf89fe1aeef1546a2340b27ea89b7b2adc2530b0a7e7a1293e3fe2d41a"
+    },
+    {
+      "source": "client/src/data/supabase/familyIdentity.ts",
+      "path": "family-backend/src/data/supabase/familyIdentity.ts",
+      "sha256": "8f565061ad66bcb3da9e699c8d705a919101bff06e7988f97da3303751fd7f58"
+    },
+    {
+      "source": "client/src/data/supabase/familyMapSnapshot.test.ts",
+      "path": "family-backend/src/data/supabase/familyMapSnapshot.test.ts",
+      "sha256": "34292cdd4cfebc1055e6dd6cdd6592525e6d327b5f6addef4ad531cd5d47263f"
+    },
+    {
+      "source": "client/src/data/supabase/familyMapSnapshot.ts",
+      "path": "family-backend/src/data/supabase/familyMapSnapshot.ts",
+      "sha256": "1831b52f76f47c9bd69b9c87bb673194116fee5e847f6f4411c27c41bd67569a"
+    },
+    {
+      "source": "client/src/data/supabase/familyMaps.test.ts",
+      "path": "family-backend/src/data/supabase/familyMaps.test.ts",
+      "sha256": "0794eb1fc0c507db911681fc8c241e734049adc3ac679c0e800c93304afc3ca7"
+    },
+    {
+      "source": "client/src/data/supabase/familyMaps.ts",
+      "path": "family-backend/src/data/supabase/familyMaps.ts",
+      "sha256": "cc8a091b7827633926ff01104dbf4ee268d5d0ed59d8d6531586e914d3abb991"
+    },
+    {
+      "source": "client/src/data/supabase/familyNotifications.test.ts",
+      "path": "family-backend/src/data/supabase/familyNotifications.test.ts",
+      "sha256": "0544946eb5e4b6514cfe8275582957414092f5029a9e80bbf2786a987664648e"
+    },
+    {
+      "source": "client/src/data/supabase/familyNotifications.ts",
+      "path": "family-backend/src/data/supabase/familyNotifications.ts",
+      "sha256": "23be642a64df349d2fb9142a7143714fb7679d3491a505ef095d34013f962564",
+      "approvedRevision": {
+        "commit": "6861c42b7d246617e12248b14b37253a43ba4913",
+        "sha256": "130e012be0b7a65b68b95267d18ea514439630d4701ae4523151a2b22da8b9b5",
+        "reason": "Gate the follow-up read for Family notification defaults on the initiating settings session while preserving the database command and two-argument adapter contract."
+      }
+    },
+    {
+      "source": "client/src/data/supabase/familyPackingTemplates.test.ts",
+      "path": "family-backend/src/data/supabase/familyPackingTemplates.test.ts",
+      "sha256": "49c737a2afdc87dfe50bd885dc218678e95c2f93ef4f83d6b61d8fa2fff424e4"
+    },
+    {
+      "source": "client/src/data/supabase/familyPackingTemplates.ts",
+      "path": "family-backend/src/data/supabase/familyPackingTemplates.ts",
+      "sha256": "5fcc59b26be113bf9b606b50eabe54ecd46d1517d3a9ed9b918665ebc339d857"
+    },
+    {
+      "source": "client/src/data/supabase/familyPermissions.test.ts",
+      "path": "family-backend/src/data/supabase/familyPermissions.test.ts",
+      "sha256": "edcdf20904e12ac517e8adf80bd6361df43bf5f137da3d90225f586d844e3382"
+    },
+    {
+      "source": "client/src/data/supabase/familyPermissions.ts",
+      "path": "family-backend/src/data/supabase/familyPermissions.ts",
+      "sha256": "d74de6e354dc9290700939f03ac088e8083b8c9e7f44410658e199711e388243"
+    },
+    {
+      "source": "client/src/data/supabase/familyPlaceCategories.test.ts",
+      "path": "family-backend/src/data/supabase/familyPlaceCategories.test.ts",
+      "sha256": "6f8d01981437be6187af2c97166016fb80085a267edb31f6c32f2db7cec5d320"
+    },
+    {
+      "source": "client/src/data/supabase/familyPlaceCategories.ts",
+      "path": "family-backend/src/data/supabase/familyPlaceCategories.ts",
+      "sha256": "3565a5282941ec68252ee95100ee973df4d6c2061b40008dc8a93ebe86d3a8ad"
+    },
+    {
+      "source": "client/src/data/supabase/familyPreferences.test.ts",
+      "path": "family-backend/src/data/supabase/familyPreferences.test.ts",
+      "sha256": "3d25801bfa54983b7de6ef3d8333659e1c8fbf0f8d4f2404d97c9aebc03a5bac"
+    },
+    {
+      "source": "client/src/data/supabase/familyPreferences.ts",
+      "path": "family-backend/src/data/supabase/familyPreferences.ts",
+      "sha256": "769f7dccd8e516ca2c5d163ce5d44827a247424d1785f23105f706242864162a",
+      "approvedRevision": {
+        "commit": "53cbd8754117cd0b741966d77595c7c5ae1d954f",
+        "sha256": "b84564077d5d306b5094d9d4258f87237f0088d7d0370867504ee73d72dece88",
+        "reason": "Reuse the existing Family preference result mapper for an atomic mixed date and Family preferences save."
+      }
+    },
+    {
+      "source": "client/src/data/supabase/familyRealtime.test.ts",
+      "path": "family-backend/src/data/supabase/familyRealtime.test.ts",
+      "sha256": "68999a8085bb8d6001479ab9a83eb0eb08ef80815755153495d9333853333511"
+    },
+    {
+      "source": "client/src/data/supabase/familyRealtime.ts",
+      "path": "family-backend/src/data/supabase/familyRealtime.ts",
+      "sha256": "dc782b46c90c71e407d66d6d0b9ac65b4441d9443dbcf0399e31d5b6ef7adb0b"
+    },
+    {
+      "source": "client/src/data/supabase/familyRoster.ts",
+      "path": "family-backend/src/data/supabase/familyRoster.ts",
+      "sha256": "76d0ba2e5c822563111ed6cef11f1ce4c0d699c59d70cb5b21fbc3088701a6c8"
+    },
+    {
+      "source": "client/src/data/supabase/familySettings.test.ts",
+      "path": "family-backend/src/data/supabase/familySettings.test.ts",
+      "sha256": "33b7a34432de562b072dd735df9d7a802ed52c4791afeb9634f4d663266efe19"
+    },
+    {
+      "source": "client/src/data/supabase/familySettings.ts",
+      "path": "family-backend/src/data/supabase/familySettings.ts",
+      "sha256": "8b830a5213292180e15f57bbc1c3a89d50cd1e4f1e3d20e9cd485f4f7d5191f9"
+    },
+    {
+      "source": "client/src/data/supabase/membership.test.ts",
+      "path": "family-backend/src/data/supabase/membership.test.ts",
+      "sha256": "77336cd5c3e8675bfd1115d1f03337cf265f56bebfbdbfafc34c8facdef9c627"
+    },
+    {
+      "source": "client/src/data/supabase/membership.ts",
+      "path": "family-backend/src/data/supabase/membership.ts",
+      "sha256": "caf71a989de57bfa59266f05a252fcc69ef7e4efbab29941ab3d556646ac9922"
+    },
+    {
+      "source": "client/src/data/supabase/nagerHolidays.test.ts",
+      "path": "family-backend/src/data/supabase/nagerHolidays.test.ts",
+      "sha256": "b51fc620271082661851896f8432187a858603ded18237fe35ac2895f87c827e"
+    },
+    {
+      "source": "client/src/data/supabase/nagerHolidays.ts",
+      "path": "family-backend/src/data/supabase/nagerHolidays.ts",
+      "sha256": "ed17f65011fb21fd770d367f0645a56bbcc5863d411aa1bf393d8fc85f86a557"
+    },
+    {
+      "source": "client/src/data/supabase/packing.test.ts",
+      "path": "family-backend/src/data/supabase/packing.test.ts",
+      "sha256": "7d33e0d3db9280b32df646f06e1b3b23055731ff6872c480d0e8719095b52736"
+    },
+    {
+      "source": "client/src/data/supabase/packing.ts",
+      "path": "family-backend/src/data/supabase/packing.ts",
+      "sha256": "368deea3966a781a40e035f027303c40b53c10599cd620c4306effc8b65b4bb3"
+    },
+    {
+      "source": "client/src/data/supabase/personAvatars.test.ts",
+      "path": "family-backend/src/data/supabase/personAvatars.test.ts",
+      "sha256": "285bca4d23cff849d626c6c1aa0529f52a4370827a4b00cbeb3487078d960d00"
+    },
+    {
+      "source": "client/src/data/supabase/personAvatars.ts",
+      "path": "family-backend/src/data/supabase/personAvatars.ts",
+      "sha256": "bd9840da74ab448098d5347b24fa7c2a41167efcfdcb7ab1611ed7c71e9f96ce"
+    },
+    {
+      "source": "client/src/data/supabase/privateUploads.test.ts",
+      "path": "family-backend/src/data/supabase/privateUploads.test.ts",
+      "sha256": "23d9b3658086b893b8e4f3d084ec0766020fdb2e5216a594f3804ba41960d134"
+    },
+    {
+      "source": "client/src/data/supabase/privateUploads.ts",
+      "path": "family-backend/src/data/supabase/privateUploads.ts",
+      "sha256": "2e0c23c7e00aeddf36192ffaf4534ae22c377fea13ae1b9203054f6ec03c56c8"
+    },
+    {
+      "source": "client/src/data/supabase/scheduleItems.ts",
+      "path": "family-backend/src/data/supabase/scheduleItems.ts",
+      "sha256": "4e203560e8a37cc0ce5e4c2d1d7d061c5f627054c3c1f4cb40de32eeb0eff2c8"
+    },
+    {
+      "source": "client/src/data/supabase/todos.ts",
+      "path": "family-backend/src/data/supabase/todos.ts",
+      "sha256": "d01d9be67ed15fab0898442a7e63e3d5ea65a9679134a56014afa7df19ea4f98"
+    },
+    {
+      "source": "client/src/data/supabase/tripChangeRequests.test.ts",
+      "path": "family-backend/src/data/supabase/tripChangeRequests.test.ts",
+      "sha256": "382ddf24cf80f69feedcf87fdc8917336db9fca3091984a1d646dd52ae6365b2"
+    },
+    {
+      "source": "client/src/data/supabase/tripChangeRequests.ts",
+      "path": "family-backend/src/data/supabase/tripChangeRequests.ts",
+      "sha256": "9f259cda72b0ca7d29d2dbc19550ac488c3bdf2f82a02eeede9e36eb32741b63"
+    },
+    {
+      "source": "client/src/data/supabase/tripDays.ts",
+      "path": "family-backend/src/data/supabase/tripDays.ts",
+      "sha256": "9040d2db6bfd8454666504bb1bf8c5e46b64de1d42888891cc4dff838d7c1938"
+    },
+    {
+      "source": "client/src/data/supabase/tripExpenseSettlements.ts",
+      "path": "family-backend/src/data/supabase/tripExpenseSettlements.ts",
+      "sha256": "610158bb15b5b597069b29e9aa2ee9db3e3cd48076d2c4ec2b4c615aeed9cbee"
+    },
+    {
+      "source": "client/src/data/supabase/tripExpenses.ts",
+      "path": "family-backend/src/data/supabase/tripExpenses.ts",
+      "sha256": "efcedbe906c0fd0a6e8aad7b279da8cd45cbbfb93cd478040ba954c31953e09d"
+    },
+    {
+      "source": "client/src/data/supabase/tripFiles.test.ts",
+      "path": "family-backend/src/data/supabase/tripFiles.test.ts",
+      "sha256": "acb425c4e899be291e099b0fcb6b67756bba1005a02eb89307a247b9f62793c4"
+    },
+    {
+      "source": "client/src/data/supabase/tripFiles.ts",
+      "path": "family-backend/src/data/supabase/tripFiles.ts",
+      "sha256": "59e043aba151fa953c12183e23331bff0756240e7c501c59044c36a464a93b1e"
+    },
+    {
+      "source": "client/src/data/supabase/tripPlaces.category.test.ts",
+      "path": "family-backend/src/data/supabase/tripPlaces.category.test.ts",
+      "sha256": "9f62cc4fac5a79c8a08c6ccb4625c58e0259aa4a3f800640f177785155537763"
+    },
+    {
+      "source": "client/src/data/supabase/tripPlaces.hub.test.ts",
+      "path": "family-backend/src/data/supabase/tripPlaces.hub.test.ts",
+      "sha256": "70f402c95085e4fb3963a5fff580045d6d6ddff8b72147ac0ad63f0261d36ed1",
+      "approvedRevision": {
+        "commit": "925cbb0976faf9a128d5714a16d80d453d244369",
+        "sha256": "d804cb82dfb6d499dbee7d5bc1c48f7e10ecf7ef62366556a6780be10ba1ed31",
+        "reason": "Approved stored catalog image variant port; ordinary thumb/hero objects and regression tests, preserving originals and canonical identities."
+      }
+    },
+    {
+      "source": "client/src/data/supabase/tripPlaces.ts",
+      "path": "family-backend/src/data/supabase/tripPlaces.ts",
+      "sha256": "3b900f911f0e37e7644a423e98f939c59da9fa4061f4a8335bdf7746bcfd44b3",
+      "approvedRevision": {
+        "commit": "925cbb0976faf9a128d5714a16d80d453d244369",
+        "sha256": "53ed63558a0eeb63fbc4f520ba3ce6f57f90b760ea48135967afba13cd14bf66",
+        "reason": "Approved stored catalog image variant port; ordinary thumb/hero objects and regression tests, preserving originals and canonical identities."
+      }
+    },
+    {
+      "source": "client/src/data/supabase/tripProposals.duplicate.test.ts",
+      "path": "family-backend/src/data/supabase/tripProposals.duplicate.test.ts",
+      "sha256": "4e86a2fac0494b2c82bbacad23c3fc94c23485ccbba1a89137744c4e0d13b6e3"
+    },
+    {
+      "source": "client/src/data/supabase/tripProposals.test.ts",
+      "path": "family-backend/src/data/supabase/tripProposals.test.ts",
+      "sha256": "ca732f17b6febb6b6f19e328c6a8c6bed0b1045e9c9b07cc371552e5a8aab908",
+      "approvedRevision": {
+        "commit": "db050b0b72d4ff85ac282a19a3d48d9811472069",
+        "sha256": "5eae62d94bde7c266c7ed9c489fe331d970e620a43ef8232fb3c95edc78c6fbf",
+        "reason": "Reviewed calendar-date validation for proposal request arguments and its regression coverage."
+      }
+    },
+    {
+      "source": "client/src/data/supabase/tripProposals.ts",
+      "path": "family-backend/src/data/supabase/tripProposals.ts",
+      "sha256": "57967de59e8e36934ff0f21ac80fb1fbb9656000098e06f3527419e7a2129113",
+      "approvedRevision": {
+        "commit": "db050b0b72d4ff85ac282a19a3d48d9811472069",
+        "sha256": "4cf29274b4999c9639838dac4ebc35523cc385e195b6d098fbbfc478a6095668",
+        "reason": "Reviewed calendar-date validation for proposal request arguments and its regression coverage."
+      }
+    },
+    {
+      "source": "client/src/data/supabase/tripReservations.test.ts",
+      "path": "family-backend/src/data/supabase/tripReservations.test.ts",
+      "sha256": "e3e317ec7bbb15d7ff0562ad51142e1f6a2cdf931134a0326f588ad6041a3f3d"
+    },
+    {
+      "source": "client/src/data/supabase/tripReservations.ts",
+      "path": "family-backend/src/data/supabase/tripReservations.ts",
+      "sha256": "2b1557876009969f1c22b625bef13821a34a434dceaf01ba0442c11853253e4a"
+    },
+    {
+      "source": "client/src/data/supabase/tripTracks.test.ts",
+      "path": "family-backend/src/data/supabase/tripTracks.test.ts",
+      "sha256": "048a1dc8b4117a62ce60742b8d888697781bb47fcf7fc5c401ad042cf161f7e8"
+    },
+    {
+      "source": "client/src/data/supabase/tripTracks.ts",
+      "path": "family-backend/src/data/supabase/tripTracks.ts",
+      "sha256": "16a6bf1bb3ae8e594b166d36189688b18971ef600ded3b48c7e6f3956cda558d"
+    },
+    {
+      "source": "client/src/data/supabase/tripTravelers.hub.test.ts",
+      "path": "family-backend/src/data/supabase/tripTravelers.hub.test.ts",
+      "sha256": "eb99157ca5144f856e4e94f09aa01799ca95b26dd8fb62e3a0ef014488327674"
+    },
+    {
+      "source": "client/src/data/supabase/tripTravelers.ts",
+      "path": "family-backend/src/data/supabase/tripTravelers.ts",
+      "sha256": "5bdad35cdfb72d58e93108b88e7798b591524e618b748636d9de2b7b6872e9ec"
+    },
+    {
+      "source": "client/src/data/supabase/trips.hubEnrich.test.ts",
+      "path": "family-backend/src/data/supabase/trips.hubEnrich.test.ts",
+      "sha256": "d4c24dd540793fcf4d02489f887337655c94ee315f30b1590a02e4cc4e8ce489"
+    },
+    {
+      "source": "client/src/data/supabase/trips.ts",
+      "path": "family-backend/src/data/supabase/trips.ts",
+      "sha256": "6c0174153720141a5355722b10e8e88ad617a12e036a5e91962c50115d115354"
+    },
+    {
+      "source": "client/src/data/supabase/unsplash.ts",
+      "path": "family-backend/src/data/supabase/unsplash.ts",
+      "sha256": "bac29f298e8d126b230b9f4ea2ab1c76f4c32a12bafd12d745808f9f2c4a36c0"
+    },
+    {
+      "source": "client/src/lib/abort.test.ts",
+      "path": "family-backend/src/lib/abort.test.ts",
+      "sha256": "bf87d6842df7e953436e85352b156fbf6ca6a8018263c9f229c835d49b74f7ac"
+    },
+    {
+      "source": "client/src/lib/abort.ts",
+      "path": "family-backend/src/lib/abort.ts",
+      "sha256": "4c66b96d40455d90dae641432d54b7c486a1f15defe8419f2a37990b6a14657e"
+    },
+    {
+      "source": "client/src/lib/costs/settlementEngine.ts",
+      "path": "family-backend/src/lib/costs/settlementEngine.ts",
+      "sha256": "77a8d7c2ad87d20d536fc4718e69f47b3a316345dde8cc47a4c6c652c47f221c"
+    },
+    {
+      "source": "client/src/lib/map/catalogPoiRef.ts",
+      "path": "family-backend/src/lib/map/catalogPoiRef.ts",
+      "sha256": "72d6225ffacd17236245ec1e4274b5ae47fe9a142aae06a16603b5fb863bca2e"
+    },
+    {
+      "source": "client/src/lib/map/placeFootprints.ts",
+      "path": "family-backend/src/lib/map/placeFootprints.ts",
+      "sha256": "fb83b4c1f79ea5a446e9d69fbb160215db27c826d376a83bf982e73dce167cad"
+    },
+    {
+      "source": "client/src/lib/media/prefetchHeroImages.test.ts",
+      "path": "family-backend/src/lib/media/prefetchHeroImages.test.ts",
+      "sha256": "9f81b6d778a35301936eb08d3b116f5634294052324543731646100e5a8a4461",
+      "approvedRevision": {
+        "commit": "925cbb0976faf9a128d5714a16d80d453d244369",
+        "sha256": "597ca97ff230e0a95fdea9aabe1ab18df72f7e27236997d9c8157b18ebef250d",
+        "reason": "Approved stored catalog image variant port; ordinary thumb/hero objects and regression tests, preserving originals and canonical identities."
+      }
+    },
+    {
+      "source": "client/src/lib/media/prefetchHeroImages.ts",
+      "path": "family-backend/src/lib/media/prefetchHeroImages.ts",
+      "sha256": "3e1853382870d5d26bc974375403284fe8497efaaa3699426f5b80f56847ba78",
+      "approvedRevision": {
+        "commit": "925cbb0976faf9a128d5714a16d80d453d244369",
+        "sha256": "d526dea67908ce42a53bfe9d9d9db8d4f0ffedc17c57c1bc6d0e721c54cae7c0",
+        "reason": "Approved stored catalog image variant port; ordinary thumb/hero objects and regression tests, preserving originals and canonical identities."
+      }
+    },
+    {
+      "source": "client/src/lib/plan/familyPlanIcs.test.ts",
+      "path": "family-backend/src/lib/plan/familyPlanIcs.test.ts",
+      "sha256": "03ef05696e9401ba30afa26a8febd3abd951e05e6a0b42705f5c7b84a31d845e"
+    },
+    {
+      "source": "client/src/lib/plan/familyPlanIcs.ts",
+      "path": "family-backend/src/lib/plan/familyPlanIcs.ts",
+      "sha256": "5433c8354d7e46799954f018249c4b4a963efa62738ba4d895affb576dd0da8c"
+    },
+    {
+      "source": "client/src/lib/tracks/parseGpxKml.test.ts",
+      "path": "family-backend/src/lib/tracks/parseGpxKml.test.ts",
+      "sha256": "7a1ae6afd22044615335696194cd844d14582ff31a4f07351db2b903f68e6733"
+    },
+    {
+      "source": "client/src/lib/tracks/parseGpxKml.ts",
+      "path": "family-backend/src/lib/tracks/parseGpxKml.ts",
+      "sha256": "e3faf78ba71bfda2801a9d1873324faf2bedc422744a3ea4d507f7fc11e2c794"
+    },
+    {
+      "source": "client/src/lib/tracks/recordedTracksGeojson.test.ts",
+      "path": "family-backend/src/lib/tracks/recordedTracksGeojson.test.ts",
+      "sha256": "68d4d7a3650a5864535e54012608961953bc0bcbf2a27aa13aa76c0e52316215"
+    },
+    {
+      "source": "client/src/lib/tracks/recordedTracksGeojson.ts",
+      "path": "family-backend/src/lib/tracks/recordedTracksGeojson.ts",
+      "sha256": "831198583fe29b3e438d9a9b29a5fb192dcdf6932467874cf20fc3b322d33771"
+    },
+    {
+      "source": "client/src/pages/dashboard/familyDashboardModel.ts",
+      "path": "family-backend/src/pages/dashboard/familyDashboardModel.ts",
+      "sha256": "f3cb042ddce0683ca64e59ed3e19c3c4318b9997256f9f01b3d6edf42961f079"
+    },
+    {
+      "source": "client/src/pages/familyTripWorkspace/useFamilyTripWorkspaceGovernance.ts",
+      "path": "family-backend/src/pages/familyTripWorkspace/useFamilyTripWorkspaceGovernance.ts",
+      "sha256": "2998098fcc375a573107c3f598321cdfdbb6d3c4474a635f10a5569fd9048a5e"
+    },
+    {
+      "source": "client/src/pages/familyTripWorkspace/useFamilyWorkspacePlaceCategories.ts",
+      "path": "family-backend/src/pages/familyTripWorkspace/useFamilyWorkspacePlaceCategories.ts",
+      "sha256": "4326a63c5de31b9792ea06753f0748f92320cf0762f251b28e1b4ace5ef7b4a0"
+    },
+    {
+      "source": "client/src/pages/familyTripWorkspace/workspaceGovernanceModel.ts",
+      "path": "family-backend/src/pages/familyTripWorkspace/workspaceGovernanceModel.ts",
+      "sha256": "217cf1eca733dceea4944977b7e72e139d670c66c233729667cd04f1b253f977"
+    },
+    {
+      "source": "client/src/pages/familyTripWorkspace/workspacePlaceCategoryModel.test.ts",
+      "path": "family-backend/src/pages/familyTripWorkspace/workspacePlaceCategoryModel.test.ts",
+      "sha256": "82200070a98332942c6636e71d60495ba49e3dc4265fecdac88d7d1510818d2c"
+    },
+    {
+      "source": "client/src/pages/familyTripWorkspace/workspacePlaceCategoryModel.ts",
+      "path": "family-backend/src/pages/familyTripWorkspace/workspacePlaceCategoryModel.ts",
+      "sha256": "3f8cc085d913c39b08d82b4f56dcb0f73fbc90d9ef0a2a54901c96909f0bc3aa"
+    },
+    {
+      "source": "client/src/startup/safeStorage.ts",
+      "path": "family-backend/src/startup/safeStorage.ts",
+      "sha256": "78f8d0a4f7cd641d0542c225ba1184280a991a6e0f5fdfa9d346fc27fe36c177"
+    },
+    {
+      "source": "client/src/utils/convertHeic.ts",
+      "path": "family-backend/src/utils/convertHeic.ts",
+      "sha256": "10a3d89afb469792fc5d529469276d241935b34f29298493b4d37782d2660982"
+    }
+  ],
+  "deferred": [
+    {
+      "file": "client/src/data/supabase/catalogPois.ts",
+      "blockers": [
+        "client/src/components/Map/poiCategories.ts"
+      ]
+    },
+    {
+      "file": "client/src/data/supabase/familyAdmin.test.ts",
+      "blockers": [
+        "client/src/pages/admin/adminModel.ts"
+      ]
+    },
+    {
+      "file": "client/src/data/supabase/familyAdmin.ts",
+      "blockers": [
+        "client/src/pages/admin/adminModel.ts"
+      ]
+    },
+    {
+      "file": "client/src/data/supabase/familyLists.test.ts",
+      "blockers": [
+        "shared/src/index.ts",
+        "shared/src/common/primitives.schema.ts",
+        "shared/src/system-notice/system-notice.schema.ts",
+        "shared/src/maps/maps.schema.ts"
+      ]
+    },
+    {
+      "file": "client/src/data/supabase/familyLists.ts",
+      "blockers": [
+        "shared/src/index.ts",
+        "shared/src/common/primitives.schema.ts",
+        "shared/src/system-notice/system-notice.schema.ts",
+        "shared/src/maps/maps.schema.ts"
+      ]
+    },
+    {
+      "file": "client/src/data/supabase/journeys.test.ts",
+      "blockers": [
+        "client/src/store/journeyStore.ts",
+        "client/src/api/client.ts",
+        "shared/src/index.ts",
+        "shared/src/common/primitives.schema.ts"
+      ]
+    },
+    {
+      "file": "client/src/data/supabase/journeys.ts",
+      "blockers": [
+        "client/src/store/journeyStore.ts",
+        "client/src/api/client.ts",
+        "shared/src/index.ts",
+        "shared/src/common/primitives.schema.ts"
+      ]
+    },
+    {
+      "file": "client/src/data/supabase/mapsPois.test.ts",
+      "blockers": [
+        "client/src/components/Map/poiCategories.ts"
+      ]
+    },
+    {
+      "file": "client/src/data/supabase/mapsPois.ts",
+      "blockers": [
+        "client/src/components/Map/poiCategories.ts"
+      ]
+    },
+    {
+      "file": "client/src/data/supabase/travelStats.ts",
+      "blockers": [
+        "client/src/pages/dashboard/dashboardModel.ts",
+        "client/src/types.ts",
+        "shared/src/index.ts",
+        "shared/src/common/primitives.schema.ts"
+      ]
+    },
+    {
+      "file": "client/src/data/supabase/vacay.test.ts",
+      "blockers": [
+        "client/src/types.ts",
+        "shared/src/index.ts",
+        "shared/src/common/primitives.schema.ts",
+        "shared/src/system-notice/system-notice.schema.ts"
+      ]
+    },
+    {
+      "file": "client/src/data/supabase/vacay.ts",
+      "blockers": [
+        "client/src/types.ts",
+        "shared/src/index.ts",
+        "shared/src/common/primitives.schema.ts",
+        "shared/src/system-notice/system-notice.schema.ts"
+      ]
+    },
+    {
+      "file": "client/src/hooks/useFamilyInboxRefresh.test.ts",
+      "blockers": [
+        "client/src/hooks/useFamilyInboxRefresh.test.ts",
+        "client/src/store/authStore.ts",
+        "client/src/api/client.ts",
+        "shared/src/index.ts"
+      ]
+    },
+    {
+      "file": "client/src/hooks/useFamilyInboxRefresh.ts",
+      "blockers": [
+        "client/src/store/authStore.ts",
+        "client/src/api/client.ts",
+        "shared/src/index.ts",
+        "shared/src/common/primitives.schema.ts"
+      ]
+    },
+    {
+      "file": "client/src/hooks/useFamilyItineraryRealtime.test.ts",
+      "blockers": [
+        "client/src/hooks/useFamilyItineraryRealtime.test.ts",
+        "client/src/store/authStore.ts",
+        "client/src/api/client.ts",
+        "shared/src/index.ts"
+      ]
+    },
+    {
+      "file": "client/src/hooks/useFamilyItineraryRealtime.ts",
+      "blockers": [
+        "client/src/store/authStore.ts",
+        "client/src/api/client.ts",
+        "shared/src/index.ts",
+        "shared/src/common/primitives.schema.ts"
+      ]
+    },
+    {
+      "file": "client/src/lib/plan/familyPlanPdf.test.ts",
+      "blockers": [
+        "client/src/utils/formatters.ts",
+        "client/src/types.ts",
+        "shared/src/index.ts",
+        "shared/src/common/primitives.schema.ts"
+      ]
+    },
+    {
+      "file": "client/src/lib/plan/familyPlanPdf.ts",
+      "blockers": [
+        "client/src/utils/formatters.ts",
+        "client/src/types.ts",
+        "shared/src/index.ts",
+        "shared/src/common/primitives.schema.ts"
+      ]
+    },
+    {
+      "file": "client/src/pages/dashboard/familyDashboardModel.hub.test.ts",
+      "blockers": [
+        "client/src/pages/dashboard/dashboardModel.ts",
+        "client/src/types.ts",
+        "shared/src/index.ts",
+        "shared/src/common/primitives.schema.ts"
+      ]
+    },
+    {
+      "file": "client/src/pages/familyTripWorkspace/useFamilyTripWorkspaceGovernance.test.ts",
+      "blockers": [
+        "client/src/pages/familyTripWorkspace/useFamilyTripWorkspaceGovernance.test.ts"
+      ]
+    },
+    {
+      "file": "client/src/pages/familyTripWorkspace/workspaceGovernanceModel.test.ts",
+      "blockers": [
+        "shared/src/i18n/en/index.ts",
+        "shared/src/i18n/en/admin.ts",
+        "shared/src/i18n/types.ts",
+        "shared/src/i18n/en/atlas.ts"
+      ]
+    }
+  ],
+  "localPatches": [
+    {
+      "path": "family-backend/src/data/supabase/tripFiles.ts",
+      "baseSha256": "59e043aba151fa953c12183e23331bff0756240e7c501c59044c36a464a93b1e",
+      "sha256": "c6d2c479e17acacd3a4e02707b71396a0be6a4ddf8a34de8ac80fb709380fca2",
+      "patch": "docs/family-backend-patches/p04ab/tripFiles.patch",
+      "patchSha256": "2544055b00e92a1a348c4b237974627cc0120cd645aa088e3959095573f1ba6f",
+      "packet": "P04ab",
+      "reason": "Preserve the initiating operation context across SDK boundaries and retain uploaded sources after uncertain finalization; test the revised preservation contract."
+    },
+    {
+      "path": "family-backend/src/data/supabase/privateUploads.ts",
+      "baseSha256": "2e0c23c7e00aeddf36192ffaf4534ae22c377fea13ae1b9203054f6ec03c56c8",
+      "sha256": "3df7139eaed951787af4476b20c0ed49fff5c98001a77ee70376305cbc90ec57",
+      "patch": "docs/family-backend-patches/strict-uploads/privateUploads.patch",
+      "patchSha256": "c16a4538905e29c4054106039f5bc4b1d6a35680500b15ef06b0a6d683c82b1f",
+      "packet": "P04ab and strict uploads and Mexico Journal photos",
+      "reason": "Preserve the initiating operation context across SDK boundaries and retain uploaded sources after uncertain finalization; test the revised preservation contract. Capture the checked Edge Function response parser with its receiver inside the guarded finalization flow. The existing preview Journal flow sends the observed entry revision to finalization (6f913d8c5)."
+    },
+    {
+      "path": "family-backend/src/data/supabase/familySettings.ts",
+      "baseSha256": "8b830a5213292180e15f57bbc1c3a89d50cd1e4f1e3d20e9cd485f4f7d5191f9",
+      "sha256": "b3c1f80ab756f332615247930f60f161dab9438c630c7fde3220192cb1781b05",
+      "patch": "docs/family-backend-patches/p04ab/familySettings.patch",
+      "patchSha256": "e5a5f3500ac1411c6b679b82e43c44a00bde50ddada14d1507f9e83dcb3985c0",
+      "packet": "P04ab",
+      "reason": "Preserve the initiating operation context across SDK boundaries and retain uploaded sources after uncertain finalization; test the revised preservation contract."
+    },
+    {
+      "path": "family-backend/src/data/supabase/personAvatars.ts",
+      "baseSha256": "bd9840da74ab448098d5347b24fa7c2a41167efcfdcb7ab1611ed7c71e9f96ce",
+      "sha256": "51e27fbec942b4640d1abfe66d3503fa9f621139acc78c7cfa5f9c89fd791ec6",
+      "patch": "docs/family-backend-patches/strict-uploads/personAvatars.patch",
+      "patchSha256": "9665ac215f77bf06005d077c8797447abd0ac89e3ae529a0a6bbe9557838ee02",
+      "packet": "P04ab and strict uploads",
+      "reason": "Preserve the initiating operation context across SDK boundaries and retain uploaded sources after uncertain finalization; test the revised preservation contract. Narrow live avatar metadata and retain branch-local paths and filenames during upload and finalization."
+    },
+    {
+      "path": "family-backend/src/data/supabase/copyFamilyListPlacesToTrip.ts",
+      "baseSha256": "8343757b3eebbd71c79e23e002e902235331a16dce70fe4faa1dd0573390af33",
+      "sha256": "7788afc4adbc75ea3d1a14bcf71a4250c6b3e61c025e26ba54a415658a8a3ef4",
+      "patch": "docs/family-backend-patches/p04ab/copyFamilyListPlacesToTrip.patch",
+      "patchSha256": "837b4debd142dcf8aa0f8f424215e7fd7f31d1c15659fc610de489f182009f2f",
+      "packet": "P04ab",
+      "reason": "Preserve the initiating operation context across SDK boundaries and retain uploaded sources after uncertain finalization; test the revised preservation contract."
+    },
+    {
+      "path": "family-backend/src/data/supabase/tripPlaces.ts",
+      "baseSha256": "53ed63558a0eeb63fbc4f520ba3ce6f57f90b760ea48135967afba13cd14bf66",
+      "sha256": "27131433f0e14dc6e3ea8b65bf593c199c06f2825cd3a4c5e6e25a5374fe766b",
+      "patch": "docs/family-backend-patches/p04ab/tripPlaces.patch",
+      "patchSha256": "848e1d9ae055197bc918c56f7ab30c4f6d379420603c73170bf4184c87eed414",
+      "packet": "P04ab",
+      "reason": "Preserve the initiating operation context across SDK boundaries and retain uploaded sources after uncertain finalization; test the revised preservation contract."
+    },
+    {
+      "path": "family-backend/src/data/supabase/personAvatars.test.ts",
+      "baseSha256": "285bca4d23cff849d626c6c1aa0529f52a4370827a4b00cbeb3487078d960d00",
+      "sha256": "56afa52a4417ce7e2bc48667745c4851b3bf71e1cdaf3b2efb36a0c5b0888b70",
+      "patch": "docs/family-backend-patches/p04ab/personAvatars.test.patch",
+      "patchSha256": "23d05a58f0cd32117233ba88b10b2683abdf57aacb51b4ca208c424b67307066",
+      "packet": "P04ab",
+      "reason": "Preserve the initiating operation context across SDK boundaries and retain uploaded sources after uncertain finalization; test the revised preservation contract."
+    },
+    {
+      "path": "family-backend/src/data/supabase/nagerHolidays.ts",
+      "baseSha256": "ed17f65011fb21fd770d367f0645a56bbcc5863d411aa1bf393d8fc85f86a557",
+      "sha256": "3b1d803b214aa7d2e16b3baed90fcf1b3dbdf885205f4b482216084a29bd0c30",
+      "patch": "docs/family-backend-patches/u05b1/nagerHolidays.patch",
+      "patchSha256": "2722bc1bfb4da5ea37d7301eb2336b48644eb27b50c9a1943da8c6754b0670d2",
+      "packet": "U05-B1",
+      "reason": "Qualified public holiday v4 migration with bounded response validation, original-operation/caller cancellation, preserved legacy output, and provider/real-handler regressions; no calendar data or database changes."
+    },
+    {
+      "path": "family-backend/src/data/supabase/nagerHolidays.test.ts",
+      "baseSha256": "b51fc620271082661851896f8432187a858603ded18237fe35ac2895f87c827e",
+      "sha256": "f9e17314aa63e99c4b0aa9ebebcf9cee000b2a2288599bdf269ff0af61091fab",
+      "patch": "docs/family-backend-patches/u05b1/nagerHolidays.test.patch",
+      "patchSha256": "f8cf7ffafbbc2f8c067106a599a0639ce9e7f389d4828b59ca42cb38fb95b999",
+      "packet": "U05-B1",
+      "reason": "Qualified public holiday v4 migration with bounded response validation, original-operation/caller cancellation, preserved legacy output, and provider/real-handler regressions; no calendar data or database changes."
+    },
+    {
+      "path": "family-backend/src/data/supabase/privateUploads.test.ts",
+      "baseSha256": "23d9b3658086b893b8e4f3d084ec0766020fdb2e5216a594f3804ba41960d134",
+      "sha256": "10156537bed0e2025b5613f55a3a34103e137228754829a32e30ae8f65fd21b6",
+      "patch": "docs/family-backend-patches/strict-uploads/privateUploads.test.patch",
+      "patchSha256": "8cfee56dae5a5d3354638338eebd431f98b80d69fbdf23337cf961d8dca1f7c6",
+      "packet": "Strict uploads",
+      "reason": "Exercise the Edge Function error code with a receiver-sensitive Response and the pinned SDK error class."
+    }
+  ],
+  "additions": [
+    {
+      "path": "family-backend/src/data/supabase/operationContext.ts",
+      "sha256": "038c799ff8332a7930cb6b544e2e4213173b73feb38cb4766d945871d2015f12",
+      "packet": "P04ab",
+      "reason": "Host lifecycle context propagation without changing legacy call signatures or database authorization."
+    },
+    {
+      "path": "family-backend/src/data/supabase/packingReadRpc.ts",
+      "sha256": "d2a12005741d7d949c41441d9d835a4635826f88ba0c56a651849cefa31056f4",
+      "packet": "P04bc",
+      "reason": "Read-only canonical packing RPC boundary; existing carried adapters remain unchanged."
+    },
+    {
+      "path": "family-backend/src/data/supabase/packingReadRpc.test.ts",
+      "sha256": "56c7c9abbcacf7556649d69f8ecb614ef8e0023b5d8da2ad6fce606712555bc1",
+      "packet": "P04bc",
+      "reason": "Verify read-only canonical packing SDK dispatch and refusal of writers/denials."
+    },
+    {
+      "path": "family-backend/src/data/supabase/packingCommandRpc.ts",
+      "sha256": "ce2c87f72eec727efe582cb4a0d8cf72b0f5ba26cef18ac96d49e2a60e544251",
+      "packet": "P04bd",
+      "reason": "Authenticated observed packing command SDK boundary and tests; read-only and carried adapters unchanged."
+    },
+    {
+      "path": "family-backend/src/data/supabase/packingCommandRpc.test.ts",
+      "sha256": "5f1d00065d9b6617554597fae391808aa616173dc1f93da81c0664d017f717d9",
+      "packet": "P04bd",
+      "reason": "Authenticated observed packing command SDK boundary and tests; read-only and carried adapters unchanged."
+    },
+    {
+      "path": "family-backend/src/data/supabase/packingGroupRpc.ts",
+      "sha256": "619425c48e009de2dc650b9c1a332025061104f8a763b9575be8470c117f24b8",
+      "packet": "U04-C1b",
+      "reason": "Dedicated authenticated group execute/receipt SDK boundary and allowlist regressions; exact reviewed addition, with all prior carried sources and item APIs unchanged."
+    },
+    {
+      "path": "family-backend/src/data/supabase/packingGroupRpc.test.ts",
+      "sha256": "4ec1fc0f0cd8c768177469f1f62e6253a2db246034848f1be635c2dfd44d2236",
+      "packet": "U04-C1b",
+      "reason": "Dedicated authenticated group execute/receipt SDK boundary and allowlist regressions; exact reviewed addition, with all prior carried sources and item APIs unchanged."
+    },
+    {
+      "path": "family-backend/src/data/supabase/packingCategoryRpc.ts",
+      "sha256": "6dc3a6121dd4160b70b2f5551341c7ffd6092635ce4b35e3fd9ff3a00bcb7f4d",
+      "packet": "U04-C2c1",
+      "reason": "Strict authenticated category read/execute/receipt RPC allowlist and regression proof; prior carried sources, patches and packing item/group boundaries remain unchanged."
+    },
+    {
+      "path": "family-backend/src/data/supabase/packingCategoryRpc.test.ts",
+      "sha256": "f1d2b910bec63d82e17e96d89b65e982ded12843222054ed703cf2226552afc2",
+      "packet": "U04-C2c1",
+      "reason": "Strict authenticated category read/execute/receipt RPC allowlist and regression proof; prior carried sources, patches and packing item/group boundaries remain unchanged."
+    },
+    {
+      "path": "family-backend/src/data/supabase/packingCategoryRoster.ts",
+      "sha256": "2e7a35275b47ea514e5e608032c4966251ecc9c6597c47e89e5e1a4445a7b2d0",
+      "packet": "U04-C2c2",
+      "reason": "Bounded authorized eligible Trip roster read and refusal regressions; no table writes, new grants or schema changes. Prior carried sources, patches and RPC boundaries stay exact."
+    },
+    {
+      "path": "family-backend/src/data/supabase/packingCategoryRoster.test.ts",
+      "sha256": "177b1ee5a498a7a2b252a9de804927daa4763b0eaea0c636ee423276c36e4d52",
+      "packet": "U04-C2c2",
+      "reason": "Bounded authorized eligible Trip roster read and refusal regressions; no table writes, new grants or schema changes. Prior carried sources, patches and RPC boundaries stay exact."
+    },
+    {
+      "path": "family-backend/src/data/supabase/packingCategoryV2Rpc.ts",
+      "sha256": "68e61b5f7b1c101c2865b6ad6e203bef94bfdde26da8b30e193723aeaf2ff3b1",
+      "packet": "U04-C3b2",
+      "reason": "Explicit seven-endpoint category v2 SDK boundary and whitelist regressions; no raw or v1 fallback."
+    },
+    {
+      "path": "family-backend/src/data/supabase/packingCategoryV2Rpc.test.ts",
+      "sha256": "10a114b6dac27bccadf31bb0dc314643a872c40a1ac9985658fe4de8fa12dd4f",
+      "packet": "U04-C3b2",
+      "reason": "Explicit seven-endpoint category v2 SDK boundary and whitelist regressions; no raw or v1 fallback."
+    },
+    {
+      "path": "family-backend/src/data/supabase/packingCategoryAggregateRpc.test.ts",
+      "sha256": "3fc76f992810ac4492b75d0160254b4bc60e911d8530a5fa19bc68f09045ec31",
+      "packet": "U04-C3c2a",
+      "reason": "Separate five-RPC aggregate SDK boundary and whitelist regression tests; old protocols and raw table access unchanged."
+    },
+    {
+      "path": "family-backend/src/data/supabase/packingCategoryAggregateRpc.ts",
+      "sha256": "5a481d4e643ba4589f4498c87fe03598d17c9f1a991a1e33afe1b89f7c0f7412",
+      "packet": "U04-C3c2a",
+      "reason": "Separate five-RPC aggregate SDK boundary and whitelist regression tests; old protocols and raw table access unchanged."
+    },
+    {
+      "path": "family-backend/src/data/supabase/packingBagRpc.ts",
+      "sha256": "606a8042fbc5f0435db2f5f09592eb79af41bdd91740bddd0260197c6d3e372d",
+      "packet": "U04-D2b",
+      "reason": "Dedicated five-RPC authenticated bag SDK allowlist and regression tests; no raw fallback, changes to prior adapters, grants or database sources."
+    },
+    {
+      "path": "family-backend/src/data/supabase/packingBagRpc.test.ts",
+      "sha256": "502a9b084bb37878c4d3f117710457794acdbf5c45e3340e34c5347fab5b4186",
+      "packet": "U04-D2b",
+      "reason": "Dedicated five-RPC authenticated bag SDK allowlist and regression tests; no raw fallback, changes to prior adapters, grants or database sources."
+    },
+    {
+      "path": "family-backend/src/data/supabase/packingRestoreRpc.ts",
+      "sha256": "366b0688ff248dccf4beab85eaf18c21e0654e4267a11182f0e23e2b44e49cd1",
+      "packet": "U04-D2c1c",
+      "reason": "U04-D2c1c authenticated two-RPC terminal restore allowlist and regression cases; no raw, service-client or arbitrary RPC fallback."
+    },
+    {
+      "path": "family-backend/src/data/supabase/packingRestoreRpc.test.ts",
+      "sha256": "9abad8a1d9ef1c51eb16f7d75347a7ed1161adba13fff2719b75384e65d13da7",
+      "packet": "U04-D2c1c",
+      "reason": "U04-D2c1c authenticated two-RPC terminal restore allowlist and regression cases; no raw, service-client or arbitrary RPC fallback."
+    },
+    {
+      "path": "family-backend/src/data/supabase/packingBagCancellationRpc.ts",
+      "sha256": "f338e08a2c5aab9f01b6f3a5a9e4a077cef723abbd642d06cd081d41d7f54763",
+      "packet": "U04-D2c3b",
+      "reason": "Separate strict authenticated two-RPC non-restore bag cancellation boundary and tests; original restore boundary and all earlier backend objects remain exact."
+    },
+    {
+      "path": "family-backend/src/data/supabase/packingBagCancellationRpc.test.ts",
+      "sha256": "f41b2801c2d5108881a827a5f316b410839e9f35802c38778a8773c806fab7da",
+      "packet": "U04-D2c3b",
+      "reason": "Separate strict authenticated two-RPC non-restore bag cancellation boundary and tests; original restore boundary and all earlier backend objects remain exact."
+    },
+    {
+      "path": "family-backend/src/data/supabase/stayRpc.ts",
+      "sha256": "f1d0cbba7fd9baf860739b74e15600a51d8bf00391b1855697f951bc4da1deaf",
+      "packet": "U05-B2b3a",
+      "reason": "Typed authenticated stay-only RPC boundary and transient Auth-session fence; no raw tables, native activation or snapshot changes."
+    },
+    {
+      "path": "family-backend/src/data/supabase/stayRpc.test.ts",
+      "sha256": "cb54d1cb9b5a731f84884827601a5be5b309e775e873f896923c2ac9483a990e",
+      "packet": "U05-B2b3a",
+      "reason": "Typed authenticated stay-only RPC boundary and transient Auth-session fence; no raw tables, native activation or snapshot changes."
+    },
+    {
+      "path": "family-backend/src/data/supabase/bookingStayReadRpc.ts",
+      "sha256": "b26b098a72384790658042fb337c7a016c9d3c38aba51f2a3ca2aff266b4e022",
+      "packet": "U05-B2b3b1",
+      "reason": "Dedicated one-RPC coherent published planner/booking/stay read; no independent HTTP stitching, service client, native activation or old snapshot changes."
+    },
+    {
+      "path": "family-backend/src/data/supabase/bookingStayReadRpc.test.ts",
+      "sha256": "727b985aa36d17331b2ddf300b849fa790383f62bcd551fa5db3d43c36cd4fda",
+      "packet": "U05-B2b3b1",
+      "reason": "Dedicated one-RPC coherent published planner/booking/stay read; no independent HTTP stitching, service client, native activation or old snapshot changes."
+    },
+    {
+      "path": "family-backend/src/data/supabase/stayBundleRpc.ts",
+      "sha256": "264efcc6fcbfdea98b9271fd5c4f1795fceb0070d3feca0d30ccc483122793b5",
+      "packet": "U05-B2b3c4",
+      "reason": "Separate four-RPC atomic stay/new-booking SDK allowlist and mocked error/payload tests; preserves original stay dialect, browser-client authority and native activation gates."
+    },
+    {
+      "path": "family-backend/src/data/supabase/stayBundleRpc.test.ts",
+      "sha256": "b02cc4b7d772612604d7cc4c703e0a1312235b2b118656699306aa84722901f2",
+      "packet": "U05-B2b3c4",
+      "reason": "Separate four-RPC atomic stay/new-booking SDK allowlist and mocked error/payload tests; preserves original stay dialect, browser-client authority and native activation gates."
+    },
+    {
+      "path": "family-backend/src/data/supabase/nativeStayRpc.ts",
+      "sha256": "2cb14e3fa0590610d1ae28676961ffd7c009283f93c017144d154d0dd50635ec",
+      "packet": "U05-B2b3c5 client contracts",
+      "reason": "Separate six-RPC native stay SDK allowlist and focused dispatch/error tests. Preserves original dialects, browser-client authority and activation gates."
+    },
+    {
+      "path": "family-backend/src/data/supabase/nativeStayRpc.test.ts",
+      "sha256": "e37137444704305ddd3c8f1a79eeb3a90f68fb13bdddbae6a5fe2b1f87a222e4",
+      "packet": "U05-B2b3c5 client contracts",
+      "reason": "Separate six-RPC native stay SDK allowlist and focused dispatch/error tests. Preserves original dialects, browser-client authority and activation gates."
+    },
+    {
+      "path": "family-backend/src/data/supabase/catalogDiscovery.ts",
+      "sha256": "48f0035029e7921276286d0db801f1f30a251146040cbe2585218df4c9ebe792",
+      "packet": "U04-F5; U04-F5b2 carryover review",
+      "reason": "Audited catalog discovery source/test introduced by 82fd5dcac62f7b972a974544323b4042aa688d7a, byte-identical at review. Typed geography/food/hotel/experience reads, bounded queries, archive/cancellation fences and same-source ready-v1 media. Fresh catalog tests plus sealed F5 real API/native browser evidence support this registration; qualified-source/native/history adoption remains separate."
+    },
+    {
+      "path": "family-backend/src/data/supabase/catalogDiscovery.test.ts",
+      "sha256": "bb880e52255e3cde349e5e5c5ac6eeede75abb1c6a5edaac975794757b0afb5e",
+      "packet": "U04-F5; U04-F5b2 carryover review",
+      "reason": "Audited catalog discovery source/test introduced by 82fd5dcac62f7b972a974544323b4042aa688d7a, byte-identical at review. Typed geography/food/hotel/experience reads, bounded queries, archive/cancellation fences and same-source ready-v1 media. Fresh catalog tests plus sealed F5 real API/native browser evidence support this registration; qualified-source/native/history adoption remains separate."
+    },
+    {
+      "path": "family-backend/src/data/supabase/collectionAuthoringInput.ts",
+      "sha256": "1feec7aa06be8e2b3743823cbbd6a717a66e6870d2fdf893b7d1fcc43e9cc2dc",
+      "packet": "U04-F5c4",
+      "reason": "Unwired pre-observation Collection URL/coordinate input normalization and its tests; no native activation or source-adoption repin."
+    },
+    {
+      "path": "family-backend/src/data/supabase/collectionAuthoringInput.test.ts",
+      "sha256": "cd897d8b6846ff09e1076569bcfcb9dc086bffc2347ae4fae787be2b591d2058",
+      "packet": "U04-F5c4",
+      "reason": "Unwired pre-observation Collection URL/coordinate input normalization and its tests; no native activation or source-adoption repin."
+    },
+    {
+      "path": "family-backend/src/data/supabase/collectionLibrary.ts",
+      "sha256": "9a00394f082f1309245f87f3431a454067061ec1e8b16423a254245323304422",
+      "packet": "U04-F5c5a",
+      "reason": "Strict bounded Collection library read/SDK prerequisite and tests, currently unwired. No native activation, writer change or source-adoption repin."
+    },
+    {
+      "path": "family-backend/src/data/supabase/collectionLibraryRpc.ts",
+      "sha256": "6f0e98b3b6142c0dbb38a9afc15deb4d8fdcca4815196018fedbdaed502d6ab1",
+      "packet": "U04-F5c5a",
+      "reason": "Strict bounded Collection library read/SDK prerequisite and tests, currently unwired. No native activation, writer change or source-adoption repin."
+    },
+    {
+      "path": "family-backend/src/data/supabase/collectionLibrary.test.ts",
+      "sha256": "303f1f925ebdae5a1d6a16f2ea2f7392f574e9bfd4e986abfc71b96faf20ebb1",
+      "packet": "U04-F5c5a",
+      "reason": "Strict bounded Collection library read/SDK prerequisite and tests, currently unwired. No native activation, writer change or source-adoption repin."
+    },
+    {
+      "path": "family-backend/src/data/supabase/collectionRpc.ts",
+      "sha256": "ad80a28e69633a2dbb031598c6042c8f3cdcb0a9d5e5aa9b3e04d4e1b2e756ad",
+      "packet": "U04-F5c5b1",
+      "reason": "Qualified fixed Collection RPC gateway and tests; captured actor/session/source/bearer only, no legacy writer or native activation. Requalified in U04-F5c5b2a for captured-bearer library reads (18 fixed API names). Requalified in U04-F5c5b2b2 for exact retained-request outcome/cancellation (20 fixed API names); captured-bearer/session/source fences unchanged."
+    },
+    {
+      "path": "family-backend/src/data/supabase/collectionRpc.test.ts",
+      "sha256": "10ad296831bb163ef8880cfa469b7d1384020b577ca6267a4b4bf9faf7476f25",
+      "packet": "U04-F5c5b1",
+      "reason": "Qualified fixed Collection RPC gateway and tests; captured actor/session/source/bearer only, no legacy writer or native activation. Requalified in U04-F5c5b2a for captured-bearer library reads (18 fixed API names). Requalified in U04-F5c5b2b2 for exact retained-request outcome/cancellation (20 fixed API names); captured-bearer/session/source fences unchanged."
+    },
+    {
+      "path": "family-backend/src/lib/civilDate.ts",
+      "sha256": "b826dd6f62f3f2a697fc708e7d4065a9061c9d703a1dc9b744c1e5292679753d",
+      "packet": "Family proposal calendar date validation",
+      "reason": "Pure calendar validation shared by the native and Family pickers and proposal payload builder."
+    },
+    {
+      "path": "family-backend/src/data/supabase/profileDisplayPreferences.test.ts",
+      "sha256": "e4486837442d08a7d1f49e90cf13d7b448626cf06fee1ce9a87058578320b767",
+      "packet": "Family account date display preferences",
+      "reason": "Adapter and regressions for owner-only profile display preferences and coordinated Family writes."
+    },
+    {
+      "path": "family-backend/src/data/supabase/profileDisplayPreferences.ts",
+      "sha256": "12201746c8017796da9b29a13847581b876e43a9c8a1e0fa2db0dc6b9ee39b51",
+      "packet": "Family account date display preferences",
+      "reason": "Adapter and regressions for owner-only profile display preferences and coordinated Family writes."
+    }
+  ]
+}

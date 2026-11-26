@@ -1,0 +1,25 @@
+{
+  "passed": true,
+  "changed_source": "client/src/integrations/family/legacy/components/Planner/BookingsPanelFamily.tsx",
+  "new_source": "client/src/integrations/family/legacy/components/Planner/FamilyBookingSection.tsx",
+  "new_test": "client/src/integrations/family/legacy/components/Planner/BookingsPanelFamily.sections.test.tsx",
+  "original_sha256": "27682ec331a59d18545df0be9da3618e51e77f29404228bc96a93d2755835673",
+  "prototype_sha256": "4e2b810472664ee401ed6b7762c0cee4340766f6b310f1f953384a0ebf9ab569",
+  "new_component_sha256": "79f58b63d3f345890287f9f62b8c3c8e9cf79a606358a0925eb93eda2edae032",
+  "new_test_sha256": "9b8a3c41ae500dd8566ff36f99272120c2e861e494d6b0db9275f44cfbce99aa",
+  "old_section_sha256": "0a2438870b161376f00d9269042f163fb72a7d5f17e87d4541e1185d407cd113",
+  "original_existing_source_files_exact": 18282,
+  "other_candidate_tracked_files_exact": 18281,
+  "entire_extracted_function_byte_exact_except_export_modifier": true,
+  "only_removed_original_import_bindings": [
+    "ChevronDown",
+    "ChevronRight",
+    "ReactNode"
+  ],
+  "no_original_test_modified_or_retired": true,
+  "fresh_COW_probe_for_new_source_prototypes_passed": true,
+  "source_prototype_clones_have_independent_writes": true,
+  "entire_parent_component_and_BookingCard_byte_exact": true,
+  "inverse_two_file_transformation_reconstructs_original_bytes": true,
+  "exact_section_export_only_change": true
+}

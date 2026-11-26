@@ -1,0 +1,12 @@
+{
+  "numTotalTests": 3,
+  "numPassedTests": 0,
+  "numFailedTests": 3,
+  "numPendingTests": 0,
+  "success": false,
+  "exit_code": 1,
+  "mode": "wanted",
+  "diagnostics_only_not_feature_acceptance": true,
+  "baseline": "8d6fd108fa628ebb0ff6992defee56afaea0e460",
+  "native_mock_prefix_sha256": "c897c45ade76d00ba679c13070ced626b3be9825bc8e1afb29f105ec43273c5a"
+}

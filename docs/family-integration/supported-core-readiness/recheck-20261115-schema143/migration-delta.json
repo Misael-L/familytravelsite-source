@@ -1,0 +1,405 @@
+{
+  "candidate": "e287b4c53d3bc7ad88177c566bd936240c95f64f",
+  "hosted_versions": 88,
+  "canonical_local_versions": 143,
+  "pending_versions": 55,
+  "hosted_prefix_matches_preserved_ledger_version_names": true,
+  "historical_filename_label_differences": [
+    {
+      "version": "20260714000000",
+      "ledger_name": "fix_table_ownership",
+      "file_name_label": "invite_only_access_requests",
+      "file": "20260714000000_invite_only_access_requests.sql",
+      "sha256": "895cbc888ee944da8a7bdd6069fec6c870db5bc77ec3d4cabc95413689c3c8f7"
+    }
+  ],
+  "statement_checksums_or_hosted_drift_proved": false,
+  "hosted_SQL_executed": false,
+  "pending": [
+    {
+      "version": "20261104175741",
+      "ledger_name": "journey_entry_recovery",
+      "file_name_label": "journey_entry_recovery",
+      "file": "20261104175741_journey_entry_recovery.sql",
+      "sha256": "acbd46debbe99c0dd0a01993e7bc0cc5b621f51ce34655e9c5a6e9ca9fa05d23"
+    },
+    {
+      "version": "20261104192908",
+      "ledger_name": "journey_aggregate_recovery",
+      "file_name_label": "journey_aggregate_recovery",
+      "file": "20261104192908_journey_aggregate_recovery.sql",
+      "sha256": "85e46ea93a017ea57687be9a2d14c049b61a43ed622167f1348e2049f27ac838"
+    },
+    {
+      "version": "20261104200550",
+      "ledger_name": "trip_aggregate_recovery",
+      "file_name_label": "trip_aggregate_recovery",
+      "file": "20261104200550_trip_aggregate_recovery.sql",
+      "sha256": "fc3d5dc05d31295c184d8eec83265195b72a7c1d5bc196365aa8718ba84f96ea"
+    },
+    {
+      "version": "20261104230709",
+      "ledger_name": "trip_plan_locations",
+      "file_name_label": "trip_plan_locations",
+      "file": "20261104230709_trip_plan_locations.sql",
+      "sha256": "dc7cf49c5ba2da80a494fc2184b8c03866d8852956d10aa5d0c16ff01867aecb"
+    },
+    {
+      "version": "20261104233950",
+      "ledger_name": "trip_visit_location_bridge",
+      "file_name_label": "trip_visit_location_bridge",
+      "file": "20261104233950_trip_visit_location_bridge.sql",
+      "sha256": "707f84a94f5d004cddb98f9ea783177e787aa167c165888172b287d93a114304"
+    },
+    {
+      "version": "20261105001102",
+      "ledger_name": "trip_untimed_visit_commands",
+      "file_name_label": "trip_untimed_visit_commands",
+      "file": "20261105001102_trip_untimed_visit_commands.sql",
+      "sha256": "b246e71775c989ab658835ac098807866f4119896fabffd89e504cc63962a902"
+    },
+    {
+      "version": "20261105004710",
+      "ledger_name": "typed_plan_change_proposals",
+      "file_name_label": "typed_plan_change_proposals",
+      "file": "20261105004710_typed_plan_change_proposals.sql",
+      "sha256": "646ba3bf683ea87847573469ea598ad8589a87693831f5e74a08382814541986"
+    },
+    {
+      "version": "20261105012509",
+      "ledger_name": "legacy_visit_time_classification",
+      "file_name_label": "legacy_visit_time_classification",
+      "file": "20261105012509_legacy_visit_time_classification.sql",
+      "sha256": "c435969732372587635a717dbf655aaf98a349830badcdad5fda25d06a50e7a5"
+    },
+    {
+      "version": "20261105015237",
+      "ledger_name": "named_zone_visit_timing",
+      "file_name_label": "named_zone_visit_timing",
+      "file": "20261105015237_named_zone_visit_timing.sql",
+      "sha256": "0038599f796671abc0ae570478d52f1313e031ffd02d4dc935a1f383daa3aa5c"
+    },
+    {
+      "version": "20261105030029",
+      "ledger_name": "visit_timing_proposals",
+      "file_name_label": "visit_timing_proposals",
+      "file": "20261105030029_visit_timing_proposals.sql",
+      "sha256": "1c3187897578fa4d38de3e975e819894dd1bf8c43518dad0faf2869eddbeb4f5"
+    },
+    {
+      "version": "20261105040722",
+      "ledger_name": "visit_partial_time_semantics",
+      "file_name_label": "visit_partial_time_semantics",
+      "file": "20261105040722_visit_partial_time_semantics.sql",
+      "sha256": "c58228688898c6435ef2b681bfb62e788acc562a40562a5409dd33fc8d0c6ddf"
+    },
+    {
+      "version": "20261105054629",
+      "ledger_name": "atomic_trip_plan_entries",
+      "file_name_label": "atomic_trip_plan_entries",
+      "file": "20261105054629_atomic_trip_plan_entries.sql",
+      "sha256": "062f2dbe30b9c30dc4c5f3e82870155f70b61d9bfa8d900815790c674bc69c4f"
+    },
+    {
+      "version": "20261105194324",
+      "ledger_name": "trip_planner_state_snapshot",
+      "file_name_label": "trip_planner_state_snapshot",
+      "file": "20261105194324_trip_planner_state_snapshot.sql",
+      "sha256": "c00b06d08e330dbd317850c1e64ed51de529421cf17248162e2ff21a982359cb"
+    },
+    {
+      "version": "20261105201625",
+      "ledger_name": "trip_destination_location_bridge",
+      "file_name_label": "trip_destination_location_bridge",
+      "file": "20261105201625_trip_destination_location_bridge.sql",
+      "sha256": "a394d3e35f92cf8956e811c8def45ac975b7ba0fc10166ec9c0c626b48c01208"
+    },
+    {
+      "version": "20261105205015",
+      "ledger_name": "trip_location_form_commands",
+      "file_name_label": "trip_location_form_commands",
+      "file": "20261105205015_trip_location_form_commands.sql",
+      "sha256": "baea21ee3ed3a3eabf6034dd5c0b8b2a324aa617e9d496c3f3b47ead5f40fd64"
+    },
+    {
+      "version": "20261105212614",
+      "ledger_name": "trip_visit_form_commands",
+      "file_name_label": "trip_visit_form_commands",
+      "file": "20261105212614_trip_visit_form_commands.sql",
+      "sha256": "1baf6e679df11a4df35d5ea87cec8227973b5851ea509a6f69462dc33f9d5a3d"
+    },
+    {
+      "version": "20261106005109",
+      "ledger_name": "trip_private_planner_snapshot",
+      "file_name_label": "trip_private_planner_snapshot",
+      "file": "20261106005109_trip_private_planner_snapshot.sql",
+      "sha256": "c1140eefe306fe7a534ae149c556da97e7ad557b0559c56fa6a15c70dfe58a21"
+    },
+    {
+      "version": "20261106023651",
+      "ledger_name": "native_planner_creation",
+      "file_name_label": "native_planner_creation",
+      "file": "20261106023651_native_planner_creation.sql",
+      "sha256": "b63f8bf2b09df1b8ec63db0b5f86099b2160babd585b60209bacfe700bb23245"
+    },
+    {
+      "version": "20261106030729",
+      "ledger_name": "native_visit_arrangements",
+      "file_name_label": "native_visit_arrangements",
+      "file": "20261106030729_native_visit_arrangements.sql",
+      "sha256": "1aa5c19f67f166cf5552477ed881d7bd8f0f1ee2f0f24c6a72ede09668fa28f1"
+    },
+    {
+      "version": "20261106035504",
+      "ledger_name": "observed_trip_calendar",
+      "file_name_label": "observed_trip_calendar",
+      "file": "20261106035504_observed_trip_calendar.sql",
+      "sha256": "7f3ca3600e520d1fd51ff7d05cc118ca30627f6ab27d7e1e8729dc378a03d40b"
+    },
+    {
+      "version": "20261106043206",
+      "ledger_name": "recoverable_trip_day_order",
+      "file_name_label": "recoverable_trip_day_order",
+      "file": "20261106043206_recoverable_trip_day_order.sql",
+      "sha256": "106a3989253c703a3eabe11401e80af57752eb74f7c2bc1271ad255b8417a940"
+    },
+    {
+      "version": "20261106185358",
+      "ledger_name": "recoverable_trip_day_insertion",
+      "file_name_label": "recoverable_trip_day_insertion",
+      "file": "20261106185358_recoverable_trip_day_insertion.sql",
+      "sha256": "e5ae80930f3200d1117f7fb834037ee8ff6291657ef0a1f6824dae06d2f6e4fb"
+    },
+    {
+      "version": "20261106193124",
+      "ledger_name": "recoverable_unreferenced_trip_days",
+      "file_name_label": "recoverable_unreferenced_trip_days",
+      "file": "20261106193124_recoverable_unreferenced_trip_days.sql",
+      "sha256": "64f464cd43424e72959bffa94ccabec765adda41bb04fda7cd5fac9715f36900"
+    },
+    {
+      "version": "20261106201143",
+      "ledger_name": "recoverable_trip_day_contents",
+      "file_name_label": "recoverable_trip_day_contents",
+      "file": "20261106201143_recoverable_trip_day_contents.sql",
+      "sha256": "aa67982294a0a10dfada2b6248a302c6fab9aef2627bd421072e821b9662a809"
+    },
+    {
+      "version": "20261106213759",
+      "ledger_name": "recoverable_trip_day_file_links",
+      "file_name_label": "recoverable_trip_day_file_links",
+      "file": "20261106213759_recoverable_trip_day_file_links.sql",
+      "sha256": "9b27ddfe2e69884e89b19335f05abbf681caeb0daadc488791d2bf4df9e5299c"
+    },
+    {
+      "version": "20261106222223",
+      "ledger_name": "booking_calendar_date_facts",
+      "file_name_label": "booking_calendar_date_facts",
+      "file": "20261106222223_booking_calendar_date_facts.sql",
+      "sha256": "e708f913213390745c343538caa75b5ccdfda65f6bb984a436d06b5ca568c37d"
+    },
+    {
+      "version": "20261106230656",
+      "ledger_name": "recoverable_day_booking_bindings",
+      "file_name_label": "recoverable_day_booking_bindings",
+      "file": "20261106230656_recoverable_day_booking_bindings.sql",
+      "sha256": "65d6989b17918b42f6e1231d2daa392f02796c1f5cb00b4ec2752b1688325a21"
+    },
+    {
+      "version": "20261106234140",
+      "ledger_name": "observed_booking_detail_commands",
+      "file_name_label": "observed_booking_detail_commands",
+      "file": "20261106234140_observed_booking_detail_commands.sql",
+      "sha256": "502978ab32b7a8abc65cff94eadc0f78c6d8601e1937c6a069a9b46aa761449d"
+    },
+    {
+      "version": "20261107021228",
+      "ledger_name": "observed_plan_governance",
+      "file_name_label": "observed_plan_governance",
+      "file": "20261107021228_observed_plan_governance.sql",
+      "sha256": "37d41e2545ef28780ff0c1a9ccccf17da36e8658b98e6bd5e615d427190d3586"
+    },
+    {
+      "version": "20261109000220",
+      "ledger_name": "observed_trip_task_commands",
+      "file_name_label": "observed_trip_task_commands",
+      "file": "20261109000220_observed_trip_task_commands.sql",
+      "sha256": "bece3c0d42e5ac8115a0b0331805faf4dd753781d036eb0d3fed8efac2816ca2"
+    },
+    {
+      "version": "20261109032335",
+      "ledger_name": "observed_trip_packing_commands",
+      "file_name_label": "observed_trip_packing_commands",
+      "file": "20261109032335_observed_trip_packing_commands.sql",
+      "sha256": "630426299804d09beef98dc6d2f9132b363f7310fb33cc82298c1490d4469e48"
+    },
+    {
+      "version": "20261111201637",
+      "ledger_name": "observed_trip_packing_groups",
+      "file_name_label": "observed_trip_packing_groups",
+      "file": "20261111201637_observed_trip_packing_groups.sql",
+      "sha256": "99dcc3aa50af153ff245d70283e5b1ac0f6e7af97325cb3eb08bb485e79e09a6"
+    },
+    {
+      "version": "20261111234537",
+      "ledger_name": "normalized_trip_packing_categories",
+      "file_name_label": "normalized_trip_packing_categories",
+      "file": "20261111234537_normalized_trip_packing_categories.sql",
+      "sha256": "b361c5ad6d313fd8d42a424a4f106a671cc5a4d7afa1bcb45437fd1fd807873b"
+    },
+    {
+      "version": "20261112005447",
+      "ledger_name": "observed_trip_packing_categories",
+      "file_name_label": "observed_trip_packing_categories",
+      "file": "20261112005447_observed_trip_packing_categories.sql",
+      "sha256": "ca5381fc403eed90809c9ae9c92a94785d58b2cd09e36602af466a27d1e2f031"
+    },
+    {
+      "version": "20261112050004",
+      "ledger_name": "normalized_packing_category_lifecycle",
+      "file_name_label": "normalized_packing_category_lifecycle",
+      "file": "20261112050004_normalized_packing_category_lifecycle.sql",
+      "sha256": "bd373fd75d5a88c66a3ead421ca9b779e80247b1de4354109d6e4f2fa5d74e3f"
+    },
+    {
+      "version": "20261112055647",
+      "ledger_name": "category_bound_packing_items",
+      "file_name_label": "category_bound_packing_items",
+      "file": "20261112055647_category_bound_packing_items.sql",
+      "sha256": "67c3f6ceb03844e41908cd9e72f3759a9643c929ab3bbfe625b5c10a13eed63d"
+    },
+    {
+      "version": "20261112084121",
+      "ledger_name": "packing_category_aggregate_commands",
+      "file_name_label": "packing_category_aggregate_commands",
+      "file": "20261112084121_packing_category_aggregate_commands.sql",
+      "sha256": "b495d1368a4702c75c49c9b542f8320f2795054feb5a29e0ae86a0b16f24ac5a"
+    },
+    {
+      "version": "20261112112956",
+      "ledger_name": "observed_trip_packing_bags",
+      "file_name_label": "observed_trip_packing_bags",
+      "file": "20261112112956_observed_trip_packing_bags.sql",
+      "sha256": "b5af8384e481f56f85c9268bd783600b60cfd973bf3b28a6e29f86f34d69eb03"
+    },
+    {
+      "version": "20261112132958",
+      "ledger_name": "terminal_trip_packing_restore_cancellation",
+      "file_name_label": "terminal_trip_packing_restore_cancellation",
+      "file": "20261112132958_terminal_trip_packing_restore_cancellation.sql",
+      "sha256": "a3aa625587de1747fce3024a12de8c4d11892e6ca213ebef498bcd2b2ec1fee7"
+    },
+    {
+      "version": "20261112162520",
+      "ledger_name": "terminal_trip_packing_bag_commands",
+      "file_name_label": "terminal_trip_packing_bag_commands",
+      "file": "20261112162520_terminal_trip_packing_bag_commands.sql",
+      "sha256": "80dae4bc5dc064ea991dc11079b9d6c63d7981e06d71f7cf9053bc4159da4794"
+    },
+    {
+      "version": "20261112235203",
+      "ledger_name": "reconcile_family_api_privileges",
+      "file_name_label": "reconcile_family_api_privileges",
+      "file": "20261112235203_reconcile_family_api_privileges.sql",
+      "sha256": "8ce160ea954fa213efc0b1d8c701754f6c4a7ab2c5b376240edf80e9872965c9"
+    },
+    {
+      "version": "20261113032434",
+      "ledger_name": "trip_stay_read_foundation",
+      "file_name_label": "trip_stay_read_foundation",
+      "file": "20261113032434_trip_stay_read_foundation.sql",
+      "sha256": "9309739d31efc5039c44b6293af3d11d0a07875cd0a946769adfb41b3ff275b0"
+    },
+    {
+      "version": "20261113220230",
+      "ledger_name": "observed_trip_stay_commands",
+      "file_name_label": "observed_trip_stay_commands",
+      "file": "20261113220230_observed_trip_stay_commands.sql",
+      "sha256": "3a9b9e8df6bb9f5773571c1a94f1fad8864eaa64376c1348f3cdc348b558ec8d"
+    },
+    {
+      "version": "20261113225457",
+      "ledger_name": "original_stay_command_outcomes",
+      "file_name_label": "original_stay_command_outcomes",
+      "file": "20261113225457_original_stay_command_outcomes.sql",
+      "sha256": "595829734fa870e398098a378193f030f61fcf4a06e6e8629ea7bb94910c754c"
+    },
+    {
+      "version": "20261113234914",
+      "ledger_name": "coherent_booking_stay_read",
+      "file_name_label": "coherent_booking_stay_read",
+      "file": "20261113234914_coherent_booking_stay_read.sql",
+      "sha256": "b52d662f2f94098343e8d7396d26bda8ad30271b5faed883deda14989a773c4b"
+    },
+    {
+      "version": "20261114051232",
+      "ledger_name": "atomic_stay_booking_bundle",
+      "file_name_label": "atomic_stay_booking_bundle",
+      "file": "20261114051232_atomic_stay_booking_bundle.sql",
+      "sha256": "3b62e5649adbe4e98748981b16da41d84bafbb96ef294d5d2524e34c06d703d8"
+    },
+    {
+      "version": "20261114070706",
+      "ledger_name": "native_stay_arrival_recovery",
+      "file_name_label": "native_stay_arrival_recovery",
+      "file": "20261114070706_native_stay_arrival_recovery.sql",
+      "sha256": "5a73d28a72ddf9deb2f63193b40df33ecb32d8fb82273f07cd69a06ab154aec2"
+    },
+    {
+      "version": "20261114110052",
+      "ledger_name": "native_stay_calendar_consistency",
+      "file_name_label": "native_stay_calendar_consistency",
+      "file": "20261114110052_native_stay_calendar_consistency.sql",
+      "sha256": "89de2623faccc3131fc8f37dcf9c609dce06e57365723c663846e9bc727599bd"
+    },
+    {
+      "version": "20261114230948",
+      "ledger_name": "recoverable_family_collections",
+      "file_name_label": "recoverable_family_collections",
+      "file": "20261114230948_recoverable_family_collections.sql",
+      "sha256": "9e04a75d7281b7373c903f2318a8195d88daaa8bd95fb862784d34dbe59dbcd6"
+    },
+    {
+      "version": "20261115000913",
+      "ledger_name": "collection_manual_item_kind",
+      "file_name_label": "collection_manual_item_kind",
+      "file": "20261115000913_collection_manual_item_kind.sql",
+      "sha256": "21c779e867def673c37bb4f59576fdafb4f7fa84462c1b2be100993effb94e24"
+    },
+    {
+      "version": "20261115000914",
+      "ledger_name": "normalized_collection_location_content",
+      "file_name_label": "normalized_collection_location_content",
+      "file": "20261115000914_normalized_collection_location_content.sql",
+      "sha256": "5978524ed42018939a003a626a50c6b1669009412326cb13181235c380f5ee63"
+    },
+    {
+      "version": "20261115010522",
+      "ledger_name": "bounded_family_collection_content_reads",
+      "file_name_label": "bounded_family_collection_content_reads",
+      "file": "20261115010522_bounded_family_collection_content_reads.sql",
+      "sha256": "1ac03fbd77153a5884fb9582fd1d603d6c0071bbc13c8e233606e68a7521dc4e"
+    },
+    {
+      "version": "20261115015406",
+      "ledger_name": "observed_family_collection_item_authoring",
+      "file_name_label": "observed_family_collection_item_authoring",
+      "file": "20261115015406_observed_family_collection_item_authoring.sql",
+      "sha256": "3c1840be4316e2055e5b285bbbc9fb46cd215956b54b1906e04c15c90f086b40"
+    },
+    {
+      "version": "20261115021715",
+      "ledger_name": "bounded_family_collection_library_reads",
+      "file_name_label": "bounded_family_collection_library_reads",
+      "file": "20261115021715_bounded_family_collection_library_reads.sql",
+      "sha256": "2ddffed56199b6d3f0282148e028228a70c3d52917e9ac971db1266323636c0d"
+    },
+    {
+      "version": "20261115052800",
+      "ledger_name": "cancel_unprepared_family_collection_requests",
+      "file_name_label": "cancel_unprepared_family_collection_requests",
+      "file": "20261115052800_cancel_unprepared_family_collection_requests.sql",
+      "sha256": "33694cecc554e5e3bef7109fb86ee1cb78f783cab8a65aae2fde63451ced0715"
+    }
+  ]
+}

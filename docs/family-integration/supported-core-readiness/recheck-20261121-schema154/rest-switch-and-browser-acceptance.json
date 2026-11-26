@@ -1,0 +1,67 @@
+{
+  "isolation": "restored X8 archive, PostgreSQL 17.12, two loopback-only PostgREST v14.14 processes",
+  "before_migrations": {
+    "stage": "before migrations",
+    "processes": 2,
+    "switch_applied_using": "local_platform_operator",
+    "reset_applied_using": "local_platform_operator",
+    "restricted_settle_seconds_observed": 0.61,
+    "restored_settle_seconds_observed": 0.64,
+    "normal_write_before_and_after": true,
+    "blocked_writes_created_no_rows": true,
+    "exposed_schema_setting_restored": true,
+    "historical_ledger_untouched": true,
+    "asserted_refusals": [
+      "3000 default trip read refused",
+      "3000 legacy table write refused default",
+      "3000 legacy table write refused public",
+      "3000 legacy table write refused graphql_public",
+      "3000 other signed-in session refused",
+      "3001 default trip read refused",
+      "3001 legacy table write refused default",
+      "3001 legacy table write refused public",
+      "3001 legacy table write refused graphql_public",
+      "3001 other signed-in session refused",
+      "3000 scoped profile unexposed on rollback",
+      "3001 scoped profile unexposed on rollback"
+    ]
+  },
+  "migration_replay": {
+    "migrations": 67,
+    "final_ledger": 155,
+    "historical_entries_match": true
+  },
+  "isolated_smoke_refusal_count": 23,
+  "browser": {
+    "browser_cors_preflights": 15,
+    "pinned_recovery_html_matches_prior_cloudflare_fetch": true,
+    "pages_make_no_api_calls_before_driver": true,
+    "recovery_network_policy_unchanged": true,
+    "browser_binding_refusals": 3,
+    "ordinary_user_refused": true,
+    "scoped_task_saves": 1,
+    "scoped_packing_saves": 1,
+    "verified_after_browser_reload": 2,
+    "packing_lost_reply_reconciled_without_resending": true,
+    "pinned_schema_profile_on_every_rest_request": true,
+    "independent_record_and_receipt_totals_matched": true,
+    "isolated_synthetic_traffic": true,
+    "hosted_gateway_and_service_worker_excluded": true
+  },
+  "after_migrations": {
+    "checks": [
+      "3000 scoped no longer exposed",
+      "3000 old writer remains rejected",
+      "3001 scoped no longer exposed",
+      "3001 old writer remains rejected"
+    ],
+    "ordinary_profile_restored": true,
+    "temporary_schemas_removed": true
+  },
+  "original_rows_retained_exactly": 296764,
+  "original_projections": 200,
+  "wrangler_preview_asset_dry_run_passed": true,
+  "wrangler_artifact_for_local_qualification_only": true,
+  "hosted_config_writes": 0,
+  "report_uses_no_production_data_or_session_identifiers": true
+}

@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "actual_committed_bodies_field_constants_lookup_and_public_parent_used": true,
+  "only_original_import_prefix_and_trailing_intercomponent_separator_restored": true,
+  "reconstructed_sha256": "911fdd2bc5cc87a74fd8166b19cd2351ce105b8c75fa29d45edfdda9de7314ff",
+  "original_source_bytes_exact": true,
+  "import_formatter_review": "import-format-review.json"
+}

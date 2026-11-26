@@ -1,0 +1,45 @@
+{
+  "passed": true,
+  "introduction_commit": "dd773ae38e7f53e7af08b553388c395f5e7a6c23",
+  "parent": "client/src/mobile/screens/trip/tabs/MPackingListTab.tsx",
+  "child": "client/src/mobile/screens/trip/tabs/MPackingItemRow.tsx",
+  "parent_before_extraction_sha256": "68dfbd2a2bc9a0c05d64396d09ff035897bca33a874332ff9ec51b24673e7baa",
+  "old_row_sha256": "21321ada72de3d232533d6d08923306c40f56da366ac11814d3d95759578e278",
+  "current_parent_sha256": "11130ae7cbe484be8ba7d0b4f963ec7e3611619fbc2acd5ca81305ab70a6310c",
+  "current_child_sha256": "15eb41a28bf3e241da9125a77eededf7c0eafb417fce7cdbee8f2cc8a197c0d9",
+  "same_13_authoritative_theme_rule_matches_in_old_row_and_current_child": true,
+  "other_19_matches_in_old_parent_remainder_and_current_parent_exact": true,
+  "matched_findings": [
+    "raw-text-size: text-[0.5625rem]",
+    "raw-text-size: text-[0.59375rem]",
+    "raw-text-size: text-[0.59375rem]",
+    "raw-text-size: text-[0.625rem]",
+    "raw-text-size: text-[0.625rem]",
+    "raw-text-size: text-[0.625rem]",
+    "raw-text-size: text-[0.6875rem]",
+    "raw-text-size: text-[0.75rem]",
+    "raw-text-size: text-[0.75rem]",
+    "raw-text-size: text-[0.75rem]",
+    "raw-text-size: text-[0.75rem]",
+    "raw-text-size: text-[0.75rem]",
+    "raw-text-size: text-[0.8125rem]"
+  ],
+  "before_ownership": {
+    "mobile/screens/trip/tabs/MPackingListTab.tsx": 32,
+    "mobile/screens/trip/tabs/MPackingItemRow.tsx": 0
+  },
+  "after_ownership": {
+    "mobile/screens/trip/tabs/MPackingListTab.tsx": 19,
+    "mobile/screens/trip/tabs/MPackingItemRow.tsx": 13
+  },
+  "total_allowance_before_after": [
+    3388,
+    3388
+  ],
+  "only_existing_findings_reallocated": true,
+  "no_new_styling_bypass_marker_exclusion_or_rule_change": true,
+  "theme_disable_baseline_sha256": "4e8e3214f2a23be3efc490c700cbbd8deb170482f2cdd34903c6944319e4402c",
+  "original_baseline_sha256": "0494842d3a0f7c78ade3571ba97733c2c849e35662fd905eb08f6635fe96363f",
+  "repaired_baseline_sha256": "f05bdf917d86a8b0725775dfcaf1f8d257f491f20be605e574c703cb2a7838ce",
+  "no_UI_or_runtime_source_change": true
+}

@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "changed_source": "client/src/integrations/family/legacy/components/Planner/TransportsPanelFamily.tsx",
+  "new_sources": [
+    "client/src/integrations/family/legacy/components/Planner/FamilyTransportCards.tsx",
+    "client/src/integrations/family/legacy/components/Planner/familyTransportTypeMeta.ts"
+  ],
+  "new_test": "client/src/integrations/family/legacy/components/Planner/TransportsPanelFamily.presentation.test.tsx",
+  "original_sha256": "911fdd2bc5cc87a74fd8166b19cd2351ce105b8c75fa29d45edfdda9de7314ff",
+  "prototype_sha256": "00a75988eb7c6f7d1402f3fff4466bcdc0c5d4632af210ad24c53676bc6d0352",
+  "new_source_sha256": {
+    "client/src/integrations/family/legacy/components/Planner/FamilyTransportCards.tsx": "fa68e1591a6e14dd4235bf4d98a48f1a6c84df40d37688c5c2c001031a60c955",
+    "client/src/integrations/family/legacy/components/Planner/familyTransportTypeMeta.ts": "3dbdc1c5b0ccd028d658722e91348cf32090bdcbd35d1a7c5988751897d08b6e"
+  },
+  "new_test_sha256": "e8790d461c0352fc31699fd293d21eddb0d9b2072ae7089f81515f5189c7bd20",
+  "parent_public_declarations_and_complete_body_byte_exact": true,
+  "section_and_card_bodies_byte_exact_except_export_modifiers": true,
+  "lookup_declaration_byte_exact_except_export_modifier": true,
+  "field_class_constants_byte_exact": true,
+  "inverse_original_source_reconstruction_exact": true,
+  "lookup_array_shared_by_parent_and_cards": true,
+  "existing_original_files_exact": 18335,
+  "other_candidate_original_files_exact": 18334,
+  "old_tests_unchanged": true,
+  "fresh_COW_source_copy_independence_probe_passed": true,
+  "new_module_formatting_only_changed_import_layout": true,
+  "trailing_intercomponent_separator_removed_at_new_EOF": true,
+  "formatter_import_layout_order_delta_reviewed": true
+}

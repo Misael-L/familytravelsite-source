@@ -1,0 +1,126 @@
+{
+  "cwd": "/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client",
+  "files": [
+    {
+      "path": "client/src/integrations/family/creationIntentQueue.ts",
+      "before": "810f69043be1f9801381aac1c7be9e733d39ba3234e84272d38ddbd84cf8e408",
+      "after": "5d5c2e6bc0f1e649955fc1438788c9b6719f34563801d96e8b3f26855a073aac",
+      "changed": true,
+      "before_formatted": false,
+      "after_formatted": true,
+      "idempotent": true,
+      "before_wrapped": 173,
+      "after_wrapped": 177
+    },
+    {
+      "path": "client/src/integrations/family/creationTerminalSettlement.ts",
+      "before": "a4097558cf3958cf56806896f3d33a659e05eef4ce18ca4491e45ab6a8c3608b",
+      "after": "71d53bd19e4ead1eea3bcea96606bbd87e4ed08cf6a44d7fdff5575409bf7528",
+      "changed": true,
+      "before_formatted": false,
+      "after_formatted": true,
+      "idempotent": true,
+      "before_wrapped": 365,
+      "after_wrapped": 366
+    },
+    {
+      "path": "client/src/integrations/family/legacy/components/Admin/plugins/PluginBadges.tsx",
+      "before": "b1254e99a74d02a269615f05aaff19ee3aef0ec57dff603e037f6cc18e478f23",
+      "after": "476ee4876b171dd59978f83b567c531fc624ce1742aff869d5bbc12e1596b229",
+      "changed": true,
+      "before_formatted": false,
+      "after_formatted": true,
+      "idempotent": true,
+      "before_wrapped": 89,
+      "after_wrapped": 89
+    },
+    {
+      "path": "client/src/integrations/family/legacy/components/Admin/plugins/PluginInstalledList.tsx",
+      "before": "c260cb4d9b1a922bf6dfff1ac7b14fac6453f7464b04d35cc58b10e4cb6f9d50",
+      "after": "cd9c72e32726e9de7844dc9e8957b00bb40786e3f627c202e36c48a251d010b4",
+      "changed": true,
+      "before_formatted": false,
+      "after_formatted": true,
+      "idempotent": true,
+      "before_wrapped": 479,
+      "after_wrapped": 479
+    },
+    {
+      "path": "client/src/integrations/family/legacy/components/Admin/plugins/PluginRegistry.tsx",
+      "before": "5e48efb12df71d5f25ae5bd8f182f76b1ea9cb32e7fd91aca9984c03c1f02b4b",
+      "after": "80712c6e1c85f477c87548069026646bf7e1077ae7cbeab08a728d1331f1b7db",
+      "changed": true,
+      "before_formatted": false,
+      "after_formatted": true,
+      "idempotent": true,
+      "before_wrapped": 394,
+      "after_wrapped": 394
+    },
+    {
+      "path": "client/src/integrations/family/legacy/components/Admin/plugins/PluginTrustDialogs.tsx",
+      "before": "3fc1cd938015fde05a2702da02879302a24c5ed6c775466ec14336a2b6b3b4dc",
+      "after": "dfd3dfcda2185a52ddb39e2dec78b44ba37cdd6c94f581a18e8554937c8d5e39",
+      "changed": true,
+      "before_formatted": false,
+      "after_formatted": true,
+      "idempotent": true,
+      "before_wrapped": 306,
+      "after_wrapped": 306
+    },
+    {
+      "path": "client/src/integrations/family/plannerReadGuard.ts",
+      "before": "6cb1eb5cd8b00f6b4fef1997da30d2534d38eaf5e99a26eb0533a269e4262504",
+      "after": "822c84676d2d6ba252c4d5254e96432205351636162397b5665eb2e77edeb681",
+      "changed": true,
+      "before_formatted": false,
+      "after_formatted": true,
+      "idempotent": true,
+      "before_wrapped": 162,
+      "after_wrapped": 162
+    },
+    {
+      "path": "client/src/integrations/family/plannerTaskRecovery.ts",
+      "before": "8e5945aa14c6f1d274889ee0a63418bd4321b3221e8d7e108470e332ca5584ef",
+      "after": "c977df009c11e7eb69b3697a0ed988a07dc1fc47a411c58e5238e12b16707fee",
+      "changed": true,
+      "before_formatted": false,
+      "after_formatted": true,
+      "idempotent": true,
+      "before_wrapped": 251,
+      "after_wrapped": 251
+    },
+    {
+      "path": "client/src/sync/originalWorkExport.ts",
+      "before": "fb14f0fd1446d34b80bc39549e11b884e1128ce8db376e7fd37785ffb3300f12",
+      "after": "8b5044ed55d41f5dc80332b6aebcd7ef325b0bc4a918be282a5ae24ea37d77e3",
+      "changed": true,
+      "before_formatted": false,
+      "after_formatted": true,
+      "idempotent": true,
+      "before_wrapped": 116,
+      "after_wrapped": 116
+    },
+    {
+      "path": "client/src/sync/queueStatus.ts",
+      "before": "5450e87a424c422cade267fd1f55807474f86c730c076bf181384fc8aac1fba3",
+      "after": "b5386c6380ea2d50428abd3a2d26d6d087f80a1724fde6671f1baac779373f23",
+      "changed": true,
+      "before_formatted": false,
+      "after_formatted": true,
+      "idempotent": true,
+      "before_wrapped": 86,
+      "after_wrapped": 86
+    },
+    {
+      "path": "client/src/sync/retainedRecovery.ts",
+      "before": "1c4a1da6cef60c7c0353d56240a46888359ad7e3c99c3a8f33a08843908a0ed9",
+      "after": "34a423136a87e5b969cc3fc728d2c894b216d80792d12ff051a165ad15cc6ce9",
+      "changed": true,
+      "before_formatted": false,
+      "after_formatted": true,
+      "idempotent": true,
+      "before_wrapped": 158,
+      "after_wrapped": 163
+    }
+  ]
+}

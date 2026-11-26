@@ -1,0 +1,30 @@
+{
+  "removed_paths": [
+    "client/src/integrations/family/legacy/components/Planner/PlaceInspector.tsx",
+    "client/src/integrations/family/legacy/components/Planner/family/FamilyPlaceInspector.tsx"
+  ],
+  "previous_rows": [
+    {
+      "path": "client/src/integrations/family/legacy/components/Planner/PlaceInspector.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "b10f1d6ee0ad062b521fcb4f31d3fb22187ad1bf",
+        "bytes": 68249
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/components/Planner/PlaceInspector.tsx"
+    },
+    {
+      "path": "client/src/integrations/family/legacy/components/Planner/family/FamilyPlaceInspector.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "e104e3598d4723f2f86151c9436079531b5c9328",
+        "bytes": 8341
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/components/Planner/family/FamilyPlaceInspector.tsx"
+    }
+  ],
+  "new_qualified_commit": "f11acf7ea23c898838d62982abdac28ac3eb4994",
+  "reason": "Actual two-file old place-inspector/ActionButton island deletion after bounded source/type/test/configuration closure; no guard relaxation or disappearing source row without deletion."
+}

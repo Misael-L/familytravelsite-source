@@ -1,0 +1,14 @@
+{
+  "incoming": "f30ecf0162558f4417334d766b72ffaa46fe3e3a",
+  "implementation": "0762a478191c4932aa19f0496e9071f5c55fbdd1",
+  "build_source": "561b62b7683bb62de1e1bd9fd91bc95518875c51",
+  "removed_original_sha256": {
+    "client/src/integrations/family/legacy/components/SystemNotices/SystemNoticeModal.tsx": "2b022c2427b66ab10c84529888bcb56f1c1b767cc5f3ae6195a7e8ac1adf804b",
+    "client/src/integrations/family/legacy/components/SystemNotices/SystemNoticeHost.tsx": "9e6add2228558d03049341b093d9a0dbfb72267a6cc9fe27de454099a9e90f46"
+  },
+  "prior_runtime_build": "dcc414ae54c3fce7c74a00511bf4b28c30f75539",
+  "fresh_current_compiler_declarations": 128,
+  "no_old_generated_declaration_identity_assumption": true,
+  "test_runtime": "v24.22.2",
+  "no_hosted_operation": true
+}

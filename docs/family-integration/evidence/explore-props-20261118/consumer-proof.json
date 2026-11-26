@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "same_expanded_cases_before_after": 367,
+  "package_counts": {
+    "client": 300,
+    "family-backend": 67
+  },
+  "same_raw_names_files_ancestors_status_and_multiplicity": true,
+  "no_label_normalization_required": true,
+  "expanded_cases_sha256": "305a1394f0509d18e2fc5f263d891e3d276e4fb495b0bdff8b4753ea840093bc",
+  "all_other_tracked_prototype_files_exact": 18229,
+  "only_one_component_type_boundary_and_new_type_file": true,
+  "assertions_mocks_fixtures_config_timeouts_skips_and_coverage_unchanged": true,
+  "no_live_backend_browser_or_writer_admission": true
+}

@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "actual_existing_strict_check_executed": true,
+  "exit": 1,
+  "global_strict_gate_pass": false,
+  "seconds": 77.54,
+  "reported_diagnostic_total": 636,
+  "baseline_allowance": 467,
+  "all_preexisting_scored_file_counts_exact": true,
+  "all_changed_and_new_paths_zero_strict_diagnostics": [
+    "src/components/Collections/collectionSharingState.ts",
+    "src/components/Collections/collectionSharing.read-boundary.test.tsx",
+    "src/repo/collectionSharingRepo.ts",
+    "src/repo/collectionSharingRepo.test.ts"
+  ],
+  "baseline_scanner_and_existing_frozen_exception_unchanged": true
+}

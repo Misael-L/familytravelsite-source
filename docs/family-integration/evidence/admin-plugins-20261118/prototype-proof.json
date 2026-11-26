@@ -1,0 +1,63 @@
+{
+  "passed": true,
+  "all_retained_declarations": 56,
+  "all_original_runtime_bodies_JSX_structure_handlers_hooks_dependencies_and_defaults_preserved": true,
+  "normalization": "Only export relocation, erased type-only state aliases and formatter className token permutations. Each className template quasi retains its token multiset; other runtime AST exact.",
+  "new_runtime_functions": 0,
+  "all_original_type_models_exact": true,
+  "new_state_type_aliases": 2,
+  "inherited_forced_legacy_findings_exact": {
+    "complexity/1": 5,
+    "max-lines-per-function/1": 1,
+    "react-hooks/set-state-in-effect/1": 1,
+    "trek/no-swallowed-catch/1": 1,
+    "@typescript-eslint/no-floating-promises/1": 1,
+    "@typescript-eslint/no-misused-promises/1": 9,
+    "@typescript-eslint/no-non-null-assertion/1": 3,
+    "react-hooks/refs/1": 1
+  },
+  "new_test_findings": 0,
+  "before_after_consumer_tests": 42,
+  "source_sizes": [
+    {
+      "path": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "wrapped": 999
+    },
+    {
+      "path": "client/src/integrations/family/legacy/components/Admin/plugins/pluginModel.tsx",
+      "wrapped": 489
+    },
+    {
+      "path": "client/src/integrations/family/legacy/components/Admin/plugins/PluginBadges.tsx",
+      "wrapped": 89
+    },
+    {
+      "path": "client/src/integrations/family/legacy/components/Admin/plugins/PluginInstalledList.tsx",
+      "wrapped": 479
+    },
+    {
+      "path": "client/src/integrations/family/legacy/components/Admin/plugins/PluginRegistry.tsx",
+      "wrapped": 394
+    },
+    {
+      "path": "client/src/integrations/family/legacy/components/Admin/plugins/PluginTrustDialogs.tsx",
+      "wrapped": 306
+    },
+    {
+      "path": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "wrapped": 458
+    }
+  ],
+  "sources": {
+    "AdminPluginsPanel.tsx": "c7fcd1f25ae3d70ade2ac5831434e3a099cdcb78002e3e1ee634ae9057675acd",
+    "plugins/pluginModel.tsx": "0056c7280529469265b7cec28919fcb2fc7a45ca9bc87195e3c3052205ae477a",
+    "plugins/PluginBadges.tsx": "b1254e99a74d02a269615f05aaff19ee3aef0ec57dff603e037f6cc18e478f23",
+    "plugins/PluginInstalledList.tsx": "c260cb4d9b1a922bf6dfff1ac7b14fac6453f7464b04d35cc58b10e4cb6f9d50",
+    "plugins/PluginRegistry.tsx": "5e48efb12df71d5f25ae5bd8f182f76b1ea9cb32e7fd91aca9984c03c1f02b4b",
+    "plugins/PluginTrustDialogs.tsx": "3fc1cd938015fde05a2702da02879302a24c5ed6c775466ec14336a2b6b3b4dc"
+  },
+  "test_sha256": "0fb8dc427b1c08db8f59eba57b4a545eba72c950da428b2094cda23896582929",
+  "profile": "Family Supabase remains hidden; tests mount retained component with controlled API/store/translation/toast ports, not live admission.",
+  "initialization": "Explicit bare react-dom import preserves its original earlier load. The API/i18n/store/ConfirmDialog/Toast relative order is retained. Physical-position functions and ToggleSwitch/PluginIcon may initialize later; these have only pure declarations/regex and existing React/lucide dependencies. New modules add no top-level effects or new external dependencies.",
+  "no_coverage_or_hosted_acceptance_claim": true
+}

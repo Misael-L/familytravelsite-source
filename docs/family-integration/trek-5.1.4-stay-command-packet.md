@@ -1,0 +1,25 @@
+# U05-B2b2 — observed stay commands and retained history
+
+Status: **B2b2 local commands/history qualified; native and confirmed-timing cutovers remain gated.** [Actual results and refinements](trek-5.1.4-stay-commands-handoff.md).
+
+Prerequisite: qualified local schema 130/read foundation. Read its handoff, canonical migration and the parent stay/timing design. Continue on the complete 5.1.4 Family successor and an explicitly guarded local derivative. Preserve historical 130 SQL/ledger entries and the mixed canonical Git index. Hosted SQL/settings/billing, live sites/main/push/publication, media/ETL/backfill and source-adoption changes remain excluded.
+
+## Outcome and contracts
+
+Implement create/edit/explicit link/unlink/Trash/restore with append-only before/after history and operation receipts. Stop after real SQL/HTTP qualification; native controls, saved/shared versions and actual timing conversion stay gated. Use the target signatures in the parent design: save_family_stay_v1, set_family_stay_booking_link_v1, trash_family_stay_v1, restore_family_stay_v1. Do not implement native cascade deletion, mirrored mutable booking facts or compatibility empty accommodations.
+
+Specify strict scope/observation/change schemas before SQL: original user/Family/person/Trip/stay/revisions/link/booking identities, exact whitelisted fields and bounded values. Omission preserves a field; explicit null clears only a nullable fact. Create uses a caller-generated entity UUID and new operation UUID. Intentional repeat creation gets a new identity; retries reuse the original identity/body digest. No hotel/date deduplication or arbitrary metadata replacement. Inspect current observed booking/calendar commands as requirements evidence, not a blind template.
+
+Use established recovery advisory and Trip locks before sorted child locks. Reauthorize under locks and compare original observations, returning established PT409 conflicts. Require a current session/AAL, active Family/person/Trip and Direct trip.schedule.manage; association changes additionally require Direct trip.reservations.manage. Propose/deny remain truthful refusals until typed proposals are qualified. An old receipt still requires current access and an identical request digest and must not reapply over newer edits or another Trip/session. Content, history, receipt and revisions commit or roll back together. A client-set GUC alone cannot grant permission.
+
+Retain B2b1's optional 1:1 association and known-hotel/same-Trip checks from both ends, independent dates/clocks/zones/notes, genuine midnight and exact calendar mapping. Restore revalidates the original location/booking. Trip Trash freezes commands and retry replay; parent restore preserves identities. Unlink never deletes stay, provider booking, location, catalog hotel, audit/history or files. Purge remains unavailable until whole-graph retention is qualified.
+
+Before adding receipt/history tables, define restrictive ownership FKs, append-only enforcement, indexes, grants/RLS and aggregate export/recovery behavior. Generate a new migration with pinned CLI2; do not edit130 or rewrite its ledger. Record/test narrowly necessary trigger replacements in the new migration. Timing writer qualification is a separate bounded task; do not insert a GUC bypass into classified-clock guards or squeeze transport endpoints into a hotel-only API.
+
+## Allowed work and acceptance
+
+New canonical migration, bounded SQL/HTTP regression/guard files, required generated DB types, exact website source-review copy and current handoff/progress docs only. No native presentation edits or control activation. Preserve the12 protected layouts, all previous Family packets/permissions/recovery/media contracts and declared source adoption. Keep commands=false until read admission and the actual command cohort qualify together.
+
+Regressions: retain all 33 B2b1 cases; owner/direct/propose/deny/foreign/suspended/missing-person/AAL1/revoked session; no direct table/helper/service grants; deliberate repeated creation versus exact retry; changed-body operation reuse; lost replies and historical receipt after later edits; concurrent same operation and competing observations; stale Trip/stay/link/location/booking; notes-only precision and explicit clear; invalid/foreign/deleted/missing/mismatched hotel associations; one stay/two bookings and one booking/two stays; unlink/relink rollback; retained Trash/restore; parent recovery/export; no-op revisions; bounds and complete original-row/historical-ledger preservation. Use synthetic/adapted demo fixtures and actual SQL/signed HTTP. Privileged fixture DML is not writer proof.
+
+Finish only after a clean replay on the guarded derivative, meaningful command/recovery/concurrency/security tests, new-object catalog/advisor checks, source/data preservation, scoped source review without staging the mixed canonical index, and durable truthful evidence. Next is coordinated B2b3 native/live/saved/shared cutover. F4/F5/U05-C/F3c release and independent backup gates remain explicit.

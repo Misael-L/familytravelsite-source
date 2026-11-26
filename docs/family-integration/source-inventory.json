@@ -1,0 +1,424 @@
+{
+  "schemaVersion": 1,
+  "preparedDate": "2026-10-29",
+  "targetRoot": "/Users/Misael/Downloads/FamilyTravelSite",
+  "startingCommit": "6d1c8eb30061ce358ba0f53ae5729e1f93f92121",
+  "referenceRoot": "/Users/Misael/.codex/worktrees/trek-v5-full-frontend/FamilyTravelSite",
+  "referenceStorage": "uncommitted working files; read-only; git HEAD does not contain this integration",
+  "upstreamReferenceCommit": "d4da05bbc93bcfa9668e7a8f4e5384b788452418",
+  "targetUpstreamCommit": "a0943f8226269bc192c1cda992fbac33333337a1",
+  "referenceTrees": [
+    {
+      "root": "/Users/Misael/.codex/worktrees/trek-v5-full-frontend/FamilyTravelSite/client/src/integrations/family",
+      "files": 717,
+      "sha256": "fb67b946dbcea0415443702db7da16088623a040b6868183e7f7424c8045376d",
+      "digestMethod": "sha256 of sorted relative-path + NUL + per-file-sha256 + LF; excludes node_modules/dist/.git/coverage and .env files"
+    },
+    {
+      "root": "/Users/Misael/.codex/worktrees/trek-v5-full-frontend/FamilyTravelSite/family-shared",
+      "files": 1118,
+      "sha256": "dba14bf6cc0516699008707c8dccb4cca333f5e5a8bb7941cc567c90007f73be",
+      "digestMethod": "sha256 of sorted relative-path + NUL + per-file-sha256 + LF; excludes node_modules/dist/.git/coverage and .env files"
+    }
+  ],
+  "referenceFiles": [
+    {
+      "path": "client/e2e/family/fullFrontend.fixture.ts",
+      "sha256": "21bdc3413d8e10e21ab0cdf8c5cd3b8ba5d67772b43d93e0d613596bcfa3d98a"
+    },
+    {
+      "path": "client/e2e/family/fullFrontend.interactions.spec.ts",
+      "sha256": "feb91a16c519d4bfcde09dd3b9ce5b2136fe09930f3c6b4bb9aca6a187b592b9"
+    },
+    {
+      "path": "client/e2e/family/fullFrontend.spec.ts",
+      "sha256": "865c2e09b6c1fe2bb018d1e14013e6432ed86ddd1861b1db1aa5c45fe1ab0b27"
+    },
+    {
+      "path": "client/package.json",
+      "sha256": "f64b6df9b904f880f67263f53306e0fb4b8e23da3715f455dd71c342e0c54f32"
+    },
+    {
+      "path": "client/playwright.family.full-frontend.config.ts",
+      "sha256": "3f2cecd28bfc943a726a29045fdc1603dabe95feaecb305272f5f8c96eab1147"
+    },
+    {
+      "path": "client/src/App.tsx",
+      "sha256": "95de0198e171a6c7695d99d4f4a3d4c86ad236e6efdf0bdc692c9322cfae54b4"
+    },
+    {
+      "path": "client/src/api/websocket.ts",
+      "sha256": "75a9787547651383691a2d975c643c6c5f3ff184fe072e6701447f137d78b4f0"
+    },
+    {
+      "path": "client/src/components/Budget/useSettlementForm.ts",
+      "sha256": "e97cce8a0ce6ad9128828417a87828ae1b8a11817466a3014f4d5904533099a7"
+    },
+    {
+      "path": "client/src/components/Journey/JourneyDetailPageEntryEditor.tsx",
+      "sha256": "07ccc9dfa149f0b8929e65aa18f6120fb07bda4203b2838c485b61dcf60bf6cd"
+    },
+    {
+      "path": "client/src/components/Journey/JourneyMapAuto.tsx",
+      "sha256": "43733087f79b53890049d889aa85bef6fe0efe6e2c86922ec265ede26979ed22"
+    },
+    {
+      "path": "client/src/components/Layout/Navbar.tsx",
+      "sha256": "360d96ce909717d5e673ca43d7e5d25d333d911f7e845f5bf00536adf4f00d30"
+    },
+    {
+      "path": "client/src/components/Map/MapViewAuto.tsx",
+      "sha256": "d0e37feb39f6833e6bfc72eb145ec198eb262db285acce6a886afbde3d134b80"
+    },
+    {
+      "path": "client/src/components/Planner/BookingCostsSection.tsx",
+      "sha256": "7b04393483c45da49f5ae1b7d0856066305a67d2f67d7a5744723d99e44d17a0"
+    },
+    {
+      "path": "client/src/components/Planner/DayPlanSidebar.tsx",
+      "sha256": "18c6021de68e5c62f5b71b5a7b00f7eb7055eb808c7e19e1273be93180f0f022"
+    },
+    {
+      "path": "client/src/components/Planner/ReservationModal.tsx",
+      "sha256": "12b24b7ccb144d8400f510716b942c2b90b2132598267f90d84c895840e479b2"
+    },
+    {
+      "path": "client/src/components/Planner/ReservationsPanel.tsx",
+      "sha256": "625dd95fe3691ed38694574ef2e7c2ef11df4307bfae3a2825a241b697bc96a5"
+    },
+    {
+      "path": "client/src/components/Planner/TransportModal.tsx",
+      "sha256": "9b357b156815595c0df6dcbda0e58c8e9f0b0260c22487f3098f4d390b7c5896"
+    },
+    {
+      "path": "client/src/components/Planner/bookings/BookingDetailDialog.tsx",
+      "sha256": "e319707dde41e2a04e4f09a6eb9178def4ab4f690d7cf940da2e4cbd97e08759"
+    },
+    {
+      "path": "client/src/components/Planner/bookings/BookingDetailHost.tsx",
+      "sha256": "976a531a6c6b4f57f7e860d0198733559c8aacb45b4386c9d79d5ae3a3dbd496"
+    },
+    {
+      "path": "client/src/components/Settings/AboutTab.tsx",
+      "sha256": "9cd2eef9c38c7bbaf104ac31949afa22f7d42dac804d79f7830e057d1c7824f1"
+    },
+    {
+      "path": "client/src/components/Settings/MapSettingsTab.tsx",
+      "sha256": "952885692330ed8c330e2cc851ab2f4bcac95e212e0957d809f68ce3259aa14d"
+    },
+    {
+      "path": "client/src/components/Trips/TripFormModal.tsx",
+      "sha256": "1fda4e86add691e6cb7a525baaf6142f8c59836112f74449c80c8aeaccb8bdd4"
+    },
+    {
+      "path": "client/src/i18n/TranslationContext.tsx",
+      "sha256": "6e27c28a8d389cd2a0b4394cbb6d6c2fffd01d52dffc6696e5b9e7e0751015d7"
+    },
+    {
+      "path": "client/src/integrations/family/FamilyAdminPage.tsx",
+      "sha256": "3058078eb25b3e0399fd2d1d47d05be2b5da7fd7d78bf41f249a11f64e4147cc"
+    },
+    {
+      "path": "client/src/integrations/family/FamilyDomainBoundary.tsx",
+      "sha256": "c92ab9dbf17c2adc5e6ce8dfa93170d78433d4676581adcf56d496f32cd09353"
+    },
+    {
+      "path": "client/src/integrations/family/FamilyGenericMapBridge.tsx",
+      "sha256": "387d26aed7237b383dc5f71f44064f2e56ad18c8aff9b088fd1d3693338533b7"
+    },
+    {
+      "path": "client/src/integrations/family/FamilyProposalDialog.tsx",
+      "sha256": "c86f01d71d22c8547f5970cf634f048950ad59ce212f76f7321c6ee2367e256a"
+    },
+    {
+      "path": "client/src/integrations/family/FamilyReadStatus.tsx",
+      "sha256": "b71964f9c233ecd4c0c8a9612298dab2d584a725ba0d3ec1b622bab229b3ae23"
+    },
+    {
+      "path": "client/src/integrations/family/FamilyTripBoundary.tsx",
+      "sha256": "d022d0f5ff182977f0310a160b2079f075067f7e2d6e70bf0bca3fed581e255e"
+    },
+    {
+      "path": "client/src/integrations/family/applicationHandler.ts",
+      "sha256": "1a12c898ca1f91c2d96fc7408d9f2a0df96afaa28fd700b866ca5c6de47da3e5"
+    },
+    {
+      "path": "client/src/integrations/family/bookingImportJobs.ts",
+      "sha256": "1949a4123de986c000202b2a8662fb0a9a61e305b508f1564f3267f8145be440"
+    },
+    {
+      "path": "client/src/integrations/family/bootstrap.ts",
+      "sha256": "51ba64229fe56b9bab01456d7196b0279d5b38f8ca3fe077110bda192cf28c0b"
+    },
+    {
+      "path": "client/src/integrations/family/budgetHandler.ts",
+      "sha256": "a7786647c65448983eda926166e2169067d1a0e486dd18ee1cb76006a53cfda8"
+    },
+    {
+      "path": "client/src/integrations/family/budgetMath.ts",
+      "sha256": "b138f71cb9770c3d56504a87c758ff126d5e9722a4767adadda7a863df9334f5"
+    },
+    {
+      "path": "client/src/integrations/family/collectionHandler.ts",
+      "sha256": "44a6fe160a663b7ed4a290b1fe0d52288825426321460877a9ec81804bf3dae1"
+    },
+    {
+      "path": "client/src/integrations/family/controllerContext.tsx",
+      "sha256": "32348451657a4570432da39a530ed8dcf72e1d643013e778851d3dfaac1a1abb"
+    },
+    {
+      "path": "client/src/integrations/family/expenseDraft.test.ts",
+      "sha256": "4437240571f955eee9e1b8a29e443b0bb2e500a0025cb4d1d1e9ff99b4c7463d"
+    },
+    {
+      "path": "client/src/integrations/family/expenseDraft.ts",
+      "sha256": "7f0e9a3a90c89629e8db35dd9140c9ad6f7c07c9808827e691cf9599bbfa9643"
+    },
+    {
+      "path": "client/src/integrations/family/fileHandler.ts",
+      "sha256": "8c7c80118a7f417c93139cbab787dee3ff840354b332bfa51ee85c37131015f2"
+    },
+    {
+      "path": "client/src/integrations/family/identity.test.ts",
+      "sha256": "965e4adabea3ec5316b334dfd66527637b1796afcc58dff626c4c9a485f03920"
+    },
+    {
+      "path": "client/src/integrations/family/identity.ts",
+      "sha256": "63e5b3ac65aa6e32c8add53d55215473d9adde2b8aedbe8c24798dd6e30f4508"
+    },
+    {
+      "path": "client/src/integrations/family/journeyHandler.ts",
+      "sha256": "353325ba2e2a59fe36b9ffebf5bd075bc76c13d2648d6da4fa410459f2b30627"
+    },
+    {
+      "path": "client/src/integrations/family/legacy/pages/FamilyFrontendController.tsx",
+      "sha256": "f4c66e3d9881de2589f59577804e68c5e748ea71283165fd728e45e1f6f22f12"
+    },
+    {
+      "path": "client/src/integrations/family/legacy/store/authStore.ts",
+      "sha256": "ed0fc081283471c689374270f94fb65030cbf5e10f74849af7da4a6c16c37cd7"
+    },
+    {
+      "path": "client/src/integrations/family/legacy/store/familyFeatureStore.ts",
+      "sha256": "c64fa8bfb857da92124c2600afb1cd93dd37b2c67199ecc84cc6fc446ab53e43"
+    },
+    {
+      "path": "client/src/integrations/family/legacy/store/familyMapStore.ts",
+      "sha256": "54a83fd104fcb97c29708bacbd29c3a58cb345eccb36b4fd6c495c6c79a2b333"
+    },
+    {
+      "path": "client/src/integrations/family/listHandler.test.ts",
+      "sha256": "85433e32b1cdced1dab5c750e4e0c97c13311d392dcb8c4b95cf227c7ce34666"
+    },
+    {
+      "path": "client/src/integrations/family/listHandler.ts",
+      "sha256": "dcef0f6e6f6d47902c8c0264fd2e6b203cf2ce6919837268cec97b1b6461a6e6"
+    },
+    {
+      "path": "client/src/integrations/family/navigation.test.tsx",
+      "sha256": "1ac8e56cef3a76846ab3107c460c25d2f6fc9822545039867551097a4354418d"
+    },
+    {
+      "path": "client/src/integrations/family/navigation.tsx",
+      "sha256": "f346815363aeac40a4437f7df382f6ae981296fe8ba14dbad209f52bc4577098"
+    },
+    {
+      "path": "client/src/integrations/family/notificationHandler.ts",
+      "sha256": "89cdb8537a9ff5a8c7fce892f7bae2b3a268631fa87e0ca239521741e6044ea7"
+    },
+    {
+      "path": "client/src/integrations/family/readState.ts",
+      "sha256": "9f44a202c0bb972aa47077b03b44f5c4ef2bf5e8f9a72e546fd15d009b9b3ae6"
+    },
+    {
+      "path": "client/src/integrations/family/repository.test.ts",
+      "sha256": "0ae7e2725b5f4897146c7ebc212568cb8038defb7ca80aab8c033d70eed61145"
+    },
+    {
+      "path": "client/src/integrations/family/repository.ts",
+      "sha256": "17abc43f6277759b9d5bcb83d70d4dcff7a525412fb61907fb76e7605f0f612d"
+    },
+    {
+      "path": "client/src/integrations/family/runtime.ts",
+      "sha256": "1bb484f1a431a851c56b0cdb8dec8fc6adeaff802e1b92337e38f1cb550a886c"
+    },
+    {
+      "path": "client/src/integrations/family/sourceOffer.ts",
+      "sha256": "4f8b99b9e2755bdb8e58e52561b492549b8821c79ea0b32a81291d3f200528c6"
+    },
+    {
+      "path": "client/src/integrations/family/timelineViews.ts",
+      "sha256": "0a1195dd2775f4c2d337732aa50a39420c61c471f7e6d74c4b99075014b4ca55"
+    },
+    {
+      "path": "client/src/integrations/family/transport.test.ts",
+      "sha256": "27897c791cd7b143e76d792a415d7bd95ff412a205679880375ea6ffca33a2d3"
+    },
+    {
+      "path": "client/src/integrations/family/transport.ts",
+      "sha256": "0f72b58dce69c6aeacdc0bc1d6b082a67cf9b56e4eb333b933398fb58a727f46"
+    },
+    {
+      "path": "client/src/integrations/family/transportDraft.ts",
+      "sha256": "265c3f8f141f2d7b335b1f8ce8375748a1415defa9c0063351f807f61fb061e0"
+    },
+    {
+      "path": "client/src/integrations/family/uiPermissions.ts",
+      "sha256": "2726efa34723daf880553f9fa01064f9dd66543902bd33ef03f3a559dd102ad4"
+    },
+    {
+      "path": "client/src/integrations/family/useEditorInitialization.test.tsx",
+      "sha256": "0cc2d1b92e9eaa47ac080ad863685cb0114bd212df154c4332a0d4895d1d804e"
+    },
+    {
+      "path": "client/src/integrations/family/useEditorInitialization.ts",
+      "sha256": "f873cc9c81e0bca73c56cf7ad8a63cbcca227a66df99f88d5b6421db1bffed57"
+    },
+    {
+      "path": "client/src/integrations/family/vacayHandler.ts",
+      "sha256": "eec1d95d63ccbf25d389b1a3497cc7291e0036ddee4d691c94b2ba68a25d8af4"
+    },
+    {
+      "path": "client/src/integrations/family/views.test.ts",
+      "sha256": "d55a6c0340939101703203e0cecb5f41d7e5900f62352958f65f9f4896dd4930"
+    },
+    {
+      "path": "client/src/integrations/family/views.ts",
+      "sha256": "0bb25169a0ed7005518fd275e08e6920b7817aaf8f0015c966b145c94f4c9500"
+    },
+    {
+      "path": "client/src/integrations/family/weatherResponse.ts",
+      "sha256": "8e41c54f7595f5cf9e657c88c8596a7718cb7343ba90f81d5016163dafdb7ac0"
+    },
+    {
+      "path": "client/src/main.tsx",
+      "sha256": "4d15b9b370957bc31cf61831c9c296632511891ccbca5f1a01d0348c5ca9b9e6"
+    },
+    {
+      "path": "client/src/mobile/screens/dashboard/MNewTripSheet.tsx",
+      "sha256": "53a01a0fce1db1a433369c477116ff222f639748118f6e344335eff071da2faa"
+    },
+    {
+      "path": "client/src/mobile/screens/journey/MJourneyEntrySheet.tsx",
+      "sha256": "a34dc34e989295312e46f3412cba58b643ce35830441ea6f2a8df23b595e8ae5"
+    },
+    {
+      "path": "client/src/pages/AtlasPage.tsx",
+      "sha256": "db86fe9d02976f88f63bdce614638464f54a2a2c48443de4f5579d5ef6cd12b0"
+    },
+    {
+      "path": "client/src/pages/SettingsPage.tsx",
+      "sha256": "5ffc2f202d7819cf88146fff836962459c07ccb881ff00b3e3ed3f86b53b5464"
+    },
+    {
+      "path": "client/src/pages/TripPlannerPage.tsx",
+      "sha256": "735523ea525020d27b6bd4c21406eb4ce13bda564edb57b286258a38a60696c9"
+    },
+    {
+      "path": "client/src/pages/atlas/useAtlas.ts",
+      "sha256": "97af93e88bf33598407ecd76f61c788d9f1a97c3a9d8eb5aee3af75d98c132e3"
+    },
+    {
+      "path": "client/src/pages/login/useLogin.ts",
+      "sha256": "a50baeed5d92f435726f1e83ac8b5de8848328e2a455828ba51e1833f4e3e430"
+    },
+    {
+      "path": "client/src/pages/sharedTrip/SharedMap.tsx",
+      "sha256": "fecba23ad13d52fcfee02cfb49523531a925ba66d0dd07023f70f6dae65dc645"
+    },
+    {
+      "path": "client/src/pages/tripPlanner/PlanMapStage.tsx",
+      "sha256": "35c3a2d96c6afc56b3545903d2b56e7bb56019c52b9585c8250f3bb0268b0891"
+    },
+    {
+      "path": "client/src/pages/tripPlanner/transportEditorOpeners.ts",
+      "sha256": "2f5cbc95915d8992d7e03b3661fcaa374bce930912ab854cad9034237abc5bf3"
+    },
+    {
+      "path": "client/src/pages/tripPlanner/useTripPlanner.ts",
+      "sha256": "a551c0b6d4f011dd1167ba95e3e6f568f1d8e44c01249783390f8d0da03b90a2"
+    },
+    {
+      "path": "client/src/store/permissionsStore.ts",
+      "sha256": "83a190ae232050d7ebb7b642a394aa2182e94916bbd0e036a8b207ea7acdccc2"
+    },
+    {
+      "path": "client/src/store/slices/assignmentsSlice.ts",
+      "sha256": "106274320fea9de56383624460280a29982bc4de96dea1b33a55bdacc9acc254"
+    },
+    {
+      "path": "client/src/store/slices/budgetSlice.ts",
+      "sha256": "18831d19617cd2698030f4a9a2fa18e9e31be712e96cc4a4b81ad0c20fcec941"
+    },
+    {
+      "path": "client/src/store/slices/filesSlice.ts",
+      "sha256": "12a74aab10880d6a4807dc39b121d55bcb6521e54de563a3a3407f83b7ed2d4c"
+    },
+    {
+      "path": "client/src/store/slices/reservationsSlice.ts",
+      "sha256": "d6bc3b8c7d8b8830001eb71f934f9c79fdb91ace90966bc29903adbbc1fa867b"
+    },
+    {
+      "path": "client/src/store/tripStore.ts",
+      "sha256": "2e2e974d8534c8f700835548ad7c3b3a5a0fdb642ccbd47d24e87cf6ff4bfb77"
+    },
+    {
+      "path": "client/vite.family-full.config.ts",
+      "sha256": "3e33325aaac209acef1f79b7d82b2926b029d4a1679b1d6e852c500264658511"
+    },
+    {
+      "path": "family-shared/package.json",
+      "sha256": "ad5de3080c3181771ca41ee89f22f3ec6b6e7ad13b7fb3483644bf85d9379e24"
+    },
+    {
+      "path": "family-shared/tsconfig.json",
+      "sha256": "6aaceba8879010bdbc9f0be8f2527996d4a20ae009ef8475c7520f682be06a00"
+    },
+    {
+      "path": "family-shared/tsdown.config.ts",
+      "sha256": "05ff9cea270598f76a3e3c4ac3d39a56a1821f5b29cbf9ef9f760f66e101b8db"
+    },
+    {
+      "path": "package.json",
+      "sha256": "430b654f442f68a27f0ef7dcdc00f2c1de8b24ea0b11a4d25627e478e4ccb13f"
+    }
+  ],
+  "nativeHookComparisonFiles": [
+    "client/src/App.tsx",
+    "client/src/components/Budget/useSettlementForm.ts",
+    "client/src/components/Journey/JourneyDetailPageEntryEditor.tsx",
+    "client/src/components/Journey/JourneyMapAuto.tsx",
+    "client/src/components/Layout/Navbar.tsx",
+    "client/src/components/Map/MapViewAuto.tsx",
+    "client/src/components/Planner/BookingCostsSection.tsx",
+    "client/src/components/Planner/DayPlanSidebar.tsx",
+    "client/src/components/Planner/ReservationModal.tsx",
+    "client/src/components/Planner/ReservationsPanel.tsx",
+    "client/src/components/Planner/TransportModal.tsx",
+    "client/src/components/Planner/bookings/BookingDetailDialog.tsx",
+    "client/src/components/Planner/bookings/BookingDetailHost.tsx",
+    "client/src/components/Settings/AboutTab.tsx",
+    "client/src/components/Settings/MapSettingsTab.tsx",
+    "client/src/components/Trips/TripFormModal.tsx",
+    "client/src/i18n/TranslationContext.tsx",
+    "client/src/main.tsx",
+    "client/src/mobile/screens/dashboard/MNewTripSheet.tsx",
+    "client/src/mobile/screens/journey/MJourneyEntrySheet.tsx",
+    "client/src/pages/AtlasPage.tsx",
+    "client/src/pages/SettingsPage.tsx",
+    "client/src/pages/TripPlannerPage.tsx",
+    "client/src/pages/atlas/useAtlas.ts",
+    "client/src/pages/login/useLogin.ts",
+    "client/src/pages/sharedTrip/SharedMap.tsx",
+    "client/src/pages/tripPlanner/PlanMapStage.tsx",
+    "client/src/pages/tripPlanner/transportEditorOpeners.ts",
+    "client/src/pages/tripPlanner/useTripPlanner.ts",
+    "client/src/store/permissionsStore.ts",
+    "client/src/store/slices/assignmentsSlice.ts",
+    "client/src/store/slices/budgetSlice.ts",
+    "client/src/store/slices/filesSlice.ts",
+    "client/src/store/slices/reservationsSlice.ts",
+    "client/src/store/tripStore.ts"
+  ],
+  "note": "Hashes pin provenance, not correctness. Copy the needed import closure and reconcile current TREK hooks; do not overwrite every listed native file."
+}

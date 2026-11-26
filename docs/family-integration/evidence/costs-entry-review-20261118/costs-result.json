@@ -1,0 +1,40 @@
+{
+  "exit": 0,
+  "seconds": 42.9,
+  "files": [
+    "src/components/Budget",
+    "tests/unit/mobile/trip/MCostsTab.test.tsx",
+    "tests/unit/mobile/trip/MCostSheet.test.tsx",
+    "tests/unit/mobile/trip/costsModel.test.ts",
+    "src/integrations/family/expenseDraft.test.ts",
+    "src/integrations/family/tripExpenses.payers.test.ts",
+    "src/integrations/family/plannerApplicationReads.test.ts",
+    "src/integrations/family/FamilyPlannerBoundary.test.tsx",
+    "src/integrations/family/directWriteSession.test.ts",
+    "src/integrations/family/completeTripRead.test.ts"
+  ],
+  "command": [
+    "/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/node_modules/.bin/vitest",
+    "run",
+    "src/components/Budget",
+    "tests/unit/mobile/trip/MCostsTab.test.tsx",
+    "tests/unit/mobile/trip/MCostSheet.test.tsx",
+    "tests/unit/mobile/trip/costsModel.test.ts",
+    "src/integrations/family/expenseDraft.test.ts",
+    "src/integrations/family/tripExpenses.payers.test.ts",
+    "src/integrations/family/plannerApplicationReads.test.ts",
+    "src/integrations/family/FamilyPlannerBoundary.test.tsx",
+    "src/integrations/family/directWriteSession.test.ts",
+    "src/integrations/family/completeTripRead.test.ts",
+    "--maxWorkers=2",
+    "--reporter=default",
+    "--reporter=json",
+    "--outputFile=/private/tmp/trek-core-costs-review-20261118/costs-tests.json"
+  ],
+  "controlled_ports_only": true,
+  "coverage_not_enabled_or_claimed": true,
+  "numPassedTests": 660,
+  "numFailedTests": 0,
+  "numPendingTests": 0,
+  "numTotalTests": 660
+}

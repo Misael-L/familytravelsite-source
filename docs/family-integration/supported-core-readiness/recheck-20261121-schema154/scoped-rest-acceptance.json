@@ -1,0 +1,168 @@
+{
+  "environment": "isolated X8 restore with pinned PostgreSQL 17.12, Supautils 4.0.0, PostgREST 14.14 and GoTrue",
+  "archive_generation": "full-project-20261120-incremental",
+  "hook_probe": {
+    "server_version": "17.12",
+    "role": {
+      "user": "postgres",
+      "session": "postgres",
+      "superuser": false,
+      "create_role": true,
+      "authenticator_admin": true,
+      "supautils": "4.0.0",
+      "pre_request_set_grant": false
+    },
+    "commands": {
+      "role_only": {
+        "applied": false,
+        "sqlstate": "42501",
+        "error": "permission denied to set parameter \"pgrst.db_pre_request\""
+      },
+      "database_specific": {
+        "applied": false,
+        "sqlstate": "42501",
+        "error": "permission denied to set parameter \"pgrst.db_pre_request\""
+      }
+    },
+    "probe_changes_rolled_back": true
+  },
+  "migration_replay": {
+    "migrations": 67,
+    "final_ledger": 155,
+    "historical_entries_match": true
+  },
+  "preservation_after_smoke": {
+    "original_projections": 200,
+    "original_rows_retained_exactly": 296764,
+    "changed_or_missing_projections": []
+  },
+  "restricted_rest": {
+    "profile": "family_release_smoke",
+    "installed_by_non_superuser": true,
+    "isolated_local_postgrest_only": true,
+    "application_profiles_unexposed": true,
+    "tester_creates": 2,
+    "deduplicated_retries": 2,
+    "records_and_receipts_verified_in_sql": true,
+    "refusals": [
+      {
+        "name": "Explicit schema unavailable: public",
+        "http": 406,
+        "code": "PGRST106"
+      },
+      {
+        "name": "Explicit schema unavailable: graphql_public",
+        "http": 406,
+        "code": "PGRST106"
+      },
+      {
+        "name": "Explicit schema unavailable: storage",
+        "http": 406,
+        "code": "PGRST106"
+      },
+      {
+        "name": "Explicit schema unavailable: family_release_control",
+        "http": 406,
+        "code": "PGRST106"
+      },
+      {
+        "name": "Direct trip table has no exposed route",
+        "http": 404,
+        "code": "PGRST205"
+      },
+      {
+        "name": "Legacy item POST has no exposed route",
+        "http": 404,
+        "code": "PGRST205"
+      },
+      {
+        "name": "Export claim has no exposed route",
+        "http": 404,
+        "code": "PGRST202"
+      },
+      {
+        "name": "Anonymous request refused",
+        "http": 401,
+        "code": "42501"
+      },
+      {
+        "name": "Service role has no smoke grant",
+        "http": 403,
+        "code": "42501"
+      },
+      {
+        "name": "Tester AAL1 refused",
+        "http": 403,
+        "code": "42501"
+      },
+      {
+        "name": "Tester separate AAL2 session refused",
+        "http": 403,
+        "code": "42501"
+      },
+      {
+        "name": "task ordinary AAL2 writer refused",
+        "http": 403,
+        "code": "42501"
+      },
+      {
+        "name": "task wrong trip refused",
+        "http": 403,
+        "code": "42501"
+      },
+      {
+        "name": "task unexpected action refused",
+        "http": 403,
+        "code": "42501"
+      },
+      {
+        "name": "task receipt refused to ordinary user",
+        "http": 403,
+        "code": "42501"
+      },
+      {
+        "name": "packing ordinary AAL2 writer refused",
+        "http": 403,
+        "code": "42501"
+      },
+      {
+        "name": "packing wrong trip refused",
+        "http": 403,
+        "code": "42501"
+      },
+      {
+        "name": "packing unexpected action refused",
+        "http": 403,
+        "code": "42501"
+      },
+      {
+        "name": "packing receipt refused to ordinary user",
+        "http": 403,
+        "code": "42501"
+      },
+      {
+        "name": "Closed approval refuses tester",
+        "http": 403,
+        "code": "42501"
+      },
+      {
+        "name": "Closed approval refuses tester",
+        "http": 403,
+        "code": "42501"
+      },
+      {
+        "name": "Expired approval refuses tester",
+        "http": 403,
+        "code": "42501"
+      },
+      {
+        "name": "Missing approval refuses tester",
+        "http": 403,
+        "code": "42501"
+      }
+    ],
+    "hosted_schema_propagation_proven": false,
+    "cloudflare_preview_qualified": false
+  },
+  "production_database_or_deployment_used": false
+}

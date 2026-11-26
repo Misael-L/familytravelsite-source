@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "proposed_script_parses_without_execution": true,
+  "removing_only_new_standalone_site_and_restoring_old_map_member_restores_entire_original_script": true,
+  "expanded_site_count_three_before_and_three_after": true,
+  "native_two_generated_domain_entries_remain_exact": true,
+  "retained_site_uses_unchanged_fixed_58_domain_with_raw_fallback": true,
+  "no_wildcard_limit_scanner_logic_or_other_site_change": true,
+  "proposal_only_not_applied_or_imported": true
+}

@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "removed_classes": [
+    "bg-[rgba(17,24,39,0.05)]",
+    "text-[#059669]",
+    "text-[var(--border-primary)]"
+  ],
+  "all_from_deleted_source": true,
+  "remaining_application_whole_utility_token_references": [],
+  "compiled_JS_whole_utility_token_references": [],
+  "variant_and_custom_property_prefixes_distinguished": true,
+  "literal_semantics_scope": "Complete current application source and compiled scripts; no hosted/browser or arbitrary future plugin claim."
+}

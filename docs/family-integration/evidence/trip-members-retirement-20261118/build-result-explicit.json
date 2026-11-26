@@ -1,0 +1,11 @@
+{
+  "exit": 0,
+  "build_source_commit": "1a0079d64634a5e46bb52982215a6fcc0dbbe428",
+  "qualified_application_commit": "c2ee495ea92b6a269da5fc689ef1893009d537e6",
+  "ordinary_installed_build": true,
+  "native_presentation_protected": true,
+  "new_browser_acceptance_performed": false,
+  "configuration": "unchanged isolated planner/base packing profile and noncredential publishable fixture placeholder; no advanced qualifications",
+  "hosted_or_browser_connection": false,
+  "deployable_or_deployed": false
+}

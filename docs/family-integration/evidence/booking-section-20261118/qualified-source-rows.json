@@ -1,0 +1,53 @@
+{
+  "changed_or_added_paths": [
+    "client/src/integrations/family/legacy/components/Planner/BookingsPanelFamily.tsx",
+    "client/src/integrations/family/legacy/components/Planner/FamilyBookingSection.tsx",
+    "client/src/integrations/family/legacy/components/Planner/BookingsPanelFamily.sections.test.tsx"
+  ],
+  "previous_rows": [
+    {
+      "path": "client/src/integrations/family/legacy/components/Planner/BookingsPanelFamily.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "e968d1be1dcbd2fff98597547c5d044fff525872",
+        "bytes": 35084
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/components/Planner/BookingsPanelFamily.tsx"
+    }
+  ],
+  "current_rows": [
+    {
+      "path": "client/src/integrations/family/legacy/components/Planner/BookingsPanelFamily.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "16558f87cc9fb8c679e09dadce8d2c996b17d58d",
+        "bytes": 32853
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/components/Planner/BookingsPanelFamily.tsx"
+    },
+    {
+      "path": "client/src/integrations/family/legacy/components/Planner/FamilyBookingSection.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "9a4a9c21c7e9f5ab4a3fe36be8ebebc030ea4ee0",
+        "bytes": 2386
+      },
+      "purpose": "Existing retained Family BookingSection extracted with the exact original function body, props and imported dependencies."
+    },
+    {
+      "path": "client/src/integrations/family/legacy/components/Planner/BookingsPanelFamily.sections.test.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "271706638d6c76e5388d84bf49bfa887ab4ba0c6",
+        "bytes": 7205
+      },
+      "purpose": "Six parent-level booking collapse/preference regression cases; unchanged before/after extraction."
+    }
+  ],
+  "qualified_commit": "8828e63828cb125a48c730ca5509f2b610eefccc",
+  "rules_unchanged": true
+}

@@ -1,0 +1,64 @@
+{
+  "changed_or_added_paths": [
+    "client/src/integrations/family/legacy/components/Planner/FamilyTransportEditor.tsx",
+    "client/src/integrations/family/legacy/components/Planner/FamilyTransportManualForm.tsx",
+    "client/src/integrations/family/legacy/components/Planner/familyTransportWaypoints.ts",
+    "client/src/integrations/family/legacy/components/Planner/FamilyTransportEditor.behavior.test.tsx"
+  ],
+  "previous_rows": [
+    {
+      "path": "client/src/integrations/family/legacy/components/Planner/FamilyTransportEditor.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "bf65ca8a00682fba6bace5ed0cf6a01dbe07f51a",
+        "bytes": 52475
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/components/Planner/FamilyTransportEditor.tsx"
+    }
+  ],
+  "current_rows": [
+    {
+      "path": "client/src/integrations/family/legacy/components/Planner/FamilyTransportEditor.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "b4418e71a006b3ff37bd9cdd69c81d69f65b1e3b",
+        "bytes": 22683
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/components/Planner/FamilyTransportEditor.tsx"
+    },
+    {
+      "path": "client/src/integrations/family/legacy/components/Planner/FamilyTransportManualForm.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "0d0f9b0b72c36cfdb4d0bcdc4bcd16f89555a401",
+        "bytes": 29574
+      },
+      "purpose": "Retained Family transport editor extraction; exact bodies, lookup/classes, waypoint types/factories/conversion and shared bindings preserved."
+    },
+    {
+      "path": "client/src/integrations/family/legacy/components/Planner/familyTransportWaypoints.ts",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "077d11790f3594c805b7dca69bdd2a6b208844e4",
+        "bytes": 1127
+      },
+      "purpose": "Retained Family transport editor extraction; exact bodies, lookup/classes, waypoint types/factories/conversion and shared bindings preserved."
+    },
+    {
+      "path": "client/src/integrations/family/legacy/components/Planner/FamilyTransportEditor.behavior.test.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "226c27d9322563f8f164148bef3b167407c7b973",
+        "bytes": 12308
+      },
+      "purpose": "Ten real-parent transport editor interaction cases; unchanged before/after extraction."
+    }
+  ],
+  "qualified_commit": "179fdccdbde2e3755e7efdca790a67e5a18b4932",
+  "rules_unchanged": true
+}

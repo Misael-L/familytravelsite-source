@@ -1,0 +1,30 @@
+{
+  "passed": true,
+  "scope": "Metadata-only registration; no new source-bound build, browser or writer acceptance.",
+  "incoming": "14ff5f7f8c5eabdbf153fb6776bdb046f5574008",
+  "only_application_metadata_changed": "client/scripts/feature-pairs.json",
+  "all_other_tracked_files_exact_before_qualification": 18699,
+  "all_runtime_source_tests_build_configs_and_assets_exact": true,
+  "all_non_documentation_manifest_references": [
+    ".github/workflows/test.yml",
+    "CLAUDE.md",
+    "client/CLAUDE.md",
+    "client/scripts/lib/pairs.mjs",
+    "client/scripts/pairs-lint.mjs",
+    "client/tests/unit/scripts/pairs-lint.test.ts"
+  ],
+  "manifest_not_imported_by_runtime_or_emitted_as_asset": true,
+  "literal_glob_owners_hash_exact_from_complete_prior_audit": true,
+  "literal_glob_patterns": [
+    "shared/src/i18n/*/native.ts",
+    "client/src/mobile/components/trek3d/clips/*.mp4"
+  ],
+  "all_3793_accepted_and_working_dist_bytes_exact": true,
+  "retained_build_source_commit": "a7033ef64e9ff42fe59e3413d1584645dbbd2310",
+  "generated_declaration_files_exact": 128,
+  "previous_Q123_runtime_receipts_reused_without_relabelling": true,
+  "new_build_typecheck_full_regression_or_hosted_acceptance_not_claimed": true,
+  "existing_guard_tests_passed": 15,
+  "actual_pair_guard_passed_both_cwds": true,
+  "all_baselines_and_rule_code_exact": true
+}

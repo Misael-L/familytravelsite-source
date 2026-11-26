@@ -5,7 +5,7 @@ const rev = z.number().int().positive().safe(),
   date = z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   stamp = z.string().datetime({ offset: true });
 export const calendarDay = z
-  .object({ id: locationId, revision: rev, civil_day: date, day_index: rev, title: z.string().nullable() })
+  .object({ id: locationId, revision: rev, civil_day: date.nullable(), day_index: rev, title: z.string().nullable() })
   .strict();
 export const calendarObservation = z
   .object({
@@ -24,6 +24,7 @@ export const calendarContext = z.object({
   observation: calendarObservation,
 });
 export const calendarChange = z.discriminatedUnion('action', [
+  z.object({ action: z.literal('assign_dates'), start_date: date }).strict(),
   z.object({ action: z.literal('title'), day_id: locationId, title: z.string().max(20000).nullable() }).strict(),
   z.object({ action: z.literal('append') }).strict(),
   z.object({ action: z.literal('trash_day'), day_id: locationId }).strict(),

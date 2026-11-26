@@ -80,6 +80,21 @@ export const FAMILY_TRANSPORT_NATIVE_OVERLAYS = Object.freeze([
       "5093ad215e10c4197ed278aec4ed41a6cba55894ef4346b68b9db2858443241d",
   }),
 ]);
+export const FAMILY_RELATIVE_DAY_OVERLAYS = Object.freeze([
+  {
+    "id": "family-relative-days-desktop-v1",
+    "path": "client/src/components/Planner/DayPlanSidebar.tsx",
+    "base_sha256": "897d7c0e4fb9660ca027828f831ab294c45eee16ddd29ecc834a58fdc0ae8efc",
+    "derived_sha256": "67210ea2c56129d571468fd216b747b57f7c820f863d27a1913015d878de38bb"
+  },
+  {
+    "id": "family-relative-days-phone-v1",
+    "path": "client/src/mobile/screens/trip/plan/MPlanTimeline.tsx",
+    "base_sha256": "6808585c553dae4503d0799a61de08d0cb991e6ffe21381d938d757953d9647f",
+    "derived_sha256": "6e5494b59effaa0d650572886ec9ec0e90fe91450588f9bb418cda49fcf78f89"
+  }
+]);
+
 export const EXACT_NATIVE_FILES = Object.freeze(
   PROTECTED_NATIVE_FILES.filter(
     (name) =>
@@ -92,6 +107,7 @@ export const EXACT_NATIVE_FILES = Object.freeze(
 export function validateNativePresentationManifest(manifest) {
   assert.deepEqual(Object.keys(manifest).sort(), [
     "exact_files",
+    "family_relative_day_overlays",
     "family_timeline_overlay",
     "family_transport_overlays",
     "family_waypoint_map_overlay",
@@ -101,6 +117,7 @@ export function validateNativePresentationManifest(manifest) {
     "type_only_overlays",
     "upstream_commit",
   ]);
+  assert.deepEqual(manifest.family_relative_day_overlays, FAMILY_RELATIVE_DAY_OVERLAYS, "Only the fixed relative-day controls are accepted");
   assert.equal(manifest.source_repository, "https://github.com/liketrek/TREK");
   assert.equal(
     manifest.source_version,
@@ -164,6 +181,26 @@ export function deriveSidebarReorderTypeOverlay(upstream) {
   return derived;
 }
 
+// Removing exactly the Family control must reproduce the previously pinned file.
+function withoutRelativeDayControl(path, current) {
+  const overlay = FAMILY_RELATIVE_DAY_OVERLAYS.find(row => row.path === path);
+  if (!overlay) return current;
+  assert.equal(sha256(current), overlay.derived_sha256,
+    path.includes('Sidebar') ? 'Sidebar differs from reviewed relative-day control' : 'Family Transport overlay differs from reviewed source for relative-day control');
+  const lines = path.includes('Sidebar') ? [
+    "import { FamilyTripDatesControl } from '../../integrations/family/FamilyTripDatesControl';\n",
+    "      <FamilyTripDatesControl key={trip.id} />\n",
+  ] : [
+    "import { FamilyTripDatesControl } from '../../../../integrations/family/FamilyTripDatesControl';\n",
+    "      <FamilyTripDatesControl key={planner.trip?.id} />\n",
+  ];
+  let text = current.toString('utf8');
+  for (const line of lines) { assert.equal(text.split(line).length, 2); text = text.replace(line, ''); }
+  const original = Buffer.from(text);
+  assert.equal(sha256(original), overlay.base_sha256, 'Relative-day controls must preserve the entire existing native presentation');
+  return original;
+}
+
 /** Used by both the presentation CLI and the Git/release gate. No mutable overrides. */
 export function verifyNativePresentation(
   manifest,
@@ -180,7 +217,7 @@ export function verifyNativePresentation(
   const expected = deriveSidebarReorderTypeOverlay(
     readUpstream(overlay.upstream_commit, overlay.path),
   );
-  const current = readCurrent(overlay.path);
+  const current = withoutRelativeDayControl(overlay.path, readCurrent(overlay.path));
   assert.ok(Buffer.isBuffer(current));
   assert.equal(sha256(expected), FAMILY_TIMELINE_SIDEBAR_OVERLAY.base_sha256);
   assert.equal(
@@ -191,7 +228,7 @@ export function verifyNativePresentation(
   for (const { path, upstream_sha256, derived_sha256 } of
     FAMILY_TRANSPORT_NATIVE_OVERLAYS) {
     const upstream = readUpstream(manifest.upstream_commit, path);
-    const current = readCurrent(path);
+    const current = withoutRelativeDayControl(path, readCurrent(path));
     assert.ok(Buffer.isBuffer(upstream) && Buffer.isBuffer(current));
     assert.equal(
       sha256(upstream),

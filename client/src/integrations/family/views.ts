@@ -82,14 +82,14 @@ export class FamilyViews {
       id: this.ids.register('day', day.id),
       trip_id: this.ids.register('trip', day.tripId),
       date: day.civilDay,
-      day_number: day.dayIndex + 1,
+      day_number: day.dayIndex,
       title: day.title,
       assignments: schedule
-        .filter((s) => utcCivilDay(s.startsAt) === day.civilDay)
+        .filter((s) => day.civilDay !== null && utcCivilDay(s.startsAt) === day.civilDay)
         .sort((a, b) => a.sortOrder - b.sortOrder || a.id.localeCompare(b.id))
         .map((s) => this.assignment(s, day, places)),
       notes_items: notes
-        .filter((n) => n.civilDay === day.civilDay)
+        .filter((n) => (n.tripDayId ? n.tripDayId === day.id : n.civilDay !== null && n.civilDay === day.civilDay))
         .map((n) => ({
           id: this.ids.register('note', n.id),
           day_id: this.ids.register('day', day.id),

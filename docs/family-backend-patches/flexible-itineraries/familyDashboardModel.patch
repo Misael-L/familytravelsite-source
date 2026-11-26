@@ -1,0 +1,29 @@
+--- a/family-backend/src/pages/dashboard/familyDashboardModel.ts
++++ b/family-backend/src/pages/dashboard/familyDashboardModel.ts
+@@ -53,6 +53,7 @@
+   traveler_count?: number
+   is_owner?: number
+   owner_username?: string
++  created_by_person_id?: string | null
+   /** Nest collaborator count — omit on Family trips (do not use as traveler total). */
+   shared_count?: number
+   hub_members?: FamilyHubMember[]
+@@ -71,6 +72,8 @@
+   reminder_days: number | null
+   archived_at: string | null
+   currency_code?: string | null
++  created_by_person_id?: string | null
++  trip_days?: { count: number }[]
+ }
+ 
+ /** YYYY-MM-DD from timestamptz / date string for hub date helpers. */
+@@ -104,7 +107,8 @@
+     currency: (row.currency_code?.trim() || 'USD').toUpperCase(),
+     reminder_days: row.reminder_days ?? 0,
+     status: row.status,
+-    day_count: hubDayCount(start_date, end_date),
++    ...(row.created_by_person_id != null && { created_by_person_id: row.created_by_person_id }),
++    day_count: row.trip_days?.[0]?.count ?? hubDayCount(start_date, end_date),
+     place_count: 0,
+     traveler_count: 0,
+     is_owner: 1,

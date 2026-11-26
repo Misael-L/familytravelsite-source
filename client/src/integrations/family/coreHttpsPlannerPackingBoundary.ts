@@ -10,6 +10,7 @@ import { hostedRoadtripToursTripId, isHostedMexicoPreview, routePlanningPreviewT
 import type { FamilyRequest } from './transport';
 
 const reads = new Set([
+  'get_family_trip_calendar_v1',
   'get_my_auth_bootstrap',
   'get_my_effective_features',
   'get_my_effective_map_settings',
@@ -115,7 +116,8 @@ export function assertCoreHttpsPlannerPackingRequest(request: Pick<FamilyRequest
   if (primary === 'blocked') refused(true, primary);
   if (!coreHttpsPlannerPackingProfileEnabled() || ['GET', 'HEAD'].includes(request.method)) return;
   const taskEnabled = coreHttpsCombinedProfileEnabled();
-  if (primary === 'write' && request.method === 'POST' && /^\/trips\/[^/]+\/(?:restore|copy)$/.test(request.pathname)) return;
+  if (primary === 'write' && request.method === 'POST' &&
+      /^\/trips\/[^/]+\/(?:restore|copy|family\/calendar)$/.test(request.pathname)) return;
   if (
     request.method === 'POST' &&
     (auth.has(request.pathname) ||
@@ -152,7 +154,7 @@ function allowsRpc(pathname: string, taskEnabled: boolean, primary: PrimaryCoreM
   if (roadtripToursReads.has(name)) return scopedTripReadAllowed(hostedRoadtripToursTripId(), body);
   if (mexicoTripReads.has(name))
     return isHostedMexicoPreview() && scopedTripReadAllowed(routePlanningPreviewTripId(), body);
-  if (name === 'create_family_trip_proposal_v1') return primary === 'write';
+  if (['create_family_trip_proposal_v1', 'create_family_trip_proposal_v2', 'revise_family_trip_calendar_v1', 'revise_family_trip_calendar_v2', 'save_family_trip_day_note_v2', 'save_family_trip_day_note_v3', 'delete_family_trip_day_note_v2'].includes(name)) return primary === 'write';
   return primary !== 'read' && (commands.has(name) || (taskEnabled && name === 'execute_family_trip_task_v1'));
 }
 

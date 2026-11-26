@@ -1,0 +1,17 @@
+--- a/family-backend/src/data/supabase/tripProposals.test.ts
++++ b/family-backend/src/data/supabase/tripProposals.test.ts
+@@ -73,6 +73,14 @@
+ 
+   it('rejects a duration that would move beyond the four-digit calendar year', () => {
+     expect(resolveProposalDates({ startDate: '9999-12-31', endDate: '', dayCount: 2 })).toBeNull()
++    expect(resolveProposalDates({ startDate: '', endDate: '0001-01-01', dayCount: 2 })).toBeNull()
++  })
++
++  it('keeps an end-only date and counts backward over a leap day', () => {
++    expect(resolveProposalDates({ startDate: '', endDate: '2028-03-01', dayCount: 3 })).toEqual({
++      startAt: '2028-02-28T00:00:00.000Z',
++      endAt: '2028-03-01T00:00:00.000Z',
++    })
+   })
+ 
+   it('anchors day-count-only from today UTC', () => {

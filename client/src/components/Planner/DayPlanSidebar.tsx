@@ -1,3 +1,4 @@
+import { FamilyTripDatesControl } from '../../integrations/family/FamilyTripDatesControl';
 import { useRoadtripSettings } from '../../hooks/useRoadtripSettings'
 import { isServiceStopType } from '../Roadtrip/roadtripModel'
 /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
@@ -1418,6 +1419,7 @@ const DayPlanSidebar = React.memo(function DayPlanSidebar(props: DayPlanSidebarP
     // past the panel's clipped edge, so the last day could never be scrolled into view.
     // Where nothing sits above it (the mobile shell), the height still fills the panel.
     <div ref={setPanel} data-touch-drag={dragDisabled ? undefined : ''} style={{ display: 'flex', flexDirection: 'column', flex: '1 1 0%', minHeight: 0, height: '100%', position: 'relative', fontFamily: "var(--font-system)" }}>
+      <FamilyTripDatesControl key={trip.id} />
       {/* Toolbar */}
       {toursEnabled && selectedDayId != null && projectDayItinerary(assignments[String(selectedDayId)] || [], true, places).some(item => item.kind === 'tour' && !item.valid) && (
         <div role="status" style={{ color: 'var(--warning)', padding: '8px 12px' }}>

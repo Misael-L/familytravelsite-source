@@ -19,6 +19,8 @@ const io = vi.hoisted(() => ({
   heicTo: vi.fn(),
 }));
 
+vi.mock('./tripCurrencies', () => ({ listTripCurrencies: async () => ['USD', 'EUR', 'MXN'] }));
+
 vi.mock('heic-to', () => ({ isHeic: async () => true, heicTo: io.heicTo }));
 
 vi.mock('./runtime', () => ({ isFamilyFrontendActive: () => true }));
@@ -168,7 +170,7 @@ describe('New Trip with a submission receipt', () => {
     expect(screen.getByRole('alert')).toHaveTextContent('Your trip was created.');
     fireEvent.click(retry);
     await waitFor(() => expect(close).toHaveBeenCalledOnce());
-    const calls = io.rpc.mock.calls.filter(([method]) => method === 'create_family_trip_proposal_v1');
+    const calls = io.rpc.mock.calls.filter(([method]) => method === 'create_family_trip_proposal_v2');
     expect(calls).toHaveLength(1);
     expect(calls[0][1].p_cover_url).toBeNull();
     expect(io.invoke).toHaveBeenCalledTimes(2);
@@ -236,11 +238,12 @@ describe('New Trip with a submission receipt', () => {
     expect(screen.getByText(/We couldn’t confirm your trip was saved/)).toBeVisible();
     expect(screen.getByRole('button', { name: 'Back' })).toBeDisabled();
     expect(callbacks.onClose).not.toHaveBeenCalled();
-    expect(io.rpc).toHaveBeenCalledExactlyOnceWith('create_family_trip_proposal_v1', expect.objectContaining({
+    expect(io.rpc).toHaveBeenCalledExactlyOnceWith('create_family_trip_proposal_v2', expect.objectContaining({
       p_operation_id: expect.stringMatching(/^[0-9a-f-]{36}$/),
       p_family_id: 'family-a',
       p_country_ids: ['mx'],
-      p_start_at: '2026-11-23T00:00:00.000Z',
+      p_start_date: null, p_end_date: null, p_day_count: 7,
+      p_currency_code: expect.any(String),
     }));
 
     vi.setSystemTime(new Date('2026-11-24T00:01:00Z'));

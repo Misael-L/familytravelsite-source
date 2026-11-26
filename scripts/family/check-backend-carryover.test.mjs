@@ -74,7 +74,7 @@ function reject(action, message) {
 test("actual carryover command reconstructs recorded patches against trusted Git history", () => {
   const r = run();
   assert.equal(r.status, 0, r.stderr);
-  assert.match(r.stdout, /9 verified local patches; 38 recorded additions/);
+  assert.match(r.stdout, /16 verified local patches; 42 recorded additions/);
 });
 test("rejects changed carried source", () => {
   const path = manifest.files.find(
@@ -155,7 +155,7 @@ test("default command resolves its checkout independently of caller cwd", () => 
     },
   );
   assert.equal(r.status, 0, r.stderr);
-  assert.match(r.stdout, /9 verified local patches/);
+  assert.match(r.stdout, /16 verified local patches/);
 });
 
 for (const name of ["nagerHolidays.ts", "nagerHolidays.test.ts"]) {

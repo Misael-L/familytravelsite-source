@@ -1,3 +1,4 @@
+import { currentPlannerDayNotePort } from './plannerDayNotePort';
 import type { DayNoteCreateRequest, DayNoteUpdateRequest } from '@trek/shared';
 import { dayNotesApi } from '../api/client';
 import { generateUUID, mutationQueue, nextTempId } from '../sync/mutationQueue';
@@ -66,6 +67,8 @@ async function enqueueNoteWrite(
 /** Day notes keep their native routes, temporary IDs and FIFO queue behavior. */
 export const dayNoteRepo = {
   async create(tripId: number | string, dayId: number, data: DayNoteCreateRequest): Promise<{ note: DayNote }> {
+    const port = currentPlannerDayNotePort();
+    if (port) return port.create(tripId, dayId, data);
     const session = captureWriteSession(),
       db = session.db;
     guardPlannerReadOnly();
@@ -112,6 +115,8 @@ export const dayNoteRepo = {
     before: DayNote,
     data: DayNoteUpdateRequest
   ): Promise<{ note: DayNote }> {
+    const port = currentPlannerDayNotePort();
+    if (port) return port.update(tripId, dayId, before, data);
     const session = captureWriteSession(),
       db = session.db;
     guardPlannerReadOnly();
@@ -133,6 +138,8 @@ export const dayNoteRepo = {
   },
 
   async delete(tripId: number | string, dayId: number, id: number): Promise<void> {
+    const port = currentPlannerDayNotePort();
+    if (port) return port.delete(tripId, dayId, id);
     const session = captureWriteSession(),
       db = session.db;
     guardPlannerReadOnly();

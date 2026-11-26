@@ -308,6 +308,23 @@ describe('hosted Admin panels and profile photos', () => {
 });
 
 describe('primary Cloudflare cutover', () => {
+  it.each(['read', 'write'] as const)('keeps flexible calendars and notes bounded to the %s profile', async mode => {
+    vi.spyOn(primaryProfile, 'primaryCoreMode').mockReturnValue(mode);
+    const path = '/trips/7/family/calendar';
+    const next = vi.fn<typeof fetch>().mockResolvedValue(Response.json({}));
+    const fetch = coreHttpsPlannerPackingFetch(next);
+    await fetch(source + '/rest/v1/rpc/get_family_trip_calendar_v1', { method: 'POST' });
+    for (const name of ['create_family_trip_proposal_v2', 'revise_family_trip_calendar_v2',
+      'save_family_trip_day_note_v3', 'delete_family_trip_day_note_v2']) {
+      const write = () => fetch(source + '/rest/v1/rpc/' + name, { method: 'POST' });
+      if (mode === 'write') await write(); else expect(write).toThrow();
+    }
+    const command = () => assertCoreHttpsPlannerPackingRequest({ method: 'POST', pathname: path });
+    if (mode === 'write') expect(command).not.toThrow(); else expect(command).toThrow();
+    expect(() => assertCoreHttpsPlannerPackingRequest({ method: 'PATCH', pathname: '/trips/7' })).toThrow();
+    expect(() => fetch(source + '/rest/v1/day_notes', { method: 'POST', body: '{}' })).toThrow();
+  });
+
   const taskPath = '/trips/7/family/tasks/commands';
   const taskRpc = '/rest/v1/rpc/execute_family_trip_task_v1';
   const tripProposalRpc = '/rest/v1/rpc/create_family_trip_proposal_v1';

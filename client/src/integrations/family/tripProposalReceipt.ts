@@ -1,7 +1,8 @@
+import type { FlexibleTripProposalArgs } from './flexibleTripProposal';
 import { captureFamilyActor } from './actorContext';
 import { FamilyApiError } from './errors';
 import { getSupabaseBrowserClient } from './legacy/data/supabase/client';
-import type { CreateTripProposalResult, CreateTripProposalRpcArgs } from './legacy/data/supabase/tripProposals';
+import type { CreateTripProposalResult } from './legacy/data/supabase/tripProposals';
 import { useAuthStore } from './legacy/store/authStore';
 
 const rejectionCodes = new Set(['22023', '22P02', '23503', '42501', 'P0001']);
@@ -9,7 +10,7 @@ const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export class TripProposalRejected extends Error {}
 
-export function prepareTripProposal(args: CreateTripProposalRpcArgs, personId: string) {
+export function prepareTripProposal(args: FlexibleTripProposalArgs, personId: string) {
   const actor = captureFamilyActor();
   const session = useAuthStore.getState();
   if (!session.isAuthenticated || session.familyId !== args.p_family_id || session.personId !== personId) {
@@ -20,9 +21,9 @@ export function prepareTripProposal(args: CreateTripProposalRpcArgs, personId: s
 
 export async function createTripProposalWithReceipt(
   operationId: string,
-  args: CreateTripProposalRpcArgs
+  args: FlexibleTripProposalArgs
 ): Promise<CreateTripProposalResult> {
-  const { data, error } = await getSupabaseBrowserClient().rpc('create_family_trip_proposal_v1', {
+  const { data, error } = await getSupabaseBrowserClient().rpc('create_family_trip_proposal_v2', {
     ...args,
     p_operation_id: operationId,
   });

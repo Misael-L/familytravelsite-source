@@ -1,3 +1,5 @@
+import { installPlannerDayNotePort } from '../../repo/plannerDayNotePort';
+import { PlannerDayNotes } from './plannerDayNotes';
 import api from '../../api/client';
 import { installPlannerAssignmentPort } from '../../repo/plannerAssignmentPort';
 import { installPlannerBookingPort } from '../../repo/plannerBookingPort';
@@ -74,6 +76,7 @@ export function createFamilyPlannerCohort(repo: FamilyFrontendRepository, option
   const editor = new PlannerCohortEditor(repo, reader, refreshPlanner, () => disposed, source);
   const creation = new PlannerCohortCreation(repo, reader, editor, refreshPlanner, source);
   const assignments = new PlannerCohortAssignments(repo, refreshPlanner, source, () => disposed);
+  const dayNotes = new PlannerDayNotes(repo, hydrateTrip);
   const calendar = new PlannerCohortCalendar(repo, hydrateTrip, source, () => disposed);
   const bookings = new PlannerCohortBookings(repo, hydrateTrip, () => disposed, source);
   const governance = cohortGovernance(repo, source, () => disposed, hydrateTrip, loadTrip);
@@ -120,6 +123,7 @@ export function createFamilyPlannerCohort(repo: FamilyFrontendRepository, option
       creation.dispose();
       assignments.reset();
       calendar.reset();
+      dayNotes.reset();
     },
   });
   function loadTrip(value: number | string) {
@@ -146,7 +150,9 @@ export function createFamilyPlannerCohort(repo: FamilyFrontendRepository, option
       writers: { editor, creation, assignments, calendar, bookings, reportError: options.reportError },
       readPort: cohortReadPort(reads, coherentStays, { loadTrip, refreshPlanner, hydrateTrip }),
     });
-    const finish = withStayWriter(repo, source, reads, () => disposed, release);
+    let releaseNotes: () => void;
+    try { releaseNotes = installPlannerDayNotePort(dayNotes); } catch (error) { release(); throw error; }
+    const finish = withStayWriter(repo, source, reads, () => disposed, () => { releaseNotes(); dayNotes.reset(); release(); });
     installed = true;
     return () => {
       if (!installed) return;

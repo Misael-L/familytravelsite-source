@@ -1,3 +1,4 @@
+import { currentPlannerDayNotePort } from '../../repo/plannerDayNotePort';
 import { captureTripMutation } from '../tripActionScope'
 import { currentPlannerCalendarPort } from '../../repo/plannerCalendarPort'
 import { dayRepo } from '../../repo/dayRepo'
@@ -49,6 +50,8 @@ export const createDayNotesSlice = (set: SetState, get: GetState): DayNotesSlice
   },
 
   addDayNote: async (tripId, dayId, data) => {
+    const port = currentPlannerDayNotePort();
+    if (port) return (await port.create(tripId, Number(dayId), data)).note;
     const action = captureTripMutation(set, get)
     const tempId = nextTempId()
     const tempNote: DayNote = { id: tempId, day_id: dayId as number, ...data, created_at: new Date().toISOString() } as DayNote
@@ -96,6 +99,8 @@ export const createDayNotesSlice = (set: SetState, get: GetState): DayNotesSlice
   },
 
   deleteDayNote: async (tripId, dayId, id) => {
+    const port = currentPlannerDayNotePort();
+    if (port) return port.delete(tripId, Number(dayId), id);
     const action = captureTripMutation(set, get)
     const prev = action.get().dayNotes
     action.set(state => ({
@@ -121,6 +126,8 @@ const createDayNoteMoveActions = (set: SetState, get: GetState): Pick<DayNotesSl
     const state = action.get()
     const note = (state.dayNotes[String(fromDayId)] || []).find(n => n.id === noteId)
     if (!note) return
+    const port = currentPlannerDayNotePort();
+    if (port) { await port.move(tripId, Number(toDayId), note, sort_order); return; }
     guardPlannerReadOnly()
 
     action.set(s => ({

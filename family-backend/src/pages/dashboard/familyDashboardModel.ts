@@ -73,6 +73,7 @@ export type FamilyTripRowInput = {
   archived_at: string | null
   currency_code?: string | null
   created_by_person_id?: string | null
+  trip_days?: { count: number }[]
 }
 
 /** YYYY-MM-DD from timestamptz / date string for hub date helpers. */
@@ -107,7 +108,7 @@ export function familyTripRowToDashboardTrip(row: FamilyTripRowInput): FamilyDas
     reminder_days: row.reminder_days ?? 0,
     status: row.status,
     ...(row.created_by_person_id != null && { created_by_person_id: row.created_by_person_id }),
-    day_count: hubDayCount(start_date, end_date),
+    day_count: row.trip_days?.[0]?.count ?? hubDayCount(start_date, end_date),
     place_count: 0,
     traveler_count: 0,
     is_owner: 1,

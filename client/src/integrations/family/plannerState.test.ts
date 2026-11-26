@@ -168,6 +168,18 @@ async function snapshot() {
 }
 
 describe('Planner snapshot through actual dispatcher, native repos and IndexedDB', () => {
+  it('owns undated notes by day UUID and preserves descriptive Markdown and colour', async () => {
+    state.visits = [];
+    state.days[0].civil_day = null;
+    state.days.push({ ...state.days[0], id: uuid(45), day_index: 2 });
+    state.notes[0] = { ...state.notes[0], civil_day: null, trip_day_id: day,
+      detail: 'Bring **water** and snacks', color: '#dc2626', sort_order: 0.5 };
+    const projected = (await snapshot()).native.days;
+    expect(projected[0].notes_items).toHaveLength(1);
+    expect(projected[0].notes_items[0]).toMatchObject({ time: 'Bring **water** and snacks', color: '#dc2626', sort_order: 0.5 });
+    expect(projected[1].notes_items).toEqual([]);
+  });
+
   it('loads days and pool concurrently from one snapshot with venue identity and local dates', async () => {
     // Synchronize at the HTTP boundary: local cache inspection may take different
     // time for each repository. The coordinator shares overlapping requests,

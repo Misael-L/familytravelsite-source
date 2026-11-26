@@ -4,7 +4,8 @@ import { getSupabaseBrowserClient } from './client'
 export type FamilyDayNote = {
   id: string
   tripId: string
-  civilDay: string
+  tripDayId?: string
+  civilDay: string | null
   body: string
   icon: string | null
   sortOrder: number
@@ -13,7 +14,8 @@ export type FamilyDayNote = {
 type DayNoteRow = {
   id: string
   trip_id: string
-  civil_day: string
+  trip_day_id?: string
+  civil_day: string | null
   body: string | null
   icon: string | null
   sort_order: number | null
@@ -24,6 +26,7 @@ function rowToNote(r: DayNoteRow): FamilyDayNote {
     id: r.id,
     tripId: r.trip_id,
     civilDay: r.civil_day,
+    tripDayId: r.trip_day_id,
     body: r.body ?? '',
     icon: r.icon,
     sortOrder: r.sort_order ?? 0,
@@ -33,7 +36,7 @@ function rowToNote(r: DayNoteRow): FamilyDayNote {
 export async function listDayNotes(tripId: string): Promise<FamilyDayNote[]> {
   const { data, error } = await getSupabaseBrowserClient()
     .from('day_notes')
-    .select('id,trip_id,civil_day,body,icon,sort_order')
+    .select('id,trip_id,trip_day_id,civil_day,body,icon,sort_order')
     .eq('trip_id', tripId)
     .order('civil_day', { ascending: true })
     .order('sort_order', { ascending: true })
@@ -47,7 +50,7 @@ export async function listDayNotes(tripId: string): Promise<FamilyDayNote[]> {
  */
 export async function upsertDayNote(opts: {
   tripId: string
-  civilDay: string
+  civilDay: string | null
   body: string
   noteId?: string | null
 }): Promise<FamilyDayNote> {
@@ -59,7 +62,7 @@ export async function upsertDayNote(opts: {
       .from('day_notes')
       .update({ body, updated_at: new Date().toISOString() })
       .eq('id', opts.noteId)
-      .select('id,trip_id,civil_day,body,icon,sort_order')
+      .select('id,trip_id,trip_day_id,civil_day,body,icon,sort_order')
       .single()
     if (error) throw error
     return rowToNote(data as DayNoteRow)
@@ -73,7 +76,7 @@ export async function upsertDayNote(opts: {
       body,
       sort_order: 0,
     })
-    .select('id,trip_id,civil_day,body,icon,sort_order')
+    .select('id,trip_id,trip_day_id,civil_day,body,icon,sort_order')
     .single()
   if (error) throw error
   return rowToNote(data as DayNoteRow)
@@ -91,6 +94,7 @@ export async function deleteDayNote(id: string): Promise<void> {
 export function notesByCivilDay(notes: FamilyDayNote[]): Map<string, FamilyDayNote> {
   const map = new Map<string, FamilyDayNote>()
   for (const note of notes) {
+    if (note.civilDay === null) continue;
     const existing = map.get(note.civilDay)
     if (!existing || note.sortOrder < existing.sortOrder) {
       map.set(note.civilDay, note)

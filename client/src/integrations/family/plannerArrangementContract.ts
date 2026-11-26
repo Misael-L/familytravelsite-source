@@ -12,7 +12,7 @@ export const arrangementPlan = z
         z
           .object({
             id: locationId,
-            civil_day: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+            civil_day: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable(),
             observed: z.array(observedOccurrence).max(1000),
             order: z.array(locationId).max(1000),
           })

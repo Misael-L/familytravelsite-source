@@ -1,5 +1,6 @@
 import { currentPlannerPackingPort } from '../../repo/plannerPackingPort';
 import { currentPlannerTaskPort } from '../../repo/plannerTaskPort';
+import { currentPlannerCalendarPort } from '../../repo/plannerCalendarPort';
 /** Native permission keys are broader than individual commands. This is availability,
  * not Family authorization: both must pass, and unsupported raw writers still refuse. */
 export const plannerActionSupport = {
@@ -11,5 +12,6 @@ export const plannerActionSupport = {
 export function plannerActionAvailable(action: string): boolean {
   if (action === 'packing_edit') return currentPlannerPackingPort() !== null;
   if (action === 'todo_edit') return currentPlannerTaskPort() !== null;
+  if (action === 'trip_assign_dates') return currentPlannerCalendarPort() !== null;
   return Object.prototype.hasOwnProperty.call(plannerActionSupport, action);
 }

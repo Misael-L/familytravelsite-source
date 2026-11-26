@@ -6,6 +6,7 @@ import { SelectOptionContent, SelectTrigger } from '../../../../../components/sh
 import { filterSelectOptions, type SelectOption } from '../../../../../components/shared/selectOptions';
 
 interface CustomSelectProps {
+  ariaLabel?: string;
   value: string | number;
   onChange: (value: string | number) => void;
   options?: SelectOption[];
@@ -17,6 +18,7 @@ interface CustomSelectProps {
 }
 
 export default function CustomSelect({
+  ariaLabel,
   value,
   onChange,
   options = [],
@@ -64,6 +66,7 @@ export default function CustomSelect({
     <div ref={ref} style={{ position: 'relative', ...style }}>
       <SelectTrigger
         ref={triggerRef}
+        aria-label={ariaLabel}
         disabled={disabled}
         onClick={() => {
           if (!disabled) {

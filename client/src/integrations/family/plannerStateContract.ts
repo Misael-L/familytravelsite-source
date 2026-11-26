@@ -24,7 +24,7 @@ export const plannerStateSchema = z.object({
       z.object({
         id: locationId,
         trip_id: locationId,
-        civil_day: date,
+        civil_day: date.nullable(),
         day_index: revision,
         revision: revision.optional(),
         title: z.string().nullable(),
@@ -37,10 +37,13 @@ export const plannerStateSchema = z.object({
       z.object({
         id: locationId,
         trip_id: locationId,
-        civil_day: date,
+        civil_day: date.nullable(),
+        trip_day_id: locationId.optional(),
+        detail: z.string().nullable().optional(),
+        color: z.string().nullable().optional(),
         body: z.string(),
         icon: z.string().nullable(),
-        sort_order: z.number().int(),
+        sort_order: z.number().finite(),
         updated_at: z.string(),
       })
     )

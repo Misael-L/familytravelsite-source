@@ -1,0 +1,14 @@
+--- a/family-backend/src/data/supabase/tripProposals.ts
++++ b/family-backend/src/data/supabase/tripProposals.ts
+@@ -124,9 +124,9 @@
+   }
+   const n = Math.floor(Number(opts.dayCount))
+   if (!Number.isInteger(n) || n < 1 || n > 365) return null
+-  const firstDay = start || todayCivilUtc(opts.now)
++  const firstDay = start || (end ? addCivilDays(end, 1 - n) : todayCivilUtc(opts.now))
+   if (!isCivilDate(firstDay)) return null
+-  const lastDay = addCivilDays(firstDay, n - 1)
++  const lastDay = end || addCivilDays(firstDay, n - 1)
+   if (!isCivilDate(lastDay)) return null
+   return { startAt: civilToTimestamptz(firstDay), endAt: civilToTimestamptz(lastDay) }
+ }

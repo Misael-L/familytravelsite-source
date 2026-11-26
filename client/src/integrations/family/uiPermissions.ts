@@ -18,6 +18,7 @@ const capabilities: Record<string, string> = {
   trip_delete: 'trip.archive',
   trip_title_edit: 'trip.metadata.edit',
   trip_dates_edit: 'trip.metadata.edit',
+  trip_assign_dates: 'trip.metadata.edit',
 };
 export type FamilyPermissionController = Pick<FamilyControllerValue, 'gov'> &
   Partial<Pick<FamilyControllerValue, 'core' | 'partialLoad'>> & {
@@ -33,6 +34,8 @@ export function familyCanDo(action: string, controller: FamilyPermissionControll
   const key = capabilities[action];
   if (!key) return false;
   const gov = controller.gov;
+  if (action === 'trip_assign_dates') return gov.layer === 'published' &&
+    gov.actionOutcomes['trip.metadata.edit'] === 'direct' && gov.actionOutcomes['trip.schedule.manage'] === 'direct';
   if (action === 'todo_edit' || action === 'packing_edit') return gov.actionOutcomes[key] === 'direct';
   const mode = writeModeForCapability({
     layer: gov.layer,

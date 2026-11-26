@@ -1,6 +1,16 @@
 import type { TranslationStrings } from '../types';
 
 const dayplan: TranslationStrings = {
+  "planner.relativeDays": "{count} days \u00b7 Dates not chosen",
+  "planner.chooseTripDates": "Choose trip dates",
+  "planner.chooseDates": "Choose dates",
+  "planner.relativeDatesHelp": "Choose the start of your {count}-day itinerary. Your days, visits and notes keep their places.",
+  "planner.assignedEnd": "Ends {date}",
+  "planner.saveDates": "Save dates",
+  "planner.retryDateSave": "Retry save",
+  "planner.reloadDates": "Reload the trip before choosing dates.",
+  "planner.saveDatesError": "Could not save trip dates. Try again.",
+  "planner.tripStartDate": "Trip start date",
   'dayplan.icsTooltip': 'Export calendar (ICS)',
   'dayplan.emptyDay': 'No places planned for this day',
   'dayplan.addPlaceHere': 'Add place to this day',

@@ -1,3 +1,6 @@
+import { z } from 'zod';
+import { locationId } from './planLocationContract';
+import { calendarObservation } from './plannerCalendarContract';
 import { getSupabaseUrl } from './legacy/data/supabase/env';
 import { NOT_HANDLED } from './listHandler';
 import { locationRpc, savedLocationResponse } from './planLocations';
@@ -58,19 +61,16 @@ export async function handleFamilyPlannerCalendar(repo: FamilyFrontendRepository
     )
       throw new FamilyApiError(409, 'calendar_origin', 'Original calendar source or scope changed.');
     await fence();
-    const out = savedLocationResponse(
-      calendarReceipt,
-      await locationRpc('revise_family_trip_calendar_v1', {
-        p_trip_id: trip,
-        p_operation_id: p.operation_id,
-        p_scope: p.scope,
-        p_observation: p.observation,
-        p_change: p.change,
-      })
-    );
+    const flexible = p.observation.start_at === null && p.observation.end_at === null &&
+      ['append', 'reorder', 'assign_dates'].includes(p.change.action);
+    const raw = await locationRpc(flexible ? 'revise_family_trip_calendar_v2' : 'revise_family_trip_calendar_v1', {
+      p_trip_id: trip, p_operation_id: p.operation_id,
+      ...(flexible ? {} : { p_scope: p.scope }), p_observation: p.observation, p_change: p.change,
+    });
+    const out = flexible ? flexibleCalendarReceipt(p, raw, trip) : savedLocationResponse(calendarReceipt, raw);
     await fence();
     validateCalendarIdentities(p, out);
-    validateOrderRecovery(p, out);
+    if (!flexible) validateOrderRecovery(p, out);
     validateInsertionRecovery(p, out);
     validateInsertionUndo(p, out);
     validateDayRemoval(p, out);
@@ -226,4 +226,29 @@ function validateRemovedDayRestore(p: CalendarPacket, out: CalendarReceipt) {
         'Recovery returned inconsistent restored day identities.'
       );
   }
+}
+
+function flexibleCalendarReceipt(p: CalendarPacket, raw: unknown, trip: string): CalendarReceipt {
+  const value = z.object({ version: z.literal(2), trip_id: locationId, operation_id: locationId,
+    added_day_id: locationId.nullable(), observation: calendarObservation }).parse(raw);
+  if (value.trip_id !== trip || value.operation_id !== p.operation_id)
+    throw new FamilyApiError(502, 'calendar_result_scope', 'The calendar result belongs to another save.');
+  const before = p.observation.days.map((d) => d.id), after = value.observation.days.map((d) => d.id);
+  if (new Set(after).size !== after.length || before.some((id) => !after.includes(id)) ||
+      (p.change.action === 'append' ? !value.added_day_id || after.length !== before.length + 1 || before.includes(value.added_day_id)
+        : value.added_day_id !== null || after.length !== before.length))
+    throw new FamilyApiError(502, 'calendar_result_identity', 'The calendar changed day identities unexpectedly.');
+  if (p.change.action === 'reorder' && after.join() !== p.change.order.join())
+    throw new FamilyApiError(502, 'calendar_result_order', 'The saved day order is inconsistent.');
+  if (p.change.action === 'assign_dates') {
+    const start = Date.parse(p.change.start_date + 'T00:00:00Z');
+    if (after.join() !== before.join() || value.observation.days.some((d, i) =>
+      d.civil_day !== new Date(start + i * 86400000).toISOString().slice(0, 10)) ||
+      value.observation.start_at?.slice(0,10) !== p.change.start_date ||
+      value.observation.end_at?.slice(0,10) !== value.observation.days[value.observation.days.length - 1]?.civil_day)
+      throw new FamilyApiError(502, 'calendar_result_dates', 'The saved calendar assignment is inconsistent.');
+  }
+  return { version: 1, state: 'published', changed: JSON.stringify(p.observation) !== JSON.stringify(value.observation),
+    day_id: null, added_day_ids: value.added_day_id ? [value.added_day_id] : [],
+    undo_operation_id: null, observation: value.observation };
 }

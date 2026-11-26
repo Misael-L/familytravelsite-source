@@ -4,7 +4,7 @@ import { getSupabaseBrowserClient } from './client'
 export type FamilyTripDay = {
   id: string
   tripId: string
-  civilDay: string
+  civilDay: string | null
   dayIndex: number
   title: string | null
 }
@@ -12,7 +12,7 @@ export type FamilyTripDay = {
 type TripDayRow = {
   id: string
   trip_id: string
-  civil_day: string
+  civil_day: string | null
   day_index: number
   title: string | null
 }

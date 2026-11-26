@@ -1,3 +1,4 @@
+import { installPlannerCalendarPort } from '../../repo/plannerCalendarPort';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { buildPlanner, buildTripActions } from '../../../tests/helpers/mobileTrip';
 import { cleanup, fireEvent, render, screen } from '../../../tests/helpers/render';
@@ -196,5 +197,19 @@ describe('real native phone task permission consumers', () => {
     );
     expect(actions.updateTodoItem).not.toHaveBeenCalled();
     expect(actions.deleteTodoItem).not.toHaveBeenCalled();
+  });
+});
+
+
+describe('relative calendar assignment availability', () => {
+  it('requires an installed calendar and direct published metadata and schedule authority', () => {
+    expect(familyCanDo('trip_assign_dates', controller('published', 'direct', true))).toBe(false);
+    const release = installPlannerCalendarPort({} as never);
+    try {
+      expect(familyCanDo('trip_assign_dates', controller('published', 'direct', true))).toBe(true);
+      expect(familyCanDo('trip_assign_dates', controller('published', 'propose', true))).toBe(false);
+      expect(familyCanDo('trip_assign_dates', controller('published', 'deny', true))).toBe(false);
+      expect(familyCanDo('trip_assign_dates', controller('myDraft', 'direct', true))).toBe(false);
+    } finally { release(); }
   });
 });

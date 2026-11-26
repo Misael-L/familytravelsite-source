@@ -285,6 +285,18 @@ export class PlannerCohortCalendar {
   async extendTrip(trip: number | string, data: TripUpdateRequest) {
     const before = useTripStore.getState().trip;
     if (!before) throw new FamilyApiError(409, 'calendar_no_trip', 'Open the Trip first.');
+    if (!before.start_date && !before.end_date) {
+      const { start_date, end_date, date_shift_mode, ...other } = data;
+      if (typeof start_date !== 'string' || Object.entries(other).some(([k,v]) =>
+        v !== undefined && JSON.stringify(v) !== JSON.stringify((before as unknown as Record<string,unknown>)[k])))
+        throw new FamilyApiError(409, 'calendar_assignment_fields', 'Save trip details separately before choosing dates.');
+      const expectedEnd = new Date(Date.parse(start_date + 'T00:00:00Z') + (useTripStore.getState().days.length - 1) * 86400000).toISOString().slice(0,10);
+      if (end_date != null && end_date !== expectedEnd)
+        throw new FamilyApiError(409, 'calendar_assignment_duration', 'The date range must match the itinerary day count.');
+      const { state } = await this.execute(trip, { action: 'assign_dates', start_date });
+      if (!state.trip) throw new FamilyApiError(502, 'calendar_trip', 'Refreshed Trip unavailable.');
+      return state.trip;
+    }
     for (const [k, v] of Object.entries(data)) {
       if (k === 'end_date' || k === 'date_shift_mode') continue;
       if (v !== undefined && JSON.stringify(v) !== JSON.stringify((before as unknown as Record<string, unknown>)[k]))

@@ -27,11 +27,12 @@ export type FamilyTripRow = {
   reminder_days: number | null
   archived_at: string | null
   currency_code: string | null
+  trip_days?: { count: number }[]
   created_by_person_id?: string | null
 }
 
 const TRIP_SELECT =
-  'id,family_id,name,primary_country_id,start_at,end_at,status,cover_url,notes,occasion,reminder_days,archived_at,currency_code,created_by_person_id'
+  'id,family_id,name,primary_country_id,start_at,end_at,status,cover_url,notes,occasion,reminder_days,archived_at,currency_code,created_by_person_id,trip_days(count)'
 
 async function withDeviceCovers(trips: FamilyDashboardTrip[]): Promise<FamilyDashboardTrip[]> {
   try {

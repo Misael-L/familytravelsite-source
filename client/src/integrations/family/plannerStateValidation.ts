@@ -47,7 +47,7 @@ export function validatePlannerState(state: PlannerState): void {
   }
   if (locations.length + visits.length + days.length + notes.length + destinations.length > 10000) invalid();
   if (
-    new Set(days.map((d) => d.civil_day)).size !== days.length ||
+    new Set(days.flatMap((d) => d.civil_day === null ? [] : [d.civil_day])).size !== days.filter((d) => d.civil_day !== null).length ||
     new Set(days.map((d) => d.day_index)).size !== days.length ||
     new Set(destinations.map((d) => d.source_place_id)).size !== destinations.length
   )
@@ -56,6 +56,10 @@ export function validatePlannerState(state: PlannerState): void {
   if (locations.some((l) => l.deleted_at !== null || (l.source.kind === 'manual') !== (l.source.id === null)))
     invalid();
   const byDay = new Map(days.map((d) => [d.id, d]));
+  if (days.some((d) => d.civil_day === null) && days.some((d) => d.civil_day !== null)) invalid();
+  for (const note of notes) {
+    if (note.trip_day_id && (!byDay.has(note.trip_day_id) || byDay.get(note.trip_day_id)?.civil_day !== note.civil_day)) invalid();
+  }
   for (const v of visits) validateVisit(v, pool, byDay);
   for (const d of destinations) {
     if (d.location_id) {

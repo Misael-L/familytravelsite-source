@@ -1,0 +1,36 @@
+{
+  "submission_retry": true,
+  "undated": true,
+  "currency": true,
+  "planner_loaded": true,
+  "notes": true,
+  "activity": true,
+  "copy": true,
+  "calendar_assignment": true,
+  "identity_preserved": true,
+  "reload": true,
+  "phone": true,
+  "copy_content_verified": true,
+  "errors": [],
+  "failures": [],
+  "backend_commit": "a615475",
+  "database_environment": "isolated restored PostgreSQL 17.12 with real PostgREST and synthetic current-MFA session",
+  "production_data_modified": false,
+  "website_tests": 463,
+  "adapter_tests": 42,
+  "presentation_and_release_tests": 70,
+  "hosted_migrations_applied": false,
+  "limitations": [
+    "Hosted private-QA and activation require the coordinated database rollout.",
+    "Third-party map tiles and photo-search networking were excluded from the isolated browser; existing photo picker regression checks remain separate.",
+    "Untimed activity planning works before dates; actual visit clocks and bookings retain explicit date requirements.",
+    "New note writes are online and published-layer only; older queued work remains retained."
+  ],
+  "source_sha256": {
+    "client/src/integrations/family/flexibleTripProposal.ts": "1d8d0471d149cce63490dee5f4f903032f7c74526580847c968614392737b684",
+    "client/src/integrations/family/plannerDayNotes.ts": "09efe9224216b827cf72088858f6960fb271a15b77424bdad48173d0c6e577fc",
+    "client/src/integrations/family/FamilyTripDatesControl.tsx": "1d236984e0631353f02ee3333b35e3c5b45b8b4dbb5bc0f23cf376791b09dfac",
+    "client/src/integrations/family/coreHttpsPlannerPackingBoundary.ts": "276231a9a8c9998aeda1db28ce96d10785a6f29a8fc94f8c296f6b6c4d38e344",
+    "client/src/integrations/family/plannerCalendarHandler.ts": "73a112e9df122a06fe2c5c919469c5f73759562a546928a3eb108261b0abb4c2"
+  }
+}

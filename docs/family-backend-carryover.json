@@ -927,6 +927,60 @@
       "patchSha256": "8cfee56dae5a5d3354638338eebd431f98b80d69fbdf23337cf961d8dca1f7c6",
       "packet": "Strict uploads",
       "reason": "Exercise the Edge Function error code with a receiver-sensitive Response and the pinned SDK error class."
+    },
+    {
+      "path": "family-backend/src/data/supabase/dayNotes.ts",
+      "baseSha256": "b97a54fb14cd0ebe3c77c4bd5c391994717112635a42691d747932fc274fa144",
+      "sha256": "145cfbae93506b7e2e15e6af595359a26c6c900b067016eca8497ff7ead843bd",
+      "patch": "docs/family-backend-patches/flexible-itineraries/dayNotes.patch",
+      "patchSha256": "72b3e9b9926681a4df6c6f4f24e80ae360a679c77f06ce0cf0754cefc767077a",
+      "packet": "Flexible itineraries",
+      "reason": "Carry canonical trip-day UUIDs through notes without grouping undated notes under a NULL date."
+    },
+    {
+      "path": "family-backend/src/data/supabase/tripDays.ts",
+      "baseSha256": "9040d2db6bfd8454666504bb1bf8c5e46b64de1d42888891cc4dff838d7c1938",
+      "sha256": "3a5106bd7a92e17c48bd4161c1fb8e09d0fa3657c88d7f32cb709087ede7e41a",
+      "patch": "docs/family-backend-patches/flexible-itineraries/tripDays.patch",
+      "patchSha256": "5ba73595badcfe7cf35f757f58e63f0340c574570b58e2ac3692ed779b9abefb",
+      "packet": "Flexible itineraries",
+      "reason": "Read nullable civil days for numbered itineraries."
+    },
+    {
+      "path": "family-backend/src/data/supabase/trips.ts",
+      "baseSha256": "6c0174153720141a5355722b10e8e88ad617a12e036a5e91962c50115d115354",
+      "sha256": "61828f01b479ba87abf723bd25e92dcad72e58d5bc5bae8ad99014b600881f9a",
+      "patch": "docs/family-backend-patches/flexible-itineraries/trips.patch",
+      "patchSha256": "c807cdd7c3730c52113c379da37fc66453624636d3f8247a17aa9fef110d51a0",
+      "packet": "Flexible itineraries",
+      "reason": "Read the relational itinerary day count for undated dashboard trips."
+    },
+    {
+      "path": "family-backend/src/pages/dashboard/familyDashboardModel.ts",
+      "baseSha256": "f3cb042ddce0683ca64e59ed3e19c3c4318b9997256f9f01b3d6edf42961f079",
+      "sha256": "707750f195b552cf2bbb28cf77a6c7f7e34089d26abeb58ec0633cd04502fb4d",
+      "patch": "docs/family-backend-patches/flexible-itineraries/familyDashboardModel.patch",
+      "patchSha256": "6111ff893066c59233af26cc2553ee2ada7f9c2fee1d39998b1e2e04e83af17e",
+      "packet": "Flexible itineraries",
+      "reason": "Use materialized itinerary count for relative trips while preserving dated legacy fallbacks."
+    },
+    {
+      "path": "family-backend/src/data/supabase/tripProposals.test.ts",
+      "baseSha256": "5eae62d94bde7c266c7ed9c489fe331d970e620a43ef8232fb3c95edc78c6fbf",
+      "sha256": "cf1657e60d092eef14169450b90af00968963e84a8f4e62423878cb2478e5064",
+      "patch": "docs/family-backend-patches/flexible-itineraries/tripProposals.test.patch",
+      "patchSha256": "e0d1e1f2d326ee30cd3de087cc9e2325e8b524c31d22f0c89604d53c76df3aaa",
+      "packet": "Flexible itineraries",
+      "reason": "Record the already-published end-date-only anchoring correction and regression coverage against the prior audited calendar-validation revision."
+    },
+    {
+      "path": "family-backend/src/data/supabase/tripProposals.ts",
+      "baseSha256": "4cf29274b4999c9639838dac4ebc35523cc385e195b6d098fbbfc478a6095668",
+      "sha256": "1a600358d13d9cb0282f6f37626df93bf668a6a2e35671cd5d076420d6ff514c",
+      "patch": "docs/family-backend-patches/flexible-itineraries/tripProposals.patch",
+      "patchSha256": "f6b2028330799835679f6a1a5d5d41664e282b8b2c06b6b95cb9a3784c042903",
+      "packet": "Flexible itineraries",
+      "reason": "Record the already-published end-date-only anchoring correction and regression coverage against the prior audited calendar-validation revision."
     }
   ],
   "additions": [
@@ -1175,6 +1229,12 @@
       "sha256": "12201746c8017796da9b29a13847581b876e43a9c8a1e0fa2db0dc6b9ee39b51",
       "packet": "Family account date display preferences",
       "reason": "Adapter and regressions for owner-only profile display preferences and coordinated Family writes."
+    },
+    {
+      "path": "family-backend/src/data/supabase/tripCovers.ts",
+      "sha256": "05227a5e061589954eb8bee226c99798659a50ad2ba26c8239fa4b1cd9cfd132",
+      "packet": "New Trip cover display",
+      "reason": "Record the already-published private trip-cover reader, bounded signing and dashboard lookup; matching cover migration is live at schema 184."
     }
   ]
 }

@@ -10,7 +10,7 @@
   ],
   "source_repository": "https://github.com/liketrek/TREK",
   "source_version": "5.1.4",
-  "reason": "Six native files match reviewed TREK 5.1.4. The Sidebar derivation, four Transport overlays and the preview waypoint permission gate retain their full-file pins.",
+  "reason": "Six native files match reviewed TREK 5.1.4. The Sidebar derivation, four Transport overlays and the preview waypoint permission gate retain their full-file pins. Two exact Family relative-day control insertions preserve all previously pinned native presentation.",
   "family_waypoint_map_overlay": {
     "id": "family-preview-waypoint-map-v1",
     "path": "client/src/pages/tripPlanner/PlanMapStage.tsx",
@@ -57,5 +57,19 @@
     "path": "client/src/components/Planner/DayPlanSidebar.tsx",
     "base_sha256": "fc9f3da5c00e543afea019aee34e44c116bd6b2814ce9d6ef67347de9f3a26f2",
     "derived_sha256": "897d7c0e4fb9660ca027828f831ab294c45eee16ddd29ecc834a58fdc0ae8efc"
-  }
+  },
+  "family_relative_day_overlays": [
+    {
+      "id": "family-relative-days-desktop-v1",
+      "path": "client/src/components/Planner/DayPlanSidebar.tsx",
+      "base_sha256": "897d7c0e4fb9660ca027828f831ab294c45eee16ddd29ecc834a58fdc0ae8efc",
+      "derived_sha256": "67210ea2c56129d571468fd216b747b57f7c820f863d27a1913015d878de38bb"
+    },
+    {
+      "id": "family-relative-days-phone-v1",
+      "path": "client/src/mobile/screens/trip/plan/MPlanTimeline.tsx",
+      "base_sha256": "6808585c553dae4503d0799a61de08d0cb991e6ffe21381d938d757953d9647f",
+      "derived_sha256": "6e5494b59effaa0d650572886ec9ec0e90fe91450588f9bb418cda49fcf78f89"
+    }
+  ]
 }

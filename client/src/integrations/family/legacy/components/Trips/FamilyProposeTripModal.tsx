@@ -1,3 +1,7 @@
+import { listTripCurrencies } from '../../../tripCurrencies';
+import { buildFlexibleTripProposal, flexibleProposalCalendar } from '../../../flexibleTripProposal';
+import { useSettingsStore } from '../../../../../store/settingsStore';
+import { SYMBOLS } from '../../../../../components/Budget/BudgetPanel.constants';
 import { Bell, Calendar, CalendarDays, Camera, Check, Image as ImageIcon, Plane, Search, Type, UserPlus, X } from 'lucide-react';
 import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import { TRIP_COVER_LIMIT, TRIP_COVER_MIME, uploadNewTripCover } from '@family/backend/supabase/tripCovers';
@@ -117,6 +121,19 @@ export default function FamilyProposeTripModal({
 
   const [step, setStep] = useState<ProposeStep>('basics');
   const [title, setTitle] = useState('');
+  const defaultCurrency = useSettingsStore((s) => s.settings.default_currency) || 'USD';
+  const [currencyChoice, setCurrencyChoice] = useState<string | null>(null);
+  const currency = currencyChoice ?? defaultCurrency;
+  const [supportedCurrencies, setSupportedCurrencies] = useState<string[]>([]);
+  const [currencyError, setCurrencyError] = useState(false);
+  useEffect(() => {
+    if (!isOpen || editingProposalId || primaryCoreMode() !== 'write') return;
+    let current = true;
+    setCurrencyError(false);
+    void listTripCurrencies().then((rows) => { if (current) setSupportedCurrencies(rows); })
+      .catch(() => { if (current) setCurrencyError(true); });
+    return () => { current = false; };
+  }, [isOpen, editingProposalId, familyId]);
   const [notes, setNotes] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -174,6 +191,7 @@ export default function FamilyProposeTripModal({
     if (!isOpen) return;
     setStep('basics');
     setTitle('');
+    setCurrencyChoice(null);
     setNotes('');
     setStartDate('');
     setEndDate('');
@@ -352,6 +370,7 @@ export default function FamilyProposeTripModal({
     };
   }, [isOpen, familyId, selectedCountryIds]);
 
+  const flexibleDates = flexibleProposalCalendar(startDate, endDate, typeof dayCount === 'number' ? dayCount : 0);
   const dates = resolveProposalDates({
     startDate,
     endDate,
@@ -360,7 +379,7 @@ export default function FamilyProposeTripModal({
   const stepIndex = STEPS.indexOf(step);
   const canContinue = !convertingCover && (
     step === 'basics'
-      ? canAdvanceFromBasics(title, dates)
+      ? (coreMode === 'write' && !isEditing ? Boolean(title.trim() && flexibleDates) : canAdvanceFromBasics(title, dates))
       : step === 'countries'
         ? selectedCountryIds.length > 0
         : true);
@@ -425,7 +444,7 @@ export default function FamilyProposeTripModal({
 
   const goNext = () => {
     setError('');
-    if (step === 'basics' && !canAdvanceFromBasics(title, dates)) {
+    if (step === 'basics' && !(coreMode === 'write' && !isEditing ? Boolean(title.trim() && flexibleDates) : canAdvanceFromBasics(title, dates))) {
       setError(title.trim() ? t('dashboard.propose.datesRequired') : t('dashboard.titleRequired'));
       return;
     }
@@ -474,6 +493,9 @@ export default function FamilyProposeTripModal({
   const handleSubmit = async () => {
     const attempt = submission.current;
     if (attempt.inFlight || convertingCover) return;
+    if (!isEditing && coreMode === 'write' && !supportedCurrencies.includes(currency)) {
+      setError('Choose a supported trip currency before submitting.'); return;
+    }
     if (!personId || (!isEditing && !familyId)) {
       toast.error(t('dashboard.propose.missingPerson'));
       return;
@@ -492,13 +514,16 @@ export default function FamilyProposeTripModal({
       occasion,
       coverUrl,
       reminderDays,
+      currencyCode: currency,
     };
     const previous = attempt.pending;
     const built = previous
       ? { ok: true as const, args: previous.args }
       : isEditing && editingProposalId
         ? buildUpdateTripProposalRpcArgs({ ...fields, proposalId: editingProposalId })
-        : buildCreateTripProposalRpcArgs({ ...fields, familyId: familyId as string });
+        : coreMode === 'write' || deviceCover
+          ? buildFlexibleTripProposal({ ...fields, familyId: familyId as string })
+          : buildCreateTripProposalRpcArgs({ ...fields, familyId: familyId as string });
     if (built.ok === false) {
       setError(
         built.error === 'title'
@@ -514,9 +539,10 @@ export default function FamilyProposeTripModal({
     setError('');
     try {
       let result: CreateTripProposalResult;
-      if ('p_family_id' in built.args && (previous || coreMode === 'write' || deviceCover)) {
+      if ('p_day_count' in built.args) {
         const pending = previous ?? prepareTripProposal(built.args, personId);
         attempt.pending = pending;
+        setCurrencyChoice(pending.args.p_currency_code);
         result = attempt.created ??
           await pending.actor.perform(() => createTripProposalWithReceipt(pending.operationId, pending.args));
         if (deviceCover) {
@@ -846,7 +872,7 @@ export default function FamilyProposeTripModal({
           <NumericInput
             id={`${fieldId}-duration`}
             min={1}
-            max={365}
+            max={3660}
             value={dayCount}
             onValueChange={(raw) => {
               if (raw === '') {
@@ -854,7 +880,7 @@ export default function FamilyProposeTripModal({
                 return;
               }
               const n = Math.floor(Number(raw));
-              if (Number.isFinite(n)) setDayCount(Math.min(365, Math.max(1, n)));
+              if (Number.isFinite(n)) setDayCount(Math.min(3660, Math.max(1, n)));
             }}
             className={fieldInputCls}
           />
@@ -862,6 +888,13 @@ export default function FamilyProposeTripModal({
         </div>
       )}
 
+      {!isEditing && coreMode === 'write' && <div>
+        <label className={fieldLabelCls}>{t('dashboard.currency')}</label>
+        <CustomSelect value={currency} onChange={(value) => setCurrencyChoice(String(value))} searchable
+          ariaLabel={t('dashboard.currency')} disabled={!supportedCurrencies.length}
+          options={supportedCurrencies.map((code) => ({ value: code, label: `${code} (${SYMBOLS[code] || code})` }))} />
+        {currencyError && <p role="alert" className="text-caption text-danger">Could not load trip currencies. Reopen New Trip to retry.</p>}
+      </div>}
       <div>
         <label className={fieldLabelCls}>
           {t('dashboard.propose.occasion')}
@@ -1186,7 +1219,7 @@ export default function FamilyProposeTripModal({
             <div>
               <dt className="text-content-muted">{t('dashboard.hero.tripDates')}</dt>
               <dd>
-                {dates ? `${dates.startAt.slice(0, 10)} – ${dates.endAt.slice(0, 10)}` : t('dashboard.propose.none')}
+                {!startDate && !endDate ? `${dayCount} ${t('trips.reminderDays')}` : dates ? `${dates.startAt.slice(0, 10)} – ${dates.endAt.slice(0, 10)}` : t('dashboard.propose.none')}
               </dd>
             </div>
             <div>

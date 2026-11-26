@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react'
 import { useTripStore, type TripStoreState } from '../store/tripStore'
 import { guardPlannerReadOnly } from '../repo/plannerReadPort'
+import { currentPlannerDayNotePort } from '../repo/plannerDayNotePort'
 import { useToast } from '../components/shared/Toast'
 import { useTranslation } from '../i18n'
 import type { MergedItem, DayNotesMap, DayNote } from '../types'
@@ -98,7 +99,7 @@ export function useDayNotes(tripId: number | string) {
       newSortOrder = idx < merged.length - 2 ? (merged[idx + 1].sortKey + merged[idx + 2].sortKey) / 2 : merged[idx + 1].sortKey + 1
     }
     try {
-      guardPlannerReadOnly()
+      if (!currentPlannerDayNotePort()) guardPlannerReadOnly()
       await tripStore.updateDayNote(tripId, dayId, noteId, { sort_order: newSortOrder })
     }
     catch (err: unknown) { toast.error(err instanceof Error ? err.message : t('common.unknownError')) }

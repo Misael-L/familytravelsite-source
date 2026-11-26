@@ -1,3 +1,4 @@
+import { FamilyTripDatesControl } from '../../../../integrations/family/FamilyTripDatesControl';
 import { useEffect, useState, type MouseEvent } from 'react'
 import { transportPlannerActionsAvailable } from '../../../../integrations/family/uiPermissions'
 import { ArrowRight, BedDouble, CalendarDays, CalendarRange, ChevronRight, LogIn, LogOut, Map as MapIcon, MapPin, Pencil, PencilLine, Route, Ticket, TrainFront, Undo2 } from 'lucide-react'
@@ -215,6 +216,7 @@ function PlanDayPage({ planner, shell, dayId: pageDayId, active, editing, legMen
         places list does; across the page it is as tall as its day, so a short
         day leaves no empty card under it. */}
     <div className="absolute inset-x-4 flex flex-col gap-3 top-[calc(var(--m-safe-top,12px)+102px)] bottom-[calc(env(safe-area-inset-bottom,0px)+90px)] wide:bottom-[calc(env(safe-area-inset-bottom,0px)+12px)]">
+      <FamilyTripDatesControl key={planner.trip?.id} />
       {!editing && <UpNextCard tl={tl} t={t} onOpen={openPlace} />}
       {editing && <EditHeader tl={tl} planner={planner} shell={shell} />}
 

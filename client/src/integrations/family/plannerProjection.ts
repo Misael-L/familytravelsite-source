@@ -24,7 +24,7 @@ export async function projectPlannerState(
     if (!v.trip_day_id) blockers.push({ kind: 'unassigned_visit', id: v.id });
   }
   for (const n of notes)
-    if (!days.some((d) => d.civil_day === n.civil_day)) blockers.push({ kind: 'unassigned_note', id: n.id });
+    if (!days.some((d) => (n.trip_day_id ? d.id === n.trip_day_id : n.civil_day !== null && d.civil_day === n.civil_day))) blockers.push({ kind: 'unassigned_note', id: n.id });
   const projected = await projectPlanLocations(locations, ids, beforeRegister, variants, display),
     byId = new Map(projected.map((l) => [l.id, l]));
   const nativeDays: Day[] = [...days]
@@ -64,12 +64,15 @@ export async function projectPlannerState(
         title: d.title,
         assignments,
         notes_items: notes
-          .filter((n) => n.civil_day === d.civil_day)
+          .filter((n) => n.trip_day_id ? n.trip_day_id === d.id : n.civil_day !== null && n.civil_day === d.civil_day)
           .map((n) => ({
             id: ids.register('note', n.id),
             day_id: dayId,
             trip_id: ids.register('trip', state.trip_id),
             text: n.body,
+            family_note: n,
+            time: n.detail ?? null,
+            color: n.color ?? null,
             icon: n.icon,
             sort_order: n.sort_order,
           })),

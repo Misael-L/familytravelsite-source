@@ -1,0 +1,53 @@
+--- a/family-backend/src/data/supabase/trips.ts
++++ b/family-backend/src/data/supabase/trips.ts
+@@ -1,6 +1,7 @@
+ import { getSupabaseBrowserClient } from './client'
+ import { listHubTripPlaces } from './tripPlaces'
+ import { listHubTripTravelers } from './tripTravelers'
++import { readTripCoverUrls } from './tripCovers'
+ import {
+   attachHubMemberAvatars,
+   listPeopleAvatarRefs,
+@@ -26,10 +27,24 @@
+   reminder_days: number | null
+   archived_at: string | null
+   currency_code: string | null
++  trip_days?: { count: number }[]
++  created_by_person_id?: string | null
+ }
+ 
+ const TRIP_SELECT =
+-  'id,family_id,name,primary_country_id,start_at,end_at,status,cover_url,notes,occasion,reminder_days,archived_at,currency_code'
++  'id,family_id,name,primary_country_id,start_at,end_at,status,cover_url,notes,occasion,reminder_days,archived_at,currency_code,created_by_person_id,trip_days(count)'
++
++async function withDeviceCovers(trips: FamilyDashboardTrip[]): Promise<FamilyDashboardTrip[]> {
++  try {
++    const covers = await readTripCoverUrls(trips.filter(trip => !trip.cover_image).map(trip => trip.id))
++    return trips.map(trip => {
++      const cover = covers.get(trip.id)
++      return cover ? { ...trip, cover_image: cover } : trip
++    })
++  } catch {
++    return trips
++  }
++}
+ 
+ /** Active trips for a family — mirrors iOS TripsService.fetchTrips. */
+ export async function listActiveTrips(familyId: string): Promise<FamilyDashboardTrip[]> {
+@@ -66,7 +81,7 @@
+     listArchivedTrips(familyId),
+   ])
+   const archivedIds = new Set(archived.map(t => t.id))
+-  const enriched = await enrichFamilyHubTrips([...active, ...archived], familyId)
++  const enriched = await enrichFamilyHubTrips(await withDeviceCovers([...active, ...archived]), familyId)
+   return {
+     trips: enriched.filter(t => !archivedIds.has(t.id)),
+     archivedTrips: enriched.filter(t => archivedIds.has(t.id)),
+@@ -163,5 +178,6 @@
+ 
+   if (error) throw error
+   if (!data) return null
+-  return familyTripRowToDashboardTrip(data as FamilyTripRow)
++  const [trip] = await withDeviceCovers([familyTripRowToDashboardTrip(data as FamilyTripRow)])
++  return trip
+ }

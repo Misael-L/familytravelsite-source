@@ -21,7 +21,7 @@ export const creationForm = z
       z.object({ create: createLocationRequest.omit({ operation_id: true }) }).strict(),
     ]),
     day: z
-      .object({ id: locationId, civil_day: z.string().regex(/^\d{4}-\d{2}-\d{2}$/) })
+      .object({ id: locationId, civil_day: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable() })
       .strict()
       .nullable(),
     clocks: z.object({ start: nullableClock, end: nullableClock }).strict(),

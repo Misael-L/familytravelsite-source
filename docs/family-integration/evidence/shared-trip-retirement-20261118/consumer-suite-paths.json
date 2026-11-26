@@ -1,0 +1,22 @@
+[
+  "src/pages/SharedTripPage.test.tsx",
+  "tests/unit/pages/SharedTripPage.map.test.tsx",
+  "src/pages/sharedTrip/SharedPlaceDetails.test.tsx",
+  "src/pages/sharedTrip/sharedTripModel.test.ts",
+  "src/pages/sharedTrip/SharedMap.test.tsx",
+  "src/components/Trips/TripMembersModal.test.tsx",
+  "src/integrations/family/shareLinkSession.test.tsx",
+  "src/integrations/family/tripAccessContracts.test.tsx",
+  "src/integrations/family/applicationHandler.test.ts",
+  "src/integrations/family/identity.test.ts",
+  "src/integrations/family/completeTripRead.test.ts",
+  "src/integrations/family/directWriteSession.test.ts",
+  "src/integrations/family/authContinuations.test.ts",
+  "src/integrations/family/FamilyGenericMapBridge.test.tsx",
+  "src/integrations/family/FamilyOfflineTripEntry.test.tsx",
+  "src/integrations/family/publicVariantProjection.test.ts",
+  "src/integrations/family/publicVariantImages.test.ts",
+  "src/native/shareLink.test.ts",
+  "src/utils/clipboard.test.ts",
+  "tests/unit/scripts/family-scanner-ownership.test.ts"
+]

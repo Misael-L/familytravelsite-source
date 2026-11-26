@@ -1,0 +1,18 @@
+{
+  "incoming": "29d88ad5a75fb6c31b9928c80404c8280842ee68",
+  "implementation": "b713d62a0a9032871006a6927d8537bdc23368e7",
+  "build_source": "08eb09938b5e476370de2f8bc544b21bbed91ae5",
+  "prior_runtime_build": "60f999a3913b237a7ccc7cb0268d935c144814fc",
+  "original_parent_sha256": "911fdd2bc5cc87a74fd8166b19cd2351ce105b8c75fa29d45edfdda9de7314ff",
+  "qualified_parent_sha256": "00a75988eb7c6f7d1402f3fff4466bcdc0c5d4632af210ad24c53676bc6d0352",
+  "new_source_sha256": {
+    "client/src/integrations/family/legacy/components/Planner/FamilyTransportCards.tsx": "fa68e1591a6e14dd4235bf4d98a48f1a6c84df40d37688c5c2c001031a60c955",
+    "client/src/integrations/family/legacy/components/Planner/familyTransportTypeMeta.ts": "3dbdc1c5b0ccd028d658722e91348cf32090bdcbd35d1a7c5988751897d08b6e"
+  },
+  "new_test_sha256": "e8790d461c0352fc31699fd293d21eddb0d9b2072ae7089f81515f5189c7bd20",
+  "ordinary_roots": 5077,
+  "fresh_current_declarations": 128,
+  "runtime": "v24.22.2",
+  "fixture_inputs_external": true,
+  "no_hosted_operation": true
+}

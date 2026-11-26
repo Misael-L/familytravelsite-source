@@ -1,0 +1,36 @@
+{
+  "verified_at_utc": "2026-11-25T23:03:24.389301+00:00",
+  "production_version": "9296b138-b5b1-4c12-81fe-8a7bb0e13cb9",
+  "production_traffic_percent": 100,
+  "release": "family-2026.11.25.1-rc.1",
+  "website_source": "f2a0b450065d8f9d99d0e0fc9e29b1ef7368c912",
+  "previous_production_version": "88152fc4-4a1b-4ee2-9345-732b71aecb85",
+  "verified_recovery_version": "65d2df60-8520-498c-9fac-d13d8a44fe5e",
+  "preview_version": "14147a66-db08-49e0-96ee-0a7f458a8291",
+  "login_dashboard_admin_and_trip_shell_match": true,
+  "app_entry_and_service_worker_match": true,
+  "production_deployment_id": "007b6879-ca34-4a0e-a9ab-3626052d6acd",
+  "fresh_browser_protected_admin_sign_in_verified": true,
+  "source_publication": {
+    "tag_ref": "refs/tags/source-20261125-f2a0b45",
+    "tag_oid": "a8c52c54fe2f2774d17f472c49ce190cb4d15c3e",
+    "commit": "f78a80dc0d285c51473eab2e8aaa0e7f780d487f",
+    "tree": "1007246950a4bdd69fa7800207d1600d176595f0",
+    "archived_source": "f2a0b450065d8f9d99d0e0fc9e29b1ef7368c912",
+    "manifest_sha256": "63906f9bbfb36a2b9a882219bbc2b985a92fe4c5dad5f15c7fe17a86cb829580",
+    "retained_source_files": 18703,
+    "source_files_match_private_commit": true,
+    "manifest_scan_passed": true,
+    "public_tag_published": true,
+    "worker_version_id": "9296b138-b5b1-4c12-81fe-8a7bb0e13cb9",
+    "anonymous_manifest_verified": true,
+    "public_source_url": "https://github.com/Misael-L/familytravelsite-source/tree/source-20261125-f2a0b45",
+    "main_commit": "e3eefc3c7f149b7f7e49917863163b0103056dc2"
+  },
+  "production_url": "https://familytravelsite.lmisael0721.workers.dev",
+  "hosted_migration_ledger_at_staging": {
+    "count": 182,
+    "sha256": "c3406696b9544fa12340b4d4af6317572c9462508c3ab29faf91d892552f1dbd"
+  },
+  "authorization_rehearsal": "avatar-admin-production-staging-20261125.json"
+}

@@ -1,0 +1,30 @@
+{
+  "privateSourceCommit": "04436e103b024e3a0168df7b59c94b92279137d2",
+  "privateProductionCommit": "04436e103b024e3a0168df7b59c94b92279137d2",
+  "privateCommitSubject": "Complete New Trip presentation and cover picker details",
+  "publicSourceTag": "source-20261126-04436e1",
+  "publicSourceRemote": "https://github.com/Misael-L/familytravelsite-source.git",
+  "workersBuildUuid": null,
+  "workersVersionId": "248c6cee-58af-4b7c-804a-a077fe35d3bd",
+  "node": "24",
+  "buildCommand": "npm run build:web",
+  "origin": "https://familytravelsite.lmisael0721.workers.dev",
+  "license": "AGPL-3.0-only",
+  "createdAtUtc": "2026-11-26T03:58:19.038122+00:00",
+  "deploymentBinding": "caller-supplied-version",
+  "sanitization": {
+    "policy": "family.private-operational-plan.v1",
+    "privateCommit": "04436e103b024e3a0168df7b59c94b92279137d2",
+    "trackedFiles": 18709,
+    "sourceFilesRetained": 18708,
+    "allRetainedBytesAndModesMatchGit": true,
+    "omissions": [
+      {
+        "path": ".cursor/plans/existing-family-backend-integration.plan.md",
+        "sha256": "c4677c13b949e3f714fe3f07f58f10c0a54af72a23537d7bb43e356240512449",
+        "bytes": 12372,
+        "reason": "Private operational plan; not required to build or run the application"
+      }
+    ]
+  }
+}

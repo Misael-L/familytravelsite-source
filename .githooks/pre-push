@@ -1,0 +1,22 @@
+#!/bin/sh
+set -eu
+remote_name=${1:-}
+remote_url=${2:-}
+if [ "$remote_name" != "origin" ]; then
+  echo "Family guard: push through origin; upstream is read-only." >&2
+  exit 1
+fi
+case "$remote_url" in
+  https://github.com/Misael-L/FamilyTravelSite|https://github.com/Misael-L/FamilyTravelSite.git|git@github.com:Misael-L/FamilyTravelSite.git) ;;
+  *) echo "Family guard: unexpected push repository." >&2; exit 1 ;;
+esac
+while read -r local_ref local_oid remote_ref remote_oid; do
+  case "$remote_ref" in
+    refs/heads/main)
+      echo "Family guard: promote main through a checked pull request, not a direct push." >&2
+      exit 1 ;;
+    refs/tags/v*|refs/tags/plugin-sdk-v*)
+      echo "Family guard: upstream release tags must not be published as Family releases." >&2
+      exit 1 ;;
+  esac
+done

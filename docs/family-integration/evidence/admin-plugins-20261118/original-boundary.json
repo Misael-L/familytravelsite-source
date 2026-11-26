@@ -1,0 +1,2440 @@
+{
+  "mode": "original",
+  "diagnostics": [],
+  "files": [
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "errors": 0,
+      "warnings": 22,
+      "messages": [
+        {
+          "ruleId": "complexity",
+          "severity": 1,
+          "message": "Function 'deriveCaps' has a complexity of 28. Maximum allowed is 20.",
+          "line": 334,
+          "column": 1,
+          "messageId": "complex",
+          "endLine": 334,
+          "endColumn": 20
+        },
+        {
+          "ruleId": "max-lines-per-function",
+          "severity": 1,
+          "message": "Function 'AdminPluginsPanel' has too many lines (840). Maximum allowed is 300.",
+          "line": 536,
+          "column": 16,
+          "messageId": "exceed",
+          "endLine": 536,
+          "endColumn": 42
+        },
+        {
+          "ruleId": "complexity",
+          "severity": 1,
+          "message": "Function 'AdminPluginsPanel' has a complexity of 43. Maximum allowed is 20.",
+          "line": 536,
+          "column": 16,
+          "messageId": "complex",
+          "endLine": 536,
+          "endColumn": 42
+        },
+        {
+          "ruleId": "react-hooks/set-state-in-effect",
+          "severity": 1,
+          "message": "Error: Calling setState synchronously within an effect can trigger cascading renders\n\nEffects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:\n* Update external systems with the latest state from React.\n* Subscribe for updates from some external system, calling setState in a callback function when external state changes.\n\nCalling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).\n\n/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx:593:52\n  591 |   // for an option the active tab can't offer.\n  592 |   useEffect(() => {\n> 593 |     if (view === 'discover' && sort === 'updates') setSort('name');\n      |                                                    ^^^^^^^ Avoid calling setState() directly within an effect\n  594 |     else if (view === 'installed' && sort === 'downloads') setSort('name');\n  595 |   }, [view, sort]);\n  596 |",
+          "line": 593,
+          "column": 52,
+          "endLine": 593,
+          "endColumn": 59
+        },
+        {
+          "ruleId": "trek/no-swallowed-catch",
+          "severity": 1,
+          "message": "This .catch() swallows the error. Roll back and tell the user (toast), or handle the failure on purpose and say why in the handler; never .catch(() => {}).",
+          "line": 626,
+          "column": 11,
+          "messageId": "swallowed",
+          "endLine": 629,
+          "endColumn": 29
+        },
+        {
+          "ruleId": "complexity",
+          "severity": 1,
+          "message": "Arrow function has a complexity of 23. Maximum allowed is 20.",
+          "line": 819,
+          "column": 58,
+          "messageId": "complex",
+          "endLine": 819,
+          "endColumn": 60
+        },
+        {
+          "ruleId": "@typescript-eslint/no-floating-promises",
+          "severity": 1,
+          "message": "Promises must be awaited, end with a call to .catch, end with a call to .then with a rejection handler or be explicitly marked as ignored with the `void` operator.",
+          "line": 865,
+          "column": 5,
+          "messageId": "floatingVoid",
+          "endLine": 868,
+          "endColumn": 8,
+          "suggestions": [
+            {
+              "messageId": "floatingFixVoid",
+              "fix": {
+                "range": [
+                  33442,
+                  33442
+                ],
+                "text": "void "
+              },
+              "desc": "Add void operator to ignore."
+            },
+            {
+              "messageId": "floatingFixAwait",
+              "fix": {
+                "range": [
+                  33442,
+                  33442
+                ],
+                "text": "await "
+              },
+              "desc": "Add await operator."
+            }
+          ]
+        },
+        {
+          "ruleId": "@typescript-eslint/no-misused-promises",
+          "severity": 1,
+          "message": "Promise-returning function provided to attribute where a void return was expected.",
+          "line": 1119,
+          "column": 25,
+          "messageId": "voidReturnAttribute",
+          "endLine": 1119,
+          "endColumn": 33
+        },
+        {
+          "ruleId": "@typescript-eslint/no-misused-promises",
+          "severity": 1,
+          "message": "Promise-returning function provided to attribute where a void return was expected.",
+          "line": 1215,
+          "column": 23,
+          "messageId": "voidReturnAttribute",
+          "endLine": 1215,
+          "endColumn": 31
+        },
+        {
+          "ruleId": "@typescript-eslint/no-misused-promises",
+          "severity": 1,
+          "message": "Promise-returning function provided to attribute where a void return was expected.",
+          "line": 1237,
+          "column": 23,
+          "messageId": "voidReturnAttribute",
+          "endLine": 1237,
+          "endColumn": 32
+        },
+        {
+          "ruleId": "@typescript-eslint/no-misused-promises",
+          "severity": 1,
+          "message": "Promise-returning function provided to attribute where a void return was expected.",
+          "line": 1278,
+          "column": 29,
+          "messageId": "voidReturnAttribute",
+          "endLine": 1278,
+          "endColumn": 50
+        },
+        {
+          "ruleId": "@typescript-eslint/no-non-null-assertion",
+          "severity": 1,
+          "message": "Forbidden non-null assertion.",
+          "line": 1282,
+          "column": 29,
+          "messageId": "noNonNull",
+          "endLine": 1282,
+          "endColumn": 43,
+          "suggestions": [
+            {
+              "messageId": "suggestOptionalChain",
+              "fix": {
+                "range": [
+                  52104,
+                  52105
+                ],
+                "text": "?"
+              },
+              "desc": "Consider using the optional chain operator `?.` instead. This operator includes runtime checks, so it is safer than the compile-only non-null assertion operator."
+            }
+          ]
+        },
+        {
+          "ruleId": "@typescript-eslint/no-non-null-assertion",
+          "severity": 1,
+          "message": "Forbidden non-null assertion.",
+          "line": 1283,
+          "column": 31,
+          "messageId": "noNonNull",
+          "endLine": 1283,
+          "endColumn": 45,
+          "suggestions": [
+            {
+              "messageId": "suggestOptionalChain",
+              "fix": {
+                "range": [
+                  52155,
+                  52156
+                ],
+                "text": "?"
+              },
+              "desc": "Consider using the optional chain operator `?.` instead. This operator includes runtime checks, so it is safer than the compile-only non-null assertion operator."
+            }
+          ]
+        },
+        {
+          "ruleId": "@typescript-eslint/no-misused-promises",
+          "severity": 1,
+          "message": "Promise-returning function provided to attribute where a void return was expected.",
+          "line": 1309,
+          "column": 21,
+          "messageId": "voidReturnAttribute",
+          "endLine": 1309,
+          "endColumn": 30
+        },
+        {
+          "ruleId": "@typescript-eslint/no-misused-promises",
+          "severity": 1,
+          "message": "Promise-returning function provided to attribute where a void return was expected.",
+          "line": 1386,
+          "column": 33,
+          "messageId": "voidReturnAttribute",
+          "endLine": 1386,
+          "endColumn": 91
+        },
+        {
+          "ruleId": "@typescript-eslint/no-misused-promises",
+          "severity": 1,
+          "message": "Promise-returning function provided to attribute where a void return was expected.",
+          "line": 1403,
+          "column": 31,
+          "messageId": "voidReturnAttribute",
+          "endLine": 1403,
+          "endColumn": 91
+        },
+        {
+          "ruleId": "@typescript-eslint/no-misused-promises",
+          "severity": 1,
+          "message": "Promise-returning function provided to attribute where a void return was expected.",
+          "line": 1421,
+          "column": 19,
+          "messageId": "voidReturnAttribute",
+          "endLine": 1425,
+          "endColumn": 11
+        },
+        {
+          "ruleId": "@typescript-eslint/no-non-null-assertion",
+          "severity": 1,
+          "message": "Forbidden non-null assertion.",
+          "line": 1422,
+          "column": 21,
+          "messageId": "noNonNull",
+          "endLine": 1422,
+          "endColumn": 38
+        },
+        {
+          "ruleId": "@typescript-eslint/no-misused-promises",
+          "severity": 1,
+          "message": "Promise-returning function provided to attribute where a void return was expected.",
+          "line": 1454,
+          "column": 21,
+          "messageId": "voidReturnAttribute",
+          "endLine": 1459,
+          "endColumn": 13
+        },
+        {
+          "ruleId": "complexity",
+          "severity": 1,
+          "message": "Function 'InstalledRow' has a complexity of 26. Maximum allowed is 20.",
+          "line": 1616,
+          "column": 1,
+          "messageId": "complex",
+          "endLine": 1616,
+          "endColumn": 22
+        },
+        {
+          "ruleId": "react-hooks/refs",
+          "severity": 1,
+          "message": "Error: Cannot access refs during render\n\nReact refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).\n\n/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx:1813:35\n  1811 |               <div\n  1812 |                 data-testid={`plugin-row-menu-${p.id}`}\n> 1813 |                 style={anchorMenu(menuBtnRef.current)}\n       |                                   ^^^^^^^^^^^^^^^^^^ Passing a ref to a function may read its value during render\n  1814 |                 className=\"min-w-[180px] rounded-xl border border-edge bg-surface-card p-1.5 shadow-elevated\"\n  1815 |               >\n  1816 |                 {p.enabled === 1 && (",
+          "line": 1813,
+          "column": 35,
+          "endLine": 1813,
+          "endColumn": 53
+        },
+        {
+          "ruleId": "complexity",
+          "severity": 1,
+          "message": "Function 'PluginDetailModal' has a complexity of 41. Maximum allowed is 20.",
+          "line": 2023,
+          "column": 1,
+          "messageId": "complex",
+          "endLine": 2023,
+          "endColumn": 27
+        }
+      ],
+      "suppressedMessages": [
+        {
+          "ruleId": "react-hooks/exhaustive-deps",
+          "severity": 1,
+          "message": "React Hook useMemo has a missing dependency: 'updateAvailable'. Either include it or remove the dependency array.",
+          "line": 949,
+          "column": 68,
+          "endLine": 949,
+          "endColumn": 85,
+          "suggestions": [
+            {
+              "desc": "Update the dependencies array to be: [plugins, updateAvailable]",
+              "fix": {
+                "range": [
+                  37125,
+                  37142
+                ],
+                "text": "[plugins, updateAvailable]"
+              }
+            }
+          ],
+          "suppressions": [
+            {
+              "kind": "directive",
+              "justification": ""
+            }
+          ]
+        },
+        {
+          "ruleId": "react-hooks/exhaustive-deps",
+          "severity": 1,
+          "message": "React Hook useMemo has a missing dependency: 'updateAvailable'. Either include it or remove the dependency array.",
+          "line": 979,
+          "column": 6,
+          "endLine": 979,
+          "endColumn": 58,
+          "suggestions": [
+            {
+              "desc": "Update the dependencies array to be: [q, plugins, typeFilter, statusFilter, updateAvailable, sort]",
+              "fix": {
+                "range": [
+                  38241,
+                  38293
+                ],
+                "text": "[q, plugins, typeFilter, statusFilter, updateAvailable, sort]"
+              }
+            }
+          ],
+          "suppressions": [
+            {
+              "kind": "directive",
+              "justification": ""
+            }
+          ]
+        }
+      ],
+      "wrapped": 2669,
+      "formatted": true
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "errors": 0,
+      "warnings": 0,
+      "messages": [],
+      "suppressedMessages": [],
+      "wrapped": 458,
+      "formatted": true
+    }
+  ],
+  "measurements": [
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "errBody",
+      "line": 181,
+      "parameters": 1,
+      "complexity": 4,
+      "lines": 3
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "blockIsCurrent",
+      "line": 211,
+      "parameters": 2,
+      "complexity": 5,
+      "lines": 6
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "isNewer",
+      "line": 301,
+      "parameters": 2,
+      "complexity": 6,
+      "lines": 15
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 302,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 5
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 306,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "parseJson",
+      "line": 317,
+      "parameters": 2,
+      "complexity": 4,
+      "lines": 8
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "deriveCaps",
+      "line": 334,
+      "parameters": 3,
+      "complexity": 28,
+      "lines": 51
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 367,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 379,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 380,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "deriveDeps",
+      "line": 397,
+      "parameters": 2,
+      "complexity": 14,
+      "lines": 27
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "installOffer",
+      "line": 434,
+      "parameters": 2,
+      "complexity": 5,
+      "lines": 15
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ReviewedBadge",
+      "line": 450,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 9
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "SideloadedBadge",
+      "line": 461,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 10
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "isRegistrySourced",
+      "line": 482,
+      "parameters": 1,
+      "complexity": 3,
+      "lines": 3
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "TrustBadge",
+      "line": 495,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 20
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "DevLinkBadge",
+      "line": 517,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 10
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "TypeBadge",
+      "line": 528,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 7
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "AdminPluginsPanel",
+      "line": 536,
+      "parameters": 0,
+      "complexity": 43,
+      "lines": 840
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 592,
+      "parameters": 0,
+      "complexity": 5,
+      "lines": 4
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 604,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 10
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 607,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 4
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 615,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 18
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 621,
+      "parameters": 1,
+      "complexity": 4,
+      "lines": 11
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 629,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 632,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 633,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 645,
+      "parameters": 3,
+      "complexity": 8,
+      "lines": 10
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 647,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 657,
+      "parameters": 3,
+      "complexity": 4,
+      "lines": 14
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 672,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 12
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 677,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 681,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 687,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 11
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 690,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 6
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 700,
+      "parameters": 1,
+      "complexity": 6,
+      "lines": 16
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 716,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 717,
+      "parameters": 1,
+      "complexity": 3,
+      "lines": 6
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 723,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 6
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 729,
+      "parameters": 1,
+      "complexity": 4,
+      "lines": 8
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 737,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 9
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 743,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 744,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 749,
+      "parameters": 1,
+      "complexity": 6,
+      "lines": 15
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 765,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 9
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 769,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 2
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 772,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 775,
+      "parameters": 1,
+      "complexity": 3,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 776,
+      "parameters": 2,
+      "complexity": 1,
+      "lines": 2
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 777,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 778,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 9
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 781,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 789,
+      "parameters": 0,
+      "complexity": 7,
+      "lines": 19
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 808,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 811,
+      "parameters": 1,
+      "complexity": 3,
+      "lines": 5
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 814,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 815,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 819,
+      "parameters": 2,
+      "complexity": 23,
+      "lines": 20
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 822,
+      "parameters": 1,
+      "complexity": 5,
+      "lines": 9
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 841,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 11
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 845,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 5
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 850,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 857,
+      "parameters": 1,
+      "complexity": 3,
+      "lines": 13
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 860,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 865,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 873,
+      "parameters": 3,
+      "complexity": 2,
+      "lines": 20
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 878,
+      "parameters": 1,
+      "complexity": 4,
+      "lines": 6
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 887,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 4
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 891,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 897,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 23
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 902,
+      "parameters": 1,
+      "complexity": 4,
+      "lines": 9
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 906,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 911,
+      "parameters": 1,
+      "complexity": 3,
+      "lines": 4
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 915,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 924,
+      "parameters": 3,
+      "complexity": 1,
+      "lines": 20
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 928,
+      "parameters": 1,
+      "complexity": 5,
+      "lines": 10
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 933,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 935,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 941,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 942,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 949,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 952,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 27
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 954,
+      "parameters": 1,
+      "complexity": 11,
+      "lines": 15
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 969,
+      "parameters": 2,
+      "complexity": 5,
+      "lines": 8
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 982,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 18
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 985,
+      "parameters": 1,
+      "complexity": 4,
+      "lines": 5
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 990,
+      "parameters": 2,
+      "complexity": 11,
+      "lines": 8
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1007,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 3
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1019,
+      "parameters": 1,
+      "complexity": 3,
+      "lines": 5
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1033,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1063,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1075,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1099,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1135,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1160,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1179,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1204,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1252,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1265,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 29
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1276,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1277,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1278,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1279,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 6
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1286,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1287,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1288,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1310,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1318,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1322,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1328,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1336,
+      "parameters": 2,
+      "complexity": 2,
+      "lines": 9
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1355,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1359,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1365,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1378,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 16
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1397,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1403,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1420,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1421,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 5
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1424,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1436,
+      "parameters": 2,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1437,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1454,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 5
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1456,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1458,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1460,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1461,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1473,
+      "parameters": 2,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1474,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "statusLabel",
+      "line": 1481,
+      "parameters": 2,
+      "complexity": 5,
+      "lines": 11
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "sortLabel",
+      "line": 1492,
+      "parameters": 2,
+      "complexity": 4,
+      "lines": 9
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "SegBtn",
+      "line": 1502,
+      "parameters": 1,
+      "complexity": 4,
+      "lines": 33
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "FilterMenu",
+      "line": 1536,
+      "parameters": 1,
+      "complexity": 6,
+      "lines": 62
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1562,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1578,
+      "parameters": 1,
+      "complexity": 3,
+      "lines": 15
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1581,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "EmptyState",
+      "line": 1599,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 16
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "InstalledRow",
+      "line": 1616,
+      "parameters": 1,
+      "complexity": 26,
+      "lines": 226
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1663,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 10
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1668,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1723,
+      "parameters": 2,
+      "complexity": 3,
+      "lines": 13
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1741,
+      "parameters": 0,
+      "complexity": 5,
+      "lines": 19
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1765,
+      "parameters": 2,
+      "complexity": 3,
+      "lines": 13
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1804,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1827,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1836,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "anchorMenu",
+      "line": 1858,
+      "parameters": 1,
+      "complexity": 5,
+      "lines": 14
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "MenuItem",
+      "line": 1873,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 22
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "Screenshot",
+      "line": 1896,
+      "parameters": 1,
+      "complexity": 4,
+      "lines": 14
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1901,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "RegistryGrid",
+      "line": 1911,
+      "parameters": 1,
+      "complexity": 4,
+      "lines": 94
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1940,
+      "parameters": 1,
+      "complexity": 9,
+      "lines": 62
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1948,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1949,
+      "parameters": 1,
+      "complexity": 3,
+      "lines": 6
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 1987,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "formatCompactCount",
+      "line": 2008,
+      "parameters": 1,
+      "complexity": 3,
+      "lines": 5
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "PermLabel",
+      "line": 2015,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 7
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "PluginDetailModal",
+      "line": 2023,
+      "parameters": 1,
+      "complexity": 41,
+      "lines": 219
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 2043,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 14
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 2047,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 3
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 2050,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 3
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 2053,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 2072,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 2100,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 2125,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 2130,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 2131,
+      "parameters": 2,
+      "complexity": 1,
+      "lines": 6
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 2154,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 5
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 2182,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 13
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "Meta",
+      "line": 2257,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 8
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "SignatureBlockDialog",
+      "line": 2280,
+      "parameters": 1,
+      "complexity": 17,
+      "lines": 83
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 2315,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 2355,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "KeyRow",
+      "line": 2368,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 10
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "fingerprint",
+      "line": 2381,
+      "parameters": 1,
+      "complexity": 4,
+      "lines": 11
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 2386,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 2387,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "UpdateConsentDialog",
+      "line": 2393,
+      "parameters": 1,
+      "complexity": 4,
+      "lines": 90
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 2410,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 2439,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 6
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 2454,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 8
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "DependencyResolveDialog",
+      "line": 2488,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 75
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 2504,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 2505,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 2511,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 2525,
+      "parameters": 1,
+      "complexity": 3,
+      "lines": 22
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 2539,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 2547,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "SecurityInfo",
+      "line": 2566,
+      "parameters": 1,
+      "complexity": 3,
+      "lines": 40
+    },
+    {
+      "file": "client/src/integrations/family/legacy/components/Admin/AdminPluginsPanel.tsx",
+      "name": "ArrowFunction",
+      "line": 2595,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 6
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 6,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 21
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 27,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 28,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 6
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 29,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 31,
+      "parameters": 2,
+      "complexity": 2,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 34,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 35,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "plugin",
+      "line": 39,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 20
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "registry",
+      "line": 59,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 17
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "refusal",
+      "line": 76,
+      "parameters": 2,
+      "complexity": 2,
+      "lines": 3
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "mount",
+      "line": 79,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 6
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "requiredElement",
+      "line": 85,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 4
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "button",
+      "line": 89,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "toggle",
+      "line": 92,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "openDiscover",
+      "line": 95,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "openMenu",
+      "line": 99,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "flush",
+      "line": 102,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 5
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 103,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 108,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 9
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 119,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 340
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 120,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 123,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 126,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 7
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 133,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 7
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 140,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 6
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 146,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 6
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 152,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 9
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 161,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 7
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 168,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 4
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 172,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 176,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 8
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 179,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 180,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 184,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 6
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 187,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 190,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 9
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 197,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 199,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 9
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 208,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 7
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 212,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 215,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 16
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 223,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 2
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 226,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 231,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 13
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 244,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 17
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 261,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 7
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 270,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 9
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 280,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 17
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 305,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 9
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 310,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 2
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 314,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 8
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 322,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 13
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 335,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 16
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 338,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 346,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 351,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 9
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 360,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 7
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 367,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 8
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 370,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 375,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 11
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 381,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 386,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 10
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 396,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 8
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 404,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 15
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 414,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 2
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 417,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 419,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 12
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 431,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 9
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 438,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 440,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 8
+    },
+    {
+      "file": "client/src/integrations/family/adminPluginBoundary.test.tsx",
+      "name": "ArrowFunction",
+      "line": 448,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 10
+    }
+  ],
+  "observation_only_legacy_unignored_in_memory": true,
+  "installed_rules_and_configuration_files_unchanged": true
+}

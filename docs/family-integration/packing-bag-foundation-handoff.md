@@ -1,0 +1,29 @@
+# U04-D2a — bag database/read foundation accepted locally
+
+12 November2026. Separate branch `codex/trek-v5.1.2-family-reconcile`, checkout `/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.2`; application remains `2564275101e0af45d5909c2cf46f3f4fcabd2a52`. New guarded local schema126 is qualified. No runtime/native SDK gate, hosted schema, production or preview was changed.
+
+## Delivered
+
+Canonical additive migration `20261112112956_observed_trip_packing_bags.sql`, SHA256 `b5af8384e481f56f85c9268bd783600b60cfd973bf3b28a6e29f86f34d69eb03`. Reuses existing Trip bags/carriers/item references and shared immutable receipts. Adds bag revision/recoverable lifecycle, active-parent protection, exact old JSON projection, five versioned RPCs and explicit permissions. Carrier membership is not an item ACL. No live-item dependency may be silently removed. Restore bag before dependent items/batches; bag restoration revives no item. Nonempty removal is still unsupported.
+
+Read [exact accepted contract](packing-bag-foundation-contract.md). New snapshots have full bag observations and a three-field people roster; old packing and coupled category/saved formats remain exact. Whole SQL command arguments and the **complete stored receipt including before/after history** are bounded, with transactional failure. An intentional name edit may repair a legacy oversized name; no automatic truncation/cleanup occurs.
+
+## Actual evidence and limits
+
+- **53 new real database/role/HTTP bag cases pass on final SQL**: create/edit, null/omission, genuine no-op, differential guest/historical/invalid carriers, privacy/totals, empty-only Trash, explicit restoration, root and item/carrier races, retry/domain identity, lower assurance/roles, quotas/safe counters, source context and real Auth/TOTP response-body-loss recovery.
+- **315 unchanged inherited packing checks pass**, plus **four adapted fixture checks pass**. The original319-case run hit exactly four obsolete setup errors: it tried to insert new8MiB bag names after the new validation. Original test files remain unchanged. The126 subclass explicitly expects new-name refusal; seven independent pre126-seed/post126-migration SQL paths still prove8MiB legacy read/write failure rolls back all185 tables. No trigger is disabled for this legacy proof. These are319 inherited/adapted cases in total, not a claim that the unadapted old run was green.
+- The frozen canonical runner defines **372 unique cases** (53+319). Eight representative cases reproduce through its final canonical entrypoint with exact source hashes and actual Auth/TOTP. Selected reproduction/repeated development runs are not added to unique counts. The private byte-accounting change affects only the new bag executor. The final explicit new-domain bag projection matches all4,149 current test rows exactly and excludes a real future-column extension. Old readers/item/group/category function bodies retain their tested hashes.
+- Full126 canonical clean install and populated125 upgrade, intentional late failure, explicit inverse/replay and atomic downgrade refusal after authoring pass. Every old table projection and receipt is exact on upgrade. All six oversized local legacy names survive unrelated updates. Two additional SQL witnesses prove a400,000-character old name cannot create a complete >1MiB receipt, while an intentional bounded name repair succeeds with full history.
+- **Four actual unchanged native TypeScript parser cases** accept real126 old/coupled v1/v2 responses and reject whole-row extra bag keys. This is strict parser qualification, not a new App/browser test or bag UI activation.
+- **Eight strict-target guard refusal probes** pass. CLI lint/advisors exit0, with no diagnostic growth:17 inherited lint groups and376 inherited advisor groups remain. They are not reported as a clean zero-warning baseline. Existing default-owner ACL omissions and old CHECK-parenthesis dump normalization are separately proved equivalent; no retained or126 guard is relaxed.
+- Retained120/122/123/124/125 targets, guards and rows are exact. Original125 row multisets survive in **all185 primary126 application/history tables** after tests, excluding only the three added bag metadata columns from the old bag projection. All65 prior seals/4,811 sealed members/7,924 evidence files and the canonical mixed Git index are exact. Fresh126 synthetic fixtures/proof copies are intentional.
+
+Four current native/source/Git/carryover guards are recorded with final documentation. Current full-client type/build/browser and80 adversarial release-guard acceptance remain inherited unchanged; they are not recounted as freshly run. Runtime, dependencies and native presentation remain byte-exact, so no full App rebuild is required for this database packet.
+
+Canonical SQL/tests remain under `FamilyTravelApp/supabase`; byte-exact review copies are in [foundation sources](packing-bag-foundation/README.md). The canonical index is deliberately not staged/committed. Immutable sanitized evidence lives in `FamilyTravelApp/docs/backend-modernization/evidence/u04d2a-packing-bag-foundation-2026-11-12`; private database dumps and credentials are excluded.
+
+## Next handoff
+
+Proceed to [U04-D2b typed bag SDK/publication/retained queue](packing-bag-sdk-packet.md). Keep native bag management gated until SDK/session/queue behavior and accessible restore/dependency UX are qualified in the subsequent native cutover. Native Delete must never silently unassign hidden items. No new database migration is needed merely to expose these qualified126 contracts to typed adapters.
+
+No push/main merge/deploy, hosted SQL/settings/billing, dependency/image upgrade, transformations/backfill, backup rewrite or ignored ETL work. Production and integration preview remain unchanged. Independent database-plus-files/off-device restoration and incremental backups remain separate outstanding operations.

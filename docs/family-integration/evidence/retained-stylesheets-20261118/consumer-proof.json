@@ -1,0 +1,28 @@
+{
+  "passed": true,
+  "meaning": "Before/after preservation only; not an all-tests-green or release result",
+  "all_tests_passed": false,
+  "same_expanded_cases_before_after": 2354,
+  "executed_passed_before_after": [
+    2315,
+    2315
+  ],
+  "existing_failed_before_after": [
+    1,
+    1
+  ],
+  "existing_skipped_before_after": [
+    38,
+    38
+  ],
+  "new_failures": 0,
+  "new_skips": 0,
+  "exact_raw_title_cases": 2353,
+  "one_generated_label_review": "generated-test-label-review.json",
+  "expanded_cases_sha256": "61d60c199f197d9b00cd6c913bac94bd614dc591cf38aaa782e01099c25252d7",
+  "candidate_only_closed_five_file_island_absent": true,
+  "all_other_candidate_tracked_files_byte_exact": 18490,
+  "all_original_test_and_baseline_bytes_exact": true,
+  "no_assertion_fixture_mock_timeout_coverage_or_skip_change": true,
+  "no_live_backend_browser_or_writer_admission": true
+}

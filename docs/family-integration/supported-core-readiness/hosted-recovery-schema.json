@@ -1,0 +1,94 @@
+{
+  "project_ref": "REDACTED_PRODUCTION_PROJECT",
+  "retrieved_at": "2026-11-12T20:27:51.326Z",
+  "columns": [
+    {
+      "type": "uuid",
+      "table": "journey_entries",
+      "column": "id",
+      "not_null": true
+    },
+    {
+      "type": "uuid",
+      "table": "journeys",
+      "column": "id",
+      "not_null": true
+    },
+    {
+      "type": "integer",
+      "table": "journeys",
+      "column": "revision",
+      "not_null": true
+    },
+    {
+      "type": "uuid",
+      "table": "packing_items",
+      "column": "id",
+      "not_null": true
+    },
+    {
+      "type": "uuid",
+      "table": "packing_items",
+      "column": "trip_id",
+      "not_null": true
+    },
+    {
+      "type": "uuid",
+      "table": "schedule_items",
+      "column": "id",
+      "not_null": true
+    },
+    {
+      "type": "uuid",
+      "table": "schedule_items",
+      "column": "trip_id",
+      "not_null": true
+    },
+    {
+      "type": "timestamp with time zone",
+      "table": "schedule_items",
+      "column": "starts_at",
+      "not_null": false
+    },
+    {
+      "type": "uuid",
+      "table": "todo_items",
+      "column": "id",
+      "not_null": true
+    },
+    {
+      "type": "uuid",
+      "table": "todo_items",
+      "column": "trip_id",
+      "not_null": true
+    },
+    {
+      "type": "uuid",
+      "table": "trips",
+      "column": "id",
+      "not_null": true
+    }
+  ],
+  "recovery_functions": [
+    {
+      "name": "delete_family_journey",
+      "definition": "CREATE OR REPLACE FUNCTION public.delete_family_journey(p_journey_id uuid)\n RETURNS jsonb\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'public'\nAS $function$\ndeclare\n  v_family uuid;\n  r record;\nbegin\n  if auth.uid() is null then\n    raise exception 'Not authenticated' using errcode = '42501';\n  end if;\n  if not public.can_admin_family_journey(p_journey_id) then\n    raise exception 'not authorized' using errcode = '42501';\n  end if;\n  select family_id into v_family from public.journeys where id = p_journey_id;\n  perform set_config('family_auth.skip_row_audit', '1', true);\n  for r in\n    select a.id, a.storage_path, a.bucket\n    from public.media_assets a\n    where a.id in (\n      select jm.media_id from public.journey_media jm where jm.journey_id = p_journey_id\n      union\n      select j.cover_media_id from public.journeys j where j.id = p_journey_id and j.cover_media_id is not null\n    )\n  loop\n    perform family_auth.enqueue_storage_cleanup(\n      v_family, null, r.bucket, r.storage_path, 'unref_private_asset', 'media_assets', r.id\n    );\n    delete from public.media_assets where id = r.id;\n  end loop;\n  delete from public.journeys where id = p_journey_id;\n  perform set_config('family_auth.skip_row_audit', '0', true);\n  perform family_auth.append_audit(\n    v_family, null, 'family.journey.manage', 'direct',\n    'journeys', p_journey_id::text, 'delete_family_journey',\n    '{}'::jsonb\n  );\n  return jsonb_build_object('ok', true, 'id', p_journey_id);\nend;\n$function$\n",
+      "identity_arguments": "p_journey_id uuid",
+      "authenticated_execute": true
+    },
+    {
+      "name": "delete_family_journey_entry",
+      "definition": "CREATE OR REPLACE FUNCTION public.delete_family_journey_entry(p_entry_id uuid)\n RETURNS jsonb\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'public'\nAS $function$\ndeclare\n  v_journey uuid;\nbegin\n  if auth.uid() is null then\n    raise exception 'Not authenticated' using errcode = '42501';\n  end if;\n  select journey_id into v_journey from public.journey_entries where id = p_entry_id;\n  if v_journey is null or not public.can_edit_family_journey_entries(v_journey) then\n    raise exception 'not authorized' using errcode = '42501';\n  end if;\n  delete from public.journey_entries where id = p_entry_id;\n  return public.get_family_journey(v_journey);\nend;\n$function$\n",
+      "identity_arguments": "p_entry_id uuid",
+      "authenticated_execute": true
+    }
+  ],
+  "_sourcePublication": {
+    "redactedFields": [
+      "/project_ref"
+    ],
+    "reason": "Operational project and database host identity withheld from public source. Unredacted original retained in private Git history.",
+    "originalPrivateCommit": "2d25cc818b9844e77b693b4cde2393388184b12f",
+    "originalFileSha256": "5b5ca3867d70d2eafa106f801e42e6b8d1400dcbd589a063d1798687ab38bd3d"
+  }
+}

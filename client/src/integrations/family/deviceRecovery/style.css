@@ -1,0 +1,51 @@
+body {
+  margin: 0;
+  padding: 24px;
+  background: #f5f6f8;
+  color: #172033;
+  font:
+    16px/1.5 system-ui,
+    sans-serif;
+}
+main {
+  max-width: 760px;
+  margin: auto;
+}
+h1 {
+  font-size: 1.65rem;
+}
+label {
+  display: block;
+  margin: 16px 0;
+}
+button,
+select {
+  font: inherit;
+  padding: 10px 14px;
+  border: 1px solid #64748b;
+  border-radius: 7px;
+  background: white;
+  color: inherit;
+  max-width: 100%;
+}
+button:enabled {
+  cursor: pointer;
+}
+button:disabled {
+  opacity: 0.55;
+}
+button:focus-visible,
+select:focus-visible,
+input:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 3px;
+}
+.actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 14px 0;
+}
+#recovery-summary {
+  overflow-wrap: anywhere;
+}

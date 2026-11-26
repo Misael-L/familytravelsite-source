@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "scope": "CSS and public configuration preservation only; changed application JavaScript is rebuilt, not claimed byte-identical.",
+  "all_14_CSS_paths_and_raw_bytes_exact": true,
+  "public_pair_policy_origin_and_publishable_placeholder_hashes_exact": true,
+  "all_public_slot_policy_context_and_pair_multisets_exact": true,
+  "public_slot_count": 5,
+  "writer_profile_unchanged": true,
+  "new_runtime_build_source_commit": "b5164ce88b736dffe20ae5c46a22869e64187f96",
+  "previous_runtime_build_source_commit": "a7033ef64e9ff42fe59e3413d1584645dbbd2310",
+  "all_application_JavaScript_bytes_identical": false,
+  "new_browser_or_hosted_writer_acceptance": false
+}

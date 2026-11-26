@@ -1,0 +1,28 @@
+{
+  "exit": 0,
+  "seconds": 7.54,
+  "files": [
+    "src/integrations/family/publicVariantCache.test.ts",
+    "src/integrations/family/privateFileMemory.test.ts",
+    "src/integrations/family/creationTerminalSettlement.test.ts",
+    "src/integrations/family/packingBagDependency.test.ts"
+  ],
+  "command": [
+    "/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/node_modules/.bin/vitest",
+    "run",
+    "src/integrations/family/publicVariantCache.test.ts",
+    "src/integrations/family/privateFileMemory.test.ts",
+    "src/integrations/family/creationTerminalSettlement.test.ts",
+    "src/integrations/family/packingBagDependency.test.ts",
+    "--maxWorkers=2",
+    "--reporter=default",
+    "--reporter=json",
+    "--outputFile=/private/tmp/trek-core-ci-quality-20261118/focused-original-tests.json"
+  ],
+  "controlled_ports_only": true,
+  "coverage_not_enabled_or_claimed": true,
+  "numPassedTests": 209,
+  "numFailedTests": 0,
+  "numPendingTests": 0,
+  "numTotalTests": 209
+}

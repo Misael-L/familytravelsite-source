@@ -1,0 +1,48 @@
+{
+  "passed": true,
+  "packet": "Q101",
+  "incoming": "b3378306513926ace1738719e3dd62cb0eef1dfb",
+  "implementation": "b5851defadf5fca3f3b50e60a34b34080de0cfe5",
+  "build_source": "a1bb09c78a25516aafe8b36ed76f885b02cbebe9",
+  "date": "2026-11-18",
+  "runtime_source_files_formatted": 11,
+  "new_runtime_functions": 0,
+  "candidate_passed": 635,
+  "same_expanded_cases_before_after": 635,
+  "typed_AST_bodies_signatures_hooks_getters_and_defaults_preserved": true,
+  "className_token_multisets_conditions_spacing_preserved": true,
+  "all_import_declarations_bindings_and_effectful_relative_order_preserved": true,
+  "pure_archive_initialization_reorder_explicitly_audited": true,
+  "real_client_format_gate_pass": true,
+  "unlisted_format_failures_before_after": [
+    11,
+    0
+  ],
+  "format_baseline_unchanged_entries": 2134,
+  "warning_gate_pass": true,
+  "source_warnings_actual_limit": [
+    3418,
+    3418
+  ],
+  "source_complexity_actual_limit": [
+    218,
+    218
+  ],
+  "source_length_actual_limit": [
+    130,
+    130
+  ],
+  "size_failures_unchanged": 28,
+  "fresh_build_and_typecheck_passed": true,
+  "current_compiler_declarations_fixed": 128,
+  "source_guards_passed": 4,
+  "artifact_binding_controls_passed": 3,
+  "all_14_compiled_CSS_files_exact": true,
+  "all_compiled_JS_byte_identity_claim": false,
+  "rules_baselines_exclusions_suppressions_unchanged": true,
+  "native_presentation_files_exact": 12,
+  "Q100_retirement_preserved": true,
+  "global_release_acceptance": false,
+  "live_database_browser_or_writer_admission_acceptance": false,
+  "next": "Q102 bounded retirement review of the two old legacy Costs UI modules; retain active native Costs and Family backend adapters"
+}

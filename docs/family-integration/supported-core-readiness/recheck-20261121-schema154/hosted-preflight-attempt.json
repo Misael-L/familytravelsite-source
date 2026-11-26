@@ -1,0 +1,43 @@
+{
+  "source_commit": "4b9ea419a4cbd1b47f6fe2a05e05e24e5288da61",
+  "public_source_tag": "source-20261122-4b9ea41",
+  "acceptance_version": "126d17b3-1f8f-41f1-8447-01c00d232677",
+  "preview_http_verification": {
+    "live_exact_acceptance_url": true,
+    "matching_source_header": true,
+    "html_sha256": "5a91bd072ed7ef5e5000ecd4e94cfbb9e8e5fff4bb3fc352dbabcef3fb1a92b7",
+    "recovery_bytes_verified": true,
+    "production_version_match": true
+  },
+  "fresh_browser_acceptance_page_verified": true,
+  "existing_service_worker_intercepted_direct_navigation": true,
+  "baseline_qa_password_and_mfa_rest_reads_verified": true,
+  "preview_rollback": {
+    "original_versions_verified": true,
+    "original_app_and_service_worker_bytes_verified": true,
+    "acceptance_route_inactive": true
+  },
+  "original_production_version_verified": true,
+  "original_data_api_before_and_after": {
+    "rest_status": 200,
+    "graphql_status": 200,
+    "graphql_extension_disabled_response": true,
+    "exposed_schemas": [
+      "graphql_public",
+      "public"
+    ]
+  },
+  "database_setup_ran": false,
+  "setup_stop_reason": "Automatic review required action-time approval for the production SQL that would pause exports, revoke and restore two service-role export permissions, and create an inert temporary probe schema.",
+  "verified_database_state": {
+    "migration_count": 88,
+    "migration_tip": "20261010222112",
+    "applied_during_preflight": 0,
+    "temporary_probe_schemas": 0,
+    "temporary_storage_policies": 0,
+    "remaining_synthetic_accounts": 0,
+    "remaining_synthetic_profile": 0,
+    "scheduled_exports_active": true,
+    "service_role_can_claim_and_expire_exports": true
+  }
+}

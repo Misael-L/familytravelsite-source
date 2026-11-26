@@ -1,0 +1,300 @@
+{
+  "hosted_management_ledger_count": 88,
+  "local_qualified_ledger_count": 136,
+  "pending_count": 48,
+  "observed_hosted_prefix_matches_local_preserved_ledger_names_and_versions": true,
+  "version_prefix_is_not_statement_checksum_proof": true,
+  "historical_baseline_reconciled": "u04f3b-authentic-upgrade-handoff.md",
+  "all_pending_canonical_sources_frozen": true,
+  "pending": [
+    {
+      "name": "journey_entry_recovery",
+      "version": "20261104175741",
+      "canonical_path": "supabase/migrations/20261104175741_journey_entry_recovery.sql",
+      "sha256": "acbd46debbe99c0dd0a01993e7bc0cc5b621f51ce34655e9c5a6e9ca9fa05d23"
+    },
+    {
+      "name": "journey_aggregate_recovery",
+      "version": "20261104192908",
+      "canonical_path": "supabase/migrations/20261104192908_journey_aggregate_recovery.sql",
+      "sha256": "85e46ea93a017ea57687be9a2d14c049b61a43ed622167f1348e2049f27ac838"
+    },
+    {
+      "name": "trip_aggregate_recovery",
+      "version": "20261104200550",
+      "canonical_path": "supabase/migrations/20261104200550_trip_aggregate_recovery.sql",
+      "sha256": "fc3d5dc05d31295c184d8eec83265195b72a7c1d5bc196365aa8718ba84f96ea"
+    },
+    {
+      "name": "trip_plan_locations",
+      "version": "20261104230709",
+      "canonical_path": "supabase/migrations/20261104230709_trip_plan_locations.sql",
+      "sha256": "dc7cf49c5ba2da80a494fc2184b8c03866d8852956d10aa5d0c16ff01867aecb"
+    },
+    {
+      "name": "trip_visit_location_bridge",
+      "version": "20261104233950",
+      "canonical_path": "supabase/migrations/20261104233950_trip_visit_location_bridge.sql",
+      "sha256": "707f84a94f5d004cddb98f9ea783177e787aa167c165888172b287d93a114304"
+    },
+    {
+      "name": "trip_untimed_visit_commands",
+      "version": "20261105001102",
+      "canonical_path": "supabase/migrations/20261105001102_trip_untimed_visit_commands.sql",
+      "sha256": "b246e71775c989ab658835ac098807866f4119896fabffd89e504cc63962a902"
+    },
+    {
+      "name": "typed_plan_change_proposals",
+      "version": "20261105004710",
+      "canonical_path": "supabase/migrations/20261105004710_typed_plan_change_proposals.sql",
+      "sha256": "646ba3bf683ea87847573469ea598ad8589a87693831f5e74a08382814541986"
+    },
+    {
+      "name": "legacy_visit_time_classification",
+      "version": "20261105012509",
+      "canonical_path": "supabase/migrations/20261105012509_legacy_visit_time_classification.sql",
+      "sha256": "c435969732372587635a717dbf655aaf98a349830badcdad5fda25d06a50e7a5"
+    },
+    {
+      "name": "named_zone_visit_timing",
+      "version": "20261105015237",
+      "canonical_path": "supabase/migrations/20261105015237_named_zone_visit_timing.sql",
+      "sha256": "0038599f796671abc0ae570478d52f1313e031ffd02d4dc935a1f383daa3aa5c"
+    },
+    {
+      "name": "visit_timing_proposals",
+      "version": "20261105030029",
+      "canonical_path": "supabase/migrations/20261105030029_visit_timing_proposals.sql",
+      "sha256": "1c3187897578fa4d38de3e975e819894dd1bf8c43518dad0faf2869eddbeb4f5"
+    },
+    {
+      "name": "visit_partial_time_semantics",
+      "version": "20261105040722",
+      "canonical_path": "supabase/migrations/20261105040722_visit_partial_time_semantics.sql",
+      "sha256": "c58228688898c6435ef2b681bfb62e788acc562a40562a5409dd33fc8d0c6ddf"
+    },
+    {
+      "name": "atomic_trip_plan_entries",
+      "version": "20261105054629",
+      "canonical_path": "supabase/migrations/20261105054629_atomic_trip_plan_entries.sql",
+      "sha256": "062f2dbe30b9c30dc4c5f3e82870155f70b61d9bfa8d900815790c674bc69c4f"
+    },
+    {
+      "name": "trip_planner_state_snapshot",
+      "version": "20261105194324",
+      "canonical_path": "supabase/migrations/20261105194324_trip_planner_state_snapshot.sql",
+      "sha256": "c00b06d08e330dbd317850c1e64ed51de529421cf17248162e2ff21a982359cb"
+    },
+    {
+      "name": "trip_destination_location_bridge",
+      "version": "20261105201625",
+      "canonical_path": "supabase/migrations/20261105201625_trip_destination_location_bridge.sql",
+      "sha256": "a394d3e35f92cf8956e811c8def45ac975b7ba0fc10166ec9c0c626b48c01208"
+    },
+    {
+      "name": "trip_location_form_commands",
+      "version": "20261105205015",
+      "canonical_path": "supabase/migrations/20261105205015_trip_location_form_commands.sql",
+      "sha256": "baea21ee3ed3a3eabf6034dd5c0b8b2a324aa617e9d496c3f3b47ead5f40fd64"
+    },
+    {
+      "name": "trip_visit_form_commands",
+      "version": "20261105212614",
+      "canonical_path": "supabase/migrations/20261105212614_trip_visit_form_commands.sql",
+      "sha256": "1baf6e679df11a4df35d5ea87cec8227973b5851ea509a6f69462dc33f9d5a3d"
+    },
+    {
+      "name": "trip_private_planner_snapshot",
+      "version": "20261106005109",
+      "canonical_path": "supabase/migrations/20261106005109_trip_private_planner_snapshot.sql",
+      "sha256": "c1140eefe306fe7a534ae149c556da97e7ad557b0559c56fa6a15c70dfe58a21"
+    },
+    {
+      "name": "native_planner_creation",
+      "version": "20261106023651",
+      "canonical_path": "supabase/migrations/20261106023651_native_planner_creation.sql",
+      "sha256": "b63f8bf2b09df1b8ec63db0b5f86099b2160babd585b60209bacfe700bb23245"
+    },
+    {
+      "name": "native_visit_arrangements",
+      "version": "20261106030729",
+      "canonical_path": "supabase/migrations/20261106030729_native_visit_arrangements.sql",
+      "sha256": "1aa5c19f67f166cf5552477ed881d7bd8f0f1ee2f0f24c6a72ede09668fa28f1"
+    },
+    {
+      "name": "observed_trip_calendar",
+      "version": "20261106035504",
+      "canonical_path": "supabase/migrations/20261106035504_observed_trip_calendar.sql",
+      "sha256": "7f3ca3600e520d1fd51ff7d05cc118ca30627f6ab27d7e1e8729dc378a03d40b"
+    },
+    {
+      "name": "recoverable_trip_day_order",
+      "version": "20261106043206",
+      "canonical_path": "supabase/migrations/20261106043206_recoverable_trip_day_order.sql",
+      "sha256": "106a3989253c703a3eabe11401e80af57752eb74f7c2bc1271ad255b8417a940"
+    },
+    {
+      "name": "recoverable_trip_day_insertion",
+      "version": "20261106185358",
+      "canonical_path": "supabase/migrations/20261106185358_recoverable_trip_day_insertion.sql",
+      "sha256": "e5ae80930f3200d1117f7fb834037ee8ff6291657ef0a1f6824dae06d2f6e4fb"
+    },
+    {
+      "name": "recoverable_unreferenced_trip_days",
+      "version": "20261106193124",
+      "canonical_path": "supabase/migrations/20261106193124_recoverable_unreferenced_trip_days.sql",
+      "sha256": "64f464cd43424e72959bffa94ccabec765adda41bb04fda7cd5fac9715f36900"
+    },
+    {
+      "name": "recoverable_trip_day_contents",
+      "version": "20261106201143",
+      "canonical_path": "supabase/migrations/20261106201143_recoverable_trip_day_contents.sql",
+      "sha256": "aa67982294a0a10dfada2b6248a302c6fab9aef2627bd421072e821b9662a809"
+    },
+    {
+      "name": "recoverable_trip_day_file_links",
+      "version": "20261106213759",
+      "canonical_path": "supabase/migrations/20261106213759_recoverable_trip_day_file_links.sql",
+      "sha256": "9b27ddfe2e69884e89b19335f05abbf681caeb0daadc488791d2bf4df9e5299c"
+    },
+    {
+      "name": "booking_calendar_date_facts",
+      "version": "20261106222223",
+      "canonical_path": "supabase/migrations/20261106222223_booking_calendar_date_facts.sql",
+      "sha256": "e708f913213390745c343538caa75b5ccdfda65f6bb984a436d06b5ca568c37d"
+    },
+    {
+      "name": "recoverable_day_booking_bindings",
+      "version": "20261106230656",
+      "canonical_path": "supabase/migrations/20261106230656_recoverable_day_booking_bindings.sql",
+      "sha256": "65d6989b17918b42f6e1231d2daa392f02796c1f5cb00b4ec2752b1688325a21"
+    },
+    {
+      "name": "observed_booking_detail_commands",
+      "version": "20261106234140",
+      "canonical_path": "supabase/migrations/20261106234140_observed_booking_detail_commands.sql",
+      "sha256": "502978ab32b7a8abc65cff94eadc0f78c6d8601e1937c6a069a9b46aa761449d"
+    },
+    {
+      "name": "observed_plan_governance",
+      "version": "20261107021228",
+      "canonical_path": "supabase/migrations/20261107021228_observed_plan_governance.sql",
+      "sha256": "37d41e2545ef28780ff0c1a9ccccf17da36e8658b98e6bd5e615d427190d3586"
+    },
+    {
+      "name": "observed_trip_task_commands",
+      "version": "20261109000220",
+      "canonical_path": "supabase/migrations/20261109000220_observed_trip_task_commands.sql",
+      "sha256": "bece3c0d42e5ac8115a0b0331805faf4dd753781d036eb0d3fed8efac2816ca2"
+    },
+    {
+      "name": "observed_trip_packing_commands",
+      "version": "20261109032335",
+      "canonical_path": "supabase/migrations/20261109032335_observed_trip_packing_commands.sql",
+      "sha256": "630426299804d09beef98dc6d2f9132b363f7310fb33cc82298c1490d4469e48"
+    },
+    {
+      "name": "observed_trip_packing_groups",
+      "version": "20261111201637",
+      "canonical_path": "supabase/migrations/20261111201637_observed_trip_packing_groups.sql",
+      "sha256": "99dcc3aa50af153ff245d70283e5b1ac0f6e7af97325cb3eb08bb485e79e09a6"
+    },
+    {
+      "name": "normalized_trip_packing_categories",
+      "version": "20261111234537",
+      "canonical_path": "supabase/migrations/20261111234537_normalized_trip_packing_categories.sql",
+      "sha256": "b361c5ad6d313fd8d42a424a4f106a671cc5a4d7afa1bcb45437fd1fd807873b"
+    },
+    {
+      "name": "observed_trip_packing_categories",
+      "version": "20261112005447",
+      "canonical_path": "supabase/migrations/20261112005447_observed_trip_packing_categories.sql",
+      "sha256": "ca5381fc403eed90809c9ae9c92a94785d58b2cd09e36602af466a27d1e2f031"
+    },
+    {
+      "name": "normalized_packing_category_lifecycle",
+      "version": "20261112050004",
+      "canonical_path": "supabase/migrations/20261112050004_normalized_packing_category_lifecycle.sql",
+      "sha256": "bd373fd75d5a88c66a3ead421ca9b779e80247b1de4354109d6e4f2fa5d74e3f"
+    },
+    {
+      "name": "category_bound_packing_items",
+      "version": "20261112055647",
+      "canonical_path": "supabase/migrations/20261112055647_category_bound_packing_items.sql",
+      "sha256": "67c3f6ceb03844e41908cd9e72f3759a9643c929ab3bbfe625b5c10a13eed63d"
+    },
+    {
+      "name": "packing_category_aggregate_commands",
+      "version": "20261112084121",
+      "canonical_path": "supabase/migrations/20261112084121_packing_category_aggregate_commands.sql",
+      "sha256": "b495d1368a4702c75c49c9b542f8320f2795054feb5a29e0ae86a0b16f24ac5a"
+    },
+    {
+      "name": "observed_trip_packing_bags",
+      "version": "20261112112956",
+      "canonical_path": "supabase/migrations/20261112112956_observed_trip_packing_bags.sql",
+      "sha256": "b5af8384e481f56f85c9268bd783600b60cfd973bf3b28a6e29f86f34d69eb03"
+    },
+    {
+      "name": "terminal_trip_packing_restore_cancellation",
+      "version": "20261112132958",
+      "canonical_path": "supabase/migrations/20261112132958_terminal_trip_packing_restore_cancellation.sql",
+      "sha256": "a3aa625587de1747fce3024a12de8c4d11892e6ca213ebef498bcd2b2ec1fee7"
+    },
+    {
+      "name": "terminal_trip_packing_bag_commands",
+      "version": "20261112162520",
+      "canonical_path": "supabase/migrations/20261112162520_terminal_trip_packing_bag_commands.sql",
+      "sha256": "80dae4bc5dc064ea991dc11079b9d6c63d7981e06d71f7cf9053bc4159da4794"
+    },
+    {
+      "name": "reconcile_family_api_privileges",
+      "version": "20261112235203",
+      "canonical_path": "supabase/migrations/20261112235203_reconcile_family_api_privileges.sql",
+      "sha256": "8ce160ea954fa213efc0b1d8c701754f6c4a7ab2c5b376240edf80e9872965c9"
+    },
+    {
+      "name": "trip_stay_read_foundation",
+      "version": "20261113032434",
+      "canonical_path": "supabase/migrations/20261113032434_trip_stay_read_foundation.sql",
+      "sha256": "9309739d31efc5039c44b6293af3d11d0a07875cd0a946769adfb41b3ff275b0"
+    },
+    {
+      "name": "observed_trip_stay_commands",
+      "version": "20261113220230",
+      "canonical_path": "supabase/migrations/20261113220230_observed_trip_stay_commands.sql",
+      "sha256": "3a9b9e8df6bb9f5773571c1a94f1fad8864eaa64376c1348f3cdc348b558ec8d"
+    },
+    {
+      "name": "original_stay_command_outcomes",
+      "version": "20261113225457",
+      "canonical_path": "supabase/migrations/20261113225457_original_stay_command_outcomes.sql",
+      "sha256": "595829734fa870e398098a378193f030f61fcf4a06e6e8629ea7bb94910c754c"
+    },
+    {
+      "name": "coherent_booking_stay_read",
+      "version": "20261113234914",
+      "canonical_path": "supabase/migrations/20261113234914_coherent_booking_stay_read.sql",
+      "sha256": "b52d662f2f94098343e8d7396d26bda8ad30271b5faed883deda14989a773c4b"
+    },
+    {
+      "name": "atomic_stay_booking_bundle",
+      "version": "20261114051232",
+      "canonical_path": "supabase/migrations/20261114051232_atomic_stay_booking_bundle.sql",
+      "sha256": "3b62e5649adbe4e98748981b16da41d84bafbb96ef294d5d2524e34c06d703d8"
+    },
+    {
+      "name": "native_stay_arrival_recovery",
+      "version": "20261114070706",
+      "canonical_path": "supabase/migrations/20261114070706_native_stay_arrival_recovery.sql",
+      "sha256": "5a73d28a72ddf9deb2f63193b40df33ecb32d8fb82273f07cd69a06ab154aec2"
+    },
+    {
+      "name": "native_stay_calendar_consistency",
+      "version": "20261114110052",
+      "canonical_path": "supabase/migrations/20261114110052_native_stay_calendar_consistency.sql",
+      "sha256": "89de2623faccc3131fc8f37dcf9c609dce06e57365723c663846e9bc727599bd"
+    }
+  ],
+  "hosted_catalog_SQL": "blocked by automatic approval; no workaround attempted"
+}

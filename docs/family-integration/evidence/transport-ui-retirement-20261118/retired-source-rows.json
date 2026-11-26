@@ -1,0 +1,30 @@
+{
+  "removed_paths": [
+    "client/src/integrations/family/legacy/components/Planner/TransportModal.tsx",
+    "client/src/integrations/family/legacy/components/Planner/TransitSearchPanel.tsx"
+  ],
+  "previous_rows": [
+    {
+      "path": "client/src/integrations/family/legacy/components/Planner/TransportModal.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "1d2d2028d70bd04f72a3dfc4d43afabca84c0bbd",
+        "bytes": 74115
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/components/Planner/TransportModal.tsx"
+    },
+    {
+      "path": "client/src/integrations/family/legacy/components/Planner/TransitSearchPanel.tsx",
+      "upstream": null,
+      "qualified": {
+        "mode": "100644",
+        "oid": "88eb4aedeab06f2691d8245230acdde7b6d186f6",
+        "bytes": 40522
+      },
+      "purpose": "Qualified Family bootstrap, identity, permissions, observed commands, recovery, cache or stored-variant connector: client/src/integrations/family/legacy/components/Planner/TransitSearchPanel.tsx"
+    }
+  ],
+  "new_qualified_commit": "225666ecdd06e3875511066ab403fe2217a8ee25",
+  "reason": "Actual two unused copied transport UI modules deleted after bounded source/type/test/configuration closure; no guard relaxation or disappearing source row without deletion."
+}

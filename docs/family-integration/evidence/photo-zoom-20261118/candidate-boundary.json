@@ -1,0 +1,847 @@
+{
+  "passed": true,
+  "diagnostics": [],
+  "measurements": [
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.ts",
+      "name": "measurePhoto",
+      "line": 15,
+      "parameters": 4,
+      "complexity": 4,
+      "lines": 9
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.ts",
+      "name": "usePhotoZoom",
+      "line": 25,
+      "parameters": 1,
+      "complexity": 5,
+      "lines": 119
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.ts",
+      "name": "ArrowFunction",
+      "line": 36,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 7
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.ts",
+      "name": "ArrowFunction",
+      "line": 45,
+      "parameters": 2,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.ts",
+      "name": "ArrowFunction",
+      "line": 49,
+      "parameters": 3,
+      "complexity": 2,
+      "lines": 5
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.ts",
+      "name": "ArrowFunction",
+      "line": 52,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.ts",
+      "name": "ArrowFunction",
+      "line": 55,
+      "parameters": 2,
+      "complexity": 2,
+      "lines": 5
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.ts",
+      "name": "ArrowFunction",
+      "line": 58,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.ts",
+      "name": "ArrowFunction",
+      "line": 61,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.ts",
+      "name": "ArrowFunction",
+      "line": 65,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.ts",
+      "name": "ArrowFunction",
+      "line": 67,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 5
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.ts",
+      "name": "ArrowFunction",
+      "line": 73,
+      "parameters": 1,
+      "complexity": 3,
+      "lines": 9
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.ts",
+      "name": "ArrowFunction",
+      "line": 80,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.ts",
+      "name": "ArrowFunction",
+      "line": 83,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.ts",
+      "name": "ArrowFunction",
+      "line": 89,
+      "parameters": 1,
+      "complexity": 5,
+      "lines": 13
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.ts",
+      "name": "ArrowFunction",
+      "line": 103,
+      "parameters": 1,
+      "complexity": 7,
+      "lines": 22
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.ts",
+      "name": "ArrowFunction",
+      "line": 112,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.ts",
+      "name": "ArrowFunction",
+      "line": 120,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.ts",
+      "name": "ArrowFunction",
+      "line": 126,
+      "parameters": 1,
+      "complexity": 11,
+      "lines": 19
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.ts",
+      "name": "ArrowFunction",
+      "line": 158,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.ts",
+      "name": "ArrowFunction",
+      "line": 159,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.ts",
+      "name": "ArrowFunction",
+      "line": 160,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "mouse",
+      "line": 12,
+      "parameters": 2,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "wheel",
+      "line": 16,
+      "parameters": 3,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "touch",
+      "line": 20,
+      "parameters": 2,
+      "complexity": 3,
+      "lines": 7
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "mount",
+      "line": 28,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 10
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 29,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 31,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 39,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 40,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 45,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 177
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 46,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 15
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 50,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 58,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 62,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 20
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 66,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 5
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 83,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 10
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 85,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 90,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 94,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 14
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 96,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 98,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 100,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 3
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 105,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 109,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 16
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 112,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 114,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 116,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 118,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 120,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 122,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 126,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 11
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 128,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 130,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 131,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 134,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 138,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 23
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 149,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 8
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 162,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 13
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 164,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 166,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 176,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 26
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 208,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 13
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 210,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 215,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 222,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 9
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "name": "ArrowFunction",
+      "line": 224,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Journey/PhotoLightbox.zoomReset.test.tsx",
+      "name": "ArrowFunction",
+      "line": 7,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 9
+    },
+    {
+      "file": "client/src/components/Journey/PhotoLightbox.zoomReset.test.tsx",
+      "name": "ArrowFunction",
+      "line": 10,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Journey/PhotoLightbox.zoomReset.test.tsx",
+      "name": "ArrowFunction",
+      "line": 22,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 5
+    },
+    {
+      "file": "client/src/components/Journey/PhotoLightbox.zoomReset.test.tsx",
+      "name": "ArrowFunction",
+      "line": 28,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Journey/PhotoLightbox.zoomReset.test.tsx",
+      "name": "tap",
+      "line": 30,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 5
+    },
+    {
+      "file": "client/src/components/Journey/PhotoLightbox.zoomReset.test.tsx",
+      "name": "ArrowFunction",
+      "line": 36,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 63
+    },
+    {
+      "file": "client/src/components/Journey/PhotoLightbox.zoomReset.test.tsx",
+      "name": "ArrowFunction",
+      "line": 37,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 9
+    },
+    {
+      "file": "client/src/components/Journey/PhotoLightbox.zoomReset.test.tsx",
+      "name": "ArrowFunction",
+      "line": 47,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 13
+    },
+    {
+      "file": "client/src/components/Journey/PhotoLightbox.zoomReset.test.tsx",
+      "name": "ArrowFunction",
+      "line": 61,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 18
+    },
+    {
+      "file": "client/src/components/Journey/PhotoLightbox.zoomReset.test.tsx",
+      "name": "ArrowFunction",
+      "line": 80,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 9
+    },
+    {
+      "file": "client/src/components/Journey/PhotoLightbox.zoomReset.test.tsx",
+      "name": "ArrowFunction",
+      "line": 90,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 12
+    },
+    {
+      "file": "client/src/components/Journey/PhotoLightbox.tsx",
+      "name": "PhotoLightbox",
+      "line": 41,
+      "parameters": 1,
+      "complexity": 19,
+      "lines": 194
+    },
+    {
+      "file": "client/src/components/Journey/PhotoLightbox.tsx",
+      "name": "ArrowFunction",
+      "line": 51,
+      "parameters": 0,
+      "complexity": 3,
+      "lines": 5
+    },
+    {
+      "file": "client/src/components/Journey/PhotoLightbox.tsx",
+      "name": "ArrowFunction",
+      "line": 54,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Journey/PhotoLightbox.tsx",
+      "name": "ArrowFunction",
+      "line": 61,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Journey/PhotoLightbox.tsx",
+      "name": "ArrowFunction",
+      "line": 72,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 9
+    },
+    {
+      "file": "client/src/components/Journey/PhotoLightbox.tsx",
+      "name": "ArrowFunction",
+      "line": 73,
+      "parameters": 1,
+      "complexity": 6,
+      "lines": 5
+    },
+    {
+      "file": "client/src/components/Journey/PhotoLightbox.tsx",
+      "name": "ArrowFunction",
+      "line": 79,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Journey/PhotoLightbox.tsx",
+      "name": "ArrowFunction",
+      "line": 84,
+      "parameters": 1,
+      "complexity": 3,
+      "lines": 5
+    },
+    {
+      "file": "client/src/components/Journey/PhotoLightbox.tsx",
+      "name": "ArrowFunction",
+      "line": 90,
+      "parameters": 1,
+      "complexity": 3,
+      "lines": 3
+    },
+    {
+      "file": "client/src/components/Journey/PhotoLightbox.tsx",
+      "name": "ArrowFunction",
+      "line": 94,
+      "parameters": 1,
+      "complexity": 9,
+      "lines": 16
+    },
+    {
+      "file": "client/src/components/Journey/PhotoLightbox.tsx",
+      "name": "ArrowFunction",
+      "line": 201,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Journey/PhotoLightbox.tsx",
+      "name": "ArrowFunction",
+      "line": 202,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    }
+  ],
+  "files": [
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.ts",
+      "errors": 0,
+      "warnings": 5,
+      "messages": [
+        {
+          "ruleId": "react-hooks/refs",
+          "severity": 1,
+          "message": "Error: Cannot access refs during render\n\nReact refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).\n\n/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client/src/components/Journey/usePhotoZoom.ts:29:3\n  27 |   const imgRef = useRef<HTMLImageElement | null>(null)\n  28 |   const zoomRef = useRef(zoom)\n> 29 |   zoomRef.current = zoom\n     |   ^^^^^^^^^^^^^^^ Cannot update ref during render\n  30 |   const pinch = useRef<{ dist: number; scale: number } | null>(null)\n  31 |   const drag = useRef<{ x: number; y: number } | null>(null)\n  32 |   const lastTap = useRef(0)",
+          "line": 29,
+          "column": 3,
+          "endLine": 29,
+          "endColumn": 18
+        },
+        {
+          "ruleId": "react-hooks/set-state-in-effect",
+          "severity": 1,
+          "message": "Error: Calling setState synchronously within an effect can trigger cascading renders\n\nEffects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:\n* Update external systems with the latest state from React.\n* Subscribe for updates from some external system, calling setState in a callback function when external state changes.\n\nCalling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).\n\n/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client/src/components/Journey/usePhotoZoom.ts:37:5\n  35 |\n  36 |   useEffect(() => {\n> 37 |     setZoom(NO_ZOOM)\n     |     ^^^^^^^ Avoid calling setState() directly within an effect\n  38 |     pinch.current = null\n  39 |     drag.current = null\n  40 |     lastTap.current = 0",
+          "line": 37,
+          "column": 5,
+          "endLine": 37,
+          "endColumn": 12
+        },
+        {
+          "ruleId": "react-hooks/refs",
+          "severity": 1,
+          "message": "Error: Cannot access refs during render\n\nReact refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).\n\n/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client/src/components/Journey/usePhotoZoom.ts:150:17\n  148 |   const style: CSSProperties = {\n  149 |     transform: `translate(${zoom.x}px, ${zoom.y}px) scale(${zoom.scale})`,\n> 150 |     transition: drag.current || pinch.current ? 'none' : 'transform 160ms ease',\n      |                 ^^^^^^^^^^^^ Cannot access ref value during render\n  151 |     cursor: zoomed ? (drag.current ? 'grabbing' : 'grab') : 'zoom-in',\n  152 |     touchAction: 'none',\n  153 |   }",
+          "line": 150,
+          "column": 17,
+          "endLine": 150,
+          "endColumn": 29
+        },
+        {
+          "ruleId": "react-hooks/refs",
+          "severity": 1,
+          "message": "Error: Cannot access refs during render\n\nReact refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).\n\n/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client/src/components/Journey/usePhotoZoom.ts:150:17\n  148 |   const style: CSSProperties = {\n  149 |     transform: `translate(${zoom.x}px, ${zoom.y}px) scale(${zoom.scale})`,\n> 150 |     transition: drag.current || pinch.current ? 'none' : 'transform 160ms ease',\n      |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Cannot access ref value during render\n  151 |     cursor: zoomed ? (drag.current ? 'grabbing' : 'grab') : 'zoom-in',\n  152 |     touchAction: 'none',\n  153 |   }",
+          "line": 150,
+          "column": 17,
+          "endLine": 150,
+          "endColumn": 46
+        },
+        {
+          "ruleId": "react-hooks/refs",
+          "severity": 1,
+          "message": "Error: Cannot access refs during render\n\nReact refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).\n\n/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client/src/components/Journey/usePhotoZoom.ts:151:23\n  149 |     transform: `translate(${zoom.x}px, ${zoom.y}px) scale(${zoom.scale})`,\n  150 |     transition: drag.current || pinch.current ? 'none' : 'transform 160ms ease',\n> 151 |     cursor: zoomed ? (drag.current ? 'grabbing' : 'grab') : 'zoom-in',\n      |                       ^^^^^^^^^^^^ Cannot access ref value during render\n  152 |     touchAction: 'none',\n  153 |   }\n  154 |",
+          "line": 151,
+          "column": 23,
+          "endLine": 151,
+          "endColumn": 35
+        }
+      ],
+      "suppressedMessages": [],
+      "wrapped": 164,
+      "formatted": false
+    },
+    {
+      "file": "client/src/components/Journey/usePhotoZoom.test.ts",
+      "errors": 0,
+      "warnings": 0,
+      "messages": [],
+      "suppressedMessages": [],
+      "wrapped": 231,
+      "formatted": true
+    },
+    {
+      "file": "client/src/components/Journey/PhotoLightbox.zoomReset.test.tsx",
+      "errors": 0,
+      "warnings": 0,
+      "messages": [],
+      "suppressedMessages": [],
+      "wrapped": 102,
+      "formatted": true
+    },
+    {
+      "file": "client/src/components/Journey/PhotoLightbox.tsx",
+      "errors": 0,
+      "warnings": 4,
+      "messages": [
+        {
+          "ruleId": "react-hooks/refs",
+          "severity": 1,
+          "message": "Error: Cannot access refs during render\n\nReact refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).\n\n/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client/src/components/Journey/PhotoLightbox.tsx:197:18\n  195 |           <img\n  196 |             key={photo.id}\n> 197 |             ref={zoom.imgRef}\n      |                  ^^^^^^^^^^^ Cannot access ref value during render\n  198 |             src={photo.src}\n  199 |             alt={photo.caption || ''}\n  200 |             draggable={false}",
+          "line": 197,
+          "column": 18,
+          "endLine": 197,
+          "endColumn": 29
+        },
+        {
+          "ruleId": "react-hooks/refs",
+          "severity": 1,
+          "message": "Error: Cannot access refs during render\n\nReact refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).\n\n/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client/src/components/Journey/PhotoLightbox.tsx:203:17\n  201 |             onLoad={() => setLoadedId(photo.id)}\n  202 |             onError={() => setLoadedId(photo.id)}\n> 203 |             {...zoom.mouse}\n      |                 ^^^^^^^^^^ Cannot access ref value during render\n  204 |             style={{\n  205 |               maxWidth: '92vw', maxHeight: '92vh',\n  206 |               objectFit: 'contain', borderRadius: 4,",
+          "line": 203,
+          "column": 17,
+          "endLine": 203,
+          "endColumn": 27
+        },
+        {
+          "ruleId": "react-hooks/refs",
+          "severity": 1,
+          "message": "Error: Cannot access refs during render\n\nReact refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).\n\n/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client/src/components/Journey/PhotoLightbox.tsx:204:20\n  202 |             onError={() => setLoadedId(photo.id)}\n  203 |             {...zoom.mouse}\n> 204 |             style={{\n      |                    ^\n> 205 |               maxWidth: '92vw', maxHeight: '92vh',\n      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n> 206 |               objectFit: 'contain', borderRadius: 4,\n      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n> 207 |               animation: 'fadeIn 0.15s ease',\n      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n> 208 |               userSelect: 'none',\n      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n> 209 |               ...zoom.style,\n      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n> 210 |             }}\n      | ^^^^^^^^^^^^^^ Cannot access ref value during render\n  211 |           />\n  212 |         )}\n  213 |",
+          "line": 204,
+          "column": 20,
+          "endLine": 210,
+          "endColumn": 14
+        },
+        {
+          "ruleId": "react-hooks/refs",
+          "severity": 1,
+          "message": "Error: Cannot access refs during render\n\nReact refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).\n\n/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client/src/components/Journey/PhotoLightbox.tsx:209:18\n  207 |               animation: 'fadeIn 0.15s ease',\n  208 |               userSelect: 'none',\n> 209 |               ...zoom.style,\n      |                  ^^^^^^^^^^ Cannot access ref value during render\n  210 |             }}\n  211 |           />\n  212 |         )}",
+          "line": 209,
+          "column": 18,
+          "endLine": 209,
+          "endColumn": 28
+        }
+      ],
+      "suppressedMessages": [],
+      "wrapped": 271,
+      "formatted": false
+    }
+  ]
+}

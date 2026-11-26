@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "incoming": "1cd06cc2b8ddb508e78a5379c2bd59074dec688b",
+  "exact_previously_presented_patch_applied": true,
+  "only_changed_path": "client/scripts/theme-baseline.json",
+  "before_sha256": "0494842d3a0f7c78ade3571ba97733c2c849e35662fd905eb08f6635fe96363f",
+  "after_sha256": "f05bdf917d86a8b0725775dfcaf1f8d257f491f20be605e574c703cb2a7838ce",
+  "total_allowance_before_after": [
+    3388,
+    3388
+  ],
+  "runtime_and_test_source_byte_exact": true,
+  "user_authorization": "authorization.json"
+}

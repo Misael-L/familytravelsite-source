@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "original_sources": 14070,
+  "additional_import_type_and_JSDoc_fixture_coverage": true,
+  "hits": [
+    {
+      "from": "client/src/integrations/family/legacy/App.tsx",
+      "target": "client/src/integrations/family/legacy/pages/TripPlannerPage.tsx",
+      "kind": "conservative-text-import-including-JSDoc-and-fixtures"
+    }
+  ],
+  "no_outside_importer": true,
+  "only_removed_files_reconstructed_from_original_committed_blobs": true
+}

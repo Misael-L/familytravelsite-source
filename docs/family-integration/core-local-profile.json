@@ -1,0 +1,17 @@
+{
+  "schema": 144,
+  "source_alias": "http://127.0.0.1:55331",
+  "data_plane": "supabase",
+  "existing_marker": {
+    "VITE_FAMILY_OFFLINE_READ_QUALIFICATION": "local-v1"
+  },
+  "advanced_markers": "all explicitly empty in build_browser.mjs",
+  "source_policy_changed": false,
+  "marker_grants_permission": false,
+  "real_bootstrap_membership_session_and_direct_permissions_required": true,
+  "hosted_or_default_activation": false,
+  "fixture_build_deployable": false,
+  "browser_scope": "one ordinary built App, actual local GoTrue/TOTP/PostgREST/RLS; proxy to newly owned socket fixture only",
+  "Storage_bytes": "local 192px thumb and1080px hero test bytes; not hosted Storage/disaster recovery",
+  "offline_queue_update_full_acceptance": "outstanding; ordinary reload only verified here"
+}

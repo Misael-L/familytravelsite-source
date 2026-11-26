@@ -1,0 +1,26 @@
+{
+  "passed": true,
+  "source": {
+    "root": "/private/tmp/trek-core-retained-stylesheets-20261118/final-archive/extract",
+    "private_commit": "1cd06cc2b8ddb508e78a5379c2bd59074dec688b",
+    "tracked_files": 18547,
+    "retained_Git_files": 18546,
+    "all_files": 18547,
+    "all_retained_bytes_and_modes_independently_match_Git": true,
+    "manifest_bound_to_same_source": true,
+    "original_declared_omission_preserved": true
+  },
+  "targets": [
+    {
+      "root": "/private/tmp/trek-core-theme-ownership-20261118/final-archive/extract",
+      "private_commit": "d7bd79fa7c7e7d76a3e4d4ba887d7af3200c76f5",
+      "tracked_files": 18588,
+      "retained_Git_files": 18587,
+      "all_files": 18588,
+      "all_retained_bytes_and_modes_independently_match_Git": true,
+      "manifest_bound_to_same_source": true,
+      "original_declared_omission_preserved": true
+    }
+  ],
+  "no_snapshot_changed_during_qualification": true
+}

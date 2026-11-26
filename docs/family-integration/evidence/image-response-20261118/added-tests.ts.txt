@@ -1,0 +1,45 @@
+  it('uses the checked response stream without reading a nullable body twice', async () => {
+    const f = setup();
+    const stream = new ReadableStream<Uint8Array>({
+      start(controller) {
+        controller.enqueue(bytes);
+        controller.close();
+      },
+    });
+    const r = response(stream);
+    let reads = 0;
+    const readBody = vi.fn((): ReadableStream<Uint8Array> | null => (++reads === 1 ? stream : null));
+    Object.defineProperty(r, 'body', { get: readBody });
+    const getReader = vi.spyOn(stream, 'getReader');
+    f.network.mockResolvedValueOnce(r);
+
+    const saved = await f.api.capture(desc(), context);
+    expect(saved.status).toBe('ready');
+    expect(readBody).toHaveBeenCalledTimes(1);
+    expect(getReader).toHaveBeenCalledTimes(1);
+    expect(stream.locked).toBe(false);
+    expect(f.rows.size).toBe(1);
+  });
+  it.each(['non-numeric-length', 'oversized-length', 'non-webp'])(
+    'rejects %s before acquiring a response reader',
+    async (mode) => {
+      const f = setup();
+      const headers = new Headers({ 'content-type': 'image/webp' });
+      if (mode === 'non-webp') headers.set('content-type', 'text/html');
+      else
+        headers.set(
+          'content-length',
+          mode === 'non-numeric-length' ? 'invalid' : String(PUBLIC_VARIANT_LIMITS.imageBytes + 1)
+        );
+      const r = response(bytes, headers);
+      const stream = r.body;
+      if (!stream) throw new Error('Expected the response stream fixture');
+      const getReader = vi.spyOn(stream, 'getReader');
+      f.network.mockResolvedValueOnce(r);
+
+      await expect(f.api.capture(desc(), context)).rejects.toMatchObject({ code: 'response' });
+      expect(getReader).not.toHaveBeenCalled();
+      expect(stream.locked).toBe(false);
+      expect(f.rows.size).toBe(0);
+    }
+  );

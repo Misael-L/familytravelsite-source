@@ -1,0 +1,25 @@
+{
+  "incoming": "d71847259b5a2207ff9d0f5fbdb7206e2c60de25",
+  "implementation": "28db027a7ae2984707faa3938c5602009030c620",
+  "build_source": "5c0780fa6e0356919e7c972c781e1007a4471a6d",
+  "original_hook_sha256": "ba6fb7918cb1200d714d9d2cc7971e1b004e66e373b0c1730082e431e76ad137",
+  "candidate_hook_sha256": "fdf3a6afb5ad5133778683433333b3cd76bb2f49e9bd8c877a3dc4ba2e64127a",
+  "new_lifecycle_test_sha256": "b66f3cdc379a57cfe207e3e70c7e3ac138c561b07a7ed1c08e4b38bf718936e2",
+  "unchanged_existing_test_files": {
+    "src/hooks/useGeolocation.test.ts": "db01db1201020361ff18af600d07597937e6f9df8d9818468f855fc8c54d545e",
+    "src/native/geolocation.test.ts": "15b8d43b055ebbd9c0071319c59aaf85b8dd0aa44481ccb2f8491b8b43d0e01a",
+    "src/native/nativeApp.test.ts": "79fc001f32191361c4460dbd504c8737677f2b289d925fc905e019ea2bef41df",
+    "src/components/Map/LocationButton.test.tsx": "52fcd1a0c49f4abf9d5e181b8a9c04ef327095478a988f1681106858f05e14a7",
+    "src/components/Map/MapView.test.tsx": "564229384a49527c9ba2727cd31be1b82b49c08699f4916b9cad6f27844425f4",
+    "src/components/Map/MapView.leaflet.test.tsx": "e50e1de560ba2e1baf6894c165e107f5ded5cded74611778503495d0283c1714",
+    "src/components/Map/MapViewGL.test.tsx": "cc12e81ca9c2701541547b1c671797e1c6de8c00c6c9d3fdd226c8d589ee97ef",
+    "src/components/Map/MapViewGL.plannerWaypoints.test.tsx": "df2e486591abf869517dd36a90453ba14b4cf2e2f81168980e43c2bb162b77a4",
+    "src/components/Map/locationMarkerMapbox.test.ts": "5790020fb74bc51131ee8c958570651773c8cff161938caa7db88f5dcaa8f814",
+    "src/components/Journey/journeyGeo.test.ts": "9276f96502d5a26eb51f6e40b458b2abd92a5a3106193af09a9ed1bb4089d2cc",
+    "src/components/Journey/useJourneyEntryForm.test.ts": "a34072430ce51992b09b6dab4b1f5264dd44db1a423fc89078cb9df3b4500a89",
+    "src/components/Collections/CollectionMap.test.tsx": "a16e291fe79bea4cabb99d7d6975511ba4510e6a2948166b294fb03d72d10d0d"
+  },
+  "node_runtime": "v24.22.2",
+  "raw_coverage_and_build_artifacts_stage": "/private/tmp/trek-core-geolocation-retirement-source-20261117",
+  "live_device_requests": false
+}

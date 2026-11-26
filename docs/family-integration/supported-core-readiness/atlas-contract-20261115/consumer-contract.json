@@ -1,0 +1,63 @@
+{
+  "baseline": "8d6fd108fa628ebb0ff6992defee56afaea0e460",
+  "implementation_complete": false,
+  "reason": "Existing native desktop/phone readers cannot distinguish unavailable/error facts from empty/zero data without a small rendering contract change. Original nonvisual packet stop condition reached.",
+  "source_sha256": {
+    "client/src/integrations/family/applicationHandler.ts": "481b35300d87c3b36b788d306887c18011846359170a0b2916ed8dff9cfbc9a8",
+    "client/src/integrations/family/legacy/data/supabase/travelStats.ts": "bd75783220b0b712aea52e4360c5bc6db69b3056e9e5cf69b31a8a2f585a3eb6",
+    "client/src/pages/atlas/useAtlas.ts": "caeadb165451c494594d9e3ec0aa196541c4b0360601bd61d78aa5b54d4b129f",
+    "client/src/pages/atlas/atlasModel.ts": "4deea73fac1665f93b28fd948f2f2bf95f3b5bddfe6b877d5d056d573d95caa7",
+    "client/src/pages/AtlasPage.tsx": "3adc1a461377cf8fd36a5deb09fac233115bc918c60ccca61979c29c8af84121",
+    "client/src/mobile/screens/atlas/MAtlas.tsx": "b3e7c5232b6c0977b836ef3798a87257dca8fd9e206fd9a4610ec29f4b7fcb18",
+    "client/src/mobile/screens/atlas/MAtlasStatsCard.tsx": "6b6a02c44261eea20d773577c909be340daa4637c57f02d4e783c473b7438281",
+    "client/src/mobile/screens/atlas/MAtlasBucketSheet.tsx": "a6f5ed7a57fbdc0f1dc515cdb82f37d63e820d1239829e9b8438cf415eac7226",
+    "client/src/mobile/screens/atlas/atlasController.ts": "efe02b17b3bf2075a0b6b2ad1f0433ace83b447ec8a1f5ae98064f1531114b60",
+    "client/src/pages/atlas/useAtlas.test.tsx": "69a66a94ba955d760811716f4d339b917b9531cdb01774d7518223bac625b7e8"
+  },
+  "witnesses": [
+    {
+      "file": "client/src/integrations/family/applicationHandler.ts",
+      "line": 572,
+      "finding": "Real Family aggregate totals and visited marks are returned, with compatibility country counts0; bucket/regions/layers independently promise empty success."
+    },
+    {
+      "file": "client/src/pages/atlas/useAtlas.ts",
+      "line": 200,
+      "finding": "One Promise.all discards both stats/bucket results if either rejects; no section availability/error is returned."
+    },
+    {
+      "file": "client/src/pages/atlas/useAtlas.ts",
+      "line": 1167,
+      "finding": "No stats data becomes zero totals; regions default to empty object and thus0."
+    },
+    {
+      "file": "client/src/pages/AtlasPage.tsx",
+      "line": 166,
+      "finding": "Native desktop unconditionally renders region and city numeric cells, coercing missing city count with||0."
+    },
+    {
+      "file": "client/src/pages/AtlasPage.tsx",
+      "line": 584,
+      "finding": "Native desktop empty-bucket copy has no unavailable branch."
+    },
+    {
+      "file": "client/src/mobile/screens/atlas/MAtlasStatsCard.tsx",
+      "line": 19,
+      "finding": "Native phone stats card unconditionally renders missing cities as0; no availability prop."
+    },
+    {
+      "file": "client/src/mobile/screens/atlas/MAtlasBucketSheet.tsx",
+      "line": 103,
+      "finding": "Native phone bucket sheet likewise cannot distinguish unavailable from a genuinely empty list."
+    }
+  ],
+  "current_diagnostics_passed": 8,
+  "desired_contract_expected_failures": 3,
+  "new_full_build_browser_SQL_run": false,
+  "native_test_graphics_mocked": true,
+  "backend_transport": "Real reader/handler/Axios adapter with synthetic Supabase select response stub, not a hosted/local DB authorization proof",
+  "decision": "Keep runtime unchanged; next packet includes narrowly scoped availability rendering while preserving native structure/classes/styles, then complete handler/hook/consumer cutover together",
+  "no_new_database_table_required_by_this_gap": true,
+  "source_or_feature_gates_widened": false,
+  "hosted_SQL_settings_billing_deployment_push_main_changes": false
+}

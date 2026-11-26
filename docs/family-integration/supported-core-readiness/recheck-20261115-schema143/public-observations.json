@@ -1,0 +1,39 @@
+{
+  "retrieved_at": "2026-11-15T10:04:27.767600+00:00",
+  "anonymous_GET_only": true,
+  "login_or_business_mutation": false,
+  "observations": [
+    {
+      "target": "preview",
+      "path": "/dashboard",
+      "status": 200,
+      "content_type": "text/html",
+      "cache_control": "public, max-age=0, must-revalidate",
+      "valid_descriptor": false
+    },
+    {
+      "target": "preview",
+      "path": "/family-build.json",
+      "status": 200,
+      "content_type": "text/html",
+      "cache_control": "public, max-age=0, must-revalidate",
+      "valid_descriptor": false
+    },
+    {
+      "target": "production",
+      "path": "/dashboard",
+      "status": 200,
+      "content_type": "text/html",
+      "cache_control": "public, max-age=0, must-revalidate",
+      "valid_descriptor": false
+    },
+    {
+      "target": "production",
+      "path": "/family-build.json",
+      "status": 200,
+      "content_type": "text/html",
+      "cache_control": "public, max-age=0, must-revalidate",
+      "valid_descriptor": false
+    }
+  ]
+}

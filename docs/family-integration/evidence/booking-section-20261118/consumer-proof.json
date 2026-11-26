@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "same_expanded_cases_before_after": 968,
+  "existing_cases": 962,
+  "new_parent_level_preference_cases": 6,
+  "same_raw_names_files_ancestors_status_multiplicity": true,
+  "expanded_cases_sha256": "a8d8beeea441777e5d147020284a1f1873cc220507f9419d00d9129914656959",
+  "original_existing_source_files_exact": 18282,
+  "candidate_other_existing_source_files_exact": 18281,
+  "same_final_new_test_source_bytes_before_after": true,
+  "existing_tests_fixtures_mocks_config_timeouts_skips_coverage_unchanged": true,
+  "no_new_live_database_browser_or_feature_admission": true
+}

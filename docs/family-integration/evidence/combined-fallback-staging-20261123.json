@@ -1,0 +1,44 @@
+{
+  "date": "2026-11-23",
+  "fallback_source": "b390c07bad08d6710145e28a9ab70c15eb047352",
+  "release": "family-2026.11.23.8-rc.1",
+  "fallback_asset_tree_sha256": "dd6bc0210ebd709c9df81026c6a176a5fac98fbe2415aa4c916ad7dca9f9068a",
+  "cloudflare": {
+    "familytravelsite": {
+      "worker": "familytravelsite",
+      "staged_version": "65d2df60-8520-498c-9fac-d13d8a44fe5e",
+      "profile": "primary-core-fallback-v1",
+      "release": "family-2026.11.23.8-rc.1",
+      "source": "b390c07bad08d6710145e28a9ab70c15eb047352",
+      "live_version": "7196c6c6-a836-4197-bb91-9f22f5e8ecd8",
+      "version_url": "https://65d2df60-familytravelsite.lmisael0721.workers.dev",
+      "verified_release_assets": true,
+      "inactive": true
+    },
+    "familytravelsite-integration-preview": {
+      "worker": "familytravelsite-integration-preview",
+      "staged_version": "93268165-5679-47b4-b990-f7fc65d3e6ae",
+      "profile": "primary-core-fallback-v1",
+      "release": "family-2026.11.23.8-rc.1",
+      "source": "b390c07bad08d6710145e28a9ab70c15eb047352",
+      "live_version": "14147a66-db08-49e0-96ee-0a7f458a8291",
+      "version_url": "https://93268165-familytravelsite-integration-preview.lmisael0721.workers.dev",
+      "verified_release_assets": true,
+      "inactive": true
+    }
+  },
+  "available_recovery_page_verified_via_version_urls": true,
+  "approved_hostnames_needed_for_device_recovery": true,
+  "supabase_ledger_after_staging": {
+    "versions": 181,
+    "latest": "20261122222205",
+    "new_trip_applied": false,
+    "version_sha256": "1bde929f93bd3aab5b2d9f5354185a4d435be8ee2d0cb7b78b5c262b2d9599e2"
+  },
+  "local_source_archive": {
+    "expected_tag": "source-20261123-b390c07",
+    "retained_and_scanned_files": 18694,
+    "archive_scans": "passed",
+    "published": false
+  }
+}

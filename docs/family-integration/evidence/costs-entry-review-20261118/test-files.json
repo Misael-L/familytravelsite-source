@@ -1,0 +1,230 @@
+[
+  {
+    "file": "src/components/Budget/BudgetPanel.helpers.test.ts",
+    "passed": 6,
+    "failed": 0,
+    "other": 0
+  },
+  {
+    "file": "src/components/Budget/BudgetPanelMemberChips.test.tsx",
+    "passed": 16,
+    "failed": 0,
+    "other": 0
+  },
+  {
+    "file": "src/components/Budget/CostsPanel.delete.test.tsx",
+    "passed": 2,
+    "failed": 0,
+    "other": 0
+  },
+  {
+    "file": "src/components/Budget/CostsPanel.filtering.test.tsx",
+    "passed": 7,
+    "failed": 0,
+    "other": 0
+  },
+  {
+    "file": "src/components/Budget/CostsPanel.formerParticipants.test.tsx",
+    "passed": 1,
+    "failed": 0,
+    "other": 0
+  },
+  {
+    "file": "src/components/Budget/CostsPanel.helpers.test.ts",
+    "passed": 66,
+    "failed": 0,
+    "other": 0
+  },
+  {
+    "file": "src/components/Budget/CostsPanel.ledger.test.tsx",
+    "passed": 32,
+    "failed": 0,
+    "other": 0
+  },
+  {
+    "file": "src/components/Budget/CostsPanel.overview.test.tsx",
+    "passed": 39,
+    "failed": 0,
+    "other": 0
+  },
+  {
+    "file": "src/components/Budget/CostsPanel.summary.test.tsx",
+    "passed": 7,
+    "failed": 0,
+    "other": 0
+  },
+  {
+    "file": "src/components/Budget/CostsPanel.table.test.tsx",
+    "passed": 4,
+    "failed": 0,
+    "other": 0
+  },
+  {
+    "file": "src/components/Budget/CostsPanel.test.tsx",
+    "passed": 45,
+    "failed": 0,
+    "other": 0
+  },
+  {
+    "file": "src/components/Budget/CostsSummaryCard.test.tsx",
+    "passed": 3,
+    "failed": 0,
+    "other": 0
+  },
+  {
+    "file": "src/components/Budget/CostsTable.test.tsx",
+    "passed": 16,
+    "failed": 0,
+    "other": 0
+  },
+  {
+    "file": "src/components/Budget/CostsToolbar.test.tsx",
+    "passed": 13,
+    "failed": 0,
+    "other": 0
+  },
+  {
+    "file": "src/components/Budget/ExpenseModal.receipts.test.tsx",
+    "passed": 4,
+    "failed": 0,
+    "other": 0
+  },
+  {
+    "file": "src/components/Budget/FlowPills.test.tsx",
+    "passed": 1,
+    "failed": 0,
+    "other": 0
+  },
+  {
+    "file": "src/components/Budget/ReceiptPreviewModal.test.tsx",
+    "passed": 8,
+    "failed": 0,
+    "other": 0
+  },
+  {
+    "file": "src/components/Budget/ReceiptScanModal.test.tsx",
+    "passed": 11,
+    "failed": 0,
+    "other": 0
+  },
+  {
+    "file": "src/components/Budget/costsCategories.test.ts",
+    "passed": 6,
+    "failed": 0,
+    "other": 0
+  },
+  {
+    "file": "src/components/Budget/costsModel.test.ts",
+    "passed": 10,
+    "failed": 0,
+    "other": 0
+  },
+  {
+    "file": "src/components/Budget/expenseFx.test.ts",
+    "passed": 10,
+    "failed": 0,
+    "other": 0
+  },
+  {
+    "file": "src/components/Budget/receiptUploads.test.ts",
+    "passed": 8,
+    "failed": 0,
+    "other": 0
+  },
+  {
+    "file": "src/components/Budget/useCostsLedger.test.ts",
+    "passed": 14,
+    "failed": 0,
+    "other": 0
+  },
+  {
+    "file": "src/components/Budget/useExpenseDeleteConfirm.test.tsx",
+    "passed": 3,
+    "failed": 0,
+    "other": 0
+  },
+  {
+    "file": "src/components/Budget/useExpenseForm.test.ts",
+    "passed": 24,
+    "failed": 0,
+    "other": 0
+  },
+  {
+    "file": "src/components/Budget/useExpenseLinks.test.tsx",
+    "passed": 6,
+    "failed": 0,
+    "other": 0
+  },
+  {
+    "file": "src/components/Budget/useFreezeMissingRates.test.ts",
+    "passed": 6,
+    "failed": 0,
+    "other": 0
+  },
+  {
+    "file": "src/components/Budget/usePercentSplit.test.ts",
+    "passed": 6,
+    "failed": 0,
+    "other": 0
+  },
+  {
+    "file": "src/components/Budget/useSettlementForm.test.ts",
+    "passed": 11,
+    "failed": 0,
+    "other": 0
+  },
+  {
+    "file": "src/integrations/family/FamilyPlannerBoundary.test.tsx",
+    "passed": 32,
+    "failed": 0,
+    "other": 0
+  },
+  {
+    "file": "src/integrations/family/completeTripRead.test.ts",
+    "passed": 35,
+    "failed": 0,
+    "other": 0
+  },
+  {
+    "file": "src/integrations/family/directWriteSession.test.ts",
+    "passed": 18,
+    "failed": 0,
+    "other": 0
+  },
+  {
+    "file": "src/integrations/family/expenseDraft.test.ts",
+    "passed": 4,
+    "failed": 0,
+    "other": 0
+  },
+  {
+    "file": "src/integrations/family/plannerApplicationReads.test.ts",
+    "passed": 37,
+    "failed": 0,
+    "other": 0
+  },
+  {
+    "file": "src/integrations/family/tripExpenses.payers.test.ts",
+    "passed": 3,
+    "failed": 0,
+    "other": 0
+  },
+  {
+    "file": "tests/unit/mobile/trip/MCostSheet.test.tsx",
+    "passed": 43,
+    "failed": 0,
+    "other": 0
+  },
+  {
+    "file": "tests/unit/mobile/trip/MCostsTab.test.tsx",
+    "passed": 58,
+    "failed": 0,
+    "other": 0
+  },
+  {
+    "file": "tests/unit/mobile/trip/costsModel.test.ts",
+    "passed": 45,
+    "failed": 0,
+    "other": 0
+  }
+]

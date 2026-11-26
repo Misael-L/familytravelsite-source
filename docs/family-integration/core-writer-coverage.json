@@ -1,0 +1,401 @@
+{
+  "format": "family.supported-core-writer-coverage.v1",
+  "review": "Q26d",
+  "reviewed_HEAD": "3de9577e5edaf73b550a5f6d4d7fa739317e97d7",
+  "qualified_application_source": "fcf946324730f3797ead57838bc7ad8ea632391c",
+  "compiled_candidate_source": "35cb9d9ded343308b85fb47c6aebd143dc0349f6",
+  "schema": 151,
+  "fresh_checks": {
+    "regressions": 416,
+    "test_files": 15,
+    "failed": 0,
+    "pending": 0,
+    "source_guards": 4,
+    "new_browser_scenarios": 6,
+    "new_build": false,
+    "new_fixture": true
+  },
+  "proof_records": {
+    "creation": {
+      "handoff": "core-planner-creation-handoff.md",
+      "handoff_sha256": "a313e14503372b536d6c9e8fd75d03983bf5f0bad5664aa8333f82c71631d45e",
+      "evidence": "/Users/Misael/Desktop/FamilyTravelApp/docs/backend-modernization/evidence/u04f9-core-planner-creation-2026-11-16",
+      "seal_sha256": "ca327baeacd664847c6151471a1d6c1cfea23c726820fd2ddf5868e84a520964",
+      "accepted_build_or_runtime_commit": "b320e88094ecef942cd736dfa6aaa0b4368f62a4",
+      "schema_at_acceptance": 147,
+      "profile_at_acceptance": "selected isolated planner/base-packing HTTPS profile",
+      "ancestor_of_current_HEAD": true,
+      "fresh_browser_run_this_review": false,
+      "browser_summary_sha256": "59cf0bc9fd44bc0f3fcfc1e9c0e86b4b2d95bbbc9913d926c705b1fa32b9e176"
+    },
+    "assignment": {
+      "handoff": "core-planner-assignment-handoff.md",
+      "handoff_sha256": "c95d9f016f4e7dd1c87421ebd2cccd39b9063cc96fd87a84cb06b002995e795e",
+      "evidence": "/Users/Misael/Desktop/FamilyTravelApp/docs/backend-modernization/evidence/u04g0-native-assignment-2026-11-16",
+      "seal_sha256": "fdc48d19a639d270e5887bb43dbd8a2d3c377d7062ffa7434195fff63220412f",
+      "accepted_build_or_runtime_commit": "b320e88094ecef942cd736dfa6aaa0b4368f62a4",
+      "schema_at_acceptance": 148,
+      "profile_at_acceptance": "selected isolated planner/base-packing HTTPS profile",
+      "ancestor_of_current_HEAD": true,
+      "fresh_browser_run_this_review": false,
+      "browser_summary_sha256": "3a6b9ecbb9b2813bd07a394310643a5921e5844d1640d86f9b48172728a7fea2"
+    },
+    "cancellation": {
+      "handoff": "core-native-creation-cancellation-handoff.md",
+      "handoff_sha256": "c9be61fcfef4f141cf760b33221514cdfd085d9c212ccec5cd3842f4b189deab",
+      "evidence": "/Users/Misael/Desktop/FamilyTravelApp/docs/backend-modernization/evidence/u04g3-native-creation-cancellation-2026-11-16",
+      "seal_sha256": "d0a5b02b3edb3ae152682a3b9393d94f7347c1628f98aa1c3beb4430f29d0e11",
+      "accepted_build_or_runtime_commit": "2a88ea2b9a0b271b297b482e042ace2f9719a8df",
+      "schema_at_acceptance": 149,
+      "profile_at_acceptance": "selected isolated planner/base-packing HTTPS profile",
+      "ancestor_of_current_HEAD": true,
+      "fresh_browser_run_this_review": false,
+      "browser_summary_sha256": "f72777e22490a25e6b5df9d0aa57dd066b69164bd6bcf4f74dcb7fc66b044669"
+    },
+    "editor": {
+      "handoff": "core-native-editor-recovery-handoff.md",
+      "handoff_sha256": "ba1ade3674972ec250b64c3423070f0d2feb3e41f9b59e98604d8f1880c26d53",
+      "evidence": "/Users/Misael/Desktop/FamilyTravelApp/docs/backend-modernization/evidence/u04g5-native-editor-recovery-2026-11-16",
+      "seal_sha256": "75f5fe976a63e83232aa3650644b6e5de56d0c7b8269542b79ab99f9832cc544",
+      "accepted_build_or_runtime_commit": "d57887c2b944a28540faf057ae64f0773b79f280",
+      "schema_at_acceptance": 150,
+      "profile_at_acceptance": "selected isolated planner/base-packing HTTPS profile",
+      "ancestor_of_current_HEAD": true,
+      "fresh_browser_run_this_review": false,
+      "browser_summary_sha256": "e157f6d4c60d9b7a2b3f73f51c6aec5a89b4094617ae30b5d6a8dc5118551b84"
+    },
+    "arrangement": {
+      "handoff": "core-native-arrangement-browser-handoff.md",
+      "handoff_sha256": "c2bf7dc28aba34852e4f139dbba6da593c4633b4b78d86df173fbb03792a43b2",
+      "evidence": "/Users/Misael/Desktop/FamilyTravelApp/docs/backend-modernization/evidence/u04g9-native-arrangement-browser-2026-11-16",
+      "seal_sha256": "db5122c97003f80fe0daca106bc5786e575a4ba2722412fdf967c0b455877f5a",
+      "accepted_build_or_runtime_commit": "296286febe58b4868a54d87e3eff999ad3e2e26a",
+      "schema_at_acceptance": 151,
+      "profile_at_acceptance": "selected isolated planner/base-packing HTTPS profile",
+      "ancestor_of_current_HEAD": true,
+      "fresh_browser_run_this_review": false,
+      "browser_summary_sha256": "dbfedc8ce3858dcdab29b8248ddb8d42e77742a871e6950da512238fe01d9d88"
+    },
+    "composition": {
+      "handoff": "core-composed-writer-handoff.md",
+      "handoff_sha256": "c767689cc5bae7ec6b839077a4559230938ca16a90ad7bb7cd5aecf1665a6308",
+      "evidence": "/Users/Misael/Desktop/FamilyTravelApp/docs/backend-modernization/evidence/u04h0-native-composed-writer-2026-11-16",
+      "seal_sha256": "7fcd9ea4f0eb456ae94e6d2dc98c30ab743cb6d34b3a376502a42963e4dcb1e2",
+      "accepted_build_or_runtime_commit": "35cb9d9ded343308b85fb47c6aebd143dc0349f6",
+      "schema_at_acceptance": 151,
+      "profile_at_acceptance": "selected isolated planner/base-packing HTTPS profile",
+      "ancestor_of_current_HEAD": true,
+      "fresh_browser_run_this_review": false,
+      "browser_summary_sha256": "0763772adae81b66356b1af2fc2141f8a6db771c3483d7515d1674e367bb16c5"
+    },
+    "older_packing": {
+      "handoff": "core-packing-composed-handoff.md",
+      "handoff_sha256": "378c0d9a626fabc2673635ce331de76dd898f8e860d28775672872e0afeb0069",
+      "evidence": "/Users/Misael/Desktop/FamilyTravelApp/docs/backend-modernization/evidence/u04f6-core-packing-composed-2026-11-15",
+      "seal_sha256": "1d4c31c67ed83ae5dad232eb39e9090b02d37564d61675f74feef3c8405c4de0",
+      "accepted_build_or_runtime_commit": "8c9d27813688cc3ce3ba6b902085a084734d86ee",
+      "schema_at_acceptance": 144,
+      "profile_at_acceptance": "earlier marked loopback core alias/local-v1; not current HTTPS acceptance",
+      "ancestor_of_current_HEAD": true,
+      "fresh_browser_run_this_review": false
+    },
+    "tasks": {
+      "handoff": "core-https-writer-acceptance-handoff.md",
+      "handoff_sha256": "9cbe936ec012e006b76bec343212ce179ecd7dbe2e8fabf44efdcf21f8310776",
+      "evidence": "/Users/Misael/Desktop/FamilyTravelApp/docs/backend-modernization/evidence/u04f6-https-task-writer-acceptance-2026-11-16",
+      "seal_sha256": "d2573803d60a3dc58f478e7b439650ce716bb4185790fe9a863cb894132e2cef",
+      "accepted_build_or_runtime_commit": "105860be6f7be44fa955bb6ae3eaa7c1e45478a0",
+      "schema_at_acceptance": 145,
+      "profile_at_acceptance": "separate isolated-task-v1; not combined with planner profile",
+      "ancestor_of_current_HEAD": true,
+      "fresh_browser_run_this_review": false
+    },
+    "packing_edges": {
+      "handoff": "core-packing-https-edges-handoff.md",
+      "handoff_sha256": "5589593c432375d2925bbf6ddee2526ff5e9820d1865afaeb0b43b1aba1e3e33",
+      "evidence": "/Users/Misael/Desktop/FamilyTravelApp/docs/backend-modernization/evidence/u04h2-packing-https-edges-2026-11-16",
+      "current_packet": true,
+      "seal_manifest_recorded_in_canonical_handoff": true,
+      "browser_summary_sha256": "670d4acf3ae2c76373a8581ecaa4e9c43359e3afa701588c3313886659e4827c",
+      "accepted_build_or_runtime_commit": "35cb9d9ded343308b85fb47c6aebd143dc0349f6",
+      "schema_at_acceptance": 151,
+      "profile_at_acceptance": "selected isolated planner/base-packing HTTPS profile",
+      "fresh_browser_run_this_packet": true
+    }
+  },
+  "requirements": [
+    {
+      "id": "R01",
+      "requirement": "Finite HTTPS source/profile, bootstrap and immutable current owner",
+      "status": "covered-contract-scope",
+      "proof_keys": [
+        "composition"
+      ],
+      "current_test_files": [
+        "coreHttpsPlannerPackingOwnership.test.ts",
+        "nativeSourceOwnership.test.ts",
+        "coreHttpsPlannerPackingBoundary.test.ts"
+      ],
+      "interpretation": "Current 446-test run verifies selected owner and wrong/unselected/advanced-profile refusal. No ordinary/primary HTTPS activation."
+    },
+    {
+      "id": "R02",
+      "requirement": "Native creation and Add-to-day durability; deliberate repeated visits",
+      "status": "covered-local-browser",
+      "proof_keys": [
+        "creation",
+        "assignment",
+        "cancellation",
+        "composition"
+      ],
+      "current_test_files": [
+        "plannerCreationDurability.test.tsx"
+      ],
+      "interpretation": "Actual native producer retention precedes RPC; cancellation and corrected distinct intent have their own accepted receipts."
+    },
+    {
+      "id": "R03",
+      "requirement": "Untimed versus genuine midnight; separate catalog/location/visit identity and notes",
+      "status": "covered-local-browser",
+      "proof_keys": [
+        "assignment",
+        "editor",
+        "arrangement",
+        "composition"
+      ],
+      "current_test_files": [],
+      "interpretation": "Repeated visits remain separate; midnight remains timed and carries its named zone. No schema expansion is inferred."
+    },
+    {
+      "id": "R04",
+      "requirement": "Native saved-location and selected-visit editor outcomes",
+      "status": "covered-local-browser",
+      "proof_keys": [
+        "editor",
+        "composition"
+      ],
+      "current_test_files": [
+        "editorDurability.test.tsx"
+      ],
+      "interpretation": "Unknown/committed Check, exact retry, later-edit historical proof, current authority and original forms are independently covered."
+    },
+    {
+      "id": "R05",
+      "requirement": "Available native Move/reorder/Clear/Trash/Undo",
+      "status": "covered-available-native-subset",
+      "proof_keys": [
+        "arrangement"
+      ],
+      "current_test_files": [
+        "arrangementDurability.test.tsx",
+        "plannerCohort.arrangement.test.tsx",
+        "plannerUndoBinding.test.tsx"
+      ],
+      "interpretation": "Desktop Move/Clear and desktop/phone Trash/reorder/Undo are proved; unavailable phone controls and My Draft are excluded explicitly."
+    },
+    {
+      "id": "R06",
+      "requirement": "Packing create/name/quantity/weight/partial/full/group/order/privacy/reload",
+      "status": "covered-available-native-subset",
+      "proof_keys": [
+        "composition"
+      ],
+      "current_test_files": [
+        "plannerCohortPacking.test.ts"
+      ],
+      "interpretation": "Latest HTTPS evidence covers the available controls, both repaired revision races and hidden Personal-row privacy. Phone has no native reorder entry."
+    },
+    {
+      "id": "R07",
+      "requirement": "Packing single-item Trash and original-page Restore on current HTTPS profile",
+      "status": "covered-available-native-subset",
+      "proof_keys": [
+        "older_packing",
+        "packing_edges"
+      ],
+      "current_test_files": [
+        "plannerCohortPacking.test.ts"
+      ],
+      "interpretation": "Native desktop/phone item Trash and owned original-page Restore retain the same UUID, lifecycle/content and one exact receipt per original."
+    },
+    {
+      "id": "R08",
+      "requirement": "Unknown/committed outcomes, before-execution loss, lost committed replies and same-original retry",
+      "status": "covered-local-browser",
+      "proof_keys": [
+        "creation",
+        "cancellation",
+        "editor",
+        "arrangement",
+        "composition"
+      ],
+      "current_test_files": [
+        "plannerPackingRecovery.test.tsx"
+      ],
+      "interpretation": "Check is read only; committed results have one domain digest-bound receipt. API attempts are not logical operation counts."
+    },
+    {
+      "id": "R09",
+      "requirement": "Current direct permission denial/restoration and logout/new AAL2 sign-in",
+      "status": "covered-local-browser",
+      "proof_keys": [
+        "assignment",
+        "cancellation",
+        "editor",
+        "arrangement",
+        "composition"
+      ],
+      "current_test_files": [],
+      "interpretation": "Real session-expiry HTTP controls also cover reads/writes/receipts/direct RLS. Same-user reauthentication is not a different-account browser test."
+    },
+    {
+      "id": "R10",
+      "requirement": "Source/account/Family/person/Trip/layer retirement",
+      "status": "covered-contract-with-native-limits",
+      "proof_keys": [
+        "cancellation",
+        "editor",
+        "arrangement",
+        "composition"
+      ],
+      "current_test_files": [
+        "nativeSourceOwnership.test.ts",
+        "plannerPackingRecovery.test.tsx",
+        "plannerCohortPacking.test.ts"
+      ],
+      "interpretation": "Current owner/source/actor/layer retirement regressions pass; planner native Trip switch and logout are proved. No browser source/Family/person/layer chooser is invented. Different-account native handover is not newly claimed."
+    },
+    {
+      "id": "R11",
+      "requirement": "Packing same-original retry from two actual tabs on current HTTPS profile",
+      "status": "covered-available-native-subset",
+      "proof_keys": [
+        "composition",
+        "packing_edges"
+      ],
+      "current_test_files": [
+        "plannerPackingRecovery.test.tsx"
+      ],
+      "interpretation": "Two actual tabs perform unknown Check, then serialize native same-original Retry with shared IndexedDB and observed Web Locks; one logical result/receipt and both canonical reloads pass."
+    },
+    {
+      "id": "R12",
+      "requirement": "Packing held reply while switching native Trip context",
+      "status": "covered-available-native-subset",
+      "proof_keys": [
+        "composition",
+        "packing_edges"
+      ],
+      "current_test_files": [
+        "plannerCohortPacking.test.ts"
+      ],
+      "interpretation": "Native Back retires the held-reply Trip A callback on the dashboard while cards wait behind its lease. Subsequent explicit B-route navigation preserves the original without cross-Trip leakage; returning read-only Check settles A. Direct warm A-to-B card switching under the exclusive lease is not claimed."
+    },
+    {
+      "id": "R13",
+      "requirement": "Same-Trip planner/base-packing composition holds competing domains",
+      "status": "covered-local-browser",
+      "proof_keys": [
+        "composition"
+      ],
+      "current_test_files": [
+        "plannerReadGuard.test.ts"
+      ],
+      "interpretation": "Both unresolved-domain directions are accepted on desktop/phone with exact original recovery."
+    },
+    {
+      "id": "R14",
+      "requirement": "Exact compiled source, native presentation and closed egress boundaries",
+      "status": "covered-with-release-limits",
+      "proof_keys": [
+        "composition",
+        "tasks"
+      ],
+      "current_test_files": [
+        "coreHttpsPlannerPackingBoundary.test.ts"
+      ],
+      "interpretation": "Prior bound artifact positive/negative controls remain exact; four source guards freshly pass. Task profile remains separate. No actual Worker/TLS/Storage/provider or independent restore acceptance."
+    }
+  ],
+  "native_entries_unavailable": [
+    "My Draft selector not currently mounted",
+    "Phone planner cross-day Move/Clear not currently exposed",
+    "Phone packing reorder not currently exposed"
+  ],
+  "boundary_inventory": {
+    "source": "client/src/integrations/family/coreHttpsPlannerPackingBoundary.ts",
+    "sha256": "5ed03fdba6a564aeef761ddfa58a17fe0b2283117cfc34103b18abf728724f89",
+    "RPC_commands": [
+      "create_family_native_plan_v1",
+      "cancel_family_native_plan_v1",
+      "create_family_trip_plan_entry_v1",
+      "arrange_family_native_visits_v1",
+      "mutate_family_trip_location_v1",
+      "mutate_family_trip_visit_v1",
+      "save_family_trip_location_form_v1",
+      "save_family_trip_visit_form_v1",
+      "set_family_trip_visit_timing_v1",
+      "classify_family_trip_visit_untimed_v1",
+      "execute_family_trip_packing_v1",
+      "execute_family_trip_packing_group_v1"
+    ],
+    "RPC_reads": [
+      "get_my_auth_bootstrap",
+      "get_my_effective_features",
+      "get_my_effective_map_settings",
+      "get_my_effective_preferences",
+      "count_my_unread_notifications",
+      "catalog_media_variants_for_assets",
+      "get_family_trip_planner_view_v1",
+      "get_family_trip_planner_state_v1",
+      "get_family_trip_booking_view_v1",
+      "get_family_plan_governance_v1",
+      "get_family_native_plan_receipt_v1",
+      "get_family_native_plan_receipt_v2",
+      "get_family_native_arrangement_receipt_v1",
+      "get_family_trip_location_v1",
+      "list_family_trip_locations_v1",
+      "get_family_trip_visit_v1",
+      "list_family_trip_visits_v1",
+      "get_family_trip_location_form_v1",
+      "get_family_trip_visit_form_v1",
+      "get_family_trip_location_form_receipt_v1",
+      "get_family_trip_visit_form_receipt_v1",
+      "get_family_trip_visit_classification_v1",
+      "get_family_trip_visit_timing_revision_v1",
+      "get_family_trip_tasks_v1",
+      "get_family_trip_packing_v1",
+      "list_family_trip_packing_trash_v1",
+      "get_family_trip_packing_receipt_v1",
+      "get_family_trip_packing_group_receipt_v1",
+      "get_family_collection_library_v1",
+      "get_family_collection_page_v1"
+    ],
+    "RPC_command_count": 12,
+    "RPC_read_count": 30,
+    "admission_is_not_individual_native_acceptance": true,
+    "supporting_RPC_commands_not_independently_claimed_by_this_review": [
+      "create_family_trip_plan_entry_v1",
+      "mutate_family_trip_location_v1",
+      "mutate_family_trip_visit_v1",
+      "set_family_trip_visit_timing_v1",
+      "classify_family_trip_visit_untimed_v1"
+    ]
+  },
+  "open_current_profile_browser_requirements": [],
+  "next_packet": "core-release-prerequisites.md",
+  "next_available_browser_cases": 0,
+  "full_Q26_accepted": false,
+  "ordinary_primary_or_hosted_source_accepted": false,
+  "independent_backup_restore_accepted": false,
+  "global_quality_accepted": false,
+  "source_or_API_profile_expansion": false,
+  "hosted_changed": false,
+  "checkpoint": "Q26e",
+  "available_native_planner_base_packing_subset_accepted_locally": true,
+  "next_release_gate": "G2",
+  "next_action": "Refresh actual warning/size gates and ordinary-entry evidence; select one demonstrated active concern without allowance expansion or dormant-source deletion.",
+  "application_or_schema_changed": false,
+  "new_synthetic_fixture_rows": true,
+  "hosted_database_changed": false
+}

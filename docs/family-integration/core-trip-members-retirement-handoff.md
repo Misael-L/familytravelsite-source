@@ -1,0 +1,28 @@
+# Q112 — Copied trip-members modal retired
+
+Completed 18 November 2026 on the private integration branch. Incoming `e93b86567f6a46ca7f5a84a476fcb2ca5389c82c`; implementation `c2ee495ea92b6a269da5fc689ef1893009d537e6`; source-bound fixture build `1a0079d64634a5e46bb52982215a6fcc0dbbe428`. [Export/type/source audit, unchanged consumer checks, output comparison and replay](evidence/trip-members-retirement-20261118/README.md).
+
+Only copied Trips/TripMembersModal is removed. Its default export has no outside runtime/type/test/tool consumer or augmentation. Native TripMembersModal/TripShareDialog, planner member wiring, phone sheets, Family share/invite/clipboard/session/permissions and copied API/store/type/shared dependencies remain intact.
+
+500 identical cases pass before/after. Build/compiler, four source guards and three artifact-source controls pass. All 3,792 outputs other than sourceCommit configuration match byte-for-byte. Actual format/warning gates pass unchanged. Size13→12 removes only the old modal finding; every other failure line remains exact. G2 and independent release gates remain open.
+
+## Exact next packet — Q113 bounded copied reservation UI review
+
+Review each candidate before selecting any deletion:
+
+- client/src/integrations/family/legacy/components/Planner/ReservationModal.tsx
+- client/src/integrations/family/legacy/components/Planner/ReservationsPanel.tsx
+
+These are scoped reservation UI counterparts, not an assumed dependency chain. Initial references point to the distinct native components/Planner variants in TripPlannerPage/plannerLazy and native/Family booking tests. Recompute the copied candidates' complete individual outside boundaries and all exports/types, including JS-style imports and dynamic/tool/configuration references. If one has a required consumer, keep it and resolve that boundary; do not remove a tested consumer merely to retire an exporter or a size finding.
+
+Explicit retention: copied BookingsPanelFamily.tsx has a direct BookingsPanelFamily.test.tsx consumer. It and that test must remain, along with FamilyBookingEditor, FamilyBookingDetailDialog/familyBookingDetail, BookingImportModal, FamilyTransportEditor and their shared data/type/helper consumers. Static ordinary-entry absence does not authorize deleting tested components. The retained BookingsPanelFamily/FamilyTransportEditor size findings need their own justified refactor/review, not blanket unused-source removal.
+
+Preserve native ReservationModal/ReservationsPanel and their views/hooks, planner booking and accommodation callbacks/refresh/session ownership, phone reservation/booking sheets, Family normalized booking/stay identities, qualified commands/writers/queue/retained operations/recovery/session/permissions, import/export/file lease/image rules and API/schema contracts. Keep copied data readers/types/models/API/store/form/map/shared/parsed-item helpers and all tested/type-program/dependency union unless separately reviewed and explicitly selected. No provider/backend/writer/profile admission or native UI replacement.
+
+Recompute full raw runtime/import/export/type/ImportTypeNode/JSDoc/mock/require and root/config/tool/public/source/license/dynamic/glob/cache closure, including alternative entries. Inspect augmentations/implicit types and require actual before/after compiler-program/effective-type proof where applicable. Keep all 6,091 current graph nodes/edges/source bytes, twelve protected native files, outside tracked bytes and positive candidate-import controls.
+
+Prototype only proved-closed candidates. Compare unchanged native reservation form/panel/views, booking callbacks/refresh/accommodation/session/permission/queue/recovery, appropriate phone sheets and the retained copied BookingsPanelFamily tests before/after. Match expanded names/files/status/multiplicity without assertion/mock/fixture/config/timeout/skip/coverage relaxation. Any demonstrated reachable bug comes first with red/green proof. Build committed qualified source and inspect complete generated output; independently prove any actual CSS/chunk/SW/receipt changes rather than reusing Q112's byte-identity conclusion.
+
+Update only actual deleted provenance rows/pins. Run fresh compiler/native/source/artifact/actual format/warning/size gates with current generated declarations. Keep all 12 remaining size findings explicit; no rule/baseline/exclusion/suppression/scanner relaxation or helper-union retirement. Finish bounded preservation, check-only archive, normal private checkpoint push and precise continuation pointers. Source pushes are not deployment or schema rollout.
+
+Use `/private/tmp/trek-core-trip-members-retirement-20261118/next-baseline-private.json` after verified push. Preserve canonical 151 migrations/370 sources/index/README, sealed evidence, complete source archives and unrelated checkouts. Check disk capacity before heavy work; estimates do not replace actual archive checks. Q112 shared APFS extents for identical files across seven prior test builds with complete before/after byte/path/metadata and COW-isolation proofs; every logical build remains intact. The retained storage helper is pinned to Q112 staging paths and must not be applied blindly to other directories. Keep Q111's original extraction failure and strict successful retry records; its cause was not established. Do not delete backups/media/ETL, complete archives, authoritative checkouts or Q105's four unverified source copies for space. Reclaim only newly proved Git-reconstructible disposable prototypes after exact-source/link verification. Shared backend remains8cc0fe3f. Website only; no main/preview/production/Supabase/schema/settings/billing/transformation/public mirror/backup/ETL/iOS changes.

@@ -1,3 +1,4 @@
+import { holdPlannerRealtime } from './plannerRealtimeHold';
 import type { DayNoteCreateRequest, DayNoteUpdateRequest } from '@trek/shared';
 import { captureFamilyActor } from './actorContext';
 import type { PlannerDayNotePort } from '../../repo/plannerDayNotePort';
@@ -69,6 +70,8 @@ export class PlannerDayNotes implements PlannerDayNotePort {
           current.personId !== session.personId || ids !== (await this.repo.views()).ids || this.repo.getLayer(trip) !== 'published')
         throw new FamilyApiError(409, 'note_session', 'The original Family note session changed.');
     };
+    const releaseLive = holdPlannerRealtime(trip);
+    try {
     await fence();
     await refuseOlderQueue(this.repo, trip, intent.operation);
     const result = await intent.actor.perform(() => locationRpc(fields === null ? 'delete_family_trip_day_note_v2' : 'save_family_trip_day_note_v3',
@@ -86,5 +89,6 @@ export class PlannerDayNotes implements PlannerDayNotePort {
       throw new FamilyApiError(409, 'note_refresh', 'Saved note is not visible. Retry the original save.');
     this.pending.delete(key);
     return ids.register('note', id);
+    } finally { releaseLive(); }
   }
 }

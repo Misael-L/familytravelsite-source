@@ -1,5 +1,6 @@
 import type { FrontendRealtimeDriver } from '../../api/websocket';
 import { useInAppNotificationStore } from '../../store/inAppNotificationStore';
+import { afterPlannerSave } from './plannerRealtimeHold';
 import { captureFamilyActor } from './actorContext';
 import { familyRealtime } from './legacy/data/supabase/familyRealtime';
 import { familyAuthStore, familyFrontend, type FamilyFrontendRepository } from './repository';
@@ -59,8 +60,12 @@ export function createFamilyRealtimeDriver(repo: FamilyFrontendRepository = fami
             } catch {
               return;
             }
-            repo.invalidate(uuid);
-            refetch?.(String(value));
+            afterPlannerSave(uuid, () => {
+              if (!current()) return;
+              try { owner.assertCurrent(); } catch { return; }
+              repo.invalidate(uuid);
+              refetch?.(String(value));
+            });
           },
         });
       } catch (error) {

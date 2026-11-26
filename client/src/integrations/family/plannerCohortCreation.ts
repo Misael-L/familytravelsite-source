@@ -1,3 +1,4 @@
+import { holdPlannerRealtime } from './plannerRealtimeHold';
 import api from '../../api/client';
 import type { PlaceSubmitData } from '../../components/Planner/PlaceFormModal';
 import type { PlannerCreationContext } from '../../repo/plannerCreationPort';
@@ -294,7 +295,8 @@ export class PlannerCohortCreation {
     const key = intent.packet.operation_id,
       prior = this.inFlight.get(key);
     if (prior !== undefined) return prior;
-    const pending = this.execute(intent);
+    const releaseLive = holdPlannerRealtime(intent.packet.scope.trip_id);
+    const pending = this.execute(intent).finally(releaseLive);
     this.inFlight.set(key, pending);
     // Callers await the original pending promise, including its rejection. Both handlers only clear the registry.
     const clear = () => {

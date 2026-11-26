@@ -34,6 +34,8 @@ import {
 } from '../../../tests/helpers/familyPlannerCohort/state';
 import { act, fireEvent, render, screen, waitFor } from '../../../tests/helpers/render';
 import api from '../../api/client';
+import { FamilyApiError } from './repository';
+import { currentPlannerReadPort } from '../../repo/plannerReadPort';
 import BookingDetailHost from '../../components/Planner/bookings/BookingDetailHost';
 import { offlineDb } from '../../db/offlineDb';
 import { currentPlannerBookingPort } from '../../repo/plannerBookingPort';
@@ -747,5 +749,68 @@ describe('P04r actual installed native booking port', () => {
     expect(currentPlannerBookingPort()).not.toBeNull();
     cohortState.release();
     expect(currentPlannerBookingPort()).toBeNull();
+  });
+});
+
+
+describe('live snapshot invalidation during save publication', () => {
+  it('restarts a retired snapshot without replaying a write or publishing its stale reply', async () => {
+    await load();
+    const impl = required(db.rpc.getMockImplementation());
+    let retired = false;
+    db.rpc.mockImplementation(async (name, args) => {
+      const reply = await impl(name, args);
+      if (name === 'get_family_trip_packing_v1' && !retired) {
+        retired = true;
+        cohortState.repo.invalidate(trip);
+      }
+      return reply;
+    });
+    await expect(required(currentPlannerReadPort()?.hydrateTrip)(trip)).resolves.toBeUndefined();
+    expect(retired).toBe(true);
+    expect(useTripStore.getState().error).toBeNull();
+    expect(useTripStore.getState().trip).not.toBeNull();
+    expect(db.rpc.mock.calls.filter(([name]) => name === 'get_family_trip_packing_v1')).toHaveLength(3);
+  });
+  it('restarts a fully assembled bundle retired before its publication', async () => {
+    await load();
+    const impl = required(db.rpc.getMockImplementation());
+    let retired = false;
+    db.rpc.mockImplementation(async (name, args) => {
+      if (name === 'get_family_trip_packing_v1' && !retired) {
+        retired = true;
+        throw new FamilyApiError(409, 'planner_bundle_changed', 'Retired bundle');
+      }
+      return impl(name, args);
+    });
+    await expect(required(currentPlannerReadPort()?.hydrateTrip)(trip)).resolves.toBeUndefined();
+    expect(useTripStore.getState().error).toBeNull();
+    expect(db.rpc.mock.calls.filter(([name]) => name === 'get_family_trip_packing_v1')).toHaveLength(3);
+  });
+  it('bounds repeated invalidation instead of retrying indefinitely', async () => {
+    await load();
+    const impl = required(db.rpc.getMockImplementation());
+    db.rpc.mockImplementation(async (name, args) => {
+      const reply = await impl(name, args);
+      if (name === 'get_family_trip_packing_v1') cohortState.repo.invalidate(trip);
+      return reply;
+    });
+    await expect(required(currentPlannerReadPort()?.hydrateTrip)(trip)).rejects.toMatchObject({ code: 'stale_read' });
+    expect(db.rpc.mock.calls.filter(([name]) => name === 'get_family_trip_packing_v1')).toHaveLength(4);
+  });
+  it('does not turn a trip-layer change into an automatic read retry', async () => {
+    await load();
+    const impl = required(db.rpc.getMockImplementation());
+    let changed = false;
+    db.rpc.mockImplementation(async (name, args) => {
+      const reply = await impl(name, args);
+      if (name === 'get_family_trip_packing_v1' && !changed) {
+        changed = true;
+        cohortState.repo.setLayer(trip, 'myDraft');
+      }
+      return reply;
+    });
+    await expect(required(currentPlannerReadPort()?.hydrateTrip)(trip)).rejects.toMatchObject({ code: 'stale_read' });
+    expect(db.rpc.mock.calls.filter(([name]) => name === 'get_family_trip_packing_v1')).toHaveLength(2);
   });
 });

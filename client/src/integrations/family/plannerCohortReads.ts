@@ -128,7 +128,33 @@ export class PlannerCohortReads {
     }
     this.environment.boundary.setProblem(problem);
   }
+  /** Live change notices may retire a snapshot after our own save. Retry only
+   * that read under the original private/layer context, never a command.
+   */
   private async read<T>(
+    owner: ReadSession,
+    value: number | string,
+    work: (guard: PlannerReadGuard, check: () => void, publish: () => void) => Promise<T>,
+    inherited?: PlannerReadGuard
+  ): Promise<T> {
+    await this.repo.session();
+    const trip = await this.repo.tripUuid(value);
+    const original = this.repo.captureContext(trip, { revision: false });
+    const origin = this.environment.source();
+    for (let attempt = 0; ; attempt++) {
+      try {
+        return await this.readOnce(owner, value, work, inherited);
+      } catch (error) {
+        if (inherited || attempt >= 2 || !(error instanceof FamilyApiError) ||
+            !['stale_read', 'stale_planner_view', 'planner_bundle_changed'].includes(error.code)) throw error;
+        owner.assertCurrent();
+        original.assertCurrent();
+        if (this.environment.disposed() || this.environment.source() !== origin) throw error;
+        // Fresh guards still check pending commands and unchanged local store fields.
+      }
+    }
+  }
+  private async readOnce<T>(
     owner: ReadSession,
     value: number | string,
     work: (guard: PlannerReadGuard, check: () => void, publish: () => void) => Promise<T>,

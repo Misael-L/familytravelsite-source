@@ -1,3 +1,4 @@
+import { holdPlannerRealtime } from './plannerRealtimeHold';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { buildUser } from '../../../tests/helpers/factories';
 import { apiClient } from '../../api/client';
@@ -196,4 +197,23 @@ it('keeps a replacement installation intact when old Auth callbacks and cleanup 
   expect(wire.stop).not.toHaveBeenCalled();
   expect(window.fetch).toBe(currentFetch);
   expect(apiClient.defaults.adapter).toBe(currentAdapter);
+});
+
+
+it('defers a save echo until canonical save publication completes', async () => {
+  vi.useFakeTimers();
+  try {
+    vi.spyOn(familyFrontend, 'tripUuid').mockResolvedValue(id(10));
+    const refetch = vi.fn(); driver().refetch = refetch;
+    await driver().joinTrip('first');
+    const invalidate = vi.spyOn(familyFrontend, 'invalidate');
+    const release = holdPlannerRealtime(id(10));
+    const change = wire.bind.mock.calls.slice(-1)[0]?.[0].onChange;
+    change(); change();
+    expect(invalidate).not.toHaveBeenCalled();
+    release();
+    await vi.runAllTimersAsync();
+    expect(invalidate).toHaveBeenCalledTimes(1);
+    expect(refetch).toHaveBeenCalledExactlyOnceWith('first');
+  } finally { vi.useRealTimers(); }
 });

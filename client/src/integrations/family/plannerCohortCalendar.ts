@@ -1,3 +1,4 @@
+import { holdPlannerRealtime } from './plannerRealtimeHold';
 import type { TripUpdateRequest } from '@trek/shared';
 import { isAxiosError } from 'axios';
 import { z } from 'zod';
@@ -113,7 +114,8 @@ export class PlannerCohortCalendar {
     const intent = await this.pending.intent,
       old = this.inFlight.get(intent.packet.operation_id);
     if (old !== undefined) return old;
-    const call = this.send(intent);
+    const releaseLive = holdPlannerRealtime(intent.packet.scope.trip_id);
+    const call = this.send(intent).finally(releaseLive);
     this.inFlight.set(intent.packet.operation_id, call);
     const clear = () => {
       this.inFlight.delete(intent.packet.operation_id);

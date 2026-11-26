@@ -1,0 +1,14 @@
+{
+  "confirmed": true,
+  "original_and_candidate_each_pass_characterization": 1,
+  "sequence": [
+    "start watch10",
+    "stop watch10",
+    "start watch11",
+    "deliver permission-denied callback from watch10"
+  ],
+  "actual": "Watch11 is cleared and mode becomes off",
+  "desired_for_followup": "Ignore retired watch callbacks; keep watch11 and current state",
+  "introduced_by_refactor": false,
+  "real_device_or_request": false
+}

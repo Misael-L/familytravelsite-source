@@ -1,0 +1,17 @@
+{
+  "incoming": "d7bd79fa7c7e7d76a3e4d4ba887d7af3200c76f5",
+  "implementation": "76984b74d9d34207bd1be57088a14e3f1fbbda91",
+  "build_source": "f99266c7205668c58ecd934627ba110512f7dadf",
+  "previous_build_source": "706c5e3197f24b27cd7e91dcb141ed17ebf0b96a",
+  "runtime": "v24.22.2",
+  "only_source_rows_updated": [
+    "client/src/integrations/family/publicVariantCache.ts",
+    "client/src/integrations/family/privateFileMemory.ts",
+    "client/src/integrations/family/packingBagDependency.ts",
+    "client/src/integrations/family/packingDependencyPair.ts",
+    "client/src/integrations/family/creationTerminalSettlement.ts"
+  ],
+  "originals_available_in_Git": true,
+  "all_policies_hash_checked_against_incoming": true,
+  "no_hosted_operation": true
+}

@@ -1,0 +1,1142 @@
+{
+  "passed": true,
+  "originalWarnings": [
+    {
+      "ruleId": "max-lines-per-function",
+      "severity": 1,
+      "message": "Function 'useCollectionSharing' has too many lines (125). Maximum allowed is 120.",
+      "line": 49,
+      "column": 8,
+      "messageId": "exceed",
+      "endLine": 49,
+      "endColumn": 37
+    },
+    {
+      "ruleId": "react-hooks/set-state-in-effect",
+      "severity": 1,
+      "message": "Error: Calling setState synchronously within an effect can trigger cascading renders\n\nEffects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:\n* Update external systems with the latest state from React.\n* Subscribe for updates from some external system, calling setState in a callback function when external state changes.\n\nCalling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).\n\n/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client/src/components/Collections/useCollectionSharing.ts:94:5\n  92 |   useEffect(() => {\n  93 |     if (open) return;\n> 94 |     setSelectedUserId(null);\n     |     ^^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect\n  95 |     setConfirmLeave(false);\n  96 |   }, [open]);\n  97 |",
+      "line": 94,
+      "column": 5,
+      "endLine": 94,
+      "endColumn": 22
+    }
+  ],
+  "diagnostics": [],
+  "measurements": [
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "sortCollectionMembers",
+      "line": 33,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 34,
+      "parameters": 1,
+      "complexity": 3,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 35,
+      "parameters": 2,
+      "complexity": 2,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "nextCollectionRole",
+      "line": 39,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "clearBusyMember",
+      "line": 44,
+      "parameters": 2,
+      "complexity": 1,
+      "lines": 5
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "useCollectionSharing",
+      "line": 56,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 118
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 66,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 67,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 68,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 69,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 70,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 71,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 90,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 92,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 93,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 95,
+      "parameters": 3,
+      "complexity": 6,
+      "lines": 14
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 100,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 106,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 110,
+      "parameters": 2,
+      "complexity": 2,
+      "lines": 4
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 112,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 115,
+      "parameters": 1,
+      "complexity": 3,
+      "lines": 4
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 120,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 4
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 122,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 125,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 4
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 127,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 130,
+      "parameters": 0,
+      "complexity": 9,
+      "lines": 16
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "name": "ArrowFunction",
+      "line": 147,
+      "parameters": 0,
+      "complexity": 10,
+      "lines": 16
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "sharingView",
+      "line": 23,
+      "parameters": 3,
+      "complexity": 1,
+      "lines": 44
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "ArrowFunction",
+      "line": 29,
+      "parameters": 0,
+      "complexity": 4,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "ArrowFunction",
+      "line": 30,
+      "parameters": 0,
+      "complexity": 4,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "ArrowFunction",
+      "line": 34,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 16
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "ArrowFunction",
+      "line": 36,
+      "parameters": 2,
+      "complexity": 4,
+      "lines": 7
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "ArrowFunction",
+      "line": 43,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 6
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "ArrowFunction",
+      "line": 50,
+      "parameters": 1,
+      "complexity": 5,
+      "lines": 14
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "ArrowFunction",
+      "line": 54,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "ArrowFunction",
+      "line": 57,
+      "parameters": 0,
+      "complexity": 3,
+      "lines": 5
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "useSharingView",
+      "line": 69,
+      "parameters": 2,
+      "complexity": 3,
+      "lines": 8
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "ArrowFunction",
+      "line": 72,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "ArrowFunction",
+      "line": 74,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "useViewState",
+      "line": 79,
+      "parameters": 2,
+      "complexity": 3,
+      "lines": 15
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "ArrowFunction",
+      "line": 80,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "ArrowFunction",
+      "line": 82,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 8
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "ArrowFunction",
+      "line": 84,
+      "parameters": 1,
+      "complexity": 4,
+      "lines": 5
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "useCollectionSharingState",
+      "line": 96,
+      "parameters": 3,
+      "complexity": 1,
+      "lines": 42
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "ArrowFunction",
+      "line": 105,
+      "parameters": 0,
+      "complexity": 4,
+      "lines": 16
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "ArrowFunction",
+      "line": 111,
+      "parameters": 1,
+      "complexity": 3,
+      "lines": 3
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "ArrowFunction",
+      "line": 114,
+      "parameters": 0,
+      "complexity": 3,
+      "lines": 3
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "name": "ArrowFunction",
+      "line": 117,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 15,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "mocks",
+      "line": 18,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 9
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "pending",
+      "line": 27,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 9
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 30,
+      "parameters": 2,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "setup",
+      "line": 36,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 12
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 46,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 48,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 10
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 58,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 5
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 64,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 284
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 65,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 19
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 69,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 71,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 75,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 76,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 86,
+      "parameters": 1,
+      "complexity": 6,
+      "lines": 24
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 91,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 97,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 99,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 103,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 111,
+      "parameters": 1,
+      "complexity": 3,
+      "lines": 32
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 117,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 118,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 123,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 128,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 134,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 143,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 26
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 149,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 154,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 158,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 163,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 169,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 16
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 171,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 174,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 182,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 185,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 9
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 190,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 191,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 194,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 11
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 196,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 205,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 16
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 207,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 210,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 6
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 221,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 12
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 223,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 224,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 6
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 233,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 22
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 237,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 240,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 245,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 251,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 255,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 19
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 261,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 5
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 268,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 274,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 22
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 280,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 285,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 291,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 296,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 38
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 311,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 8
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 314,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 323,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 328,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 334,
+      "parameters": 0,
+      "complexity": 2,
+      "lines": 13
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 336,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "name": "ArrowFunction",
+      "line": 337,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 8
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharing.consumers.test.tsx",
+      "name": "ArrowFunction",
+      "line": 16,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharing.consumers.test.tsx",
+      "name": "ArrowFunction",
+      "line": 17,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 6
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharing.consumers.test.tsx",
+      "name": "ArrowFunction",
+      "line": 23,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharing.consumers.test.tsx",
+      "name": "desktop",
+      "line": 28,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 4
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharing.consumers.test.tsx",
+      "name": "ArrowFunction",
+      "line": 33,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 57
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharing.consumers.test.tsx",
+      "name": "ArrowFunction",
+      "line": 36,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 32
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharing.consumers.test.tsx",
+      "name": "ArrowFunction",
+      "line": 38,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharing.consumers.test.tsx",
+      "name": "ArrowFunction",
+      "line": 53,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 2
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharing.consumers.test.tsx",
+      "name": "ArrowFunction",
+      "line": 59,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharing.consumers.test.tsx",
+      "name": "ArrowFunction",
+      "line": 61,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 4
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharing.consumers.test.tsx",
+      "name": "ArrowFunction",
+      "line": 69,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 20
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharing.consumers.test.tsx",
+      "name": "ArrowFunction",
+      "line": 86,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharing.consumers.test.tsx",
+      "name": "ArrowFunction",
+      "line": 87,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharing.gates.test.ts",
+      "name": "ArrowFunction",
+      "line": 8,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 3
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharing.gates.test.ts",
+      "name": "repository",
+      "line": 11,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 10
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharing.gates.test.ts",
+      "name": "ArrowFunction",
+      "line": 13,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 1
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharing.gates.test.ts",
+      "name": "ArrowFunction",
+      "line": 21,
+      "parameters": 0,
+      "complexity": 1,
+      "lines": 45
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharing.gates.test.ts",
+      "name": "ArrowFunction",
+      "line": 30,
+      "parameters": 1,
+      "complexity": 1,
+      "lines": 12
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharing.gates.test.ts",
+      "name": "ArrowFunction",
+      "line": 51,
+      "parameters": 1,
+      "complexity": 2,
+      "lines": 14
+    }
+  ],
+  "files": [
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.ts",
+      "errors": 0,
+      "warnings": 0,
+      "messages": [],
+      "suppressedMessages": [],
+      "wrapped": 185,
+      "formatted": true
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharingState.ts",
+      "errors": 0,
+      "warnings": 0,
+      "messages": [],
+      "suppressedMessages": [],
+      "wrapped": 137,
+      "formatted": true
+    },
+    {
+      "file": "client/src/components/Collections/useCollectionSharing.lifetime.test.tsx",
+      "errors": 0,
+      "warnings": 0,
+      "messages": [],
+      "suppressedMessages": [],
+      "wrapped": 347,
+      "formatted": true
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharing.consumers.test.tsx",
+      "errors": 0,
+      "warnings": 0,
+      "messages": [],
+      "suppressedMessages": [],
+      "wrapped": 89,
+      "formatted": true
+    },
+    {
+      "file": "client/src/components/Collections/collectionSharing.gates.test.ts",
+      "errors": 0,
+      "warnings": 0,
+      "messages": [],
+      "suppressedMessages": [],
+      "wrapped": 65,
+      "formatted": true
+    }
+  ],
+  "deliberately_removed_original_warnings": [
+    "max-lines-per-function",
+    "react-hooks/set-state-in-effect"
+  ],
+  "required_ratchet_tightening": {
+    "src": {
+      "react-hooks/set-state-in-effect": [
+        185,
+        184
+      ]
+    }
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "scope": "Exact public worker bytes replayed on separate local loopback origins with synthetic browser data and an inert cached app shell",
+  "website_source_checkout": "e31da81582a07b6b6b1362ec17e4e633370e2e34",
+  "recovery_entry_build_qualification": "Existing explicitly qualified local device-recovery profile",
+  "legacy_preview_queue_schema": 140,
+  "surveyed_worker_sources": {
+    "production": {
+      "entry_sha256": "e3795251074eb4864c413103704716be5e03caac9b7e583b17e34eb0ac04f8e3",
+      "recorded_workers_version_matches": true,
+      "uses_workbox_navigation_route": true,
+      "mentions_recovery_document": false,
+      "replay_assets": [
+        "/workbox-7e740dec.js"
+      ]
+    },
+    "preview": {
+      "entry_sha256": "9a28090f042420c7aa8ef37ade3c120ecc48879c43f9fa113317a47fe0e7efa7",
+      "recorded_workers_version_matches": true,
+      "uses_workbox_navigation_route": true,
+      "mentions_recovery_document": false,
+      "replay_assets": [
+        "/workbox-2da51cb1.js",
+        "/sw-push.js"
+      ]
+    }
+  },
+  "local_chromium_rehearsal": {
+    "verified": true,
+    "public_sites_loaded_in_browser": false,
+    "browser": "local Chromium",
+    "emitted_html_sha256": "9472351a3985b7306a9032447aac9f98783da05e96ffc8fccc998abe3da42514",
+    "observed_recovery_chunk_count": 4,
+    "recovery_entry_module_count": 8,
+    "fixture_results": {
+      "production": {
+        "actual_prior_worker_sha256": "e3795251074eb4864c413103704716be5e03caac9b7e583b17e34eb0ac04f8e3",
+        "old_worker_intercepted_document": true,
+        "updated_generated_worker_reached_static_recovery_document": true,
+        "fresh_consent_gate": true,
+        "matched_same_origin_only": true,
+        "archive_queue_rows": 1,
+        "archive_imports": 1,
+        "exact_binary_bytes": 7,
+        "wrong_owner_and_future_database_refusals": 0,
+        "source_database_keys_values_and_versions_unchanged": true,
+        "recovery_dynamic_api_requests": 0,
+        "mobile_viewport": false
+      },
+      "preview": {
+        "actual_prior_worker_sha256": "9a28090f042420c7aa8ef37ade3c120ecc48879c43f9fa113317a47fe0e7efa7",
+        "old_worker_intercepted_document": true,
+        "updated_generated_worker_reached_static_recovery_document": true,
+        "fresh_consent_gate": true,
+        "matched_same_origin_only": true,
+        "archive_queue_rows": 1,
+        "archive_imports": 1,
+        "exact_binary_bytes": 7,
+        "wrong_owner_and_future_database_refusals": 2,
+        "source_database_keys_values_and_versions_unchanged": true,
+        "recovery_dynamic_api_requests": 0,
+        "mobile_viewport": true
+      }
+    },
+    "external_requests_forwarded": 0
+  },
+  "archive_format": "family.unattributed-work.v1",
+  "archive_read_with_independent_decoder": true,
+  "archive_has_no_inferred_owner_or_replay_admission": true,
+  "ordinary_control_build_excludes_document_and_exporter": true,
+  "focused_regression_tests_passed": 103,
+  "actual_family_browser_profiles_accessed": false,
+  "hosted_recovery_route_activated": false,
+  "production_or_preview_settings_changed": false,
+  "next": "Qualify the selected HTTPS preview and fallback against the approved backend and recovery route"
+}

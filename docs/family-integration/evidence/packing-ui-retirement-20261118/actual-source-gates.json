@@ -1,0 +1,22 @@
+[
+  {
+    "name": "native-presentation",
+    "command": "node scripts/family/check-native-presentation.mjs",
+    "exit": 0
+  },
+  {
+    "name": "qualified-source",
+    "command": "node scripts/family/check-qualified-source.mjs",
+    "exit": 0
+  },
+  {
+    "name": "git-structure",
+    "command": "node scripts/family/check-git-structure.mjs",
+    "exit": 0
+  },
+  {
+    "name": "backend-carryover",
+    "command": "node scripts/family/check-backend-carryover.mjs",
+    "exit": 0
+  }
+]

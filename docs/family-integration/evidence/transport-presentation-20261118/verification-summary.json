@@ -1,0 +1,93 @@
+{
+  "passed": true,
+  "packet": "Q117",
+  "date": "2026-11-18",
+  "incoming": "29d88ad5a75fb6c31b9928c80404c8280842ee68",
+  "implementation": "b713d62a0a9032871006a6927d8537bdc23368e7",
+  "build_source": "08eb09938b5e476370de2f8bc544b21bbed91ae5",
+  "changed_or_added_application_paths": [
+    "client/src/integrations/family/legacy/components/Planner/TransportsPanelFamily.tsx",
+    "client/src/integrations/family/legacy/components/Planner/FamilyTransportCards.tsx",
+    "client/src/integrations/family/legacy/components/Planner/familyTransportTypeMeta.ts",
+    "client/src/integrations/family/legacy/components/Planner/TransportsPanelFamily.presentation.test.tsx"
+  ],
+  "all_original_tests_and_retained_modules_preserved": true,
+  "parent_public_types_and_complete_body_exact": true,
+  "actual_committed_inverse_source_reconstruction_exact": true,
+  "complete_section_card_field_classes_and_lookup_preserved": true,
+  "one_shared_lookup_symbol": true,
+  "current_controller_TransportCreateRequest_binding_preserved": true,
+  "candidate_passed": 1290,
+  "same_expanded_cases_before_after": 1290,
+  "existing_cases": 1283,
+  "new_parent_preference_filter_cases": 7,
+  "raw_title_cases_exact": 1289,
+  "one_generated_UUID_label_tightly_reviewed": true,
+  "ordinary_compiler_roots_before_after": [
+    5077,
+    5077
+  ],
+  "ordinary_compiler_sources_before_after": [
+    10260,
+    10262
+  ],
+  "explicit_program_sources_before_after": [
+    10261,
+    10263
+  ],
+  "only_two_extracted_modules_added_to_compiler_programs": true,
+  "boundary_semantic_syntactic_diagnostics_before_after": [
+    0,
+    0
+  ],
+  "current_runtime_nodes_edges_source_bytes_exact": 6091,
+  "raw_sources_before_after": [
+    14040,
+    14043
+  ],
+  "application_modules_before_after": [
+    7475,
+    7477
+  ],
+  "all_3792_outputs_except_sourceCommit_configuration_byte_exact": true,
+  "fresh_build_and_actual_compiler_passed": true,
+  "source_guards_passed": 4,
+  "artifact_binding_controls_passed": 3,
+  "native_presentation_files_protected": 12,
+  "new_feature_or_UI_mount_admission": false,
+  "current_declarations_fixed": 128,
+  "format_gate_pass": true,
+  "format_baseline_unchanged_entries": 2134,
+  "unlisted_format_failures": 0,
+  "warning_gate_pass": true,
+  "source_warnings_actual_limit": [
+    3418,
+    3418
+  ],
+  "source_complexity_actual_limit": [
+    218,
+    218
+  ],
+  "source_length_actual_limit": [
+    130,
+    130
+  ],
+  "size_findings_before_after": [
+    6,
+    5
+  ],
+  "wrapped_sizes": {
+    "before": 1127,
+    "after": 752,
+    "cards": 344,
+    "lookup": 20,
+    "tests": 196
+  },
+  "all_other_size_failure_lines_exact": true,
+  "rules_baselines_exclusions_suppressions_unchanged": true,
+  "quality_gates_serial_for_memory_pressure": true,
+  "fresh_verified_source_prototypes_retired": 2,
+  "global_release_gate_pass": false,
+  "new_live_database_browser_or_writer_acceptance": false,
+  "next": "Q118 retained Family transport editor review"
+}

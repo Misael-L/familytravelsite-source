@@ -1,0 +1,23 @@
+
+> @trek/client@5.1.4 lint:format
+> node scripts/format-lint.mjs
+
+FAIL  src/integrations/family/creationIntentQueue.ts is not formatted. Run: npx prettier --write src/integrations/family/creationIntentQueue.ts
+FAIL  src/integrations/family/creationTerminalSettlement.ts is not formatted. Run: npx prettier --write src/integrations/family/creationTerminalSettlement.ts
+FAIL  src/integrations/family/legacy/components/Admin/plugins/PluginBadges.tsx is not formatted. Run: npx prettier --write src/integrations/family/legacy/components/Admin/plugins/PluginBadges.tsx
+FAIL  src/integrations/family/legacy/components/Admin/plugins/PluginInstalledList.tsx is not formatted. Run: npx prettier --write src/integrations/family/legacy/components/Admin/plugins/PluginInstalledList.tsx
+FAIL  src/integrations/family/legacy/components/Admin/plugins/PluginRegistry.tsx is not formatted. Run: npx prettier --write src/integrations/family/legacy/components/Admin/plugins/PluginRegistry.tsx
+FAIL  src/integrations/family/legacy/components/Admin/plugins/PluginTrustDialogs.tsx is not formatted. Run: npx prettier --write src/integrations/family/legacy/components/Admin/plugins/PluginTrustDialogs.tsx
+FAIL  src/integrations/family/plannerReadGuard.ts is not formatted. Run: npx prettier --write src/integrations/family/plannerReadGuard.ts
+FAIL  src/integrations/family/plannerTaskRecovery.ts is not formatted. Run: npx prettier --write src/integrations/family/plannerTaskRecovery.ts
+FAIL  src/sync/originalWorkExport.ts is not formatted. Run: npx prettier --write src/sync/originalWorkExport.ts
+FAIL  src/sync/queueStatus.ts is not formatted. Run: npx prettier --write src/sync/queueStatus.ts
+FAIL  src/sync/retainedRecovery.ts is not formatted. Run: npx prettier --write src/sync/retainedRecovery.ts
+format: 2145 unformatted file(s), 2134 listed in the baseline
+npm error Lifecycle script `lint:format` failed with error:
+npm error code 1
+npm error path /Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client
+npm error workspace @trek/client@5.1.4
+npm error location /Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client
+npm error command failed
+npm error command sh -c node scripts/format-lint.mjs

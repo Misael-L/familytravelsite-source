@@ -1,0 +1,26 @@
+{
+  "passed": true,
+  "method": "APFS clonefile with CLONE_NOFOLLOW; copyfile ACL|STAT|XATTR metadata only; validate then atomic replace",
+  "source_build": "/private/tmp/trek-core-planner-hook-retirement-20261118/final-archive/extract",
+  "source_tree_sha256_unchanged": "f31775f3cf933d09bcf5e3bce3bf836aa7466b6bcd9e0e8323664ba05f9fb327",
+  "source_and_all_target_logical_trees_unchanged": true,
+  "target_builds": [
+    {
+      "root": "/private/tmp/trek-core-retained-stylesheets-20261118/final-archive/extract",
+      "pinned_build_source": "1cd06cc2b8ddb508e78a5379c2bd59074dec688b",
+      "all_files": 18547,
+      "before_tree_sha256": "151e16fa406e6119e36764366a7fc85e23198b8ac400fd03b4d175a0922416d2",
+      "after_tree_sha256": "151e16fa406e6119e36764366a7fc85e23198b8ac400fd03b4d175a0922416d2",
+      "all_paths_bytes_modes_owners_mtime_flags_xattrs_ACLs_exact": true,
+      "cloned_identical_files": 18484,
+      "logical_bytes_now_using_current_source_extents": 353312777,
+      "nonidentical_or_special_files_untouched": 63
+    }
+  ],
+  "free_bytes_before": 1490944000,
+  "free_bytes_after": 2924544000,
+  "working_sources_sealed_evidence_DB_backups_ETL_media_and_unverified_copies_untouched": true,
+  "source_snapshots_all_logical_files_bytes_and_recorded_metadata_exact": true,
+  "physical_inodes_and_ctime_may_change": true,
+  "no_file_removed_from_any_logical_build": true
+}

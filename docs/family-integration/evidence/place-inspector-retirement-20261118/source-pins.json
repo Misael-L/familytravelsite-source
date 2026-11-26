@@ -1,0 +1,14 @@
+{
+  "incoming": "4760072b180e365a00f91280f56379d9c551271f",
+  "implementation": "f11acf7ea23c898838d62982abdac28ac3eb4994",
+  "build_source": "f134e9b254f64db1f394f91cf7949f7417167934",
+  "removed_original_sha256": {
+    "client/src/integrations/family/legacy/components/Planner/PlaceInspector.tsx": "9f4324e4956fe430600c512db7568ec3f67fd834d6440ddb4c5f58e2bd9cf763",
+    "client/src/integrations/family/legacy/components/Planner/family/FamilyPlaceInspector.tsx": "013cd70c3362e8f6fd36b7d306910622200ded9ec5cba224aea76d16494ef75d"
+  },
+  "prior_runtime_build": "03244b66ddb4b0fbffff4687fde529f1de498f59",
+  "fresh_current_compiler_declarations": 128,
+  "no_old_generated_declaration_identity_assumption": true,
+  "test_runtime": "v24.22.2",
+  "no_hosted_operation": true
+}

@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "before": {
+    "react-hooks/refs": 4
+  },
+  "after": {
+    "react-hooks/refs": 4
+  }
+}

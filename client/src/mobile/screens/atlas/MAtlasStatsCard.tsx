@@ -1,0 +1,48 @@
+import { AtlasReadNotice, AtlasMetric } from '../../../pages/atlas/AtlasReadState'
+import type { AtlasAvailability, AtlasReadSection } from '../../../pages/atlas/atlasModel'
+import { useTranslation } from '../../../i18n'
+import type { AtlasStats } from '../../../pages/atlas/atlasModel'
+
+interface MAtlasStatsCardProps {
+  stats: AtlasStats
+  availability?: AtlasAvailability
+  retryRead?: (section: AtlasReadSection) => void
+}
+
+/**
+ * Floating stats card above the bottom nav: five stat columns straight from the
+ * design. The bucket-list entry now lives in the full-width top header, so this
+ * card is stats only.
+ */
+export default function MAtlasStatsCard({ stats, availability, retryRead }: MAtlasStatsCardProps) {
+  const { t } = useTranslation()
+  const cols: [number | undefined, string][] = [
+    [stats.totalCountries, t('atlas.countries', { count: stats.totalCountries })],
+    [stats.totalTrips, t('atlas.trips', { count: stats.totalTrips })],
+    [stats.totalPlaces, t('atlas.places', { count: stats.totalPlaces })],
+    [availability?.family ? stats.totalCities : stats.totalCities || 0, t('atlas.cities', { count: stats.totalCities || 0 })],
+    [stats.totalDays, t('atlas.days', { count: stats.totalDays })],
+  ]
+  // All five columns are spoken for, so the planned count rides along with the country
+  // number as a superscript rather than claiming a sixth column.
+  const planned = stats.totalCountriesPlanned || 0
+
+  return (
+    <div className="m-bar-x absolute bottom-[calc(var(--bottom-nav-h,84px)+16px)] z-[5] wide:mx-auto wide:max-w-[720px]">
+      {availability?.family && availability.geography.status === 'error' && <AtlasReadNotice state={availability.geography} onRetry={() => retryRead?.('geography')} />}
+      <div className="flex w-full rounded-[22px] border border-[color:var(--m-shbr)] bg-[color:var(--m-sheet)] px-3 py-[14px] shadow-[0_18px_44px_-20px_rgba(0,0,0,.4)]">
+        {availability?.family && availability.stats.status !== 'ready' ? <AtlasReadNotice state={availability.stats} onRetry={() => retryRead?.('stats')} /> : cols.map(([n, l], i) => (
+          <div key={l} className="flex-1 text-center">
+            <div className="text-[1.375rem] font-extrabold leading-none tabular-nums text-m-ink">
+              <AtlasMetric value={n} />
+              {i === 0 && planned > 0 && (
+                <span className="align-super text-[0.6875rem] font-bold text-m-faint">+{planned}</span>
+              )}
+            </div>
+            <div className="mt-1 font-geist text-[0.53125rem] font-bold uppercase tracking-[.06em] text-m-faint">{l}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}

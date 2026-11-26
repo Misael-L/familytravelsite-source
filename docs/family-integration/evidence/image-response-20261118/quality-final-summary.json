@@ -1,0 +1,23 @@
+{
+  "passed": false,
+  "all_nine_commands_measured_after_repair": true,
+  "passed_commands": [
+    "pages",
+    "layers",
+    "skips"
+  ],
+  "failed_commands": [
+    "strict",
+    "rtl",
+    "offline",
+    "dup",
+    "pairs",
+    "i18n-keys"
+  ],
+  "strict_total": 636,
+  "strict_baseline_allowance": 467,
+  "duplication_lines": 17619,
+  "duplication_files": 285,
+  "duplication_allowance": 0,
+  "no_quality_policy_or_baseline_change": true
+}

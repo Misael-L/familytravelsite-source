@@ -1,0 +1,5 @@
+
+> @trek/client@5.1.4 lint:layers
+> node scripts/layer-lint.mjs
+
+layers: 72 import(s) against the layering in 58 file(s), baseline allows 72

@@ -1,0 +1,361 @@
+{
+  "all_tests_passed": false,
+  "same_original_and_candidate_failure": [
+    [
+      "tests/unit/scripts/theme-lint.test.ts",
+      [
+        "theme:lint"
+      ],
+      "THEME-013: the command runs its check whichever way it is started",
+      "failed"
+    ]
+  ],
+  "same_38_preexisting_skipped_cases": [
+    [
+      "src/pages/JourneyDetailPage.test.tsx",
+      [
+        "JourneyDetailPage",
+        "FE-PAGE-JOURNEYDETAIL-010: Map tab switches view (renders map-container)"
+      ],
+      "switches to map view when Map button is clicked",
+      "skipped"
+    ],
+    [
+      "src/pages/JourneyDetailPage.test.tsx",
+      [
+        "JourneyDetailPage",
+        "FE-PAGE-JOURNEYDETAIL-012: Shows synced trips in sidebar"
+      ],
+      "renders Synced Trips heading",
+      "skipped"
+    ],
+    [
+      "src/pages/JourneyDetailPage.test.tsx",
+      [
+        "JourneyDetailPage",
+        "FE-PAGE-JOURNEYDETAIL-012: Shows synced trips in sidebar"
+      ],
+      "renders the synced trip title",
+      "skipped"
+    ],
+    [
+      "src/pages/JourneyDetailPage.test.tsx",
+      [
+        "JourneyDetailPage",
+        "FE-PAGE-JOURNEYDETAIL-013: Shows contributors list"
+      ],
+      "renders the contributor username",
+      "skipped"
+    ],
+    [
+      "src/pages/JourneyDetailPage.test.tsx",
+      [
+        "JourneyDetailPage",
+        "FE-PAGE-JOURNEYDETAIL-013: Shows contributors list"
+      ],
+      "renders the contributors heading",
+      "skipped"
+    ],
+    [
+      "src/pages/JourneyDetailPage.test.tsx",
+      [
+        "JourneyDetailPage",
+        "FE-PAGE-JOURNEYDETAIL-030: Active status badge shows Live indicator"
+      ],
+      "does not render \"Live\" badge when linked trip is in the past",
+      "skipped"
+    ],
+    [
+      "src/pages/JourneyDetailPage.test.tsx",
+      [
+        "JourneyDetailPage",
+        "FE-PAGE-JOURNEYDETAIL-030: Active status badge shows Live indicator"
+      ],
+      "renders a \"Live\" badge when linked trip spans today",
+      "skipped"
+    ],
+    [
+      "src/pages/JourneyDetailPage.test.tsx",
+      [
+        "JourneyDetailPage",
+        "FE-PAGE-JOURNEYDETAIL-031: Synced with Trips badge renders"
+      ],
+      "renders the \"Synced with Trips\" text in the hero for live journeys",
+      "skipped"
+    ],
+    [
+      "src/pages/JourneyDetailPage.test.tsx",
+      [
+        "JourneyDetailPage",
+        "FE-PAGE-JOURNEYDETAIL-036: Trip place count in sidebar"
+      ],
+      "shows the place count for synced trips",
+      "skipped"
+    ],
+    [
+      "src/pages/JourneyDetailPage.test.tsx",
+      [
+        "JourneyDetailPage",
+        "FE-PAGE-JOURNEYDETAIL-037: Contributor avatar initial renders"
+      ],
+      "renders the first letter of the contributor username as avatar",
+      "skipped"
+    ],
+    [
+      "src/pages/JourneyDetailPage.test.tsx",
+      [
+        "JourneyDetailPage",
+        "FE-PAGE-JOURNEYDETAIL-038: Synced badge on trip cards"
+      ],
+      "renders \"synced\" badge on trip items in sidebar",
+      "skipped"
+    ],
+    [
+      "src/pages/JourneyDetailPage.test.tsx",
+      [
+        "JourneyDetailPage",
+        "FE-PAGE-JOURNEYDETAIL-039: Journey Stats heading in sidebar"
+      ],
+      "renders the Journey Stats section heading",
+      "skipped"
+    ],
+    [
+      "src/pages/JourneyDetailPage.test.tsx",
+      [
+        "JourneyDetailPage",
+        "FE-PAGE-JOURNEYDETAIL-040: No trips linked message"
+      ],
+      "shows \"No trips linked yet\" when journey has no trips",
+      "skipped"
+    ],
+    [
+      "src/pages/JourneyDetailPage.test.tsx",
+      [
+        "JourneyDetailPage",
+        "FE-PAGE-JOURNEYDETAIL-054: Link trip section exists in sidebar"
+      ],
+      "renders the Synced Trips heading with a + button in the sidebar",
+      "skipped"
+    ],
+    [
+      "src/pages/JourneyDetailPage.test.tsx",
+      [
+        "JourneyDetailPage",
+        "FE-PAGE-JOURNEYDETAIL-057: Map tab renders location list"
+      ],
+      "shows location entries in the map view list",
+      "skipped"
+    ],
+    [
+      "src/pages/JourneyDetailPage.test.tsx",
+      [
+        "JourneyDetailPage",
+        "FE-PAGE-JOURNEYDETAIL-058: Map shows entry count"
+      ],
+      "shows Places stat in map view stats header",
+      "skipped"
+    ],
+    [
+      "src/pages/JourneyDetailPage.test.tsx",
+      [
+        "JourneyDetailPage",
+        "FE-PAGE-JOURNEYDETAIL-059: Contributors section shows invite button"
+      ],
+      "renders the Contributors heading with an invite button in sidebar",
+      "skipped"
+    ],
+    [
+      "src/pages/JourneyDetailPage.test.tsx",
+      [
+        "JourneyDetailPage",
+        "FE-PAGE-JOURNEYDETAIL-075: Add Trip button opens dialog with search input"
+      ],
+      "clicking the + button in the Synced Trips panel opens the Add Trip dialog",
+      "skipped"
+    ],
+    [
+      "src/pages/JourneyDetailPage.test.tsx",
+      [
+        "JourneyDetailPage",
+        "FE-PAGE-JOURNEYDETAIL-076: Trip search shows results"
+      ],
+      "available trips are shown in the dialog list",
+      "skipped"
+    ],
+    [
+      "src/pages/JourneyDetailPage.test.tsx",
+      [
+        "JourneyDetailPage",
+        "FE-PAGE-JOURNEYDETAIL-077: Select trip and link calls API"
+      ],
+      "clicking Link on a trip calls POST /api/journeys/1/trips",
+      "skipped"
+    ],
+    [
+      "src/pages/JourneyDetailPage.test.tsx",
+      [
+        "JourneyDetailPage",
+        "FE-PAGE-JOURNEYDETAIL-078: Invite button opens dialog"
+      ],
+      "clicking the invite button in Contributors panel opens the Invite Contributor dialog",
+      "skipped"
+    ],
+    [
+      "src/pages/JourneyDetailPage.test.tsx",
+      [
+        "JourneyDetailPage",
+        "FE-PAGE-JOURNEYDETAIL-079: User search shows results"
+      ],
+      "available users are shown in the Invite Contributor dialog",
+      "skipped"
+    ],
+    [
+      "src/pages/JourneyDetailPage.test.tsx",
+      [
+        "JourneyDetailPage",
+        "FE-PAGE-JOURNEYDETAIL-080: Add contributor calls API"
+      ],
+      "selecting a user and clicking Invite calls POST /api/journeys/1/contributors",
+      "skipped"
+    ],
+    [
+      "src/pages/JourneyDetailPage.test.tsx",
+      [
+        "JourneyDetailPage",
+        "FE-PAGE-JOURNEYDETAIL-086: Map view location click highlights item"
+      ],
+      "clicking a location item in map view sets it as active",
+      "skipped"
+    ],
+    [
+      "src/pages/JourneyDetailPage.test.tsx",
+      [
+        "JourneyDetailPage",
+        "FE-PAGE-JOURNEYDETAIL-087: Map view stats bar shows Places/Days/Stories"
+      ],
+      "renders 3 stat cards in map view stats header",
+      "skipped"
+    ],
+    [
+      "src/pages/JourneyDetailPage.test.tsx",
+      [
+        "JourneyDetailPage",
+        "FE-PAGE-JOURNEYDETAIL-088: Map view shows day separators with day numbers"
+      ],
+      "renders day group headers in the location list",
+      "skipped"
+    ],
+    [
+      "src/pages/JourneyDetailPage.test.tsx",
+      [
+        "JourneyDetailPage",
+        "FE-PAGE-JOURNEYDETAIL-089: Map view shows connector lines between locations"
+      ],
+      "renders connector lines between location items within a day",
+      "skipped"
+    ],
+    [
+      "src/pages/JourneyDetailPage.test.tsx",
+      [
+        "JourneyDetailPage",
+        "FE-PAGE-JOURNEYDETAIL-108: Add Trip search filters results"
+      ],
+      "typing in the search input filters the available trips",
+      "skipped"
+    ],
+    [
+      "src/pages/JourneyDetailPage.test.tsx",
+      [
+        "JourneyDetailPage",
+        "FE-PAGE-JOURNEYDETAIL-109: Add Trip dialog shows empty state"
+      ],
+      "shows \"No trips available\" when no trips match",
+      "skipped"
+    ],
+    [
+      "src/pages/JourneyDetailPage.test.tsx",
+      [
+        "JourneyDetailPage",
+        "FE-PAGE-JOURNEYDETAIL-110: Add Trip dialog shows trip destination and dates"
+      ],
+      "renders destination and start_date in the trip list items",
+      "skipped"
+    ],
+    [
+      "src/pages/JourneyDetailPage.test.tsx",
+      [
+        "JourneyDetailPage",
+        "FE-PAGE-JOURNEYDETAIL-111: Contributor invite shows role selector"
+      ],
+      "renders viewer and editor role buttons in the invite dialog",
+      "skipped"
+    ],
+    [
+      "src/pages/JourneyDetailPage.test.tsx",
+      [
+        "JourneyDetailPage",
+        "FE-PAGE-JOURNEYDETAIL-112: Contributor invite role toggle works"
+      ],
+      "clicking editor role button switches the active role",
+      "skipped"
+    ],
+    [
+      "src/pages/JourneyDetailPage.test.tsx",
+      [
+        "JourneyDetailPage",
+        "FE-PAGE-JOURNEYDETAIL-113: Contributor invite search filters users"
+      ],
+      "typing in search filters the user list",
+      "skipped"
+    ],
+    [
+      "src/pages/JourneyDetailPage.test.tsx",
+      [
+        "JourneyDetailPage",
+        "FE-PAGE-JOURNEYDETAIL-135: Contributor invite Invite button disabled without selection"
+      ],
+      "the Invite button is disabled when no user is selected",
+      "skipped"
+    ],
+    [
+      "src/pages/JourneyDetailPage.test.tsx",
+      [
+        "JourneyDetailPage",
+        "FE-PAGE-JOURNEYDETAIL-136: Contributor invite shows user avatars"
+      ],
+      "renders first letter of username as avatar in user list",
+      "skipped"
+    ],
+    [
+      "src/pages/JourneyDetailPage.test.tsx",
+      [
+        "JourneyDetailPage",
+        "FE-PAGE-JOURNEYDETAIL-137: Contributor invite shows email"
+      ],
+      "renders user email in the invite user list",
+      "skipped"
+    ],
+    [
+      "src/pages/JourneyDetailPage.test.tsx",
+      [
+        "JourneyDetailPage",
+        "FE-PAGE-JOURNEYDETAIL-138: Contributor invite shows check mark when user selected"
+      ],
+      "shows a check mark icon when a user is selected",
+      "skipped"
+    ],
+    [
+      "src/pages/JourneyDetailPage.test.tsx",
+      [
+        "JourneyDetailPage",
+        "FE-PAGE-JOURNEYDETAIL-150: ProviderPicker no-trips shows message"
+      ],
+      "shows \"no trips linked\" message when trip filter has no trip range",
+      "skipped"
+    ]
+  ],
+  "no_new_skip_or_test_edit": true,
+  "theme_gate_remains_failed": true,
+  "automatic_baseline_edit_rejected": true,
+  "reviewable_fix": "proposed-theme-ownership.patch"
+}

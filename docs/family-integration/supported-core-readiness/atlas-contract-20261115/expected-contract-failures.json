@@ -1,0 +1,22 @@
+{
+  "baseline": "8d6fd108fa628ebb0ff6992defee56afaea0e460",
+  "expected_red_baseline": true,
+  "feature_acceptance": false,
+  "cases": [
+    {
+      "name": "Atlas desired repair contract; expected failures on unchanged baseline unsupported Family bucket read must refuse instead of promising authoritative empty data",
+      "status": "failed",
+      "assertion": "Error: promise resolved \"{ data: { items: [] }, \u2026(5) }\" instead of rejecting"
+    },
+    {
+      "name": "Atlas desired repair contract; expected failures on unchanged baseline successful statistics must survive an unavailable independent bucket read",
+      "status": "failed",
+      "assertion": "AssertionError: expected +0 to be 7 // Object.is equality"
+    },
+    {
+      "name": "Atlas desired repair contract; expected failures on unchanged baseline the actual phone metric consumer must not display unknown city count as measured zero",
+      "status": "failed",
+      "assertion": "AssertionError: expected '0' not to be '0' // Object.is equality"
+    }
+  ]
+}

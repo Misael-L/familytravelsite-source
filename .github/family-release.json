@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 2,
+  "repository": "Misael-L/FamilyTravelSite",
+  "branches": {
+    "production": "main",
+    "integration": "codex/trek-v5.1.4-family-reconcile"
+  },
+  "upstream": {
+    "repository": "liketrek/TREK",
+    "remote": "upstream",
+    "updates": "Pinned release tags, merged into the integration branch first"
+  },
+  "baseline": {
+    "trekVersion": "5.1.4",
+    "trekCommit": "2bcfc1bfcbbff0affd097c0f789c835396389572",
+    "trekTag": "trek-v5.1.4",
+    "qualificationCommit": "506643aa3c3c0a624624721a8636f7a9cdc102be"
+  },
+  "releases": {
+    "familyTagPattern": "family-YYYY.MM.DD.N",
+    "candidateTagPattern": "family-YYYY.MM.DD.N-rc.K",
+    "sourceMirror": "Misael-L/familytravelsite-source",
+    "sourceTagPattern": "source-YYYYMMDD-SHORTSHA",
+    "mergeMethod": "merge commit; preserve upstream ancestry"
+  },
+  "deployment": {
+    "productionBranch": "main",
+    "integrationAutoDeploy": false,
+    "preview": "Separate isolated environment; not provisioned by this repository setup"
+  },
+  "backendSchemaRepository": "Misael-L/FamilyTravelApp",
+  "initialImport": {
+    "trekVersion": "5.0.1",
+    "trekCommit": "a0943f8226269bc192c1cda992fbac33333337a1",
+    "trekTag": "trek-v5.0.1",
+    "familyCommit": "247b76ea94942e511a663f3f840c81821c556fc5",
+    "familyTag": "family-before-trek-v5-20261029",
+    "importCommit": "06e89f16d2ed9946403243d89d688d535b070265",
+    "integrationBranch": "codex/trek-v5-family-integration"
+  }
+}

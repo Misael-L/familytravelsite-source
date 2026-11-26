@@ -1,0 +1,4 @@
+[
+  "src/data/supabase/catalogExploreMedia.test.ts",
+  "src/lib/media/prefetchHeroImages.test.ts"
+]

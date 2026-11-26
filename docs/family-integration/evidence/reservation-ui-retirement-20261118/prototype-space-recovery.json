@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "only_verified_disposable_source_prototype_removed": "/private/tmp/trek-core-reservation-ui-retirement-20261118/candidate-checkout",
+  "pinned_original_source": "eddb6dcc74de573dabfe30e73f7bc92b38af2078",
+  "explicit_candidate_deletions": [
+    "client/src/integrations/family/legacy/components/Planner/ReservationModal.tsx",
+    "client/src/integrations/family/legacy/components/Planner/ReservationsPanel.tsx"
+  ],
+  "all_other_tracked_bytes_verified": 18148,
+  "dependency_links_unlinked_without_following": true,
+  "test_logs_evidence_compiled_artifacts_source_checkouts_backups_ETL_media_preserved": true,
+  "free_bytes_before": 2985967616,
+  "free_bytes_after": 3476377600
+}

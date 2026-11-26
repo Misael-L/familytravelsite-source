@@ -1,0 +1,25 @@
+# U04-A — packing observation and writer foundation
+
+11 November 2026. Continues D16n on `codex/trek-v5.1.2-family-reconcile`. This completes the missing publication/write-port prerequisite of U04/P04be. It does **not** complete or enable the desktop/phone authoring milestone.
+
+## Original observations and canonical state
+
+The complete checked bundle now carries its packing projection with the canonical packet. At the same guarded bundle commit as task observations, the composed packing owner receives complete items, Person names, bags, authoritative totals and category assignees, including the empty-list case. Internal observation/projection fields are stripped before native Trip-store publication. Loading/reset/disposal reset the owner with the existing task/planner lifecycle. Partial/failed reads do not publish empty successful snapshots.
+
+The new typed native port defines binding, explicit packed-state, complete reorder, owned Trash/restore, retained reconciliation and snapshot subscription. It is installed/uninstalled with rollback in the existing cohort composition. `packing_edit` remains unavailable; no native component, styling, navigation, field or checkbox handler is changed here. Ordinary/native raw repositories retain their existing refusal boundary. The origin/row argument helpers and group-action guard are attachment points for the next packet, not a claim that native consumers already use them.
+
+`PlannerCohortPacking` copies the complete original packet/projection and keeps source, actor/private-session epoch, identity registry, Trip, view layer and lifecycle ownership. Its published snapshot retires on source/layer/actor/private-session/disposal changes; rebinding stale data into the new context refuses. A form retains its original row and opaque revision. It owns one operation/target UUID and exact body, coalesces identical concurrent submissions, refuses changed retries and closes after one completed logical operation. Deliberate later creates require fresh origins/operation identities.
+
+Item commands use the existing strict envelope, real versioned handler/SDK/RPC and acknowledgement matcher. Direct environment authority is required, and SQL remains authoritative for current membership, MFA, visibility, lifecycle and packing permissions. No raw write, temporary item, optimistic row, persisted native projection or automatic revision borrowing is introduced. Native view-layer identity remains separate from the canonical published packing data scope.
+
+## Queue and fresh publication
+
+The exact intent is retained under the original queue lease before sending. Older Trip work blocks a competing command; offline/uncertain results remain intact. Known refusals park the original command. A validated acknowledgement resolves only that operation. A fresh complete canonical read and actual Person lookup then publish current rows and server-summed totals under the same exclusive lease; no nested guarded/shared reader is acquired. Context, unchanged native packing state and absence of competing local work are rechecked before publication. Historical acknowledgements never become current UI state or aggregate totals.
+
+Warm reconciliation distinguishes unknown, visible committed and redacted committed receipts. Unknown stays unresolved; redacted commitment cannot expose hidden content. After a committed receipt it reads current canonical state before publishing. If generic replay already removed the intent, a no-intent reconciliation can refresh canonical state instead of leaving an old native list. This owner requires an originally published snapshot: **cold/reload recovery before bundle publication is not implemented by this class** and must be added at the startup/read-problem boundary in U04-B.
+
+Reorder requires the complete originally observed actor-visible set and collection revision, with no filtered/duplicate subset write. Single-item Trash removes the real item; it does not run the native last-category placeholder sequence. Trash inspection uses a shared lease, refuses overlapping retained work and binds pagination to original scope/collection revision. Restore requires an exact, owned page/row; copied/forged/mutated or superseded pages cannot authorize it. A subsequent publication invalidates all page observations. Future UI may display several pages together, but must retain each original page with its rows rather than passing a synthesized merged page to Restore.
+
+## Next remains mandatory before authoring
+
+U04-B must connect actual native forms/rows/slices to original observations before raw or optimistic effects; implement cold retained-packing recovery; add owned Trash UI; require direct packing authority; and gate unsupported category/bag/sharing/template/bulk operations before their first effect. Only after native desktop/phone/queue/real-DB acceptance may supported item controls be enabled together in the explicit cohort. No source-pin change alone enables them. The original U04 checklist remains the overall milestone.

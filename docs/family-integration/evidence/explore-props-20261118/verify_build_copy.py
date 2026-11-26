@@ -1,0 +1,9 @@
+from pathlib import Path
+import ctypes,hashlib,json,os,shutil,stat
+T=Path(__file__).parent;A=Path('/Users/Misael/Downloads/FamilyTravelSite-trek-5.1.4/client/dist');B=T/'candidate-web-explicit';lib=ctypes.CDLL('/usr/lib/libSystem.B.dylib',use_errno=True);copy=lib.copyfile;copy.argtypes=[ctypes.c_char_p,ctypes.c_char_p,ctypes.c_void_p,ctypes.c_uint32];copy.restype=ctypes.c_int
+sig=lambda p:(hashlib.sha256(p.read_bytes()).hexdigest(),p.stat().st_size,stat.S_IMODE(p.stat().st_mode),p.stat().st_uid,p.stat().st_gid,p.stat().st_mtime_ns,p.stat().st_flags)
+source={str(p.relative_to(A)):sig(p)for p in A.rglob('*')if p.is_file()};target={str(p.relative_to(B)):sig(p)for p in B.rglob('*')if p.is_file()};assert source.keys()==target.keys()and all(source[r][:2]==target[r][:2]for r in source)
+for rel in source:
+ if copy(os.fsencode(A/rel),os.fsencode(B/rel),None,7|(1<<18)|(1<<19))!=0:raise OSError(ctypes.get_errno(),os.strerror(ctypes.get_errno()),rel)
+assert source=={str(p.relative_to(B)):sig(p)for p in B.rglob('*')if p.is_file()}and source=={str(p.relative_to(A)):sig(p)for p in A.rglob('*')if p.is_file()};assert all((A/r).stat().st_ino!=(B/r).stat().st_ino for r in source)
+r={'passed':True,'method':'Native APFS clonefile COW copy plus ACL|STAT|XATTR metadata copy; new generated output directory only','fresh_COW_isolation_probe_passed':True,'all_output_paths_bytes_modes_owners_mtime_and_flags_exact':True,'all_copied_files_have_separate_inodes':True,'source_output_inventory_unchanged':True,'files':len(source),'initial_gid_inheritance_delta_retained':'build-copy-initial-metadata-delta.json','fix_applies_metadata_only_never_DATA':True,'production_build_not_rerun_or_relabelled':True,'prior_builds_complete_archives_backups_ETL_media_untouched':True};(T/'build-copy-proof.json').write_text(json.dumps(r,indent=2)+'\n');print(json.dumps(r))

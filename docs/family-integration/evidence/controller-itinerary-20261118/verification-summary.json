@@ -1,0 +1,112 @@
+{
+  "passed": true,
+  "packet": "Q97",
+  "incoming": "e4f5edacf2894d147835c2f86ee2b15f6baf48b5",
+  "implementation": "6ee12615de0dc3c21a0c360ab0c492c5797524c0",
+  "build_source": "5d5886a0cea6715f38dcfd1431e17ad99246bd93",
+  "date": "2026-11-18",
+  "runtime_files_changed": 2,
+  "new_product_test_files": 1,
+  "new_test_support_files": 1,
+  "existing_controller_bridge_timeline_cases_before_and_after": 49,
+  "new_factory_contract_cases": 60,
+  "candidate_passed": 109,
+  "functional_behavior_change": null,
+  "whole_original_controller_AST_restored": true,
+  "runtime_import_order_hooks_markup_callback_bodies_and_dependencies_preserved": true,
+  "controller_wrapped_lines": [
+    1322,
+    987
+  ],
+  "companion_wrapped_lines": 783,
+  "new_helpers_within_20_120_5": true,
+  "new_helper_test_and_fixture_warnings": 0,
+  "inherited_forced_legacy_findings_unchanged": true,
+  "ordinary_legacy_policy_unchanged": true,
+  "coverage_companion_only": {
+    "total": {
+      "lines": {
+        "total": 264,
+        "covered": 262,
+        "skipped": 0,
+        "pct": 99.24
+      },
+      "statements": {
+        "total": 324,
+        "covered": 313,
+        "skipped": 0,
+        "pct": 96.6
+      },
+      "functions": {
+        "total": 82,
+        "covered": 77,
+        "skipped": 0,
+        "pct": 93.9
+      },
+      "branches": {
+        "total": 158,
+        "covered": 137,
+        "skipped": 0,
+        "pct": 86.7
+      },
+      "branchesTrue": {
+        "total": 0,
+        "covered": 0,
+        "skipped": 0,
+        "pct": "Unknown"
+      }
+    },
+    "/private/tmp/trek-core-controller-actions-source-20261118/candidate-checkout/client/src/integrations/family/legacy/pages/familyTripWorkspace/controllerItineraryActions.ts": {
+      "lines": {
+        "total": 264,
+        "covered": 262,
+        "skipped": 0,
+        "pct": 99.24
+      },
+      "functions": {
+        "total": 82,
+        "covered": 77,
+        "skipped": 0,
+        "pct": 93.9
+      },
+      "statements": {
+        "total": 324,
+        "covered": 313,
+        "skipped": 0,
+        "pct": 96.6
+      },
+      "branches": {
+        "total": 158,
+        "covered": 137,
+        "skipped": 0,
+        "pct": 86.7
+      }
+    }
+  },
+  "typecheck_passed": true,
+  "fixture_build_passed": true,
+  "source_guards_passed": 4,
+  "artifact_binding_controls_passed": 3,
+  "source_complexity_actual_limit": [
+    218,
+    218
+  ],
+  "source_length_actual_limit": [
+    130,
+    130
+  ],
+  "source_warnings_actual_limit": [
+    3418,
+    3418
+  ],
+  "warning_gate_pass": true,
+  "all_rules_baselines_suppressions_unchanged": true,
+  "size_findings_before_after": [
+    32,
+    31
+  ],
+  "other_size_failure_lines_exact": true,
+  "global_quality_gate_pass": false,
+  "live_database_provider_browser_or_writer_admission_acceptance": false,
+  "next": "Q98 complete ordinary-entry AdminPluginsPanel boundary and size review;30 retained findings remain separate"
+}

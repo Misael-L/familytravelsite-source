@@ -1,0 +1,35 @@
+{
+  "passed": true,
+  "scoped_export_declarations": {
+    "client/src/integrations/family/legacy/components/Planner/ReservationModal.tsx": [
+      {
+        "line": 75,
+        "declaration": "export function ReservationModal({"
+      }
+    ],
+    "client/src/integrations/family/legacy/components/Planner/ReservationsPanel.tsx": [
+      {
+        "line": 1148,
+        "declaration": "export default function ReservationsPanel({"
+      }
+    ]
+  },
+  "outside_candidate_module_consumers": [],
+  "no_ambient_augmentation": true,
+  "tested_Family_bookings_preserved": {
+    "path": "client/src/integrations/family/legacy/components/Planner/BookingsPanelFamily.tsx",
+    "sha256": "27682ec331a59d18545df0be9da3618e51e77f29404228bc96a93d2755835673",
+    "test": "client/src/integrations/family/legacy/components/Planner/BookingsPanelFamily.test.tsx",
+    "test_sha256": "1e290019c1813c462744faa653467e92a2e62f83220a0def8e5f871f5e2b5b92",
+    "raw_consumers": [
+      {
+        "from": "client/src/integrations/family/legacy/components/Planner/BookingsPanelFamily.test.tsx",
+        "target": "client/src/integrations/family/legacy/components/Planner/BookingsPanelFamily.tsx",
+        "kind": "ImportDeclaration",
+        "line": 13,
+        "type_only": false
+      }
+    ],
+    "ordinary_entry_member": false
+  }
+}

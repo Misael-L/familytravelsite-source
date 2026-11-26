@@ -1,0 +1,5 @@
+{
+  "exit": 1,
+  "seconds": 113.26,
+  "command": "npm run lint:strict -- --list"
+}

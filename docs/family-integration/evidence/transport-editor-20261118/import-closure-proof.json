@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "existing_runtime_import_bindings_union_exact": true,
+  "bindings_sha256": "759aefed874d2e7c760efce1bfb2a8a618382391020a08171b4a59f98ec55e32",
+  "all_new_runtime_initializers_static_lookup_or_alias_values": true,
+  "shared_module_imports_erased_types_only": true,
+  "no_new_top_level_API_calls_observers_augmentations_or_mutations": true,
+  "formatter_regroups_imports_without_claiming_identical_module_evaluation_order": true,
+  "parent_business_body_and_all_effect_dependencies_exact": true
+}

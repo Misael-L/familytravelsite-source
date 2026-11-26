@@ -1,0 +1,13 @@
+{
+  "incoming": "e93b86567f6a46ca7f5a84a476fcb2ca5389c82c",
+  "implementation": "c2ee495ea92b6a269da5fc689ef1893009d537e6",
+  "build_source": "1a0079d64634a5e46bb52982215a6fcc0dbbe428",
+  "removed_original_sha256": {
+    "client/src/integrations/family/legacy/components/Trips/TripMembersModal.tsx": "239ca90995206d4315157ca0a53391a1cd8a866c0785257e12eb5240fc9dde64"
+  },
+  "prior_runtime_build": "561b62b7683bb62de1e1bd9fd91bc95518875c51",
+  "fresh_current_compiler_declarations": 128,
+  "no_old_generated_declaration_identity_assumption": true,
+  "test_runtime": "v24.22.2",
+  "no_hosted_operation": true
+}

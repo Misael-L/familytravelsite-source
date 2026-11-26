@@ -1,0 +1,14 @@
+{
+  "incoming": "9e84f90cfa8c6fdefd7cea45db32c2ef6f2edde0",
+  "implementation": "7cc398ec65581bb9383a43841ea962a0ad43dd72",
+  "build_source": "a04fa405cbac4b4ac8ac9143652daa71ec6d527e",
+  "removed_original_sha256": {
+    "client/src/integrations/family/legacy/main.tsx": "4336bd6308ff33f1f36138888aa81d1fa99ec913c6410e1b3f5af68c8a76be3c",
+    "client/src/integrations/family/legacy/App.tsx": "2c4a3a6332f7d05882d52f2828fa003557dec47dfeae35973c000dc4721a24da",
+    "client/src/integrations/family/legacy/pages/TripPlannerPage.tsx": "994444820df6e8efddf88a2627b4628fe93fc3f082b789c2e66236e73903484c",
+    "client/src/integrations/family/legacy/pages/FamilyTripWorkspaceShell.tsx": "5760b337ceed0d142a5294355c7fc3aaef5123146c5a0b672c2ab6f6f2bf7a55"
+  },
+  "prior_runtime_build": "a0d896e186f3374d1c1122e6eb805cbd842c66e8",
+  "source_generation_note": "Current compiler/gates bind to freshly built128 declarations. Two generated shared declaration digests differ from the older build; no claim of old-generation byte identity. All tracked shared sources unchanged.",
+  "no_live_backend_or_browser_acceptance": true
+}

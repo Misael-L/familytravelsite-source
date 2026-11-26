@@ -1,0 +1,75 @@
+{
+  "passed": false,
+  "retirement_preservation_verified": true,
+  "all_tests_passed": false,
+  "packet": "Q120",
+  "date": "2026-11-18",
+  "incoming": "3b84a6b6ec4f3d02fe2021bc18632ff5cd41cf01",
+  "implementation": "26fb14153156399db490c5dfa89809b484d3a11f",
+  "build_source": "4e1ab46ae2bfc799ed71f2b4b826905fd7263fed",
+  "removed_application_paths": [
+    "client/src/integrations/family/legacy/index.css",
+    "client/src/integrations/family/legacy/styles/collections.css",
+    "client/src/integrations/family/legacy/styles/dashboard.css",
+    "client/src/integrations/family/legacy/styles/collectionsPage.css",
+    "client/src/integrations/family/legacy/pages/CollectionsPage.tsx"
+  ],
+  "closed_five_file_CSS_loader_island_retired": true,
+  "initial_three_file_scope_refused_due_to_actual_internal_imports": true,
+  "all_other_source_tests_and_baselines_byte_exact": true,
+  "candidate_passed": 2315,
+  "candidate_total_cases": 2354,
+  "existing_failed": 1,
+  "existing_skipped": 38,
+  "new_failures": 0,
+  "new_skips": 0,
+  "same_expanded_cases_before_after": 2354,
+  "raw_title_cases_exact": 2353,
+  "one_source_defined_generated_UUID_label_reviewed": true,
+  "ordinary_compiler_roots_before_after": [
+    5077,
+    5077
+  ],
+  "ordinary_compiler_sources_before_after": [
+    10264,
+    10264
+  ],
+  "all_ordinary_program_bytes_and_selected_public_contracts_exact": true,
+  "current_runtime_graph_nodes_edges_source_bytes_exact": 6091,
+  "actual_CSS_HTML_parser_and_runtime_compiler_positive_controls_pass": true,
+  "all_3792_outputs_except_sourceCommit_configuration_byte_exact": true,
+  "source_guards_passed": 4,
+  "artifact_binding_controls_passed": 3,
+  "new_feature_or_writer_UI_admission": false,
+  "current_declarations_fixed": 128,
+  "build_and_typecheck_pass": true,
+  "format_gate_pass": true,
+  "format_baseline_unchanged_entries": 2134,
+  "unlisted_format_failures": 0,
+  "warning_gate_pass": true,
+  "source_warnings_actual_limit": [
+    3418,
+    3418
+  ],
+  "source_complexity_actual_limit": [
+    218,
+    218
+  ],
+  "source_length_actual_limit": [
+    130,
+    130
+  ],
+  "size_findings_before_after": [
+    3,
+    0
+  ],
+  "size_gate_pass": true,
+  "theme_gate_pass": false,
+  "theme_gate_blocked_by_review": true,
+  "theme_baseline_unchanged": true,
+  "theme_allowance_total_unchanged": 3388,
+  "rules_baselines_exclusions_suppressions_unchanged": true,
+  "global_release_gate_pass": false,
+  "new_live_database_browser_or_writer_acceptance": false,
+  "next": "Review explicit approval for the source-proven 13-finding theme budget ownership correction, then recheck theme and readiness."
+}

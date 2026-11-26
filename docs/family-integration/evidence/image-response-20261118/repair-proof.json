@@ -1,0 +1,23 @@
+{
+  "passed": true,
+  "scope": "Single validated-stream handoff; not complete strict or release acceptance.",
+  "original_existing_focused_cases_preserved": 209,
+  "new_meaningful_cases": 4,
+  "focused_after_passed": 213,
+  "new_single_read_test_red_on_original_green_on_candidate": true,
+  "no_removed_changed_or_skipped_existing_cases": true,
+  "strict_diagnostics_before_after": [
+    637,
+    636
+  ],
+  "target_module_strict_diagnostics_after": 0,
+  "all_other_grown_file_counts_and_allowances_exact": true,
+  "new_strict_failures": 0,
+  "strict_gate_pass": false,
+  "policies_baselines_thresholds_exclusions_suppressions_unchanged": true,
+  "only_application_files_changed": [
+    "client/src/integrations/family/publicVariantCache.ts",
+    "client/src/integrations/family/publicVariantCache.test.ts"
+  ],
+  "no_live_network_schema_provider_transformation_or_writer_admission": true
+}

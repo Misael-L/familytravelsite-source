@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "only_verified_disposable_source_prototype_removed": "/private/tmp/trek-core-task-list-retirement-20261118/candidate-checkout",
+  "pinned_original_source": "4808891b1a5d0a1f0ec40ba59deba194ae0671af",
+  "explicit_candidate_deletions": [
+    "client/src/integrations/family/legacy/components/Todo/ListsContainer.tsx",
+    "client/src/integrations/family/legacy/components/Todo/ListsPanelFamily.tsx",
+    "client/src/integrations/family/legacy/components/Todo/TodoListPanel.tsx",
+    "client/src/integrations/family/legacy/components/Todo/useFamilyLists.ts"
+  ],
+  "all_other_tracked_bytes_verified": 18030,
+  "dependency_links_unlinked_without_following": true,
+  "test_logs_evidence_compiled_artifacts_source_checkouts_backups_ETL_media_preserved": true,
+  "free_bytes_before": 2660352000,
+  "free_bytes_after": 3058647040
+}

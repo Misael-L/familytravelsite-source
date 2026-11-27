@@ -67,7 +67,7 @@ jobs:
         working-directory: client/android
         run: ./gradlew assembleDebug assembleRelease lintDebug testDebugUnitTest --no-daemon
 
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: trek-android-debug
           path: client/android/app/build/outputs/apk/debug/app-debug.apk
@@ -160,7 +160,7 @@ jobs:
             ../App/TREKWidgets/*Content.swift Sources/WidgetPreviews/Widgets/
           swift run -c release WidgetPreviews out "$PWD/../App/App/Assets.xcassets/AppIcon.appiconset/AppIcon-512@2x.png"
 
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: widget-previews
           path: client/ios/WidgetPreviews/out
@@ -255,7 +255,7 @@ jobs:
       - name: Capture the screens
         run: bash client/ios/scripts/watch-screens.sh client/ios/App/build/Debug-watchsimulator/TREKWatch.app "$PWD/watch-screens"
 
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: watch-screens

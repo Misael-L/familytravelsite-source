@@ -136,7 +136,7 @@ jobs:
 
       - name: Hand the dialect on
         if: steps.types.outputs.ok == 'true'
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: registration-dialect
           path: ${{ steps.fetch.outputs.file }}
